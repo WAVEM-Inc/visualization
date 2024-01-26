@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="142" height="142" viewBox="0 0 142 142">
+    <g id="그룹_62" data-name="그룹 62" transform="translate(0 -192)">
+        <rect id="사각형_1" data-name="사각형 1" width="142" height="142" transform="translate(0 192)" fill="none"/>
+        <text id="Monitor" transform="translate(71 318)" fill="#d7dbec" font-size="16" font-family="Poppins-SemiBold, Poppins" font-weight="600" letter-spacing="0.004em"><tspan x="-31.448" y="0">Monitor</tspan></text>
+        <g id="그룹_45" data-name="그룹 45" transform="translate(40 226)">
+            <path id="패스_19" data-name="패스 19" d="M54,28.923V41.385H6V8.154H28V4H6A4.079,4.079,0,0,0,2,8.154V41.385a4.079,4.079,0,0,0,4,4.154H22v8.308H14V58H46V53.846H38V45.538H54a4.079,4.079,0,0,0,4-4.154V28.923ZM34,53.846H26V45.538h8Z" fill="#e6e9f4"/>
+            <rect id="사각형_23" data-name="사각형 23" width="12" height="2" transform="translate(46 4)" fill="#e6e9f4"/>
+            <rect id="사각형_24" data-name="사각형 24" width="12" height="2" transform="translate(46 15.467)" fill="#e6e9f4"/>
+            <rect id="사각형_25" data-name="사각형 25" width="6" height="2" transform="translate(37.385 23.2)" fill="#e6e9f4"/>
+            <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" width="60" height="60" fill="none"/>
+        </g>
+    </g>
+</svg>
+
