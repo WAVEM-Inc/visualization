@@ -22,15 +22,15 @@ lib/EventBus/lib/EventBus_autogen/timestamp: \
   /home/antique/Desktop/gui/node_editor/lib/EventBus/lib/src/dexode/eventbus/permission/PostponeBus.hpp \
   /home/antique/Desktop/gui/node_editor/lib/EventBus/lib/src/dexode/eventbus/stream/EventStream.hpp \
   /home/antique/Desktop/gui/node_editor/lib/EventBus/lib/src/dexode/eventbus/stream/ProtectedEventStream.hpp \
-  /usr/local/bin/cmake \
-  /usr/local/share/cmake-3.28/Modules/BasicConfigVersion-SameMajorVersion.cmake.in \
-  /usr/local/share/cmake-3.28/Modules/CMakePackageConfigHelpers.cmake \
-  /usr/local/share/cmake-3.28/Modules/CheckCSourceCompiles.cmake \
-  /usr/local/share/cmake-3.28/Modules/CheckIncludeFile.cmake \
-  /usr/local/share/cmake-3.28/Modules/CheckLibraryExists.cmake \
-  /usr/local/share/cmake-3.28/Modules/FindPackageHandleStandardArgs.cmake \
-  /usr/local/share/cmake-3.28/Modules/FindPackageMessage.cmake \
-  /usr/local/share/cmake-3.28/Modules/FindThreads.cmake \
-  /usr/local/share/cmake-3.28/Modules/GNUInstallDirs.cmake \
-  /usr/local/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake \
-  /usr/local/share/cmake-3.28/Modules/WriteBasicConfigVersionFile.cmake
+  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/bin/cmake \
+  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/BasicConfigVersion-SameMajorVersion.cmake.in \
+  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/CMakePackageConfigHelpers.cmake \
+  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/CheckCSourceCompiles.cmake \
+  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/CheckIncludeFile.cmake \
+  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/CheckLibraryExists.cmake \
+  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/FindPackageHandleStandardArgs.cmake \
+  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/FindPackageMessage.cmake \
+  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/FindThreads.cmake \
+  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/GNUInstallDirs.cmake \
+  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/Internal/CheckSourceCompiles.cmake \
+  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/WriteBasicConfigVersionFile.cmake

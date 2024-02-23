@@ -46,6 +46,9 @@ add_executable(node_editor
         src/model/Node.cpp
         src/model/Path.cpp
         src/model/SensingRange.cpp
+        src/utils/file_manager.cpp
+        includes/utils/file_manager.h
+        includes/utils/events/FileEvents.h
 )
 
 include(FetchContent)

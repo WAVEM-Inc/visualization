@@ -8,8 +8,9 @@
 #include <QMessageBox>
 #include <QTextStream>
 #include "ui/menu/menu_bar.h"
-#include "model/RouteFile.h"
 #include "nlohmann/json.hpp"
+#include "utils/file_manager.h"
+#include "utils/events/FileEvents.h"
 
 MenuBar::MenuBar(QWidget *parent) : QMenuBar(parent) {
     initializeStyleSheet();
@@ -28,15 +29,27 @@ MenuBar::MenuBar(QWidget *parent) : QMenuBar(parent) {
 
     QAction *openFile = fileMenu->addAction(tr("&불러오기"));
     openFile->setShortcut(QKeySequence("Ctrl+O"));
+    connect(openFile, &QAction::triggered, this, [this]() {
+        this->onOpenFile();
+    });
 
     //Menu-File-Save
     fileMenu->addSection(tr("Save"));
 
     QAction *saveFile = fileMenu->addAction(tr("&저장"));
     saveFile->setShortcut(QKeySequence("Ctrl+S"));
+    saveFile->setEnabled(false);
 
     QAction *saveFileAs = fileMenu->addAction(tr("&다른 이름으로 저장"));
     saveFileAs->setShortcut(QKeySequence("Ctrl+Shift+S"));
+    saveFileAs->setEnabled(false);
+
+/*    // Listen savable state
+    m_listener.listen([&saveFile, &saveFileAs](const event::FILE_SAVABLE &event) {
+        std::cout << "Savable state: " << event.isSavable << "\n";
+        saveFile->setEnabled(event.isSavable);
+        saveFileAs->setEnabled(event.isSavable);
+    });*/
 }
 
 void MenuBar::initializeStyleSheet() {
@@ -91,16 +104,21 @@ void MenuBar::onNewFile() {
         routeFileData.fileVersion = fileVersion.toStdString();
         routeFileData.mapId = mapId.toStdString();
 
-        nlohmann::json jsonData = routeFileData;
-        bool isSaved = saveFile(filePath, QString::fromStdString(jsonData.dump(4)));
-
-        if (isSaved) {
-//            RouteFileViewModel::Instance().setRouteFile(routeFileData);
-        }
+        saveFile(filePath, routeFileData);
     }
 }
 
-bool MenuBar::saveFile(const QString &filePath, const QString &textData) {
+void MenuBar::onOpenFile() {
+    bool ok;
+    QString filePath = QFileDialog::getOpenFileName(this, tr("Open File Path"), QDir::home().absolutePath(),
+                                                    tr("Data files (*.dat)"));
+
+    if (!filePath.isEmpty()) {
+        loadFile(filePath);
+    }
+}
+
+bool MenuBar::saveFile(const QString &filePath, const RouteFile &routeFileData) {
     QString finalPath = filePath;
     QFileInfo fileInfo(finalPath);
 
@@ -110,12 +128,13 @@ bool MenuBar::saveFile(const QString &filePath, const QString &textData) {
         fileInfo.setFile(finalPath); // 확장자가 추가된 최종 경로로 QFileInfo 업데이트
     }
 
+
     // 파일이 이미 존재하는 경우 덮어쓰기 여부 확인
     if (fileInfo.exists()) {
         auto response = QMessageBox::question(
                 nullptr,
                 tr("덮어쓰기"),
-                tr("이미 존재하는 파일입니다. 덮어 쓰시겠습니까?").arg(finalPath),
+                tr("이미 존재하는 파일입니다. 덮어 쓰시겠습니까?"),
                 QMessageBox::Yes | QMessageBox::No
         );
 
@@ -132,9 +151,49 @@ bool MenuBar::saveFile(const QString &filePath, const QString &textData) {
         return false;
     }
 
+    nlohmann::json dataJson = routeFileData;
+    QString textData = QString(dataJson.dump(4).c_str());
+
     QTextStream out(&file);
     out << textData;
     file.close();
+
+    if (out.status() == QTextStream::Ok) {
+        FileManager::Instance().updateOriginFileData(routeFileData);
+        FileManager::Instance().updateCacheFileData(routeFileData);
+    } else {
+        QMessageBox::warning(nullptr, "실패", "파일 저장에 실패하였습니다.");
+
+        return false;
+    }
+
+    std::cout << "Saved path: " << finalPath.toStdString() << "\n";
+
+    return true;
+}
+
+bool MenuBar::loadFile(const QString &filePath) {
+    QFile file(filePath);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QMessageBox::warning(nullptr, "실패", "파일을 불러오지 못했습니다. 다시 시도해 주세요");
+
+        return false;
+    }
+
+    QTextStream in(&file);
+    QString fileContent = in.readAll();
+
+    nlohmann::json json = nlohmann::json::parse(fileContent.toStdString());
+    RouteFile fileData = json.get<RouteFile>();
+
+    FileManager::Instance().updateOriginFileData(fileData);
+    FileManager::Instance().updateCacheFileData(fileData);
+
+    nlohmann::json originData = FileManager::Instance().getOriginFileData();
+    nlohmann::json cacheData = FileManager::Instance().getCacheFileData();
+
+    std::cout << "Origin Data: \n" << originData.dump(4) << "\n";
+    std::cout << "Cache Data: \n" << cacheData.dump(4) << "\n";
 
     return true;
 }

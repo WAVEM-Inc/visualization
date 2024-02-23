@@ -2,10 +2,16 @@
   /home/antique/Desktop/gui/node_editor/cmake-build-debug/node_editor_autogen/moc_predefs.h \
   /home/antique/Desktop/gui/node_editor/cmake-build-debug/_deps/json-src/single_include/nlohmann/json.hpp \
   /home/antique/Desktop/gui/node_editor/includes/model/MapNode.h \
+  /home/antique/Desktop/gui/node_editor/includes/model/Node.h \
+  /home/antique/Desktop/gui/node_editor/includes/model/Path.h \
   /home/antique/Desktop/gui/node_editor/includes/model/Position.h \
+  /home/antique/Desktop/gui/node_editor/includes/model/RouteFile.h \
+  /home/antique/Desktop/gui/node_editor/includes/model/SensingRange.h \
   /home/antique/Desktop/gui/node_editor/includes/ui/map/map_view.h \
   /home/antique/Desktop/gui/node_editor/includes/ui/menu/menu_bar.h \
   /home/antique/Desktop/gui/node_editor/includes/utils/patterns/observer/observer.h \
+  /home/antique/Desktop/gui/node_editor/includes/utils/patterns/observer/subject.h \
+  /home/antique/Desktop/gui/node_editor/includes/utils/patterns/singleton/singleton.h \
   /usr/include/asm-generic/errno-base.h \
   /usr/include/asm-generic/errno.h \
   /usr/include/assert.h \
@@ -164,6 +170,7 @@
   /usr/include/c++/11/locale \
   /usr/include/c++/11/map \
   /usr/include/c++/11/memory \
+  /usr/include/c++/11/mutex \
   /usr/include/c++/11/new \
   /usr/include/c++/11/numbers \
   /usr/include/c++/11/numeric \

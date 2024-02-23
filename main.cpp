@@ -3,6 +3,8 @@
 #include "utils/patterns/observer/subject.h"
 #include "model/MapNode.h"
 #include "viewmodel/map_node_view_model.h"
+#include "dexode/eventbus/Bus.hpp"
+#include "utils/file_manager.h"
 
 class TestObserver : public Observer<std::map<std::string, Position>> {
     void update(std::map<std::string, Position> data) override {
@@ -12,8 +14,8 @@ class TestObserver : public Observer<std::map<std::string, Position>> {
 };
 
 int main(int argc, char *argv[]) {
-    std::shared_ptr<TestObserver> observer = std::make_shared<TestObserver>();
-    MapNodeViewModel::Instance().mapNodes()->attach(observer);
+/*    std::shared_ptr<TestObserver> observer = std::make_shared<TestObserver>();
+    MapNodeViewModel::Instance().mapNodes()->attach(observer);*/
 
     QApplication app(argc, argv);
 
