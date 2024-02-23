@@ -32,13 +32,20 @@ add_executable(node_editor
         includes/ui/main/main_window.h
         src/ui/menu/menu_bar.cpp
         includes/ui/menu/menu_bar.h
-        includes/patterns/observer/singleton.h
-        includes/patterns/observer/observer.h
-        includes/patterns/observer/subject.h
-        includes/patterns/observer/ConcreteObserver.h
+        includes/utils/patterns/singleton/singleton.h
+        includes/utils/patterns/observer/observer.h
+        includes/utils/patterns/observer/subject.h
         src/viewmodel/map_node_view_model.cpp
         includes/viewmodel/map_node_view_model.h
         src/model/MapNode.cpp
+        includes/model/RouteFile.h
+        src/model/Position.cpp
+        src/model/Position.cpp
+        src/model/RouteFile.cpp
+        src/model/Link.cpp
+        src/model/Node.cpp
+        src/model/Path.cpp
+        src/model/SensingRange.cpp
 )
 
 include(FetchContent)
@@ -50,6 +57,8 @@ FetchContent_Declare(
 )
 
 FetchContent_MakeAvailable(json)
+
+add_subdirectory(lib/EventBus/lib)
 
 file(COPY ${RESOURCE_DIR} DESTINATION ${CMAKE_BINARY_DIR})
 install(DIRECTORY ${RESOURCE_DIR} DESTINATION ${CMAKE_INSTALL_PREFIX})
@@ -67,5 +76,6 @@ target_link_libraries(node_editor
         Qt5::WebEngineWidgets
         Qt5::WebChannel
         nlohmann_json::nlohmann_json
+        Dexode::EventBus
 )
 

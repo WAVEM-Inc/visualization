@@ -18,9 +18,15 @@ struct Node {
     Position position;
     std::string type;
     std::string kind;
-    double heading;
+    int heading;
     std::string direction;
     std::vector<SensingRange> sensingRange;
+
+    Node() = default;
 };
+
+void to_json(nlohmann::json& j, const Node& n);
+
+void from_json(const nlohmann::json& j, Node& n);
 
 #endif //NODE_EDITOR_NODE_H

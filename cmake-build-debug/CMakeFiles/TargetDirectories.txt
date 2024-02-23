@@ -13,3 +13,12 @@
 /home/antique/Desktop/gui/node_editor/cmake-build-debug/_deps/json-build/CMakeFiles/install.dir
 /home/antique/Desktop/gui/node_editor/cmake-build-debug/_deps/json-build/CMakeFiles/install/local.dir
 /home/antique/Desktop/gui/node_editor/cmake-build-debug/_deps/json-build/CMakeFiles/install/strip.dir
+/home/antique/Desktop/gui/node_editor/cmake-build-debug/lib/EventBus/lib/CMakeFiles/EventBus.dir
+/home/antique/Desktop/gui/node_editor/cmake-build-debug/lib/EventBus/lib/CMakeFiles/edit_cache.dir
+/home/antique/Desktop/gui/node_editor/cmake-build-debug/lib/EventBus/lib/CMakeFiles/rebuild_cache.dir
+/home/antique/Desktop/gui/node_editor/cmake-build-debug/lib/EventBus/lib/CMakeFiles/list_install_components.dir
+/home/antique/Desktop/gui/node_editor/cmake-build-debug/lib/EventBus/lib/CMakeFiles/install.dir
+/home/antique/Desktop/gui/node_editor/cmake-build-debug/lib/EventBus/lib/CMakeFiles/install/local.dir
+/home/antique/Desktop/gui/node_editor/cmake-build-debug/lib/EventBus/lib/CMakeFiles/install/strip.dir
+/home/antique/Desktop/gui/node_editor/cmake-build-debug/lib/EventBus/lib/CMakeFiles/EventBus_autogen_timestamp_deps.dir
+/home/antique/Desktop/gui/node_editor/cmake-build-debug/lib/EventBus/lib/CMakeFiles/EventBus_autogen.dir

@@ -15,7 +15,7 @@ struct MapNode {
     std::string nodeId;
     Position position;
 
-    MapNode() : position(0, 0) {};
+    MapNode() = default;
     MapNode(std::string id, const Position pos) : nodeId(std::move(id)), position(pos) {};
 };
 

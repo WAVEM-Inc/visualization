@@ -15,4 +15,8 @@ struct Path {
     std::vector<Node> nodelist;
 };
 
+void to_json(nlohmann::json& j, const Path& p);
+
+void from_json(const nlohmann::json& j, Path& p);
+
 #endif //NODE_EDITOR_PATH_H

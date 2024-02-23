@@ -9,6 +9,19 @@
             height: 100%;
         }
 
+        .controls {
+            border-radius: 25px; /* 테두리를 둥글게 합니다 */
+            width: 300px; /* 넓이를 200px로 설정합니다 */
+            height: 40px; /* 높이를 50px로 설정합니다 */
+            font-size: 16px; /* 텍스트 사이즈를 16px로 설정합니다 */
+            padding-left: 20px; /* 내부 왼쪽 여백 추가로 입력 텍스트와 테두리 간 간격을 조정합니다 */
+            border: 1px solid #ccc; /* 테두리 색상을 설정합니다, 필요에 따라 조정 가능 */
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3); /* 약간의 그림자 효과를 추가합니다 */
+            margin-top: 10px; /* 상단 여백을 추가합니다 */
+            margin-right: 10px;
+            outline: none; /* 입력 필드 선택 시 나타나는 외곽선을 제거합니다 */
+        }
+
         html,
         body {
             height: 100%;
@@ -18,9 +31,14 @@
     </style>
 
     <script type="text/javascript" src="qrc:///qtwebchannel/qwebchannel.js"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDDqjcUU8O-ZdGy4Q2Wl0n1SlM78WTA5xA&libraries=places&callback=initMap"></script>
     <script>
         let map;
         let coordinateHandler;
+        let infoWindow;
+
+        let mapNodeJsonData;
+        let markers = [];
 
         async function initMap() {
             //@ts-ignore
@@ -29,52 +47,135 @@
             map = new Map(document.getElementById("map"), {
                 center: {lat: 37.392605, lng: 126.938820},
                 zoom: 10,
+                mapId: '7f4e79d00bc82231',
+            });
+
+            infoWindow = new google.maps.InfoWindow({
+                content: "",
+                disableAutoPan: true,
             });
 
             new QWebChannel(qt.webChannelTransport, function (channel) {
-               coordinateHandler = channel.objects.coordinateHandler;
+                coordinateHandler = channel.objects.coordinateHandler;
 
-               map.addListener('click', function (e) {
-                   let lat = e.latLng.lat();
-                   let lng = e.latLng.lng();
+                map.addListener('click', function (e) {
+                    let lat = e.latLng.lat();
+                    let lng = e.latLng.lng();
 
-                   coordinateHandler.onClickEvent(lat, lng);
-               });
+                    coordinateHandler.onClickEvent(lat, lng);
+                });
+            });
+
+            initAutocomplete();
+        }
+
+        function initAutocomplete() {
+            // 검색창 UI 요소를 생성하고 지도에 연결합니다.
+            const input = document.getElementById("pac-input");
+            const searchBox = new google.maps.places.SearchBox(input);
+
+            // 검색창을 지도의 상단 왼쪽에 배치합니다.
+            map.controls[google.maps.ControlPosition.TOP_RIGHT].push(input);
+
+            // 지도의 뷰포트가 변경될 때마다 SearchBox 결과의 범위를 현재 지도 뷰포트로 설정합니다.
+            map.addListener("bounds_changed", () => {
+                searchBox.setBounds(map.getBounds());
+            });
+
+            // 사용자가 검색 결과 중 하나를 선택했을 때 발생하는 이벤트를 처리합니다.
+            searchBox.addListener("places_changed", () => {
+                const places = searchBox.getPlaces();
+
+                if (places.length == 0) {
+                    return;
+                }
+
+                // 각 장소에 대한 위치 정보를 가져와 지도의 뷰포트를 업데이트합니다.
+                const bounds = new google.maps.LatLngBounds();
+                places.forEach((place) => {
+                    if (!place.geometry || !place.geometry.location) {
+                        console.log("Returned place contains no geometry");
+                        return;
+                    }
+
+                    if (place.geometry.viewport) {
+                        // 장소가 viewport 정보를 포함하고 있다면, 해당 viewport를 사용합니다.
+                        bounds.union(place.geometry.viewport);
+                    } else {
+                        // viewport 정보가 없다면, 위치 정보를 직접 사용하여 bounds를 확장합니다.
+                        bounds.extend(place.geometry.location);
+                    }
+                });
+                map.fitBounds(bounds);
+            });
+        }
+
+        async function updateMarkers(jsonData) {
+            // JSON 데이터를 파싱합니다.
+            const parsedData = JSON.parse(jsonData);
+
+            // 기존 마커들을 검사하고, 필요없는 마커는 지도에서 제거합니다.
+            Object.keys(markers).forEach(key => {
+                if (!parsedData.hasOwnProperty(key)) {
+                    markers[key].setMap(null); // 지도에서 마커 제거
+                    delete markers[key]; // 마커 객체에서 삭제
+                }
+            });
+
+            // JSON 객체의 각 항목(키와 값 쌍)을 반복 처리하고, 새로운 마커를 추가하거나 기존 마커를 업데이트합니다.
+            Object.keys(parsedData).forEach(key => {
+                const item = parsedData[key];
+                const newPosition = new google.maps.LatLng(item.latitude, item.longitude);
+
+                // 마커가 이미 존재하는지 확인합니다.
+                if (markers[key]) {
+                    // 마커의 현재 위치를 가져옵니다.
+                    const currentPosition = markers[key].getPosition();
+
+                    // 마커의 위치가 변경되었는지 확인합니다.
+                    if (!currentPosition.equals(newPosition)) {
+                        // 위치가 변경되었으면, 마커의 위치를 업데이트합니다.
+                        markers[key].setPosition(newPosition);
+                    }
+                    // 위치가 변경되지 않았다면, 업데이트를 수행하지 않습니다.
+                } else {
+                    // 새로운 마커를 생성하고, 이벤트 리스너를 추가합니다.
+                    const marker = new google.maps.Marker({
+                        map: map,
+                        position: newPosition,
+                        draggable: true
+                    });
+
+                    marker.addListener("click", () => {
+                        const currentPos = marker.getPosition();
+                        const text = `NodeID: ${key}<br>` +
+                            `latitude: ${currentPos.lat()}, longitude: ${currentPos.lng()}`;
+                        infoWindow.setContent(text);
+                        infoWindow.open(map, marker);
+                    });
+
+                    marker.addListener('dragend', function (event) {
+                        // 드래그 종료 시 새 위치로 업데이트합니다.
+                        const newDragPosition = event.latLng;
+                        markers[key].setPosition(newDragPosition);
+                        // 새 위치 정보를 처리하는 핸들러에 전달합니다.
+                        coordinateHandler.onDragendEvent(key, newDragPosition.lat(), newDragPosition.lng());
+                    });
+
+                    // 마커 객체에 마커를 저장합니다.
+                    markers[key] = marker;
+                }
             });
         }
     </script>
 </head>
 <body>
 <div id="map"></div>
-<!-- prettier-ignore -->
-
-<script>
-    (g => {
-        var h, a, k, p = "The Google Maps JavaScript API", c = "google", l = "importLibrary", q = "__ib__",
-            m = document,
-            b = window;
-        b = b[c] || (b[c] = {});
-        var d = b.maps || (b.maps = {}), r = new Set, e = new URLSearchParams,
-            u = () => h || (h = new Promise(async (f, n) => {
-                await (a = m.createElement("script"));
-                e.set("libraries", [...r] + "");
-                for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]);
-                e.set("callback", c + ".maps." + q);
-                a.src = `https://maps.${c}apis.com/maps/api/js?` + e;
-                d[q] = f;
-                a.onerror = () => h = n(Error(p + " could not load."));
-                a.nonce = m.querySelector("script[nonce]")?.nonce || "";
-                m.head.append(a)
-            }));
-        d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n))
-    })
-    ({key: "AIzaSyDDqjcUU8O-ZdGy4Q2Wl0n1SlM78WTA5xA", v: "weekly"});
-
-    initMap();
-</script>
-
-<script>
-
-</script>
+<input
+        id="pac-input"
+        class="controls"
+        type="text"
+        placeholder="Search Box"
+/>
 </body>
 </html>

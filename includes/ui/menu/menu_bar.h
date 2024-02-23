@@ -16,7 +16,16 @@ public:
 protected:
     void initializeStyleSheet();
 
+    static bool saveFile(const QString &filePath, const QString &textData);
+
 private:
+    void onNewFile();
+
+    void onOpenFile();
+
+    void onSaveFile();
+
+    void onSaveFileAs();
 
 };
 

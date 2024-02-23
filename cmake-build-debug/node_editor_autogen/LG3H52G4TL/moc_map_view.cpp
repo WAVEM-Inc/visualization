@@ -21,6 +21,78 @@
 QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
+struct qt_meta_stringdata_MapNodeVectorListener_t {
+    QByteArrayData data[1];
+    char stringdata0[22];
+};
+#define QT_MOC_LITERAL(idx, ofs, len) \
+    Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
+    qptrdiff(offsetof(qt_meta_stringdata_MapNodeVectorListener_t, stringdata0) + ofs \
+        - idx * sizeof(QByteArrayData)) \
+    )
+static const qt_meta_stringdata_MapNodeVectorListener_t qt_meta_stringdata_MapNodeVectorListener = {
+    {
+QT_MOC_LITERAL(0, 0, 21) // "MapNodeVectorListener"
+
+    },
+    "MapNodeVectorListener"
+};
+#undef QT_MOC_LITERAL
+
+static const uint qt_meta_data_MapNodeVectorListener[] = {
+
+ // content:
+       8,       // revision
+       0,       // classname
+       0,    0, // classinfo
+       0,    0, // methods
+       0,    0, // properties
+       0,    0, // enums/sets
+       0,    0, // constructors
+       0,       // flags
+       0,       // signalCount
+
+       0        // eod
+};
+
+void MapNodeVectorListener::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+{
+    (void)_o;
+    (void)_id;
+    (void)_c;
+    (void)_a;
+}
+
+QT_INIT_METAOBJECT const QMetaObject MapNodeVectorListener::staticMetaObject = { {
+    QMetaObject::SuperData::link<QObject::staticMetaObject>(),
+    qt_meta_stringdata_MapNodeVectorListener.data,
+    qt_meta_data_MapNodeVectorListener,
+    qt_static_metacall,
+    nullptr,
+    nullptr
+} };
+
+
+const QMetaObject *MapNodeVectorListener::metaObject() const
+{
+    return QObject::d_ptr->metaObject ? QObject::d_ptr->dynamicMetaObject() : &staticMetaObject;
+}
+
+void *MapNodeVectorListener::qt_metacast(const char *_clname)
+{
+    if (!_clname) return nullptr;
+    if (!strcmp(_clname, qt_meta_stringdata_MapNodeVectorListener.stringdata0))
+        return static_cast<void*>(this);
+    if (!strcmp(_clname, "Observer<std::map<std::string,Position>>"))
+        return static_cast< Observer<std::map<std::string,Position>>*>(this);
+    return QObject::qt_metacast(_clname);
+}
+
+int MapNodeVectorListener::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+{
+    _id = QObject::qt_metacall(_c, _id, _a);
+    return _id;
+}
 struct qt_meta_stringdata_MapView_t {
     QByteArrayData data[1];
     char stringdata0[8];

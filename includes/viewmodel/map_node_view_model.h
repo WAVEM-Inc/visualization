@@ -7,11 +7,23 @@
 
 
 #include "model/MapNode.h"
-#include "patterns/observer/subject.h"
+#include "utils/patterns/observer/subject.h"
+#include <iostream>
 
-class MapNodeViewModel : public Subject<MapNode>, public Singleton<MapNodeViewModel> {
+using MAP_NODES = std::shared_ptr<Subject<std::map<std::string, Position>>>;
+class MapNodeViewModel : public Singleton<MapNodeViewModel> {
     friend class Singleton<MapNodeViewModel>;
 
+public:
+    MapNodeViewModel();
+
+    MAP_NODES mapNodes();
+
+    void add_map_node(std::string nodeId, Position position);
+
+    void edit_map_node(std::string nodeId, Position position);
+private:
+    MAP_NODES m_mapNodes_ptr;
 };
 
 

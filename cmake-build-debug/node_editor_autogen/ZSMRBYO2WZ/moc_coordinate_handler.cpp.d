@@ -5,9 +5,9 @@
   /home/antique/Desktop/gui/node_editor/includes/model/Node.h \
   /home/antique/Desktop/gui/node_editor/includes/model/Position.h \
   /home/antique/Desktop/gui/node_editor/includes/model/SensingRange.h \
-  /home/antique/Desktop/gui/node_editor/includes/patterns/observer/observer.h \
-  /home/antique/Desktop/gui/node_editor/includes/patterns/observer/singleton.h \
-  /home/antique/Desktop/gui/node_editor/includes/patterns/observer/subject.h \
+  /home/antique/Desktop/gui/node_editor/includes/utils/patterns/observer/observer.h \
+  /home/antique/Desktop/gui/node_editor/includes/utils/patterns/observer/subject.h \
+  /home/antique/Desktop/gui/node_editor/includes/utils/patterns/singleton/singleton.h \
   /home/antique/Desktop/gui/node_editor/includes/viewmodel/map_node_view_model.h \
   /usr/include/asm-generic/errno-base.h \
   /usr/include/asm-generic/errno.h \
