@@ -11,28 +11,29 @@
 #include "model/Node.h"
 #include "model/MapNode.h"
 #include "viewmodel/map_node_view_model.h"
+#include "utils/file/file_manager.h"
 
 class CoordinateHandler : public QObject {
 Q_OBJECT
 
 public:
-    explicit CoordinateHandler(QObject *parent = nullptr) : QObject(parent) {
-
-    }
+    explicit CoordinateHandler(QObject *parent = nullptr) : QObject(parent) {}
 
 public slots:
 
     Q_INVOKABLE void onClickEvent(double lat, double lng) {
-        char buffer[100];
-        count++;
+        if (FileManager::Instance().savableState()->value()) {
+            char buffer[100];
+            count++;
 
-        snprintf(buffer, sizeof(buffer), "test%d", count);
-        MapNode node(std::string(buffer), Position(lat, lng));
-        MapNodeViewModel::Instance().add_map_node(std::string(buffer), Position(lat, lng));
-/*
-        nlohmann::json json = MapNodeViewModel::Instance().mapNodes()->value();
-        std::cout << json.dump(4) << "\n";
-        std::cout << "------------------------------------------------------" << "\n";*/
+            snprintf(buffer, sizeof(buffer), "test%d", count);
+            MapNodeViewModel::Instance().add_map_node(std::string(buffer), Position(lat, lng));
+        }
+    }
+
+    Q_INVOKABLE void onRightClickEvent(QString nodeId) {
+        std::cout << nodeId.toStdString() << "\n";
+        MapNodeViewModel::Instance().remove_map_node(nodeId.toStdString());
     }
 
     Q_INVOKABLE void onDragendEvent(QString nodeId, double lat, double lng) {

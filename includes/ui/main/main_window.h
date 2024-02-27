@@ -11,6 +11,7 @@
 #include <QMainWindow>
 #include "map_view.h"
 #include "ui/menu/menu_bar.h"
+#include "ui/editor/route_editor.h"
 
 class MainWindow : public QMainWindow {
 Q_OBJECT
@@ -23,6 +24,7 @@ protected:
 private:
     MapView *m_mapView_ptr;
     MenuBar *m_menubar_ptr;
+    RouteEditor *m_routeEditor_ptr;
 };
 
 

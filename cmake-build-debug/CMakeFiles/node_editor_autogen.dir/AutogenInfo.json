@@ -167,6 +167,12 @@
 			null
 		],
 		[
+			"/home/antique/Desktop/gui/node_editor/includes/ui/editor/route_editor.h",
+			"MU",
+			"MLWDO5DTUM/moc_route_editor.cpp",
+			null
+		],
+		[
 			"/home/antique/Desktop/gui/node_editor/includes/ui/main/main_window.h",
 			"MU",
 			"I2L42U6DNQ/moc_main_window.cpp",
@@ -197,9 +203,21 @@
 			null
 		],
 		[
-			"/home/antique/Desktop/gui/node_editor/includes/utils/file_manager.h",
+			"/home/antique/Desktop/gui/node_editor/includes/utils/file/file_manager.h",
 			"MU",
-			"ZSMRBYO2WZ/moc_file_manager.cpp",
+			"VPFWJMWI75/moc_file_manager.cpp",
+			null
+		],
+		[
+			"/home/antique/Desktop/gui/node_editor/includes/utils/file/route_file_reader.h",
+			"MU",
+			"VPFWJMWI75/moc_route_file_reader.cpp",
+			null
+		],
+		[
+			"/home/antique/Desktop/gui/node_editor/includes/utils/file/route_file_writer.h",
+			"MU",
+			"VPFWJMWI75/moc_route_file_writer.cpp",
 			null
 		],
 		[
@@ -225,6 +243,18 @@
 			"MU",
 			"QQ6FFKTEXS/moc_map_node_view_model.cpp",
 			null
+		],
+		[
+			"/home/antique/Desktop/gui/node_editor/includes/viewmodel/node_view_model.h",
+			"MU",
+			"QQ6FFKTEXS/moc_node_view_model.cpp",
+			null
+		],
+		[
+			"/home/antique/Desktop/gui/node_editor/includes/viewmodel/path_view_model.h",
+			"MU",
+			"QQ6FFKTEXS/moc_path_view_model.cpp",
+			null
 		]
 	],
 	"HEADER_EXTENSIONS" : [ "h", "hh", "h++", "hm", "hpp", "hxx", "in", "txx" ],
@@ -232,7 +262,6 @@
 	"MOC_COMPILATION_FILE" : "/home/antique/Desktop/gui/node_editor/cmake-build-debug/node_editor_autogen/mocs_compilation.cpp",
 	"MOC_DEFINITIONS" : 
 	[
-		"EVENTBUS_DEBUG=1",
 		"JSON_DIAGNOSTICS=0",
 		"JSON_USE_IMPLICIT_CONVERSIONS=1",
 		"QT_CORE_LIB",
@@ -262,7 +291,6 @@
 		"/home/antique/Desktop/gui/node_editor/includes",
 		"/home/antique/Desktop/gui/node_editor/includes/ui/map",
 		"/home/antique/Desktop/gui/node_editor/cmake-build-debug/_deps/json-src/single_include",
-		"/home/antique/Desktop/gui/node_editor/lib/EventBus/lib/src",
 		"/usr/include/x86_64-linux-gnu/qt5",
 		"/usr/include/x86_64-linux-gnu/qt5/QtCore",
 		"/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++",
@@ -346,6 +374,11 @@
 			null
 		],
 		[
+			"/home/antique/Desktop/gui/node_editor/src/ui/editor/route_editor.cpp",
+			"MU",
+			null
+		],
+		[
 			"/home/antique/Desktop/gui/node_editor/src/ui/main/main_window.cpp",
 			"MU",
 			null
@@ -361,12 +394,32 @@
 			null
 		],
 		[
-			"/home/antique/Desktop/gui/node_editor/src/utils/file_manager.cpp",
+			"/home/antique/Desktop/gui/node_editor/src/utils/file/file_manager.cpp",
+			"MU",
+			null
+		],
+		[
+			"/home/antique/Desktop/gui/node_editor/src/utils/file/route_file_reader.cpp",
+			"MU",
+			null
+		],
+		[
+			"/home/antique/Desktop/gui/node_editor/src/utils/file/route_file_writer.cpp",
 			"MU",
 			null
 		],
 		[
 			"/home/antique/Desktop/gui/node_editor/src/viewmodel/map_node_view_model.cpp",
+			"MU",
+			null
+		],
+		[
+			"/home/antique/Desktop/gui/node_editor/src/viewmodel/node_view_model.cpp",
+			"MU",
+			null
+		],
+		[
+			"/home/antique/Desktop/gui/node_editor/src/viewmodel/path_view_model.cpp",
 			"MU",
 			null
 		]

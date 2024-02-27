@@ -18,10 +18,6 @@ public:
 protected:
     void initializeStyleSheet();
 
-    static bool saveFile(const QString &filePath, const RouteFile &routeFileData);
-
-    static bool loadFile(const QString &filePath);
-
 private:
     void onNewFile();
 

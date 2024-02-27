@@ -10,6 +10,7 @@
 
 #include "map_view.h"
 #include "utils/coordinate_handler.h"
+#include "utils/file/file_manager.h"
 
 MapView::MapView(QWidget *parent) :
         QWidget(parent),
@@ -70,4 +71,5 @@ void MapNodeVectorListener::update(std::map<std::string, Position> data) {
     } else {
         std::cout << "Page is not loaded...!" << "\n";
     }
+
 }

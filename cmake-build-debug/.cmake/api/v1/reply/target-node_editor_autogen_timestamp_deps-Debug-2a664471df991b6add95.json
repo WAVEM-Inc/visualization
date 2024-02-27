@@ -14,12 +14,6 @@
 			}
 		]
 	},
-	"dependencies" : 
-	[
-		{
-			"id" : "EventBus::@ceda6a1a97b94961b0b7"
-		}
-	],
 	"id" : "node_editor_autogen_timestamp_deps::@6890427a1f51a3e7e1df",
 	"isGeneratorProvided" : true,
 	"name" : "node_editor_autogen_timestamp_deps",

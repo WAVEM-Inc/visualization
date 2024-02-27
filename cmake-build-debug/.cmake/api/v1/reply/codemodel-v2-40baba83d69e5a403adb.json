@@ -8,11 +8,10 @@
 					"build" : ".",
 					"childIndexes" : 
 					[
-						1,
-						2
+						1
 					],
 					"hasInstallRule" : true,
-					"jsonFile" : "directory-.-Debug-bc85278201636b0db42a.json",
+					"jsonFile" : "directory-.-Debug-10dbbc10c391ba0b39de.json",
 					"minimumCMakeVersion" : 
 					{
 						"string" : "3.27"
@@ -21,9 +20,9 @@
 					"source" : ".",
 					"targetIndexes" : 
 					[
-						3,
-						4,
-						5
+						0,
+						1,
+						2
 					]
 				},
 				{
@@ -36,24 +35,6 @@
 					"parentIndex" : 0,
 					"projectIndex" : 1,
 					"source" : "cmake-build-debug/_deps/json-src"
-				},
-				{
-					"build" : "lib/EventBus/lib",
-					"hasInstallRule" : true,
-					"jsonFile" : "directory-lib.EventBus.lib-Debug-a85b712c30711bf3af5a.json",
-					"minimumCMakeVersion" : 
-					{
-						"string" : "3.11"
-					},
-					"parentIndex" : 0,
-					"projectIndex" : 2,
-					"source" : "lib/EventBus/lib",
-					"targetIndexes" : 
-					[
-						0,
-						1,
-						2
-					]
 				}
 			],
 			"name" : "Debug",
@@ -62,8 +43,7 @@
 				{
 					"childIndexes" : 
 					[
-						1,
-						2
+						1
 					],
 					"directoryIndexes" : 
 					[
@@ -72,9 +52,9 @@
 					"name" : "node_editor",
 					"targetIndexes" : 
 					[
-						3,
-						4,
-						5
+						0,
+						1,
+						2
 					]
 				},
 				{
@@ -84,49 +64,14 @@
 					],
 					"name" : "nlohmann_json",
 					"parentIndex" : 0
-				},
-				{
-					"directoryIndexes" : 
-					[
-						2
-					],
-					"name" : "EventBus",
-					"parentIndex" : 0,
-					"targetIndexes" : 
-					[
-						0,
-						1,
-						2
-					]
 				}
 			],
 			"targets" : 
 			[
 				{
-					"directoryIndex" : 2,
-					"id" : "EventBus::@ceda6a1a97b94961b0b7",
-					"jsonFile" : "target-EventBus-Debug-b4ceb24f53ee22906acc.json",
-					"name" : "EventBus",
-					"projectIndex" : 2
-				},
-				{
-					"directoryIndex" : 2,
-					"id" : "EventBus_autogen::@ceda6a1a97b94961b0b7",
-					"jsonFile" : "target-EventBus_autogen-Debug-d8569f0a53c6224b34d5.json",
-					"name" : "EventBus_autogen",
-					"projectIndex" : 2
-				},
-				{
-					"directoryIndex" : 2,
-					"id" : "EventBus_autogen_timestamp_deps::@ceda6a1a97b94961b0b7",
-					"jsonFile" : "target-EventBus_autogen_timestamp_deps-Debug-13da00d0e73307e706f6.json",
-					"name" : "EventBus_autogen_timestamp_deps",
-					"projectIndex" : 2
-				},
-				{
 					"directoryIndex" : 0,
 					"id" : "node_editor::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-node_editor-Debug-7f37a68cc1b4f62cd015.json",
+					"jsonFile" : "target-node_editor-Debug-07740be8b67a8f05b3f4.json",
 					"name" : "node_editor",
 					"projectIndex" : 0
 				},
@@ -140,7 +85,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "node_editor_autogen_timestamp_deps::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-node_editor_autogen_timestamp_deps-Debug-338b1e3e5248495d5c06.json",
+					"jsonFile" : "target-node_editor_autogen_timestamp_deps-Debug-2a664471df991b6add95.json",
 					"name" : "node_editor_autogen_timestamp_deps",
 					"projectIndex" : 0
 				}

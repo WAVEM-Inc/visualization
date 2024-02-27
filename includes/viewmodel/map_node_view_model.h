@@ -19,9 +19,13 @@ public:
 
     MAP_NODES mapNodes();
 
-    void add_map_node(std::string nodeId, Position position);
+    void update_map_nodes(const std::vector<MapNode>& nodes);
 
-    void edit_map_node(std::string nodeId, Position position);
+    void add_map_node(const std::string& nodeId, Position position);
+
+    void remove_map_node(const std::string& nodeId);
+
+    void edit_map_node(const std::string& nodeId, Position position);
 private:
     MAP_NODES m_mapNodes_ptr;
 };

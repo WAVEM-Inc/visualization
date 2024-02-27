@@ -9,13 +9,17 @@
 MainWindow::MainWindow(QWidget *parent) :
 QMainWindow(parent),
 m_mapView_ptr(new MapView(this)),
-m_menubar_ptr(new MenuBar(this)) {
+m_menubar_ptr(new MenuBar(this)),
+m_routeEditor_ptr(new RouteEditor(this)) {
 
     this->setMenuBar(m_menubar_ptr);
-    this->setCentralWidget(m_mapView_ptr);
+    this->setCentralWidget(m_mapView_ptr); // m_mapView_ptr를 centralWidget으로 설정
+//    m_routeEditor_ptr->resize(300, 400);
 }
 
 void MainWindow::resizeEvent(QResizeEvent *event) {
-    QWidget::resizeEvent(event);
-    m_mapView_ptr->resize(this->size());
+    QMainWindow::resizeEvent(event);
+
+    m_routeEditor_ptr->adjustSize();
+    m_routeEditor_ptr->move(0, this->height() - m_routeEditor_ptr->height());
 }

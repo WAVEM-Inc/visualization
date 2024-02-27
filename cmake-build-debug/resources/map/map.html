@@ -154,6 +154,10 @@
                         infoWindow.open(map, marker);
                     });
 
+                    marker.addListener("rightclick", () => {
+                        coordinateHandler.onRightClickEvent(key);
+                    });
+
                     marker.addListener('dragend', function (event) {
                         // 드래그 종료 시 새 위치로 업데이트합니다.
                         const newDragPosition = event.latLng;

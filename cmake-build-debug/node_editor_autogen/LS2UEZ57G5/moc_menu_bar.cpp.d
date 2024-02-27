@@ -1,6 +1,7 @@
 /home/antique/Desktop/gui/node_editor/cmake-build-debug/node_editor_autogen/LS2UEZ57G5/moc_menu_bar.cpp: /home/antique/Desktop/gui/node_editor/includes/ui/menu/menu_bar.h \
   /home/antique/Desktop/gui/node_editor/cmake-build-debug/node_editor_autogen/moc_predefs.h \
   /home/antique/Desktop/gui/node_editor/cmake-build-debug/_deps/json-src/single_include/nlohmann/json.hpp \
+  /home/antique/Desktop/gui/node_editor/includes/model/MapNode.h \
   /home/antique/Desktop/gui/node_editor/includes/model/Node.h \
   /home/antique/Desktop/gui/node_editor/includes/model/Path.h \
   /home/antique/Desktop/gui/node_editor/includes/model/Position.h \

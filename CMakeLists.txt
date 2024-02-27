@@ -46,9 +46,19 @@ add_executable(node_editor
         src/model/Node.cpp
         src/model/Path.cpp
         src/model/SensingRange.cpp
-        src/utils/file_manager.cpp
-        includes/utils/file_manager.h
+        src/utils/file/file_manager.cpp
+        includes/utils/file/file_manager.h
         includes/utils/events/FileEvents.h
+        src/utils/file/route_file_reader.cpp
+        includes/utils/file/route_file_reader.h
+        src/utils/file/route_file_writer.cpp
+        includes/utils/file/route_file_writer.h
+        src/ui/editor/route_editor.cpp
+        includes/ui/editor/route_editor.h
+        src/viewmodel/node_view_model.cpp
+        includes/viewmodel/node_view_model.h
+        src/viewmodel/path_view_model.cpp
+        includes/viewmodel/path_view_model.h
 )
 
 include(FetchContent)
@@ -60,8 +70,6 @@ FetchContent_Declare(
 )
 
 FetchContent_MakeAvailable(json)
-
-add_subdirectory(lib/EventBus/lib)
 
 file(COPY ${RESOURCE_DIR} DESTINATION ${CMAKE_BINARY_DIR})
 install(DIRECTORY ${RESOURCE_DIR} DESTINATION ${CMAKE_INSTALL_PREFIX})
@@ -79,6 +87,5 @@ target_link_libraries(node_editor
         Qt5::WebEngineWidgets
         Qt5::WebChannel
         nlohmann_json::nlohmann_json
-        Dexode::EventBus
 )
 

@@ -12,16 +12,21 @@ node_editor_autogen/timestamp: \
   /home/antique/Desktop/gui/node_editor/includes/model/Position.h \
   /home/antique/Desktop/gui/node_editor/includes/model/RouteFile.h \
   /home/antique/Desktop/gui/node_editor/includes/model/SensingRange.h \
+  /home/antique/Desktop/gui/node_editor/includes/ui/editor/route_editor.h \
   /home/antique/Desktop/gui/node_editor/includes/ui/main/main_window.h \
   /home/antique/Desktop/gui/node_editor/includes/ui/map/map_view.h \
   /home/antique/Desktop/gui/node_editor/includes/ui/menu/menu_bar.h \
   /home/antique/Desktop/gui/node_editor/includes/utils/coordinate_handler.h \
   /home/antique/Desktop/gui/node_editor/includes/utils/events/FileEvents.h \
-  /home/antique/Desktop/gui/node_editor/includes/utils/file_manager.h \
+  /home/antique/Desktop/gui/node_editor/includes/utils/file/file_manager.h \
+  /home/antique/Desktop/gui/node_editor/includes/utils/file/route_file_reader.h \
+  /home/antique/Desktop/gui/node_editor/includes/utils/file/route_file_writer.h \
   /home/antique/Desktop/gui/node_editor/includes/utils/patterns/observer/observer.h \
   /home/antique/Desktop/gui/node_editor/includes/utils/patterns/observer/subject.h \
   /home/antique/Desktop/gui/node_editor/includes/utils/patterns/singleton/singleton.h \
   /home/antique/Desktop/gui/node_editor/includes/viewmodel/map_node_view_model.h \
+  /home/antique/Desktop/gui/node_editor/includes/viewmodel/node_view_model.h \
+  /home/antique/Desktop/gui/node_editor/includes/viewmodel/path_view_model.h \
   /home/antique/Desktop/gui/node_editor/main.cpp \
   /home/antique/Desktop/gui/node_editor/src/model/Link.cpp \
   /home/antique/Desktop/gui/node_editor/src/model/MapNode.cpp \
@@ -30,11 +35,16 @@ node_editor_autogen/timestamp: \
   /home/antique/Desktop/gui/node_editor/src/model/Position.cpp \
   /home/antique/Desktop/gui/node_editor/src/model/RouteFile.cpp \
   /home/antique/Desktop/gui/node_editor/src/model/SensingRange.cpp \
+  /home/antique/Desktop/gui/node_editor/src/ui/editor/route_editor.cpp \
   /home/antique/Desktop/gui/node_editor/src/ui/main/main_window.cpp \
   /home/antique/Desktop/gui/node_editor/src/ui/map/map_view.cpp \
   /home/antique/Desktop/gui/node_editor/src/ui/menu/menu_bar.cpp \
-  /home/antique/Desktop/gui/node_editor/src/utils/file_manager.cpp \
+  /home/antique/Desktop/gui/node_editor/src/utils/file/file_manager.cpp \
+  /home/antique/Desktop/gui/node_editor/src/utils/file/route_file_reader.cpp \
+  /home/antique/Desktop/gui/node_editor/src/utils/file/route_file_writer.cpp \
   /home/antique/Desktop/gui/node_editor/src/viewmodel/map_node_view_model.cpp \
+  /home/antique/Desktop/gui/node_editor/src/viewmodel/node_view_model.cpp \
+  /home/antique/Desktop/gui/node_editor/src/viewmodel/path_view_model.cpp \
   /home/antique/clion-2023.3.2/bin/cmake/linux/x64/bin/cmake \
   /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/CMakeCInformation.cmake \
   /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/CMakeCXXInformation.cmake \
@@ -357,6 +367,7 @@ node_editor_autogen/timestamp: \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/QUrl \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/QVariant \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/QVector \
+  /usr/include/x86_64-linux-gnu/qt5/QtCore/qabstractitemmodel.h \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qalgorithms.h \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qarraydata.h \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qatomic.h \
@@ -381,6 +392,7 @@ node_editor_autogen/timestamp: \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qhash.h \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qhashfunctions.h \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qiodevice.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtCore/qitemselectionmodel.h \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qiterator.h \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qline.h \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qlist.h \
@@ -402,6 +414,7 @@ node_editor_autogen/timestamp: \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qrect.h \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qrefcount.h \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qregexp.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtCore/qregularexpression.h \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qscopedpointer.h \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qset.h \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qshareddata.h \
@@ -450,6 +463,7 @@ node_editor_autogen/timestamp: \
   /usr/include/x86_64-linux-gnu/qt5/QtGui/qtgui-config.h \
   /usr/include/x86_64-linux-gnu/qt5/QtGui/qtguiglobal.h \
   /usr/include/x86_64-linux-gnu/qt5/QtGui/qtransform.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtGui/qvalidator.h \
   /usr/include/x86_64-linux-gnu/qt5/QtGui/qwindowdefs.h \
   /usr/include/x86_64-linux-gnu/qt5/QtNetwork/QSslConfiguration \
   /usr/include/x86_64-linux-gnu/qt5/QtNetwork/QSslPreSharedKeyAuthenticator \
@@ -475,15 +489,39 @@ node_editor_autogen/timestamp: \
   /usr/include/x86_64-linux-gnu/qt5/QtWebEngineWidgets/qwebenginedownloaditem.h \
   /usr/include/x86_64-linux-gnu/qt5/QtWebEngineWidgets/qwebenginepage.h \
   /usr/include/x86_64-linux-gnu/qt5/QtWebEngineWidgets/qwebengineview.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QComboBox \
+  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QGridLayout \
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QMainWindow \
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QMenuBar \
+  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QPushButton \
+  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QTableWidget \
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QWidget \
+  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qabstractbutton.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qabstractitemdelegate.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qabstractitemview.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qabstractscrollarea.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qabstractslider.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qabstractspinbox.h \
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qaction.h \
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qactiongroup.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qboxlayout.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qcombobox.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qframe.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qgridlayout.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qlayout.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qlayoutitem.h \
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qmainwindow.h \
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qmenu.h \
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qmenubar.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qpushbutton.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qrubberband.h \
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qsizepolicy.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qslider.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qstyle.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qstyleoption.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qtabbar.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qtableview.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qtablewidget.h \
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qtabwidget.h \
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qtwidgets-config.h \
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qtwidgetsglobal.h \

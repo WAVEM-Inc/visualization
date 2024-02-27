@@ -3,8 +3,7 @@
 #include "utils/patterns/observer/subject.h"
 #include "model/MapNode.h"
 #include "viewmodel/map_node_view_model.h"
-#include "dexode/eventbus/Bus.hpp"
-#include "utils/file_manager.h"
+#include "utils/file/file_manager.h"
 
 class TestObserver : public Observer<std::map<std::string, Position>> {
     void update(std::map<std::string, Position> data) override {
@@ -13,9 +12,16 @@ class TestObserver : public Observer<std::map<std::string, Position>> {
     }
 };
 
+class FileObserver : public Observer<RouteFile> {
+    void update(RouteFile data) override {
+        nlohmann::json json = data;
+        std::cout << json.dump(4) << "\n";
+    }
+};
+
 int main(int argc, char *argv[]) {
-/*    std::shared_ptr<TestObserver> observer = std::make_shared<TestObserver>();
-    MapNodeViewModel::Instance().mapNodes()->attach(observer);*/
+/*    std::shared_ptr<FileObserver> observer = std::make_shared<FileObserver>();
+    FileManager::Instance().getCacheData()->attach(observer);*/
 
     QApplication app(argc, argv);
 

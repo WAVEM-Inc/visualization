@@ -44,7 +44,7 @@
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 75,
+				"line" : 83,
 				"parent" : 0
 			},
 			{
@@ -148,13 +148,13 @@
 			{
 				"command" : 8,
 				"file" : 0,
-				"line" : 68,
+				"line" : 76,
 				"parent" : 0
 			},
 			{
 				"command" : 9,
 				"file" : 0,
-				"line" : 70,
+				"line" : 78,
 				"parent" : 0
 			}
 		]
@@ -174,10 +174,6 @@
 			],
 			"defines" : 
 			[
-				{
-					"backtrace" : 2,
-					"define" : "EVENTBUS_DEBUG=1"
-				},
 				{
 					"backtrace" : 2,
 					"define" : "JSON_DIAGNOSTICS=0"
@@ -256,10 +252,6 @@
 				{
 					"backtrace" : 2,
 					"path" : "/home/antique/Desktop/gui/node_editor/cmake-build-debug/_deps/json-src/single_include"
-				},
-				{
-					"backtrace" : 2,
-					"path" : "/home/antique/Desktop/gui/node_editor/lib/EventBus/lib/src"
 				},
 				{
 					"backtrace" : 0,
@@ -343,7 +335,6 @@
 				"backtraces" : 
 				[
 					2,
-					2,
 					2
 				],
 				"standard" : "17"
@@ -363,16 +354,17 @@
 				25,
 				26,
 				27,
-				28
+				28,
+				31,
+				33,
+				35,
+				37,
+				39
 			]
 		}
 	],
 	"dependencies" : 
 	[
-		{
-			"backtrace" : 2,
-			"id" : "EventBus::@ceda6a1a97b94961b0b7"
-		},
 		{
 			"id" : "node_editor_autogen_timestamp_deps::@6890427a1f51a3e7e1df"
 		},
@@ -397,11 +389,6 @@
 			{
 				"backtrace" : 2,
 				"fragment" : "/usr/lib/x86_64-linux-gnu/libQt5WebEngineWidgets.so.5.15.9",
-				"role" : "libraries"
-			},
-			{
-				"backtrace" : 2,
-				"fragment" : "lib/EventBus/lib/libEventBus.a",
 				"role" : "libraries"
 			},
 			{
@@ -488,7 +475,12 @@
 				25,
 				26,
 				27,
-				28
+				28,
+				31,
+				33,
+				35,
+				37,
+				39
 			]
 		},
 		{
@@ -511,21 +503,26 @@
 				19,
 				21,
 				29,
-				30
+				30,
+				32,
+				34,
+				36,
+				38,
+				40
 			]
 		},
 		{
 			"name" : "",
 			"sourceIndexes" : 
 			[
-				31
+				41
 			]
 		},
 		{
 			"name" : "CMake Rules",
 			"sourceIndexes" : 
 			[
-				32
+				42
 			]
 		}
 	],
@@ -688,17 +685,72 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "src/utils/file_manager.cpp",
+			"path" : "src/utils/file/file_manager.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
-			"path" : "includes/utils/file_manager.h",
+			"path" : "includes/utils/file/file_manager.h",
 			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 1,
 			"path" : "includes/utils/events/FileEvents.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/utils/file/route_file_reader.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "includes/utils/file/route_file_reader.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/utils/file/route_file_writer.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "includes/utils/file/route_file_writer.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/ui/editor/route_editor.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "includes/ui/editor/route_editor.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/viewmodel/node_view_model.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "includes/viewmodel/node_view_model.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/viewmodel/path_view_model.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "includes/viewmodel/path_view_model.h",
 			"sourceGroupIndex" : 1
 		},
 		{

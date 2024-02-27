@@ -3,8 +3,11 @@
   /home/antique/Desktop/gui/node_editor/cmake-build-debug/_deps/json-src/single_include/nlohmann/json.hpp \
   /home/antique/Desktop/gui/node_editor/includes/model/MapNode.h \
   /home/antique/Desktop/gui/node_editor/includes/model/Node.h \
+  /home/antique/Desktop/gui/node_editor/includes/model/Path.h \
   /home/antique/Desktop/gui/node_editor/includes/model/Position.h \
+  /home/antique/Desktop/gui/node_editor/includes/model/RouteFile.h \
   /home/antique/Desktop/gui/node_editor/includes/model/SensingRange.h \
+  /home/antique/Desktop/gui/node_editor/includes/utils/file/file_manager.h \
   /home/antique/Desktop/gui/node_editor/includes/utils/patterns/observer/observer.h \
   /home/antique/Desktop/gui/node_editor/includes/utils/patterns/observer/subject.h \
   /home/antique/Desktop/gui/node_editor/includes/utils/patterns/singleton/singleton.h \

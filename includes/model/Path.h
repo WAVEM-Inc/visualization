@@ -6,6 +6,7 @@
 #define NODE_EDITOR_PATH_H
 
 #include <iostream>
+#include <utility>
 #include "Node.h"
 #include "vector"
 
@@ -13,6 +14,8 @@ struct Path {
     std::string id;
     std::string name;
     std::vector<Node> nodelist;
+
+    Path() = default;
 };
 
 void to_json(nlohmann::json& j, const Path& p);
