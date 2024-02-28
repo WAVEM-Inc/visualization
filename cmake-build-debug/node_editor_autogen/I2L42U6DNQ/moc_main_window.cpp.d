@@ -1,12 +1,12 @@
 /home/antique/Desktop/gui/node_editor/cmake-build-debug/node_editor_autogen/I2L42U6DNQ/moc_main_window.cpp: /home/antique/Desktop/gui/node_editor/includes/ui/main/main_window.h \
   /home/antique/Desktop/gui/node_editor/cmake-build-debug/node_editor_autogen/moc_predefs.h \
   /home/antique/Desktop/gui/node_editor/cmake-build-debug/_deps/json-src/single_include/nlohmann/json.hpp \
-  /home/antique/Desktop/gui/node_editor/includes/model/MapNode.h \
-  /home/antique/Desktop/gui/node_editor/includes/model/Node.h \
-  /home/antique/Desktop/gui/node_editor/includes/model/Path.h \
-  /home/antique/Desktop/gui/node_editor/includes/model/Position.h \
-  /home/antique/Desktop/gui/node_editor/includes/model/RouteFile.h \
-  /home/antique/Desktop/gui/node_editor/includes/model/SensingRange.h \
+  /home/antique/Desktop/gui/node_editor/includes/struct/MapNode.h \
+  /home/antique/Desktop/gui/node_editor/includes/struct/Node.h \
+  /home/antique/Desktop/gui/node_editor/includes/struct/Path.h \
+  /home/antique/Desktop/gui/node_editor/includes/struct/Position.h \
+  /home/antique/Desktop/gui/node_editor/includes/struct/RouteFile.h \
+  /home/antique/Desktop/gui/node_editor/includes/struct/SensingRange.h \
   /home/antique/Desktop/gui/node_editor/includes/ui/editor/node_editor.h \
   /home/antique/Desktop/gui/node_editor/includes/ui/editor/route_editor.h \
   /home/antique/Desktop/gui/node_editor/includes/ui/map/map_view.h \

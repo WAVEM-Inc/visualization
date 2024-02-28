@@ -11,7 +11,7 @@
 #include <QPushButton>
 #include <QTableWidget>
 #include <QGridLayout>
-#include "model/RouteFile.h"
+#include "struct/RouteFile.h"
 #include "utils/patterns/observer/observer.h"
 
 class RouteEditor : public QWidget {

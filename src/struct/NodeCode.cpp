@@ -2,7 +2,7 @@
 // Created by antique on 24. 2. 27.
 //
 
-#include "model/NodeCode.h"
+#include "struct/NodeCode.h"
 
 void to_json(nlohmann::json& j, const NodeCode& nc) {
     j = nlohmann::json{

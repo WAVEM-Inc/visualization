@@ -6,7 +6,7 @@
 #define NODE_EDITOR_MAP_NODE_VIEW_MODEL_H
 
 
-#include "model/MapNode.h"
+#include "struct/MapNode.h"
 #include "utils/patterns/observer/subject.h"
 #include <iostream>
 

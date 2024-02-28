@@ -2,7 +2,7 @@
 // Created by antique on 24. 2. 20.
 //
 
-#include "model/MapNode.h"
+#include "struct/MapNode.h"
 
 void to_json(nlohmann::json& j, const MapNode& mapNode) {
     j = nlohmann::json{

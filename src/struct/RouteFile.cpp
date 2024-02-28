@@ -2,7 +2,7 @@
 // Created by antique on 24. 2. 22.
 //
 
-#include "model/RouteFile.h"
+#include "struct/RouteFile.h"
 
 void to_json(nlohmann::json& j, const RouteFile& rf) {
     j = nlohmann::json{

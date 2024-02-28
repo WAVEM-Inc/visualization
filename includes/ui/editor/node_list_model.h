@@ -7,7 +7,7 @@
 
 
 #include <QAbstractListModel>
-#include "model/Node.h"
+#include "struct/Node.h"
 
 class NodeListModel : public QAbstractListModel {
 Q_OBJECT

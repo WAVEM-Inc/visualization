@@ -5,7 +5,7 @@
 #ifndef NODE_EDITOR_FILEEVENTS_H
 #define NODE_EDITOR_FILEEVENTS_H
 
-#include "model/RouteFile.h"
+#include "struct/RouteFile.h"
 
 namespace event {
 

@@ -6,7 +6,7 @@
 #define NODE_EDITOR_CODE_FILE_READER_H
 
 
-#include "model/NodeCode.h"
+#include "struct/NodeCode.h"
 
 class CodeFileReader {
 public:

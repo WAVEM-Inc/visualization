@@ -1,9 +1,9 @@
 /home/antique/Desktop/gui/node_editor/cmake-build-debug/node_editor_autogen/MLWDO5DTUM/moc_node_list_model.cpp: /home/antique/Desktop/gui/node_editor/includes/ui/editor/node_list_model.h \
   /home/antique/Desktop/gui/node_editor/cmake-build-debug/node_editor_autogen/moc_predefs.h \
   /home/antique/Desktop/gui/node_editor/cmake-build-debug/_deps/json-src/single_include/nlohmann/json.hpp \
-  /home/antique/Desktop/gui/node_editor/includes/model/Node.h \
-  /home/antique/Desktop/gui/node_editor/includes/model/Position.h \
-  /home/antique/Desktop/gui/node_editor/includes/model/SensingRange.h \
+  /home/antique/Desktop/gui/node_editor/includes/struct/Node.h \
+  /home/antique/Desktop/gui/node_editor/includes/struct/Position.h \
+  /home/antique/Desktop/gui/node_editor/includes/struct/SensingRange.h \
   /usr/include/asm-generic/errno-base.h \
   /usr/include/asm-generic/errno.h \
   /usr/include/assert.h \

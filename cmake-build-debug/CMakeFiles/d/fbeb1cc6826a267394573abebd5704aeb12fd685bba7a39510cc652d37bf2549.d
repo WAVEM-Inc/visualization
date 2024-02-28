@@ -5,15 +5,17 @@ node_editor_autogen/timestamp: \
   CMakeFiles/3.27.8/CMakeSystem.cmake \
   _deps/json-src/single_include/nlohmann/json.hpp \
   node_editor_autogen/moc_predefs.h \
-  /home/antique/Desktop/gui/node_editor/includes/model/FileInfo.h \
-  /home/antique/Desktop/gui/node_editor/includes/model/Link.h \
-  /home/antique/Desktop/gui/node_editor/includes/model/MapNode.h \
-  /home/antique/Desktop/gui/node_editor/includes/model/Node.h \
-  /home/antique/Desktop/gui/node_editor/includes/model/NodeCode.h \
-  /home/antique/Desktop/gui/node_editor/includes/model/Path.h \
-  /home/antique/Desktop/gui/node_editor/includes/model/Position.h \
-  /home/antique/Desktop/gui/node_editor/includes/model/RouteFile.h \
-  /home/antique/Desktop/gui/node_editor/includes/model/SensingRange.h \
+  /home/antique/Desktop/gui/node_editor/includes/model/file_info_model.h \
+  /home/antique/Desktop/gui/node_editor/includes/model/path_info_model.h \
+  /home/antique/Desktop/gui/node_editor/includes/struct/FileInfo.h \
+  /home/antique/Desktop/gui/node_editor/includes/struct/Link.h \
+  /home/antique/Desktop/gui/node_editor/includes/struct/MapNode.h \
+  /home/antique/Desktop/gui/node_editor/includes/struct/Node.h \
+  /home/antique/Desktop/gui/node_editor/includes/struct/NodeCode.h \
+  /home/antique/Desktop/gui/node_editor/includes/struct/Path.h \
+  /home/antique/Desktop/gui/node_editor/includes/struct/Position.h \
+  /home/antique/Desktop/gui/node_editor/includes/struct/RouteFile.h \
+  /home/antique/Desktop/gui/node_editor/includes/struct/SensingRange.h \
   /home/antique/Desktop/gui/node_editor/includes/ui/editor/node_editor.h \
   /home/antique/Desktop/gui/node_editor/includes/ui/editor/node_list_model.h \
   /home/antique/Desktop/gui/node_editor/includes/ui/editor/route_editor.h \
@@ -32,16 +34,17 @@ node_editor_autogen/timestamp: \
   /home/antique/Desktop/gui/node_editor/includes/viewmodel/map_node_view_model.h \
   /home/antique/Desktop/gui/node_editor/includes/viewmodel/node_code_view_model.h \
   /home/antique/Desktop/gui/node_editor/includes/viewmodel/path_view_model.h \
-  /home/antique/Desktop/gui/node_editor/includes/viewmodel/route_file_view_model.h \
   /home/antique/Desktop/gui/node_editor/main.cpp \
-  /home/antique/Desktop/gui/node_editor/src/model/Link.cpp \
-  /home/antique/Desktop/gui/node_editor/src/model/MapNode.cpp \
-  /home/antique/Desktop/gui/node_editor/src/model/Node.cpp \
-  /home/antique/Desktop/gui/node_editor/src/model/NodeCode.cpp \
-  /home/antique/Desktop/gui/node_editor/src/model/Path.cpp \
-  /home/antique/Desktop/gui/node_editor/src/model/Position.cpp \
-  /home/antique/Desktop/gui/node_editor/src/model/RouteFile.cpp \
-  /home/antique/Desktop/gui/node_editor/src/model/SensingRange.cpp \
+  /home/antique/Desktop/gui/node_editor/src/model/file_info_model.cpp \
+  /home/antique/Desktop/gui/node_editor/src/model/path_info_model.cpp \
+  /home/antique/Desktop/gui/node_editor/src/struct/Link.cpp \
+  /home/antique/Desktop/gui/node_editor/src/struct/MapNode.cpp \
+  /home/antique/Desktop/gui/node_editor/src/struct/Node.cpp \
+  /home/antique/Desktop/gui/node_editor/src/struct/NodeCode.cpp \
+  /home/antique/Desktop/gui/node_editor/src/struct/Path.cpp \
+  /home/antique/Desktop/gui/node_editor/src/struct/Position.cpp \
+  /home/antique/Desktop/gui/node_editor/src/struct/RouteFile.cpp \
+  /home/antique/Desktop/gui/node_editor/src/struct/SensingRange.cpp \
   /home/antique/Desktop/gui/node_editor/src/ui/editor/node_editor.cpp \
   /home/antique/Desktop/gui/node_editor/src/ui/editor/node_list_model.cpp \
   /home/antique/Desktop/gui/node_editor/src/ui/editor/route_editor.cpp \
@@ -55,7 +58,6 @@ node_editor_autogen/timestamp: \
   /home/antique/Desktop/gui/node_editor/src/viewmodel/map_node_view_model.cpp \
   /home/antique/Desktop/gui/node_editor/src/viewmodel/node_code_view_model.cpp \
   /home/antique/Desktop/gui/node_editor/src/viewmodel/path_view_model.cpp \
-  /home/antique/Desktop/gui/node_editor/src/viewmodel/route_file_view_model.cpp \
   /home/antique/clion-2023.3.2/bin/cmake/linux/x64/bin/cmake \
   /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/CMakeCInformation.cmake \
   /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/CMakeCXXInformation.cmake \

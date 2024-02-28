@@ -1,5 +1,6 @@
 /home/antique/Desktop/gui/node_editor/cmake-build-debug/node_editor_autogen/VPFWJMWI75/moc_route_file_reader.cpp: /home/antique/Desktop/gui/node_editor/includes/utils/file/route_file_reader.h \
   /home/antique/Desktop/gui/node_editor/cmake-build-debug/node_editor_autogen/moc_predefs.h \
+  /home/antique/Desktop/gui/node_editor/includes/struct/FileInfo.h \
   /usr/include/assert.h \
   /usr/include/c++/11/algorithm \
   /usr/include/c++/11/array \

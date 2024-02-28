@@ -10,8 +10,8 @@
 #include <QWebEngineView>
 #include <QPointer>
 #include "utils/patterns/observer/observer.h"
-#include "model/MapNode.h"
-#include "model/RouteFile.h"
+#include "struct/MapNode.h"
+#include "struct/RouteFile.h"
 
 class MapNodeVectorListener : public QObject, public Observer<std::map<std::string, Position>>{
     Q_OBJECT

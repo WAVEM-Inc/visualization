@@ -7,7 +7,7 @@
 
 
 #include "utils/patterns/singleton/singleton.h"
-#include "model/RouteFile.h"
+#include "struct/RouteFile.h"
 #include "utils/patterns/observer/subject.h"
 
 /*class FileManager : public Singleton<FileManager> {

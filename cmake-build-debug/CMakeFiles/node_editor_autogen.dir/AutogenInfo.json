@@ -125,57 +125,75 @@
 	"HEADERS" : 
 	[
 		[
-			"/home/antique/Desktop/gui/node_editor/includes/model/FileInfo.h",
+			"/home/antique/Desktop/gui/node_editor/includes/model/file_info_model.h",
 			"MU",
-			"WQDUHGGYQ5/moc_FileInfo.cpp",
+			"WQDUHGGYQ5/moc_file_info_model.cpp",
 			null
 		],
 		[
-			"/home/antique/Desktop/gui/node_editor/includes/model/Link.h",
+			"/home/antique/Desktop/gui/node_editor/includes/model/node_info_model.h",
 			"MU",
-			"WQDUHGGYQ5/moc_Link.cpp",
+			"WQDUHGGYQ5/moc_node_info_model.cpp",
 			null
 		],
 		[
-			"/home/antique/Desktop/gui/node_editor/includes/model/MapNode.h",
+			"/home/antique/Desktop/gui/node_editor/includes/model/path_info_model.h",
 			"MU",
-			"WQDUHGGYQ5/moc_MapNode.cpp",
+			"WQDUHGGYQ5/moc_path_info_model.cpp",
 			null
 		],
 		[
-			"/home/antique/Desktop/gui/node_editor/includes/model/Node.h",
+			"/home/antique/Desktop/gui/node_editor/includes/struct/FileInfo.h",
 			"MU",
-			"WQDUHGGYQ5/moc_Node.cpp",
+			"MWKN3DSL6O/moc_FileInfo.cpp",
 			null
 		],
 		[
-			"/home/antique/Desktop/gui/node_editor/includes/model/NodeCode.h",
+			"/home/antique/Desktop/gui/node_editor/includes/struct/Link.h",
 			"MU",
-			"WQDUHGGYQ5/moc_NodeCode.cpp",
+			"MWKN3DSL6O/moc_Link.cpp",
 			null
 		],
 		[
-			"/home/antique/Desktop/gui/node_editor/includes/model/Path.h",
+			"/home/antique/Desktop/gui/node_editor/includes/struct/MapNode.h",
 			"MU",
-			"WQDUHGGYQ5/moc_Path.cpp",
+			"MWKN3DSL6O/moc_MapNode.cpp",
 			null
 		],
 		[
-			"/home/antique/Desktop/gui/node_editor/includes/model/Position.h",
+			"/home/antique/Desktop/gui/node_editor/includes/struct/Node.h",
 			"MU",
-			"WQDUHGGYQ5/moc_Position.cpp",
+			"MWKN3DSL6O/moc_Node.cpp",
 			null
 		],
 		[
-			"/home/antique/Desktop/gui/node_editor/includes/model/RouteFile.h",
+			"/home/antique/Desktop/gui/node_editor/includes/struct/NodeCode.h",
 			"MU",
-			"WQDUHGGYQ5/moc_RouteFile.cpp",
+			"MWKN3DSL6O/moc_NodeCode.cpp",
 			null
 		],
 		[
-			"/home/antique/Desktop/gui/node_editor/includes/model/SensingRange.h",
+			"/home/antique/Desktop/gui/node_editor/includes/struct/Path.h",
 			"MU",
-			"WQDUHGGYQ5/moc_SensingRange.cpp",
+			"MWKN3DSL6O/moc_Path.cpp",
+			null
+		],
+		[
+			"/home/antique/Desktop/gui/node_editor/includes/struct/Position.h",
+			"MU",
+			"MWKN3DSL6O/moc_Position.cpp",
+			null
+		],
+		[
+			"/home/antique/Desktop/gui/node_editor/includes/struct/RouteFile.h",
+			"MU",
+			"MWKN3DSL6O/moc_RouteFile.cpp",
+			null
+		],
+		[
+			"/home/antique/Desktop/gui/node_editor/includes/struct/SensingRange.h",
+			"MU",
+			"MWKN3DSL6O/moc_SensingRange.cpp",
 			null
 		],
 		[
@@ -273,24 +291,6 @@
 			"MU",
 			"QQ6FFKTEXS/moc_map_node_view_model.cpp",
 			null
-		],
-		[
-			"/home/antique/Desktop/gui/node_editor/includes/viewmodel/node_code_view_model.h",
-			"MU",
-			"QQ6FFKTEXS/moc_node_code_view_model.cpp",
-			null
-		],
-		[
-			"/home/antique/Desktop/gui/node_editor/includes/viewmodel/path_view_model.h",
-			"MU",
-			"QQ6FFKTEXS/moc_path_view_model.cpp",
-			null
-		],
-		[
-			"/home/antique/Desktop/gui/node_editor/includes/viewmodel/route_file_view_model.h",
-			"MU",
-			"QQ6FFKTEXS/moc_route_file_view_model.cpp",
-			null
 		]
 	],
 	"HEADER_EXTENSIONS" : [ "h", "hh", "h++", "hm", "hpp", "hxx", "in", "txx" ],
@@ -375,42 +375,57 @@
 	[
 		[ "/home/antique/Desktop/gui/node_editor/main.cpp", "MU", null ],
 		[
-			"/home/antique/Desktop/gui/node_editor/src/model/Link.cpp",
+			"/home/antique/Desktop/gui/node_editor/src/model/file_info_model.cpp",
 			"MU",
 			null
 		],
 		[
-			"/home/antique/Desktop/gui/node_editor/src/model/MapNode.cpp",
+			"/home/antique/Desktop/gui/node_editor/src/model/node_info_model.cpp",
 			"MU",
 			null
 		],
 		[
-			"/home/antique/Desktop/gui/node_editor/src/model/Node.cpp",
+			"/home/antique/Desktop/gui/node_editor/src/model/path_info_model.cpp",
 			"MU",
 			null
 		],
 		[
-			"/home/antique/Desktop/gui/node_editor/src/model/NodeCode.cpp",
+			"/home/antique/Desktop/gui/node_editor/src/struct/Link.cpp",
 			"MU",
 			null
 		],
 		[
-			"/home/antique/Desktop/gui/node_editor/src/model/Path.cpp",
+			"/home/antique/Desktop/gui/node_editor/src/struct/MapNode.cpp",
 			"MU",
 			null
 		],
 		[
-			"/home/antique/Desktop/gui/node_editor/src/model/Position.cpp",
+			"/home/antique/Desktop/gui/node_editor/src/struct/Node.cpp",
 			"MU",
 			null
 		],
 		[
-			"/home/antique/Desktop/gui/node_editor/src/model/RouteFile.cpp",
+			"/home/antique/Desktop/gui/node_editor/src/struct/NodeCode.cpp",
 			"MU",
 			null
 		],
 		[
-			"/home/antique/Desktop/gui/node_editor/src/model/SensingRange.cpp",
+			"/home/antique/Desktop/gui/node_editor/src/struct/Path.cpp",
+			"MU",
+			null
+		],
+		[
+			"/home/antique/Desktop/gui/node_editor/src/struct/Position.cpp",
+			"MU",
+			null
+		],
+		[
+			"/home/antique/Desktop/gui/node_editor/src/struct/RouteFile.cpp",
+			"MU",
+			null
+		],
+		[
+			"/home/antique/Desktop/gui/node_editor/src/struct/SensingRange.cpp",
 			"MU",
 			null
 		],
@@ -476,11 +491,6 @@
 		],
 		[
 			"/home/antique/Desktop/gui/node_editor/src/viewmodel/path_view_model.cpp",
-			"MU",
-			null
-		],
-		[
-			"/home/antique/Desktop/gui/node_editor/src/viewmodel/route_file_view_model.cpp",
 			"MU",
 			null
 		]

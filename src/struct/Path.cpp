@@ -2,7 +2,7 @@
 // Created by antique on 24. 2. 22.
 //
 
-#include "model/Path.h"
+#include "struct/Path.h"
 
 void to_json(nlohmann::json& j, const Path& p) {
     j = nlohmann::json{

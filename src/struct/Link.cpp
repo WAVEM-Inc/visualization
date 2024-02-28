@@ -2,7 +2,7 @@
 // Created by antique on 24. 2. 22.
 //
 
-#include "model/Link.h"
+#include "struct/Link.h"
 
 void to_json(nlohmann::json &j, const Link &link) {
     j = nlohmann::json{

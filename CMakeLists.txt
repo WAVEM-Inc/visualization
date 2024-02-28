@@ -20,12 +20,12 @@ find_package(Qt5 COMPONENTS
 add_executable(node_editor
         main.cpp
         includes/utils/coordinate_handler.h
-        includes/model/Position.h
-        includes/model/SensingRange.h
-        includes/model/Link.h
-        includes/model/Node.h
-        includes/model/MapNode.h
-        includes/model/Path.h
+        includes/struct/Position.h
+        includes/struct/SensingRange.h
+        includes/struct/Link.h
+        includes/struct/Node.h
+        includes/struct/MapNode.h
+        includes/struct/Path.h
         src/ui/map/map_view.cpp
         includes/ui/map/map_view.h
         src/ui/main/main_window.cpp
@@ -37,15 +37,15 @@ add_executable(node_editor
         includes/utils/patterns/observer/subject.h
         src/viewmodel/map_node_view_model.cpp
         includes/viewmodel/map_node_view_model.h
-        src/model/MapNode.cpp
-        includes/model/RouteFile.h
-        src/model/Position.cpp
-        src/model/Position.cpp
-        src/model/RouteFile.cpp
-        src/model/Link.cpp
-        src/model/Node.cpp
-        src/model/Path.cpp
-        src/model/SensingRange.cpp
+        src/struct/MapNode.cpp
+        includes/struct/RouteFile.h
+        src/struct/Position.cpp
+        src/struct/Position.cpp
+        src/struct/RouteFile.cpp
+        src/struct/Link.cpp
+        src/struct/Node.cpp
+        src/struct/Path.cpp
+        src/struct/SensingRange.cpp
         src/utils/file/file_manager.cpp
         includes/utils/file/file_manager.h
         includes/utils/events/FileEvents.h
@@ -55,21 +55,23 @@ add_executable(node_editor
         includes/utils/file/route_file_writer.h
         src/ui/editor/route_editor.cpp
         includes/ui/editor/route_editor.h
-        includes/model/NodeCode.h
-        src/model/NodeCode.cpp
+        includes/struct/NodeCode.h
+        src/struct/NodeCode.cpp
         src/utils/file/code_file_reader.cpp
         includes/utils/file/code_file_reader.h
         src/viewmodel/node_code_view_model.cpp
-        includes/viewmodel/node_code_view_model.h
         src/ui/editor/node_list_model.cpp
         includes/ui/editor/node_list_model.h
         src/ui/editor/node_editor.cpp
         includes/ui/editor/node_editor.h
-        src/viewmodel/route_file_view_model.cpp
-        includes/viewmodel/route_file_view_model.h
-        includes/model/FileInfo.h
+        includes/struct/FileInfo.h
         src/viewmodel/path_view_model.cpp
-        includes/viewmodel/path_view_model.h
+        src/model/file_info_model.cpp
+        includes/model/file_info_model.h
+        src/model/path_info_model.cpp
+        includes/model/path_info_model.h
+        src/model/node_info_model.cpp
+        includes/model/node_info_model.h
 )
 
 include(FetchContent)

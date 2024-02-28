@@ -7,7 +7,7 @@
 
 
 #include <QString>
-#include "model/RouteFile.h"
+#include "struct/RouteFile.h"
 
 class RouteFileWriter : QObject {
 Q_OBJECT

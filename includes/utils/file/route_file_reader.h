@@ -7,6 +7,7 @@
 
 
 #include <QObject>
+#include "struct/FileInfo.h"
 
 class RouteFileReader : public QObject {
 Q_OBJECT
@@ -14,6 +15,9 @@ public:
     explicit RouteFileReader(QObject *parent = nullptr);
 
     bool loadFile(const QString &filePath);
+
+public slots:
+    void onFileInfoChanged(const FileInfo &info);
 };
 
 

@@ -2,7 +2,7 @@
 // Created by antique on 24. 2. 22.
 //
 
-#include "model/SensingRange.h"
+#include "struct/SensingRange.h"
 
 void to_json(nlohmann::json& j, const SensingRange& sr) {
     j = nlohmann::json{

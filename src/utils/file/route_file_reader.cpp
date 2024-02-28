@@ -7,14 +7,13 @@
 #include <QTextStream>
 #include "utils/file/route_file_reader.h"
 #include "nlohmann/json.hpp"
-#include "model/RouteFile.h"
+#include "struct/RouteFile.h"
+#include "model/file_info_model.h"
+#include "utils/patterns/singleton/singleton.h"
 
-#include "utils/file/file_manager.h"
-#include "viewmodel/path_view_model.h"
-#include "viewmodel/map_node_view_model.h"
-#include "viewmodel/route_file_view_model.h"
-
-RouteFileReader::RouteFileReader(QObject *parent) : QObject(parent){}
+RouteFileReader::RouteFileReader(QObject *parent) : QObject(parent){
+    connect(&FileInfoModel::getInstance(), &FileInfoModel::fileInfoChanged, this, &RouteFileReader::onFileInfoChanged);
+}
 
 bool RouteFileReader::loadFile(const QString &filePath) {
     QFile file(filePath);
@@ -34,5 +33,15 @@ bool RouteFileReader::loadFile(const QString &filePath) {
     PathViewModel::Instance().updatePathMap(fileData.path);
     MapNodeViewModel::Instance().update_map_nodes(fileData.node);
 
+    FileInfo info;
+    info.filePath = filePath.toStdString();
+    info.fileVersion = fileData.fileVersion;
+    info.mapId = fileData.mapId;
+    FileInfoModel::getInstance().updateFileInfo(info);
+
     return true;
+}
+
+void RouteFileReader::onFileInfoChanged(const FileInfo &info) {
+    std::cout << info.filePath << "\n";
 }

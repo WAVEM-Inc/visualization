@@ -44,7 +44,7 @@
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 94,
+				"line" : 96,
 				"parent" : 0
 			},
 			{
@@ -148,13 +148,13 @@
 			{
 				"command" : 8,
 				"file" : 0,
-				"line" : 87,
+				"line" : 89,
 				"parent" : 0
 			},
 			{
 				"command" : 9,
 				"file" : 0,
-				"line" : 89,
+				"line" : 91,
 				"parent" : 0
 			}
 		]
@@ -361,10 +361,12 @@
 				38,
 				39,
 				41,
-				43,
-				45,
+				42,
+				44,
 				47,
-				50
+				48,
+				50,
+				52
 			]
 		}
 	],
@@ -487,10 +489,12 @@
 				38,
 				39,
 				41,
-				43,
-				45,
+				42,
+				44,
 				47,
-				50
+				48,
+				50,
+				52
 			]
 		},
 		{
@@ -519,26 +523,26 @@
 				36,
 				37,
 				40,
-				42,
-				44,
+				43,
+				45,
 				46,
-				48,
 				49,
-				51
+				51,
+				53
 			]
 		},
 		{
 			"name" : "",
 			"sourceIndexes" : 
 			[
-				52
+				54
 			]
 		},
 		{
 			"name" : "CMake Rules",
 			"sourceIndexes" : 
 			[
-				53
+				55
 			]
 		}
 	],
@@ -564,32 +568,32 @@
 		},
 		{
 			"backtrace" : 1,
-			"path" : "includes/model/Position.h",
+			"path" : "includes/struct/Position.h",
 			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 1,
-			"path" : "includes/model/SensingRange.h",
+			"path" : "includes/struct/SensingRange.h",
 			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 1,
-			"path" : "includes/model/Link.h",
+			"path" : "includes/struct/Link.h",
 			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 1,
-			"path" : "includes/model/Node.h",
+			"path" : "includes/struct/Node.h",
 			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 1,
-			"path" : "includes/model/MapNode.h",
+			"path" : "includes/struct/MapNode.h",
 			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 1,
-			"path" : "includes/model/Path.h",
+			"path" : "includes/struct/Path.h",
 			"sourceGroupIndex" : 1
 		},
 		{
@@ -654,48 +658,48 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "src/model/MapNode.cpp",
+			"path" : "src/struct/MapNode.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
-			"path" : "includes/model/RouteFile.h",
+			"path" : "includes/struct/RouteFile.h",
 			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "src/model/Position.cpp",
+			"path" : "src/struct/Position.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "src/model/RouteFile.cpp",
+			"path" : "src/struct/RouteFile.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "src/model/Link.cpp",
+			"path" : "src/struct/Link.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "src/model/Node.cpp",
+			"path" : "src/struct/Node.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "src/model/Path.cpp",
+			"path" : "src/struct/Path.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "src/model/SensingRange.cpp",
+			"path" : "src/struct/SensingRange.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
@@ -749,13 +753,13 @@
 		},
 		{
 			"backtrace" : 1,
-			"path" : "includes/model/NodeCode.h",
+			"path" : "includes/struct/NodeCode.h",
 			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "src/model/NodeCode.cpp",
+			"path" : "src/struct/NodeCode.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
@@ -774,11 +778,6 @@
 			"compileGroupIndex" : 0,
 			"path" : "src/viewmodel/node_code_view_model.cpp",
 			"sourceGroupIndex" : 0
-		},
-		{
-			"backtrace" : 1,
-			"path" : "includes/viewmodel/node_code_view_model.h",
-			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 1,
@@ -804,18 +803,7 @@
 		},
 		{
 			"backtrace" : 1,
-			"compileGroupIndex" : 0,
-			"path" : "src/viewmodel/route_file_view_model.cpp",
-			"sourceGroupIndex" : 0
-		},
-		{
-			"backtrace" : 1,
-			"path" : "includes/viewmodel/route_file_view_model.h",
-			"sourceGroupIndex" : 1
-		},
-		{
-			"backtrace" : 1,
-			"path" : "includes/model/FileInfo.h",
+			"path" : "includes/struct/FileInfo.h",
 			"sourceGroupIndex" : 1
 		},
 		{
@@ -826,7 +814,35 @@
 		},
 		{
 			"backtrace" : 1,
-			"path" : "includes/viewmodel/path_view_model.h",
+			"compileGroupIndex" : 0,
+			"path" : "src/model/file_info_model.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "includes/model/file_info_model.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/model/path_info_model.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "includes/model/path_info_model.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/model/node_info_model.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "includes/model/node_info_model.h",
 			"sourceGroupIndex" : 1
 		},
 		{

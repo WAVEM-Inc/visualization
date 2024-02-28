@@ -8,8 +8,8 @@
 
 #include <QObject>
 #include <iostream>
-#include "model/Node.h"
-#include "model/MapNode.h"
+#include "struct/Node.h"
+#include "struct/MapNode.h"
 #include "viewmodel/map_node_view_model.h"
 #include "utils/file/file_manager.h"
 #include "viewmodel/route_file_view_model.h"

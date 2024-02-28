@@ -7,7 +7,7 @@
 
 
 #include <QMenuBar>
-#include "model/RouteFile.h"
+#include "struct/RouteFile.h"
 #include "utils/patterns/observer/subject.h"
 
 class MenuBar : public QMenuBar {

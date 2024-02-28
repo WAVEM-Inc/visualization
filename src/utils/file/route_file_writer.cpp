@@ -10,7 +10,7 @@
 #include "utils/patterns/singleton/singleton.h"
 #include "viewmodel/path_view_model.h"
 #include "viewmodel/map_node_view_model.h"
-#include "viewmodel/route_file_view_model.h"
+#include "model/file_info_model.h"
 
 
 RouteFileWriter::RouteFileWriter(QObject *parent) : QObject(parent) {
@@ -58,7 +58,13 @@ bool RouteFileWriter::saveFile(const QString &filePath, const RouteFile &routeFi
     file.close();
 
     if (out.status() == QTextStream::Ok) {
-        RouteFileViewModel::Instance().updateOriginFile(finalPath.toStdString(), routeFileData);
+        FileInfo info;
+        info.filePath = finalPath.toStdString();
+        info.fileVersion = routeFileData.fileVersion;
+        info.mapId = routeFileData.mapId;
+
+        FileInfoModel::getInstance().updateFileInfo(info);
+
         PathViewModel::Instance().updatePathMap(routeFileData.path);
         MapNodeViewModel::Instance().update_map_nodes(routeFileData.node);
     } else {
