@@ -12,6 +12,7 @@
 #include "model/MapNode.h"
 #include "viewmodel/map_node_view_model.h"
 #include "utils/file/file_manager.h"
+#include "viewmodel/route_file_view_model.h"
 
 class CoordinateHandler : public QObject {
 Q_OBJECT
@@ -22,7 +23,7 @@ public:
 public slots:
 
     Q_INVOKABLE void onClickEvent(double lat, double lng) {
-        if (FileManager::Instance().savableState()->value()) {
+        if (RouteFileViewModel::Instance().getSavableState()) {
             char buffer[100];
             count++;
 

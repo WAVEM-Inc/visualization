@@ -10,6 +10,7 @@
 #include <QDir>
 #include "utils/file/file_manager.h"
 #include "viewmodel/path_view_model.h"
+#include "viewmodel/route_file_view_model.h"
 
 RouteEditor::RouteEditor(QWidget *parent) :
         QWidget(parent),
@@ -21,8 +22,8 @@ RouteEditor::RouteEditor(QWidget *parent) :
         m_pathListener_ptr(std::make_shared<PathListener>(this)),
         m_savableStateListener_ptr(std::make_shared<SavableStateListener>(this)) {
 
-    PathViewModel::Instance().attachPathsObserver(m_pathListener_ptr);
-    FileManager::Instance().savableState()->attach(m_savableStateListener_ptr);
+    PathViewModel::Instance().attachToPathMap(m_pathListener_ptr);
+    RouteFileViewModel::Instance().attachToSavable(m_savableStateListener_ptr);
     this->setVisible(false);
 
     // Initialize UI Options
@@ -80,7 +81,8 @@ void RouteEditor::onAddRouteButtonClicked() {
 }
 
 void RouteEditor::onAddNodeButtonClicked() {
-
+    Node node;
+    node.type = "타입을 지정해주세요.";
 }
 
 RouteEditor::PathListener::PathListener(RouteEditor *editor) : m_editor_ptr(editor) {

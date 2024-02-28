@@ -125,6 +125,12 @@
 	"HEADERS" : 
 	[
 		[
+			"/home/antique/Desktop/gui/node_editor/includes/model/FileInfo.h",
+			"MU",
+			"WQDUHGGYQ5/moc_FileInfo.cpp",
+			null
+		],
+		[
 			"/home/antique/Desktop/gui/node_editor/includes/model/Link.h",
 			"MU",
 			"WQDUHGGYQ5/moc_Link.cpp",
@@ -140,6 +146,12 @@
 			"/home/antique/Desktop/gui/node_editor/includes/model/Node.h",
 			"MU",
 			"WQDUHGGYQ5/moc_Node.cpp",
+			null
+		],
+		[
+			"/home/antique/Desktop/gui/node_editor/includes/model/NodeCode.h",
+			"MU",
+			"WQDUHGGYQ5/moc_NodeCode.cpp",
 			null
 		],
 		[
@@ -164,6 +176,18 @@
 			"/home/antique/Desktop/gui/node_editor/includes/model/SensingRange.h",
 			"MU",
 			"WQDUHGGYQ5/moc_SensingRange.cpp",
+			null
+		],
+		[
+			"/home/antique/Desktop/gui/node_editor/includes/ui/editor/node_editor.h",
+			"MU",
+			"MLWDO5DTUM/moc_node_editor.cpp",
+			null
+		],
+		[
+			"/home/antique/Desktop/gui/node_editor/includes/ui/editor/node_list_model.h",
+			"MU",
+			"MLWDO5DTUM/moc_node_list_model.cpp",
 			null
 		],
 		[
@@ -200,6 +224,12 @@
 			"/home/antique/Desktop/gui/node_editor/includes/utils/events/FileEvents.h",
 			"MU",
 			"PZHE5FZKGK/moc_FileEvents.cpp",
+			null
+		],
+		[
+			"/home/antique/Desktop/gui/node_editor/includes/utils/file/code_file_reader.h",
+			"MU",
+			"VPFWJMWI75/moc_code_file_reader.cpp",
 			null
 		],
 		[
@@ -245,15 +275,21 @@
 			null
 		],
 		[
-			"/home/antique/Desktop/gui/node_editor/includes/viewmodel/node_view_model.h",
+			"/home/antique/Desktop/gui/node_editor/includes/viewmodel/node_code_view_model.h",
 			"MU",
-			"QQ6FFKTEXS/moc_node_view_model.cpp",
+			"QQ6FFKTEXS/moc_node_code_view_model.cpp",
 			null
 		],
 		[
 			"/home/antique/Desktop/gui/node_editor/includes/viewmodel/path_view_model.h",
 			"MU",
 			"QQ6FFKTEXS/moc_path_view_model.cpp",
+			null
+		],
+		[
+			"/home/antique/Desktop/gui/node_editor/includes/viewmodel/route_file_view_model.h",
+			"MU",
+			"QQ6FFKTEXS/moc_route_file_view_model.cpp",
 			null
 		]
 	],
@@ -354,6 +390,11 @@
 			null
 		],
 		[
+			"/home/antique/Desktop/gui/node_editor/src/model/NodeCode.cpp",
+			"MU",
+			null
+		],
+		[
 			"/home/antique/Desktop/gui/node_editor/src/model/Path.cpp",
 			"MU",
 			null
@@ -370,6 +411,16 @@
 		],
 		[
 			"/home/antique/Desktop/gui/node_editor/src/model/SensingRange.cpp",
+			"MU",
+			null
+		],
+		[
+			"/home/antique/Desktop/gui/node_editor/src/ui/editor/node_editor.cpp",
+			"MU",
+			null
+		],
+		[
+			"/home/antique/Desktop/gui/node_editor/src/ui/editor/node_list_model.cpp",
 			"MU",
 			null
 		],
@@ -394,6 +445,11 @@
 			null
 		],
 		[
+			"/home/antique/Desktop/gui/node_editor/src/utils/file/code_file_reader.cpp",
+			"MU",
+			null
+		],
+		[
 			"/home/antique/Desktop/gui/node_editor/src/utils/file/file_manager.cpp",
 			"MU",
 			null
@@ -414,12 +470,17 @@
 			null
 		],
 		[
-			"/home/antique/Desktop/gui/node_editor/src/viewmodel/node_view_model.cpp",
+			"/home/antique/Desktop/gui/node_editor/src/viewmodel/node_code_view_model.cpp",
 			"MU",
 			null
 		],
 		[
 			"/home/antique/Desktop/gui/node_editor/src/viewmodel/path_view_model.cpp",
+			"MU",
+			null
+		],
+		[
+			"/home/antique/Desktop/gui/node_editor/src/viewmodel/route_file_view_model.cpp",
 			"MU",
 			null
 		]

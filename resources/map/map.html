@@ -47,6 +47,7 @@
             map = new Map(document.getElementById("map"), {
                 center: {lat: 37.392605, lng: 126.938820},
                 zoom: 10,
+                streetViewControl: false,
                 mapId: '7f4e79d00bc82231',
             });
 
@@ -75,7 +76,7 @@
             const searchBox = new google.maps.places.SearchBox(input);
 
             // 검색창을 지도의 상단 왼쪽에 배치합니다.
-            map.controls[google.maps.ControlPosition.TOP_RIGHT].push(input);
+            map.controls[google.maps.ControlPosition.TOP_CENTER].push(input);
 
             // 지도의 뷰포트가 변경될 때마다 SearchBox 결과의 범위를 현재 지도 뷰포트로 설정합니다.
             map.addListener("bounds_changed", () => {

@@ -12,6 +12,7 @@
 #include "utils/file/file_manager.h"
 #include "viewmodel/path_view_model.h"
 #include "viewmodel/map_node_view_model.h"
+#include "viewmodel/route_file_view_model.h"
 
 RouteFileReader::RouteFileReader(QObject *parent) : QObject(parent){}
 
@@ -29,8 +30,8 @@ bool RouteFileReader::loadFile(const QString &filePath) {
     nlohmann::json json = nlohmann::json::parse(fileContent.toStdString());
     RouteFile fileData = json.get<RouteFile>();
 
-    FileManager::Instance().updateOriginFileData(fileData);
-    PathViewModel::Instance().updatePaths(fileData.path);
+    RouteFileViewModel::Instance().updateOriginFile(filePath.toStdString(), fileData);
+    PathViewModel::Instance().updatePathMap(fileData.path);
     MapNodeViewModel::Instance().update_map_nodes(fileData.node);
 
     return true;

@@ -1,0 +1,27 @@
+[
+  {
+    "code": 1,
+    "name": "대기지점",
+    "description": "대기 중인 지점"
+  },
+  {
+    "code": 10,
+    "name": "상차지점",
+    "description": "물건을 상차하는 지점"
+  },
+  {
+    "code": 30,
+    "name": "하차지점",
+    "description": "물건을 하차하는 지점"
+  },
+  {
+    "code": 50,
+    "name": "택배상차 지점",
+    "description": "택배 물품을 상차하는 지점"
+  },
+  {
+    "code": 70,
+    "name": "택배하차 지점",
+    "description": "택배 물품을 하차하는 지점"
+  }
+]

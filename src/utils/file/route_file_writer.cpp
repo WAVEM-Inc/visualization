@@ -10,6 +10,7 @@
 #include "utils/patterns/singleton/singleton.h"
 #include "viewmodel/path_view_model.h"
 #include "viewmodel/map_node_view_model.h"
+#include "viewmodel/route_file_view_model.h"
 
 
 RouteFileWriter::RouteFileWriter(QObject *parent) : QObject(parent) {
@@ -57,8 +58,8 @@ bool RouteFileWriter::saveFile(const QString &filePath, const RouteFile &routeFi
     file.close();
 
     if (out.status() == QTextStream::Ok) {
-        FileManager::Instance().updateOriginFileData(routeFileData);
-        PathViewModel::Instance().updatePaths(routeFileData.path);
+        RouteFileViewModel::Instance().updateOriginFile(finalPath.toStdString(), routeFileData);
+        PathViewModel::Instance().updatePathMap(routeFileData.path);
         MapNodeViewModel::Instance().update_map_nodes(routeFileData.node);
     } else {
         QMessageBox::warning(nullptr, "실패", "파일 저장에 실패하였습니다.");

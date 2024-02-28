@@ -20,6 +20,7 @@ struct MapNode {
 };
 
 void to_json(nlohmann::json& j, const MapNode& mapNode);
+
 void from_json(const nlohmann::json& j, MapNode& mapNode);
 
 #endif //NODE_EDITOR_MAPNODE_H

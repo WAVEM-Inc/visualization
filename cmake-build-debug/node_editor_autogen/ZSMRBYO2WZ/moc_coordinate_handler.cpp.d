@@ -1,6 +1,7 @@
 /home/antique/Desktop/gui/node_editor/cmake-build-debug/node_editor_autogen/ZSMRBYO2WZ/moc_coordinate_handler.cpp: /home/antique/Desktop/gui/node_editor/includes/utils/coordinate_handler.h \
   /home/antique/Desktop/gui/node_editor/cmake-build-debug/node_editor_autogen/moc_predefs.h \
   /home/antique/Desktop/gui/node_editor/cmake-build-debug/_deps/json-src/single_include/nlohmann/json.hpp \
+  /home/antique/Desktop/gui/node_editor/includes/model/FileInfo.h \
   /home/antique/Desktop/gui/node_editor/includes/model/MapNode.h \
   /home/antique/Desktop/gui/node_editor/includes/model/Node.h \
   /home/antique/Desktop/gui/node_editor/includes/model/Path.h \
@@ -12,6 +13,7 @@
   /home/antique/Desktop/gui/node_editor/includes/utils/patterns/observer/subject.h \
   /home/antique/Desktop/gui/node_editor/includes/utils/patterns/singleton/singleton.h \
   /home/antique/Desktop/gui/node_editor/includes/viewmodel/map_node_view_model.h \
+  /home/antique/Desktop/gui/node_editor/includes/viewmodel/route_file_view_model.h \
   /usr/include/asm-generic/errno-base.h \
   /usr/include/asm-generic/errno.h \
   /usr/include/assert.h \

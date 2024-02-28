@@ -5,7 +5,7 @@
 #include "utils/file/file_manager.h"
 #include "utils/events/FileEvents.h"
 
-FileManager::FileManager() :
+/*FileManager::FileManager() :
         m_originFileData_ptr(std::make_shared<RouteFile>()),
         m_savable_state(std::make_shared<Subject<bool>>()) {}
 
@@ -26,4 +26,4 @@ RouteFile FileManager::getOriginFileData() {
 
 std::shared_ptr<Subject<bool>> FileManager::savableState() {
     return m_savable_state;
-}
+}*/

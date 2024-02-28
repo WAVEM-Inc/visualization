@@ -7,6 +7,7 @@
   /home/antique/Desktop/gui/node_editor/includes/model/Position.h \
   /home/antique/Desktop/gui/node_editor/includes/model/RouteFile.h \
   /home/antique/Desktop/gui/node_editor/includes/model/SensingRange.h \
+  /home/antique/Desktop/gui/node_editor/includes/ui/editor/node_editor.h \
   /home/antique/Desktop/gui/node_editor/includes/ui/editor/route_editor.h \
   /home/antique/Desktop/gui/node_editor/includes/ui/map/map_view.h \
   /home/antique/Desktop/gui/node_editor/includes/ui/menu/menu_bar.h \
@@ -436,6 +437,7 @@
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QMainWindow \
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QMenuBar \
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QPushButton \
+  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QTabWidget \
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QTableWidget \
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QWidget \
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qabstractbutton.h \

@@ -8,6 +8,6 @@ CMake Deprecation Warning at cmake-build-debug/_deps/json-src/CMakeLists.txt:1 (
 
 
 -- Using the single-header code from /home/antique/Desktop/gui/node_editor/cmake-build-debug/_deps/json-src/single_include/
--- Configuring done (0.2s)
+-- Configuring done (0.1s)
 -- Generating done (0.0s)
 -- Build files have been written to: /home/antique/Desktop/gui/node_editor/cmake-build-debug

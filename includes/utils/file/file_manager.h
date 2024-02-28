@@ -10,7 +10,7 @@
 #include "model/RouteFile.h"
 #include "utils/patterns/observer/subject.h"
 
-class FileManager : public Singleton<FileManager> {
+/*class FileManager : public Singleton<FileManager> {
     friend class Singleton<FileManager>;
 
 public:
@@ -25,7 +25,7 @@ public:
 private:
     std::shared_ptr<RouteFile> m_originFileData_ptr;
     std::shared_ptr<Subject<bool>> m_savable_state;
-};
+};*/
 
 
 #endif //NODE_EDITOR_FILE_MANAGER_H

@@ -55,8 +55,19 @@ add_executable(node_editor
         includes/utils/file/route_file_writer.h
         src/ui/editor/route_editor.cpp
         includes/ui/editor/route_editor.h
-        src/viewmodel/node_view_model.cpp
-        includes/viewmodel/node_view_model.h
+        includes/model/NodeCode.h
+        src/model/NodeCode.cpp
+        src/utils/file/code_file_reader.cpp
+        includes/utils/file/code_file_reader.h
+        src/viewmodel/node_code_view_model.cpp
+        includes/viewmodel/node_code_view_model.h
+        src/ui/editor/node_list_model.cpp
+        includes/ui/editor/node_list_model.h
+        src/ui/editor/node_editor.cpp
+        includes/ui/editor/node_editor.h
+        src/viewmodel/route_file_view_model.cpp
+        includes/viewmodel/route_file_view_model.h
+        includes/model/FileInfo.h
         src/viewmodel/path_view_model.cpp
         includes/viewmodel/path_view_model.h
 )
