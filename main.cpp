@@ -3,7 +3,6 @@
 #include "ui/main/main_window.h"
 #include "utils/patterns/observer/subject.h"
 #include "struct/MapNode.h"
-#include "viewmodel/map_node_view_model.h"
 #include "utils/file/file_manager.h"
 #include "utils/file/code_file_reader.h"
 #include "ui/editor/node_list_model.h"

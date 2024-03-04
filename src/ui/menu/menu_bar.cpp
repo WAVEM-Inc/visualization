@@ -13,12 +13,16 @@
 #include "utils/events/FileEvents.h"
 #include "utils/file/route_file_reader.h"
 #include "utils/file/route_file_writer.h"
+#include "model/map_node_model.h"
+#include "ui/dialog/node_type_dialog.h"
+#include "enum/NodeType.h"
+#include "model/file_info_model.h"
 
 MenuBar::MenuBar(QWidget *parent) : QMenuBar(parent) {
     initializeStyleSheet();
 
     // Menu-File
-    QMenu *fileMenu = this->addMenu(tr("&File"));
+    QMenu *fileMenu = this->addMenu(tr("&파일"));
 
     // Menu-File-Edit
     fileMenu->addSection(tr("Edit"));
@@ -46,6 +50,24 @@ MenuBar::MenuBar(QWidget *parent) : QMenuBar(parent) {
     saveFileAs->setShortcut(QKeySequence("Ctrl+Shift+S"));
     saveFileAs->setEnabled(false);
 
+    // Menu-Edit
+    QMenu *editMenu = this->addMenu(tr("&편집"));
+
+    QAction *addNewNode = editMenu->addAction(tr("&지도에 노드 추가"));
+    addNewNode->setShortcut(QKeySequence("Ctrl+Alt+N"));
+    addNewNode->setEnabled(false);
+    connect(addNewNode, &QAction::triggered, this, [this]() {
+       this->onAddNewNode();
+    });
+
+    // connect to models
+    connect(&FileInfoModel::getInstance(), &FileInfoModel::fileSavableChanged, this,
+            [saveFile, saveFileAs, addNewNode](bool savable) {
+
+        saveFileAs->setEnabled(savable);
+        saveFile->setEnabled(savable);
+        addNewNode->setEnabled(savable);
+    });
 
 /*    // Listen savable state
     m_listener.listen([&saveFile, &saveFileAs](const event::FILE_SAVABLE &event) {
@@ -121,4 +143,8 @@ void MenuBar::onOpenFile() {
         RouteFileReader reader;
         reader.loadFile(filePath);
     }
+}
+
+void MenuBar::onAddNewNode() {
+    MapNodeModel::getInstance().updateUseAddMode(true);
 }

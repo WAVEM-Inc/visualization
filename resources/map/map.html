@@ -111,6 +111,9 @@
             });
         }
 
+        let selectedMarker = null;
+        let selectedNodeId = null;
+
         async function updateMarkers(jsonData) {
             // JSON 데이터를 파싱합니다.
             const parsedData = JSON.parse(jsonData);
@@ -126,7 +129,7 @@
             // JSON 객체의 각 항목(키와 값 쌍)을 반복 처리하고, 새로운 마커를 추가하거나 기존 마커를 업데이트합니다.
             Object.keys(parsedData).forEach(key => {
                 const item = parsedData[key];
-                const newPosition = new google.maps.LatLng(item.latitude, item.longitude);
+                const newPosition = new google.maps.LatLng(item.position.latitude, item.position.longitude);
 
                 // 마커가 이미 존재하는지 확인합니다.
                 if (markers[key]) {
@@ -144,10 +147,30 @@
                     const marker = new google.maps.Marker({
                         map: map,
                         position: newPosition,
-                        draggable: true
+                        draggable: true,
+                        icon: getDefaultMarker(),
                     });
 
                     marker.addListener("click", () => {
+                        if (selectedMarker == marker) {
+                            marker.setIcon(getDefaultMarker());
+                            selectedMarker = null;
+                            selectedNodeId = null;
+
+                            infoWindow.close();
+                            coordinateHandler.onNodeClickEvent(selectedNodeId);
+                            return;
+                        }
+
+                        if (selectedMarker) {
+                            selectedMarker.setIcon(getDefaultMarker());
+                        }
+
+                        marker.setIcon(getSelectedMarker());
+                        selectedMarker = marker;
+                        selectedNodeId = key;
+                        coordinateHandler.onNodeClickEvent(selectedNodeId);
+
                         const currentPos = marker.getPosition();
                         const text = `NodeID: ${key}<br>` +
                             `latitude: ${currentPos.lat()}, longitude: ${currentPos.lng()}`;
@@ -171,6 +194,34 @@
                     markers[key] = marker;
                 }
             });
+        }
+
+        function getDefaultMarker() {
+            const svgMarker = {
+                path: "M-1.547 12l6.563-6.609-1.406-1.406-5.156 5.203-2.063-2.109-1.406 1.406zM0 0q2.906 0 4.945 2.039t2.039 4.945q0 1.453-0.727 3.328t-1.758 3.516-2.039 3.070-1.711 2.273l-0.75 0.797q-0.281-0.328-0.75-0.867t-1.688-2.156-2.133-3.141-1.664-3.445-0.75-3.375q0-2.906 2.039-4.945t4.945-2.039z",
+                fillColor: "red",
+                fillOpacity: 0.6,
+                strokeWeight: 0,
+                rotation: 0,
+                scale: 2,
+                anchor: new google.maps.Point(0, 20),
+            };
+
+            return svgMarker;
+        }
+
+        function getSelectedMarker() {
+            const svgMarker = {
+                path: "M-1.547 12l6.563-6.609-1.406-1.406-5.156 5.203-2.063-2.109-1.406 1.406zM0 0q2.906 0 4.945 2.039t2.039 4.945q0 1.453-0.727 3.328t-1.758 3.516-2.039 3.070-1.711 2.273l-0.75 0.797q-0.281-0.328-0.75-0.867t-1.688-2.156-2.133-3.141-1.664-3.445-0.75-3.375q0-2.906 2.039-4.945t4.945-2.039z",
+                fillColor: "blue",
+                fillOpacity: 0.6,
+                strokeWeight: 0,
+                rotation: 0,
+                scale: 2,
+                anchor: new google.maps.Point(0, 20),
+            };
+
+            return svgMarker;
         }
     </script>
 </head>

@@ -8,6 +8,7 @@
 
 #include <QObject>
 #include <qmap.h>
+#include "struct/Path.h"
 
 class PathInfoModel : public QObject {
 Q_OBJECT
@@ -22,6 +23,10 @@ public:
 
     PathInfoModel &operator=(const PathInfoModel &) = delete;
 
+    void setPathInfoMap(const QMap<std::string, std::string>& pathInfoMap);
+
+    void setPathInfoMap(const std::vector<Path> &paths);
+
     void addPathInfo(const std::string& id, const std::string& name);
 
     bool updatePathInfo(const std::string& id, const std::string& name);
@@ -30,13 +35,17 @@ public:
 
     std::string getCurrentPathId();
 
+    std::string getCurrentPathName() const;
+
 signals:
-    void pathInfoMapChanged(QMap<std::string, std::string> pathInfoMap);
+    void pathInfoMapChanged(const QMap<std::string, std::string> &pathInfoMap);
 
     void currentPathIdChanged(const std::string &pathId);
 
 private:
     explicit PathInfoModel(QObject *parent = nullptr);
+
+    void clearPathInfoMap();
 
 private:
     QMap<std::string, std::string> _pathInfoMap; // key: pathId, value: pathName

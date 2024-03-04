@@ -23,18 +23,24 @@ public:
 
     NodeInfoModel &operator=(const NodeInfoModel &) = delete;
 
+    void updateNodes(const QMap<std::string, QList<Node>>& nodesMap);
+
     bool addNodeToCurrentPath(const Node &node);
 
-    bool removeNodeFromCurrentPath(const std::string &nodeId);
+    bool removeNodeFromCurrentPath(int index);
 
-    bool selectCurrentNode(const std::string &nodeId);
+    bool selectCurrentNode(int index);
 
     bool updateCurrentNode(const Node &node);
 
-    QMap<std::string, Node> getNodesFromCurrentPath();
+    QList<Node> getNodesFromCurrentPath() const;
+
+    QMap<std::string, QList<Node>> getAllNodes() const;
 
 signals:
-    void nodesMapChanged(const QMap<std::string, QMap<std::string, Node>> &nodesMap);
+    void nodesMapChanged(const QMap<std::string, QList<Node>> &nodesMap);
+
+    void currentNodeListChanged(const QList<Node> &nodeList);
 
     void currentNodeChanged(const Node &node);
 
@@ -42,7 +48,8 @@ private:
     explicit NodeInfoModel(QObject *parent = nullptr);
 
 private:
-    QMap<std::string, QMap<std::string, Node>> _nodesMap; // key: pathId, value: {key: nodeId, value: node}
+    QMap<std::string, QList<Node>> _nodesMap; // key: pathId, value: list<Node>
+    QList<Node> _currentNodeList;
     Node _currentNode;
 };
 

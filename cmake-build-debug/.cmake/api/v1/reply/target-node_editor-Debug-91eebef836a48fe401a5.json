@@ -44,7 +44,7 @@
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 96,
+				"line" : 100,
 				"parent" : 0
 			},
 			{
@@ -148,13 +148,13 @@
 			{
 				"command" : 8,
 				"file" : 0,
-				"line" : 89,
+				"line" : 93,
 				"parent" : 0
 			},
 			{
 				"command" : 9,
 				"file" : 0,
-				"line" : 91,
+				"line" : 95,
 				"parent" : 0
 			}
 		]
@@ -348,25 +348,25 @@
 				13,
 				18,
 				20,
+				21,
 				22,
 				23,
 				24,
 				25,
 				26,
-				27,
-				28,
+				29,
 				31,
 				33,
-				35,
-				38,
+				36,
+				37,
 				39,
 				41,
-				42,
 				44,
-				47,
+				46,
 				48,
 				50,
-				52
+				55,
+				57
 			]
 		}
 	],
@@ -476,25 +476,25 @@
 				13,
 				18,
 				20,
+				21,
 				22,
 				23,
 				24,
 				25,
 				26,
-				27,
-				28,
+				29,
 				31,
 				33,
-				35,
-				38,
+				36,
+				37,
 				39,
 				41,
-				42,
 				44,
-				47,
+				46,
 				48,
 				50,
-				52
+				55,
+				57
 			]
 		},
 		{
@@ -515,34 +515,38 @@
 				16,
 				17,
 				19,
-				21,
-				29,
+				27,
+				28,
 				30,
 				32,
 				34,
-				36,
-				37,
+				35,
+				38,
 				40,
+				42,
 				43,
 				45,
-				46,
+				47,
 				49,
 				51,
-				53
+				52,
+				53,
+				54,
+				56
 			]
 		},
 		{
 			"name" : "",
 			"sourceIndexes" : 
 			[
-				54
+				58
 			]
 		},
 		{
 			"name" : "CMake Rules",
 			"sourceIndexes" : 
 			[
-				55
+				59
 			]
 		}
 	],
@@ -642,17 +646,6 @@
 		{
 			"backtrace" : 1,
 			"path" : "includes/utils/patterns/observer/subject.h",
-			"sourceGroupIndex" : 1
-		},
-		{
-			"backtrace" : 1,
-			"compileGroupIndex" : 0,
-			"path" : "src/viewmodel/map_node_view_model.cpp",
-			"sourceGroupIndex" : 0
-		},
-		{
-			"backtrace" : 1,
-			"path" : "includes/viewmodel/map_node_view_model.h",
 			"sourceGroupIndex" : 1
 		},
 		{
@@ -776,12 +769,6 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "src/viewmodel/node_code_view_model.cpp",
-			"sourceGroupIndex" : 0
-		},
-		{
-			"backtrace" : 1,
-			"compileGroupIndex" : 0,
 			"path" : "src/ui/editor/node_list_model.cpp",
 			"sourceGroupIndex" : 0
 		},
@@ -805,12 +792,6 @@
 			"backtrace" : 1,
 			"path" : "includes/struct/FileInfo.h",
 			"sourceGroupIndex" : 1
-		},
-		{
-			"backtrace" : 1,
-			"compileGroupIndex" : 0,
-			"path" : "src/viewmodel/path_view_model.cpp",
-			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
@@ -844,6 +825,49 @@
 			"backtrace" : 1,
 			"path" : "includes/model/node_info_model.h",
 			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/model/map_node_model.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "includes/model/map_node_model.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "includes/enum/NodeType.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "includes/enum/NodeKind.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "includes/enum/Direction.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/ui/dialog/node_type_dialog.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "includes/ui/dialog/node_type_dialog.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/enum/NodeType.cpp",
+			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 0,

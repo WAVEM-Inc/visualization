@@ -8,9 +8,9 @@
 #include "utils/file/file_manager.h"
 #include "utils/file/route_file_writer.h"
 #include "utils/patterns/singleton/singleton.h"
-#include "viewmodel/path_view_model.h"
-#include "viewmodel/map_node_view_model.h"
 #include "model/file_info_model.h"
+#include "model/path_info_model.h"
+#include "model/map_node_model.h"
 
 
 RouteFileWriter::RouteFileWriter(QObject *parent) : QObject(parent) {
@@ -64,9 +64,9 @@ bool RouteFileWriter::saveFile(const QString &filePath, const RouteFile &routeFi
         info.mapId = routeFileData.mapId;
 
         FileInfoModel::getInstance().updateFileInfo(info);
+        PathInfoModel::getInstance().setPathInfoMap(routeFileData.path);
+        MapNodeModel::getInstance().setMapNodes(routeFileData.node);
 
-        PathViewModel::Instance().updatePathMap(routeFileData.path);
-        MapNodeViewModel::Instance().update_map_nodes(routeFileData.node);
     } else {
         QMessageBox::warning(nullptr, "실패", "파일 저장에 실패하였습니다.");
 

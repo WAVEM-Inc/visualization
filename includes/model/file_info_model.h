@@ -32,7 +32,7 @@ public:
 signals:
     void fileInfoChanged(const FileInfo &info);
 
-    void fileSavableChanged(const bool savable);
+    void fileSavableChanged(bool savable);
 
 private:
     explicit FileInfoModel(QObject *parent = nullptr);

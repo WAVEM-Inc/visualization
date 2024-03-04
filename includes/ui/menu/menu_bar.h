@@ -27,6 +27,7 @@ private:
 
     void onSaveFileAs();
 
+    void onAddNewNode();
 };
 
 

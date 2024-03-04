@@ -8,11 +8,14 @@
 
 #include <QObject>
 #include <iostream>
+#include <QInputDialog>
 #include "struct/Node.h"
 #include "struct/MapNode.h"
-#include "viewmodel/map_node_view_model.h"
+#include "model/map_node_model.h"
 #include "utils/file/file_manager.h"
-#include "viewmodel/route_file_view_model.h"
+#include "model/file_info_model.h"
+#include "ui/dialog/node_type_dialog.h"
+#include "enum/NodeType.h"
 
 class CoordinateHandler : public QObject {
 Q_OBJECT
@@ -23,23 +26,48 @@ public:
 public slots:
 
     Q_INVOKABLE void onClickEvent(double lat, double lng) {
-        if (RouteFileViewModel::Instance().getSavableState()) {
-            char buffer[100];
-            count++;
+        if (MapNodeModel::getInstance().getAddModeUsability()) {
+            bool ok;
+            QString nodeId = QInputDialog::getText(nullptr, "새 노드 추가", "추가할 노드의 아이디를 입력하주세요.",
+                                                   QLineEdit::Normal, "", &ok, Qt::WindowFlags());
 
-            snprintf(buffer, sizeof(buffer), "test%d", count);
-            MapNodeViewModel::Instance().add_map_node(std::string(buffer), Position(lat, lng));
+            if (!ok || nodeId.isEmpty()) {
+                return;
+            }
+
+            NodeTypeDialog  nodeTypeDialog;
+            std::string typeName;
+
+            if (nodeTypeDialog.exec() == QDialog::Accepted) {
+                std::string selected = nodeTypeDialog.selectedOption();
+                NodeType type = getTypeFromKorName(selected);
+                typeName = getTypeName(type);
+            }
+
+            if (ok && MapNodeModel::getInstance().checkIdUsability(nodeId.toStdString())) {
+                MapNode node;
+                node.nodeId = nodeId.toStdString();
+                node.type = typeName;
+                node.position = Position(lat, lng);
+
+                MapNodeModel::getInstance().addMapNode(node);
+            }
         }
+
+        MapNodeModel::getInstance().updateUseAddMode(false);
+    }
+
+    Q_INVOKABLE void onNodeClickEvent(QString nodeId) {
+        MapNodeModel::getInstance().selectMapNode(nodeId.toStdString());
     }
 
     Q_INVOKABLE void onRightClickEvent(QString nodeId) {
-        std::cout << nodeId.toStdString() << "\n";
-        MapNodeViewModel::Instance().remove_map_node(nodeId.toStdString());
+/*        std::cout << nodeId.toStdString() << "\n";
+        MapNodeViewModel::Instance().remove_map_node(nodeId.toStdString());*/
     }
 
     Q_INVOKABLE void onDragendEvent(QString nodeId, double lat, double lng) {
-        MapNodeViewModel::Instance().edit_map_node(nodeId.toStdString(), Position(lat, lng));
-        std::cout << "NodeID: " << nodeId.toStdString() << ", Position: " << lat << ", " << lng << "\n";
+        MapNodeModel::getInstance().updateMapNode(nodeId.toStdString(), lat, lng);
     }
 
 private:

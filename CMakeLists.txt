@@ -35,8 +35,6 @@ add_executable(node_editor
         includes/utils/patterns/singleton/singleton.h
         includes/utils/patterns/observer/observer.h
         includes/utils/patterns/observer/subject.h
-        src/viewmodel/map_node_view_model.cpp
-        includes/viewmodel/map_node_view_model.h
         src/struct/MapNode.cpp
         includes/struct/RouteFile.h
         src/struct/Position.cpp
@@ -59,19 +57,25 @@ add_executable(node_editor
         src/struct/NodeCode.cpp
         src/utils/file/code_file_reader.cpp
         includes/utils/file/code_file_reader.h
-        src/viewmodel/node_code_view_model.cpp
         src/ui/editor/node_list_model.cpp
         includes/ui/editor/node_list_model.h
         src/ui/editor/node_editor.cpp
         includes/ui/editor/node_editor.h
         includes/struct/FileInfo.h
-        src/viewmodel/path_view_model.cpp
         src/model/file_info_model.cpp
         includes/model/file_info_model.h
         src/model/path_info_model.cpp
         includes/model/path_info_model.h
         src/model/node_info_model.cpp
         includes/model/node_info_model.h
+        src/model/map_node_model.cpp
+        includes/model/map_node_model.h
+        includes/enum/NodeType.h
+        includes/enum/NodeKind.h
+        includes/enum/Direction.h
+        src/ui/dialog/node_type_dialog.cpp
+        includes/ui/dialog/node_type_dialog.h
+        src/enum/NodeType.cpp
 )
 
 include(FetchContent)

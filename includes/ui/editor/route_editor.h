@@ -11,6 +11,8 @@
 #include <QPushButton>
 #include <QTableWidget>
 #include <QGridLayout>
+#include <QListView>
+#include <QStandardItemModel>
 #include "struct/RouteFile.h"
 #include "utils/patterns/observer/observer.h"
 
@@ -22,40 +24,23 @@ public:
 
     void resizeEvent(QResizeEvent *event) override;
 
-protected:
-    class PathListener : public Observer<std::map<std::string, Path>> {
-    public:
-        explicit PathListener(RouteEditor *editor);
-
-    private:
-        RouteEditor *m_editor_ptr;
-
-        void update(std::map<std::string, Path> data) override;
-    };
-
-    class SavableStateListener : public Observer<bool> {
-    public:
-        explicit SavableStateListener(RouteEditor *editor);
-
-    private:
-        RouteEditor *m_editor_ptr;
-
-        void update(bool data) override;
-    };
-
 private:
     QGridLayout *m_layout_ptr;
     QComboBox *m_routeComboBox_ptr;
-    QTableWidget *m_nodeTable_ptr;
+    QTableView *_nodeListView_ptr;
+    QStandardItemModel *_nodeListModel_ptr;
     QPushButton *m_addRouteButton_ptr;
     QPushButton *m_addNodeButton_ptr;
-    std::shared_ptr<PathListener> m_pathListener_ptr;
-    std::shared_ptr<SavableStateListener> m_savableStateListener_ptr;
 
 private slots:
     void onAddRouteButtonClicked();
 
     void onAddNodeButtonClicked();
+
+private slots:
+    void onFileSavableChanged(bool savable);
+    void onPathInfoMapChanged(const QMap<std::string, std::string>& pathInfoMap);
+    void onCurrentNodeListChanged(const QList<Node> &nodeList);
 };
 
 

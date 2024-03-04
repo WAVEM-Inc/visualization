@@ -13,6 +13,7 @@
 
 struct MapNode {
     std::string nodeId;
+    std::string type;
     Position position;
 
     MapNode() = default;

@@ -8,6 +8,9 @@
 #include <QScrollArea>
 #include <QPushButton>
 #include "ui/editor/node_editor.h"
+#include "model/file_info_model.h"
+#include "model/path_info_model.h"
+#include "model/node_info_model.h"
 
 NodeEditor::NodeEditor(QWidget *parent) :
 QWidget(parent),
@@ -25,6 +28,9 @@ void NodeEditor::init() {
     initTaskInfoWidget();
 
     initTabWidget();
+    connect(&NodeInfoModel::getInstance(), &NodeInfoModel::currentNodeChanged, this, [this](const Node &node) {
+
+    });
 }
 
 void NodeEditor::initTabWidget() {
@@ -40,7 +46,7 @@ void NodeEditor::initTabWidget() {
     QWidget *latlngBtnWidget = new QWidget();
     QHBoxLayout *latlngBtnLayout = new QHBoxLayout();
 
-    QPushButton *mapLatLngBtn = new QPushButton("지도에서 선택");
+    QPushButton *mapLatLngBtn = new QPushButton("지도 위치 선택");
     QPushButton *vehicleLatLngBtn = new QPushButton("차량 위치 선택");
     latlngBtnLayout->addWidget(mapLatLngBtn);
     latlngBtnLayout->addWidget(vehicleLatLngBtn);
@@ -92,6 +98,10 @@ void NodeEditor::initRouteInfoWidget() {
     layout->addWidget(codeEd, 3, 1);
 
     m_route_info_ptr->setLayout(layout);
+
+    connect(&PathInfoModel::getInstance(), &PathInfoModel::currentPathIdChanged, this, [this](const std::string &pathId) {
+
+    });
 }
 
 void NodeEditor::initNodeInfoWidget() {

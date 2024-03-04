@@ -13,17 +13,6 @@
 #include "struct/MapNode.h"
 #include "struct/RouteFile.h"
 
-class MapNodeVectorListener : public QObject, public Observer<std::map<std::string, Position>>{
-    Q_OBJECT
-public:
-    explicit MapNodeVectorListener(QPointer<QWebEnginePage> webView);
-
-    void update(std::map<std::string, Position> data) override;
-
-private:
-    QPointer<QWebEnginePage> m_webpage_ptr;
-    bool pageLoaded = false;
-};
 
 class MapView : public QWidget {
 Q_OBJECT
@@ -38,7 +27,9 @@ private:
     QPointer<QWebEngineView> m_webview_ptr;
     QPointer<QWebEnginePage> m_webpage_ptr;
     QPointer<QWebChannel> m_web_channel_ptr;
-    std::shared_ptr<MapNodeVectorListener> m_mapNodesListener_ptr;
+
+private slots:
+    void onMapNodesChanged(const QMap<std::string, MapNode> &nodeMap);
 };
 
 

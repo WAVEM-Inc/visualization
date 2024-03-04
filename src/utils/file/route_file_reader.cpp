@@ -10,6 +10,8 @@
 #include "struct/RouteFile.h"
 #include "model/file_info_model.h"
 #include "utils/patterns/singleton/singleton.h"
+#include "model/path_info_model.h"
+#include "model/map_node_model.h"
 
 RouteFileReader::RouteFileReader(QObject *parent) : QObject(parent){
     connect(&FileInfoModel::getInstance(), &FileInfoModel::fileInfoChanged, this, &RouteFileReader::onFileInfoChanged);
@@ -29,15 +31,14 @@ bool RouteFileReader::loadFile(const QString &filePath) {
     nlohmann::json json = nlohmann::json::parse(fileContent.toStdString());
     RouteFile fileData = json.get<RouteFile>();
 
-    RouteFileViewModel::Instance().updateOriginFile(filePath.toStdString(), fileData);
-    PathViewModel::Instance().updatePathMap(fileData.path);
-    MapNodeViewModel::Instance().update_map_nodes(fileData.node);
-
     FileInfo info;
     info.filePath = filePath.toStdString();
     info.fileVersion = fileData.fileVersion;
     info.mapId = fileData.mapId;
+
     FileInfoModel::getInstance().updateFileInfo(info);
+    PathInfoModel::getInstance().setPathInfoMap(fileData.path);
+    MapNodeModel::getInstance().setMapNodes(fileData.node);
 
     return true;
 }

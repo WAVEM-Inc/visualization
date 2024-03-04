@@ -77,7 +77,7 @@ void FileInfoModel::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _i
         (void)_t;
         switch (_id) {
         case 0: _t->fileInfoChanged((*reinterpret_cast< const FileInfo(*)>(_a[1]))); break;
-        case 1: _t->fileSavableChanged((*reinterpret_cast< const bool(*)>(_a[1]))); break;
+        case 1: _t->fileSavableChanged((*reinterpret_cast< bool(*)>(_a[1]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -90,7 +90,7 @@ void FileInfoModel::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _i
             }
         }
         {
-            using _t = void (FileInfoModel::*)(const bool );
+            using _t = void (FileInfoModel::*)(bool );
             if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&FileInfoModel::fileSavableChanged)) {
                 *result = 1;
                 return;
@@ -147,7 +147,7 @@ void FileInfoModel::fileInfoChanged(const FileInfo & _t1)
 }
 
 // SIGNAL 1
-void FileInfoModel::fileSavableChanged(const bool _t1)
+void FileInfoModel::fileSavableChanged(bool _t1)
 {
     void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
     QMetaObject::activate(this, &staticMetaObject, 1, _a);
