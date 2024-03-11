@@ -20,6 +20,8 @@ public:
 
     void setDetectionRange(DetectionRange detectionRange);
 
+    DetectionRange getDetectionRange();
+
 private:
     QLineEdit *_latitude_ptr;
     QLineEdit *_longitude_ptr;

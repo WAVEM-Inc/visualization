@@ -9,6 +9,7 @@
 #include <QObject>
 #include <iostream>
 #include <QInputDialog>
+#include <QMessageBox>
 #include "struct/Node.h"
 #include "struct/MapNode.h"
 #include "model/map_node_model.h"
@@ -26,7 +27,7 @@ public:
 public slots:
 
     Q_INVOKABLE void onClickEvent(double lat, double lng) {
-        if (MapNodeModel::getInstance().getAddModeUsability()) {
+        if (FileInfoModel::getInstance().getFileSavable()) {
             bool ok;
             QString nodeId = QInputDialog::getText(nullptr, "새 노드 추가", "추가할 노드의 아이디를 입력하주세요.",
                                                    QLineEdit::Normal, "", &ok, Qt::WindowFlags());
@@ -46,15 +47,20 @@ public slots:
 
             if (ok && MapNodeModel::getInstance().checkIdUsability(nodeId.toStdString())) {
                 MapNode node;
-                node.nodeId = nodeId.toStdString();
+                node.nodeId = "NO-" + FileInfoModel::getInstance().getFileInfo().mapId + "-" + nodeId.toStdString();
                 node.type = typeName;
                 node.position = Position(lat, lng);
 
                 MapNodeModel::getInstance().addMapNode(node);
             }
+        } else {
+            QMessageBox msgBox;
+            msgBox.setWindowTitle(QString("선택된 파일 없음"));
+            msgBox.setText(QString("선택된 파일이 없습니다.\n파일을 새로 만들거나 존재하는 파일을\n 불러온 후 다시시도해주세요."));
+            msgBox.setStandardButtons(QMessageBox::Ok);
+            msgBox.setDefaultButton(QMessageBox::Ok);
+            msgBox.exec();
         }
-
-        MapNodeModel::getInstance().updateUseAddMode(false);
     }
 
     Q_INVOKABLE void onNodeClickEvent(QString nodeId) {

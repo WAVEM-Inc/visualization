@@ -34,7 +34,7 @@ bool RouteFileReader::loadFile(const QString &filePath) {
 
     FileInfo info;
     info.filePath = filePath.toStdString();
-    info.fileVersion = fileData.fileVersion;
+    info.fileVersion = fileData.version;
     info.mapId = fileData.mapId;
 
     FileInfoModel::getInstance().updateFileInfo(info);

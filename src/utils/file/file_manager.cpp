@@ -13,7 +13,7 @@
 void FileManager::updateOriginFileData(const RouteFile &routeFile) {
     m_originFileData_ptr = std::make_shared<RouteFile>(routeFile);
 
-    if (!(m_originFileData_ptr->fileVersion.empty() && m_originFileData_ptr->mapId.empty())) {
+    if (!(m_originFileData_ptr->version.empty() && m_originFileData_ptr->mapId.empty())) {
         m_savable_state->notify(true);
     } else {
         m_savable_state->notify(false);

@@ -9,7 +9,6 @@
 #include <QPushButton>
 #include "ui/editor/node_editor.h"
 #include "model/file_info_model.h"
-#include "model/path_info_model.h"
 #include "model/node_info_model.h"
 #include "enum/NodeKind.h"
 #include "enum/Direction.h"
@@ -20,7 +19,9 @@ NodeEditor::NodeEditor(QWidget *parent) :
         m_tab_ptr(new QTabWidget(this)),
         m_route_info_ptr(new QWidget()),
         m_node_info_ptr(new QWidget()),
-        m_task_info_ptr(new QWidget()) {
+        m_task_info_ptr(new QWidget()),
+        _addRangeBtn_ptr(new QPushButton("+")),
+        _dtrListView_ptr(new DetectionRangeListView()) {
 
     init();
 }
@@ -32,6 +33,7 @@ void NodeEditor::init() {
 
     initTabWidget();
 
+    this->setVisible(false);
     connect(&NodeInfoModel::getInstance(), &NodeInfoModel::currentNodeChanged, this, [this](const Node &node) {
         if (node.nodeId.empty()) {
             this->setVisible(false);
@@ -53,7 +55,25 @@ void NodeEditor::init() {
     });
 
     // setup widget events
+    connect(_okBtn_ptr, &QPushButton::clicked, this, [this]() {
+        Node node;
+        node.position.latitude = _nodeLat_ptr->text().toDouble();
+        node.position.longitude = _nodeLng_ptr->text().toDouble();
+        node.nodeId = _nodeId_ptr->text().toStdString();
+        node.type = _nodeType_ptr->text().toStdString();
+        node.direction = _nodeType_ptr->text().toStdString();
+        node.kind = _nodeKind_ptr->currentText().toStdString();
+        node.heading = _nodeHeading_ptr->text().toInt();
+        node.detectionRange = _dtrListView_ptr->getDetectionRanges();
 
+        NodeInfoModel::getInstance().updateCurrentNode(node);
+        this->setVisible(false);
+    });
+
+    connect(_addRangeBtn_ptr, &QPushButton::clicked, this, [this](){
+        DetectionRange range;
+        _dtrListView_ptr->addDetectionRange(range);
+    });
 }
 
 void NodeEditor::initTabWidget() {
@@ -177,24 +197,25 @@ void NodeEditor::initTaskInfoWidget() {
 
     QLabel *headingLb = new QLabel("차량 방향");
     _nodeHeading_ptr = new QLineEdit();
+    _nodeHeading_ptr->setValidator(new QIntValidator(_nodeHeading_ptr));
     layout->addWidget(headingLb, 3, 0);
     layout->addWidget(_nodeHeading_ptr, 3, 1);
 
     QLabel *detectionRangeLb = new QLabel("감지 범위");
-    _addRangeBtn_ptr = new QPushButton("+");
     _addRangeBtn_ptr->setFixedSize(30, 30);
-    _dtrListView_ptr =  new DetectionRangeListView();
     layout->addWidget(detectionRangeLb, 4, 0);
     layout->addWidget(_addRangeBtn_ptr, 4, 1, Qt::AlignLeft);
     layout->addWidget(_dtrListView_ptr, 5, 0, 1, 2);
 
     QLabel *latitudeLb = new QLabel("위도");
     _nodeLat_ptr = new QLineEdit();
+    _nodeLat_ptr->setValidator(new QDoubleValidator(_nodeLat_ptr));
     layout->addWidget(latitudeLb, 6, 0);
     layout->addWidget(_nodeLat_ptr, 6, 1);
 
     QLabel *longitudeLb = new QLabel("경도");
     _nodeLng_ptr = new QLineEdit();
+    _nodeLng_ptr->setValidator(new QDoubleValidator(_nodeLng_ptr));
     layout->addWidget(longitudeLb, 7, 0);
     layout->addWidget(_nodeLng_ptr, 7, 1);
 

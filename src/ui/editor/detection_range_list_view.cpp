@@ -4,7 +4,7 @@
 
 #include "ui/editor/detection_range_list_view.h"
 
-DetectionRangeListView::DetectionRangeListView(QWidget *parent) {
+DetectionRangeListView::DetectionRangeListView(QWidget *parent) : QWidget(parent) {
     _layout_ptr = new QVBoxLayout();
     setLayout(_layout_ptr);
 }
@@ -18,7 +18,7 @@ void DetectionRangeListView::setDetectionRanges(const std::vector<DetectionRange
 }
 
 void DetectionRangeListView::addDetectionRange(const DetectionRange &range) {
-    DetectionRangeView *view = new DetectionRangeView();
+    auto *view = new DetectionRangeView();
     view->setDetectionRange(range);
 
     _layout_ptr->addWidget(view);
@@ -34,6 +34,15 @@ void DetectionRangeListView::clear() {
         }
     }
     _views_ptr.clear();
+}
+
+std::vector<DetectionRange> DetectionRangeListView::getDetectionRanges() {
+    std::vector<DetectionRange> ranges;
+    for (DetectionRangeView *view: _views_ptr)
+        ranges.push_back(view->getDetectionRange());
+
+
+    return ranges;
 }
 
 DetectionRangeListView::~DetectionRangeListView() = default;

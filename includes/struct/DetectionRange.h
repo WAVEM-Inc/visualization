@@ -10,9 +10,10 @@
 
 struct DetectionRange {
     Position position;
-    double width;
-    double height;
+    double width = 0;
+    double height = 0;
     std::string processingCode;
+
 
 };
 

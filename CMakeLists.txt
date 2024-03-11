@@ -1,5 +1,5 @@
-cmake_minimum_required(VERSION 3.27)
-project(node_editor)
+cmake_minimum_required(VERSION 3.22.1)
+project(route_editor)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_AUTOMOC ON)
@@ -17,7 +17,7 @@ find_package(Qt5 COMPONENTS
         WebChannel
         REQUIRED)
 
-add_executable(node_editor
+add_executable(route_editor
         main.cpp
         includes/utils/coordinate_handler.h
         includes/struct/Position.h
@@ -98,12 +98,12 @@ file(COPY ${RESOURCE_DIR} DESTINATION ${CMAKE_BINARY_DIR})
 install(DIRECTORY ${RESOURCE_DIR} DESTINATION ${CMAKE_INSTALL_PREFIX})
 add_definitions(-DRESOURCE_DIR="${RESOURCE_DIR_DEST}")
 
-include_directories(node_editor
+include_directories(route_editor
         includes
         includes/ui/map
 )
 
-target_link_libraries(node_editor
+target_link_libraries(route_editor
         Qt5::Core
         Qt5::Gui
         Qt5::Widgets

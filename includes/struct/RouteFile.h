@@ -11,7 +11,7 @@
 #include "MapNode.h"
 
 struct RouteFile {
-    std::string fileVersion;
+    std::string version;
     std::string mapId;
     std::vector<Path> path;
     std::vector<MapNode> node;

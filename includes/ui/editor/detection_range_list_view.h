@@ -21,6 +21,8 @@ public:
 
     void addDetectionRange(const DetectionRange &range);
 
+    std::vector<DetectionRange> getDetectionRanges();
+
     void clear();
 
 private:

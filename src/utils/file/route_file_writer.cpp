@@ -60,7 +60,7 @@ bool RouteFileWriter::saveFile(const QString &filePath, const RouteFile &routeFi
     if (out.status() == QTextStream::Ok) {
         FileInfo info;
         info.filePath = finalPath.toStdString();
-        info.fileVersion = routeFileData.fileVersion;
+        info.fileVersion = routeFileData.version;
         info.mapId = routeFileData.mapId;
 
         FileInfoModel::getInstance().updateFileInfo(info);

@@ -131,7 +131,7 @@ void MenuBar::onNewFile() {
 
     if (!filePath.isEmpty()) {
         RouteFile routeFileData;
-        routeFileData.fileVersion = fileVersion.toStdString();
+        routeFileData.version = fileVersion.toStdString();
         routeFileData.mapId = mapId.toStdString();
 
         RouteFileWriter writer;
@@ -159,7 +159,7 @@ void MenuBar::onSaveFile() {
     RouteFileWriter writer;
 
     RouteFile fileData;
-    fileData.fileVersion = info.fileVersion;
+    fileData.version = info.fileVersion;
     fileData.mapId = info.mapId;
 
     std::vector<Path> paths;

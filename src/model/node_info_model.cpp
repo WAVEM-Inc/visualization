@@ -80,6 +80,9 @@ bool NodeInfoModel::updateCurrentNode(const Node &node) {
     if (node.nodeId == _currentNode.nodeId) {
         _currentNode = node;
         emit currentNodeChanged(_currentNode);
+
+        _nodesMap[PathInfoModel::getInstance().getCurrentPathId()][_currentNodeIndex] = _currentNode;
+        emit nodesMapChanged(_nodesMap);
     }
 
     return true;
