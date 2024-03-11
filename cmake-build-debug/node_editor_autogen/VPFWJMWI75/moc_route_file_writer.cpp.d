@@ -1,12 +1,12 @@
 /home/antique/Desktop/gui/node_editor/cmake-build-debug/node_editor_autogen/VPFWJMWI75/moc_route_file_writer.cpp: /home/antique/Desktop/gui/node_editor/includes/utils/file/route_file_writer.h \
   /home/antique/Desktop/gui/node_editor/cmake-build-debug/node_editor_autogen/moc_predefs.h \
   /home/antique/Desktop/gui/node_editor/cmake-build-debug/_deps/json-src/single_include/nlohmann/json.hpp \
+  /home/antique/Desktop/gui/node_editor/includes/struct/DetectionRange.h \
   /home/antique/Desktop/gui/node_editor/includes/struct/MapNode.h \
   /home/antique/Desktop/gui/node_editor/includes/struct/Node.h \
   /home/antique/Desktop/gui/node_editor/includes/struct/Path.h \
   /home/antique/Desktop/gui/node_editor/includes/struct/Position.h \
   /home/antique/Desktop/gui/node_editor/includes/struct/RouteFile.h \
-  /home/antique/Desktop/gui/node_editor/includes/struct/SensingRange.h \
   /usr/include/asm-generic/errno-base.h \
   /usr/include/asm-generic/errno.h \
   /usr/include/assert.h \

@@ -4,13 +4,13 @@
   /home/antique/Desktop/gui/node_editor/includes/enum/NodeType.h \
   /home/antique/Desktop/gui/node_editor/includes/model/file_info_model.h \
   /home/antique/Desktop/gui/node_editor/includes/model/map_node_model.h \
+  /home/antique/Desktop/gui/node_editor/includes/struct/DetectionRange.h \
   /home/antique/Desktop/gui/node_editor/includes/struct/FileInfo.h \
   /home/antique/Desktop/gui/node_editor/includes/struct/MapNode.h \
   /home/antique/Desktop/gui/node_editor/includes/struct/Node.h \
   /home/antique/Desktop/gui/node_editor/includes/struct/Path.h \
   /home/antique/Desktop/gui/node_editor/includes/struct/Position.h \
   /home/antique/Desktop/gui/node_editor/includes/struct/RouteFile.h \
-  /home/antique/Desktop/gui/node_editor/includes/struct/SensingRange.h \
   /home/antique/Desktop/gui/node_editor/includes/ui/dialog/node_type_dialog.h \
   /home/antique/Desktop/gui/node_editor/includes/utils/file/file_manager.h \
   /home/antique/Desktop/gui/node_editor/includes/utils/patterns/observer/observer.h \

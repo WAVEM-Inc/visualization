@@ -17,6 +17,8 @@
 #include "ui/dialog/node_type_dialog.h"
 #include "enum/NodeType.h"
 #include "model/file_info_model.h"
+#include "model/path_info_model.h"
+#include "model/node_info_model.h"
 
 MenuBar::MenuBar(QWidget *parent) : QMenuBar(parent) {
     initializeStyleSheet();
@@ -45,6 +47,9 @@ MenuBar::MenuBar(QWidget *parent) : QMenuBar(parent) {
     QAction *saveFile = fileMenu->addAction(tr("&저장"));
     saveFile->setShortcut(QKeySequence("Ctrl+S"));
     saveFile->setEnabled(false);
+    connect(saveFile, &QAction::triggered, this, [this]() {
+        this->onSaveFile();
+    });
 
     QAction *saveFileAs = fileMenu->addAction(tr("&다른 이름으로 저장"));
     saveFileAs->setShortcut(QKeySequence("Ctrl+Shift+S"));
@@ -147,4 +152,31 @@ void MenuBar::onOpenFile() {
 
 void MenuBar::onAddNewNode() {
     MapNodeModel::getInstance().updateUseAddMode(true);
+}
+
+void MenuBar::onSaveFile() {
+    FileInfo info = FileInfoModel::getInstance().getFileInfo();
+    RouteFileWriter writer;
+
+    RouteFile fileData;
+    fileData.fileVersion = info.fileVersion;
+    fileData.mapId = info.mapId;
+
+    std::vector<Path> paths;
+    for (const auto &entry : NodeInfoModel::getInstance().getAllNodes().toStdMap()) {
+        Path path;
+        path.id = entry.first;
+        path.name = PathInfoModel::getInstance().getPathInfoMap()[entry.first];
+        path.nodelist = entry.second.toVector().toStdVector();
+        paths.push_back(path);
+    }
+    fileData.path = paths;
+
+    std::vector<MapNode> mapNodes;
+    for (const MapNode &mapNode : MapNodeModel::getInstance().getMapNodes()) {
+        mapNodes.push_back(mapNode);
+    }
+    fileData.node = mapNodes;
+
+    writer.saveFile(QString(info.filePath.c_str()), fileData);
 }

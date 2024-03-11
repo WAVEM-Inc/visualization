@@ -21,7 +21,7 @@ add_executable(node_editor
         main.cpp
         includes/utils/coordinate_handler.h
         includes/struct/Position.h
-        includes/struct/SensingRange.h
+        includes/struct/DetectionRange.h
         includes/struct/Link.h
         includes/struct/Node.h
         includes/struct/MapNode.h
@@ -43,7 +43,7 @@ add_executable(node_editor
         src/struct/Link.cpp
         src/struct/Node.cpp
         src/struct/Path.cpp
-        src/struct/SensingRange.cpp
+        src/struct/DetectionRange.cpp
         src/utils/file/file_manager.cpp
         includes/utils/file/file_manager.h
         includes/utils/events/FileEvents.h
@@ -76,6 +76,12 @@ add_executable(node_editor
         src/ui/dialog/node_type_dialog.cpp
         includes/ui/dialog/node_type_dialog.h
         src/enum/NodeType.cpp
+        src/enum/NodeKind.cpp
+        src/enum/Direction.cpp
+        src/ui/editor/detection_range_view.cpp
+        includes/ui/editor/detection_range_view.h
+        src/ui/editor/detection_range_list_view.cpp
+        includes/ui/editor/detection_range_list_view.h
 )
 
 include(FetchContent)

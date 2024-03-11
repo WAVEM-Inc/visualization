@@ -1,12 +1,14 @@
 /home/antique/Desktop/gui/node_editor/cmake-build-debug/node_editor_autogen/I2L42U6DNQ/moc_main_window.cpp: /home/antique/Desktop/gui/node_editor/includes/ui/main/main_window.h \
   /home/antique/Desktop/gui/node_editor/cmake-build-debug/node_editor_autogen/moc_predefs.h \
   /home/antique/Desktop/gui/node_editor/cmake-build-debug/_deps/json-src/single_include/nlohmann/json.hpp \
+  /home/antique/Desktop/gui/node_editor/includes/struct/DetectionRange.h \
   /home/antique/Desktop/gui/node_editor/includes/struct/MapNode.h \
   /home/antique/Desktop/gui/node_editor/includes/struct/Node.h \
   /home/antique/Desktop/gui/node_editor/includes/struct/Path.h \
   /home/antique/Desktop/gui/node_editor/includes/struct/Position.h \
   /home/antique/Desktop/gui/node_editor/includes/struct/RouteFile.h \
-  /home/antique/Desktop/gui/node_editor/includes/struct/SensingRange.h \
+  /home/antique/Desktop/gui/node_editor/includes/ui/editor/detection_range_list_view.h \
+  /home/antique/Desktop/gui/node_editor/includes/ui/editor/detection_range_view.h \
   /home/antique/Desktop/gui/node_editor/includes/ui/editor/node_editor.h \
   /home/antique/Desktop/gui/node_editor/includes/ui/editor/route_editor.h \
   /home/antique/Desktop/gui/node_editor/includes/ui/map/map_view.h \
@@ -404,6 +406,8 @@
   /usr/include/x86_64-linux-gnu/qt5/QtGui/qrgb.h \
   /usr/include/x86_64-linux-gnu/qt5/QtGui/qrgba64.h \
   /usr/include/x86_64-linux-gnu/qt5/QtGui/qstandarditemmodel.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtGui/qtextcursor.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtGui/qtextformat.h \
   /usr/include/x86_64-linux-gnu/qt5/QtGui/qtextoption.h \
   /usr/include/x86_64-linux-gnu/qt5/QtGui/qtgui-config.h \
   /usr/include/x86_64-linux-gnu/qt5/QtGui/qtguiglobal.h \
@@ -436,12 +440,15 @@
   /usr/include/x86_64-linux-gnu/qt5/QtWebEngineWidgets/qwebengineview.h \
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QComboBox \
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QGridLayout \
+  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QHBoxLayout \
+  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QLineEdit \
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QListView \
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QMainWindow \
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QMenuBar \
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QPushButton \
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QTabWidget \
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QTableWidget \
+  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QVBoxLayout \
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QWidget \
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qabstractbutton.h \
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qabstractitemdelegate.h \
@@ -457,6 +464,7 @@
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qgridlayout.h \
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qlayout.h \
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qlayoutitem.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qlineedit.h \
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qlistview.h \
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qmainwindow.h \
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qmenu.h \

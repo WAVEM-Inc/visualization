@@ -4,6 +4,8 @@
 #include "WQDUHGGYQ5/moc_node_info_model.cpp"
 #include "WQDUHGGYQ5/moc_path_info_model.cpp"
 #include "42W3TILHGL/moc_node_type_dialog.cpp"
+#include "MLWDO5DTUM/moc_detection_range_list_view.cpp"
+#include "MLWDO5DTUM/moc_detection_range_view.cpp"
 #include "MLWDO5DTUM/moc_node_editor.cpp"
 #include "MLWDO5DTUM/moc_node_list_model.cpp"
 #include "MLWDO5DTUM/moc_route_editor.cpp"

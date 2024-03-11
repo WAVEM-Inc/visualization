@@ -56,3 +56,7 @@ void PathInfoModel::clearPathInfoMap() {
 std::string PathInfoModel::getCurrentPathName() const {
     return _pathInfoMap[_currentPathId];
 }
+
+QMap<std::string, std::string> PathInfoModel::getPathInfoMap() const {
+    return _pathInfoMap;
+}

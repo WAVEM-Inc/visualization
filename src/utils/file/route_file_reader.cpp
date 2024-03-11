@@ -12,6 +12,7 @@
 #include "utils/patterns/singleton/singleton.h"
 #include "model/path_info_model.h"
 #include "model/map_node_model.h"
+#include "model/node_info_model.h"
 
 RouteFileReader::RouteFileReader(QObject *parent) : QObject(parent){
     connect(&FileInfoModel::getInstance(), &FileInfoModel::fileInfoChanged, this, &RouteFileReader::onFileInfoChanged);
@@ -38,6 +39,11 @@ bool RouteFileReader::loadFile(const QString &filePath) {
 
     FileInfoModel::getInstance().updateFileInfo(info);
     PathInfoModel::getInstance().setPathInfoMap(fileData.path);
+    QMap<std::string, QList<Node>> nodes;
+    for (const auto &path : fileData.path) {
+        nodes.insert(path.id, QList<Node>::fromVector(QVector<Node>::fromStdVector(path.nodelist)));
+    }
+    NodeInfoModel::getInstance().updateNodes(nodes);
     MapNodeModel::getInstance().setMapNodes(fileData.node);
 
     return true;

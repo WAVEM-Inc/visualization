@@ -8,7 +8,7 @@
 #include <iostream>
 #include <vector>
 #include "Position.h"
-#include "SensingRange.h"
+#include "DetectionRange.h"
 
 #include <fstream>
 #include <nlohmann/json.hpp>
@@ -20,7 +20,7 @@ struct Node {
     std::string kind;
     int heading;
     std::string direction;
-    std::vector<SensingRange> sensingRange;
+    std::vector<DetectionRange> detectionRange;
 
     Node() = default;
 };

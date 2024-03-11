@@ -11,13 +11,16 @@
 #include "model/file_info_model.h"
 #include "model/path_info_model.h"
 #include "model/node_info_model.h"
+#include "enum/NodeKind.h"
+#include "enum/Direction.h"
+#include "ui/editor/detection_range_view.h"
 
 NodeEditor::NodeEditor(QWidget *parent) :
-QWidget(parent),
-m_tab_ptr(new QTabWidget(this)),
-m_route_info_ptr(new QWidget()),
-m_node_info_ptr(new QWidget()),
-m_task_info_ptr(new QWidget()){
+        QWidget(parent),
+        m_tab_ptr(new QTabWidget(this)),
+        m_route_info_ptr(new QWidget()),
+        m_node_info_ptr(new QWidget()),
+        m_task_info_ptr(new QWidget()) {
 
     init();
 }
@@ -28,9 +31,29 @@ void NodeEditor::init() {
     initTaskInfoWidget();
 
     initTabWidget();
-    connect(&NodeInfoModel::getInstance(), &NodeInfoModel::currentNodeChanged, this, [this](const Node &node) {
 
+    connect(&NodeInfoModel::getInstance(), &NodeInfoModel::currentNodeChanged, this, [this](const Node &node) {
+        if (node.nodeId.empty()) {
+            this->setVisible(false);
+        } else {
+            this->setVisible(true);
+        }
+        _node = node;
+
+        _nodeId_ptr->setText(node.nodeId.c_str());
+        _nodeType_ptr->setText(node.type.c_str());
+        _preNode_ptr->setText(NodeInfoModel::getInstance().getPreNodeId().c_str());
+        _nextNode_ptr->setText(NodeInfoModel::getInstance().getNextNodeId().c_str());
+        _nodeKind_ptr->setCurrentText(node.kind.c_str());
+        _nodeDirection_ptr->setCurrentText(node.direction.c_str());
+        _nodeHeading_ptr->setText(QString::number(node.heading));
+        _nodeLat_ptr->setText(QString::number(node.position.latitude));
+        _nodeLng_ptr->setText(QString::number(node.position.longitude));
+        _dtrListView_ptr->setDetectionRanges(node.detectionRange);
     });
+
+    // setup widget events
+
 }
 
 void NodeEditor::initTabWidget() {
@@ -46,20 +69,20 @@ void NodeEditor::initTabWidget() {
     QWidget *latlngBtnWidget = new QWidget();
     QHBoxLayout *latlngBtnLayout = new QHBoxLayout();
 
-    QPushButton *mapLatLngBtn = new QPushButton("지도 위치 선택");
-    QPushButton *vehicleLatLngBtn = new QPushButton("차량 위치 선택");
-    latlngBtnLayout->addWidget(mapLatLngBtn);
-    latlngBtnLayout->addWidget(vehicleLatLngBtn);
+    _mapPoseBtn_ptr = new QPushButton("지도 위치로 지정");
+    _vehiclePoseBtn_ptr = new QPushButton("차량 위치로 지정");
+    latlngBtnLayout->addWidget(_mapPoseBtn_ptr);
+    latlngBtnLayout->addWidget(_vehiclePoseBtn_ptr);
 
     latlngBtnWidget->setLayout(latlngBtnLayout);
     nodeLayout->addWidget(latlngBtnWidget);
 
 
     // Node tab - add ok button
-    QPushButton *okBtn = new QPushButton("완료");
-    okBtn->setFixedWidth(150);
+    _okBtn_ptr = new QPushButton("완료");
+    _okBtn_ptr->setFixedWidth(150);
     nodeLayout->addStretch(1);
-    nodeLayout->addWidget(okBtn, 0, Qt::AlignRight);
+    nodeLayout->addWidget(_okBtn_ptr, 0, Qt::AlignRight);
 
     // Node tab - set scroll area
     QScrollArea *nodeScrollArea = new QScrollArea();
@@ -82,26 +105,17 @@ void NodeEditor::initRouteInfoWidget() {
     title->setStyleSheet("QLabel { font-size: 14pt; }");
     layout->addWidget(title, 0, 0);
 
-    QLabel *versionLb = new QLabel("버전");
-    QLineEdit *versionEd = new QLineEdit();
-    layout->addWidget(versionLb, 1, 0);
-    layout->addWidget(versionEd, 1, 1);
+    QLabel *pathIdLb = new QLabel("경로 ID");
+    _pathId_ptr = new QLineEdit();
+    layout->addWidget(pathIdLb, 1, 0);
+    layout->addWidget(_pathId_ptr, 1, 1);
 
-    QLabel *separationLb = new QLabel("경로 구분");
-    QLineEdit *separationEd = new QLineEdit();
-    layout->addWidget(separationLb, 2, 0);
-    layout->addWidget(separationEd, 2, 1);
-
-    QLabel *codeLb = new QLabel("경로 코드");
-    QLineEdit *codeEd = new QLineEdit();
-    layout->addWidget(codeLb, 3, 0);
-    layout->addWidget(codeEd, 3, 1);
+    QLabel *pathNameLb = new QLabel("경로 이름");
+    _pathName_ptr = new QLineEdit();
+    layout->addWidget(pathNameLb, 2, 0);
+    layout->addWidget(_pathName_ptr, 2, 1);
 
     m_route_info_ptr->setLayout(layout);
-
-    connect(&PathInfoModel::getInstance(), &PathInfoModel::currentPathIdChanged, this, [this](const std::string &pathId) {
-
-    });
 }
 
 void NodeEditor::initNodeInfoWidget() {
@@ -112,29 +126,28 @@ void NodeEditor::initNodeInfoWidget() {
     layout->addWidget(title, 0, 0);
 
     QLabel *nodeIdLb = new QLabel("노드 ID");
-    QLineEdit *nodeIdEd = new QLineEdit();
+    _nodeId_ptr = new QLineEdit();
+    _nodeId_ptr->setReadOnly(true);
     layout->addWidget(nodeIdLb, 1, 0);
-    layout->addWidget(nodeIdEd, 1, 1);
+    layout->addWidget(_nodeId_ptr, 1, 1);
 
-    QLabel *nodeNameLb = new QLabel("노드 이름");
-    QLineEdit *nodeNameEd = new QLineEdit();
-    layout->addWidget(nodeNameLb, 2, 0);
-    layout->addWidget(nodeNameEd, 2, 1);
-
-    QLabel * nodeTypeLb = new QLabel("노드 타입");
-    QLineEdit *nodeTypeEd = new QLineEdit();
-    layout->addWidget(nodeTypeLb, 3, 0);
-    layout->addWidget(nodeTypeEd, 3, 1);
+    QLabel *nodeTypeLb = new QLabel("노드 타입");
+    _nodeType_ptr = new QLineEdit();
+    _nodeType_ptr->setReadOnly(true);
+    layout->addWidget(nodeTypeLb, 2, 0);
+    layout->addWidget(_nodeType_ptr, 2, 1);
 
     QLabel *preNodeLb = new QLabel("이전 노드");
-    QLineEdit  *preNodeEd = new QLineEdit();
-    layout->addWidget(preNodeLb, 4, 0);
-    layout->addWidget(preNodeEd, 4, 1);
+    _preNode_ptr = new QLineEdit();
+    _preNode_ptr->setReadOnly(true);
+    layout->addWidget(preNodeLb, 3, 0);
+    layout->addWidget(_preNode_ptr, 3, 1);
 
     QLabel *nextNodeLb = new QLabel("다음 노드");
-    QLineEdit *nextNodeEd = new QLineEdit();
-    layout->addWidget(nextNodeLb, 5, 0);
-    layout->addWidget(nextNodeEd, 5, 1);
+    _nextNode_ptr = new QLineEdit();
+    _nextNode_ptr->setReadOnly(true);
+    layout->addWidget(nextNodeLb, 4, 0);
+    layout->addWidget(_nextNode_ptr, 4, 1);
 
     m_node_info_ptr->setLayout(layout);
 }
@@ -146,35 +159,44 @@ void NodeEditor::initTaskInfoWidget() {
     title->setStyleSheet("QLabel { font-size: 14pt; }");
     layout->addWidget(title, 0, 0);
 
-    QLabel *taskClassificationLb = new QLabel("작업 구분");
-    QLineEdit *taskClassificationEd = new QLineEdit();
-    layout->addWidget(taskClassificationLb, 1, 0);
-    layout->addWidget(taskClassificationEd, 1, 1);
+    QLabel *kindLb = new QLabel("작업 구분");
+    _nodeKind_ptr = new QComboBox();
+    std::vector<NodeKind> kinds = {NodeKind::INTERSECTION, NodeKind::CONNECTING, NodeKind::ENDPOINT, NodeKind::WAITING};
+    for (const NodeKind &kind: kinds) {
+        _nodeKind_ptr->addItem(QString(getKindKorName(kind).c_str()));
+    }
+    layout->addWidget(kindLb, 1, 0);
+    layout->addWidget(_nodeKind_ptr, 1, 1);
 
-    QLabel *moveDirectionLb = new QLabel("진출 방향");
-    QLineEdit *moveDirectionEd = new QLineEdit();
-    layout->addWidget(moveDirectionLb, 2, 0);
-    layout->addWidget(moveDirectionEd, 2, 1);
+    QLabel *directionLb = new QLabel("진출 방향");
+    _nodeDirection_ptr = new QComboBox();
+    _nodeDirection_ptr->addItem(QString(getDirectionKorName(Direction::FORWARD).c_str()));
+    _nodeDirection_ptr->addItem(QString(getDirectionKorName(Direction::BACKWARD).c_str()));
+    layout->addWidget(directionLb, 2, 0);
+    layout->addWidget(_nodeDirection_ptr, 2, 1);
 
-    QLabel *vehicleDirectionLb = new QLabel("차량 방향");
-    QLineEdit *vehicleDirectionEd = new QLineEdit();
-    layout->addWidget(vehicleDirectionLb, 3, 0);
-    layout->addWidget(vehicleDirectionEd, 3, 1);
+    QLabel *headingLb = new QLabel("차량 방향");
+    _nodeHeading_ptr = new QLineEdit();
+    layout->addWidget(headingLb, 3, 0);
+    layout->addWidget(_nodeHeading_ptr, 3, 1);
 
     QLabel *detectionRangeLb = new QLabel("감지 범위");
-    QLineEdit *detectionRangeEd = new QLineEdit();
+    _addRangeBtn_ptr = new QPushButton("+");
+    _addRangeBtn_ptr->setFixedSize(30, 30);
+    _dtrListView_ptr =  new DetectionRangeListView();
     layout->addWidget(detectionRangeLb, 4, 0);
-    layout->addWidget(detectionRangeEd, 4, 1);
+    layout->addWidget(_addRangeBtn_ptr, 4, 1, Qt::AlignLeft);
+    layout->addWidget(_dtrListView_ptr, 5, 0, 1, 2);
 
-    QLabel *latitudeLb = new QLabel("경도");
-    QLineEdit *latitudeEd = new QLineEdit();
-    layout->addWidget(latitudeLb, 5, 0);
-    layout->addWidget(latitudeEd, 5, 1);
+    QLabel *latitudeLb = new QLabel("위도");
+    _nodeLat_ptr = new QLineEdit();
+    layout->addWidget(latitudeLb, 6, 0);
+    layout->addWidget(_nodeLat_ptr, 6, 1);
 
-    QLabel *longitudeLb = new QLabel("위도");
-    QLineEdit *longitudeEd = new QLineEdit();
-    layout->addWidget(longitudeLb, 6, 0);
-    layout->addWidget(longitudeEd, 6, 1);
+    QLabel *longitudeLb = new QLabel("경도");
+    _nodeLng_ptr = new QLineEdit();
+    layout->addWidget(longitudeLb, 7, 0);
+    layout->addWidget(_nodeLng_ptr, 7, 1);
 
     m_task_info_ptr->setLayout(layout);
 }

@@ -7,37 +7,15 @@
 
 #include <string>
 
-enum NodeKine {
+enum NodeKind {
     INTERSECTION,
     CONNECTING,
     ENDPOINT,
     WAITING
 };
 
-std::string getKindName(NodeKine kind) {
-    switch (kind) {
-        case INTERSECTION:
-            return "intersection";
-        case CONNECTING:
-            return "connecting";
-        case ENDPOINT:
-            return "endpoint";
-        case WAITING:
-            return "wating";
-    }
-}
+std::string getKindName(NodeKind kind);
 
-std::string getKindKorName(NodeKine kind) {
-    switch (kind) {
-        case INTERSECTION:
-            return "교차로";
-        case CONNECTING:
-            return "연결";
-        case ENDPOINT:
-            return "종점";
-        case WAITING:
-            return "일시정지";
-    }
-}
+std::string getKindKorName(NodeKind kind);
 
 #endif //NODE_EDITOR_NODEKIND_H

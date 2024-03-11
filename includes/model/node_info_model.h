@@ -33,6 +33,10 @@ public:
 
     bool updateCurrentNode(const Node &node);
 
+    std::string getPreNodeId();
+
+    std::string getNextNodeId();
+
     QList<Node> getNodesFromCurrentPath() const;
 
     QMap<std::string, QList<Node>> getAllNodes() const;
@@ -51,6 +55,7 @@ private:
     QMap<std::string, QList<Node>> _nodesMap; // key: pathId, value: list<Node>
     QList<Node> _currentNodeList;
     Node _currentNode;
+    int _currentNodeIndex;
 };
 
 

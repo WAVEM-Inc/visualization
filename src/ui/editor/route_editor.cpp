@@ -4,10 +4,8 @@
 
 #include "ui/editor/route_editor.h"
 
-#include <utility>
 #include <QGridLayout>
 #include <QInputDialog>
-#include <QDir>
 #include <QStandardItemModel>
 #include <QMessageBox>
 #include "utils/file/file_manager.h"
@@ -37,9 +35,13 @@ RouteEditor::RouteEditor(QWidget *parent) :
     m_layout_ptr->addWidget(_nodeListView_ptr, 1, 0, 1, 2);
     m_layout_ptr->addWidget(m_addNodeButton_ptr, 2, 0, 1, 2);
 
+
     _nodeListModel_ptr->setHorizontalHeaderItem(0, new QStandardItem(QString("ID")));
     _nodeListModel_ptr->setHorizontalHeaderItem(1, new QStandardItem(QString("Type")));
+
+    QItemSelectionModel *selectionModel = _nodeListView_ptr->selectionModel();
     _nodeListView_ptr->setModel(_nodeListModel_ptr);
+    _nodeListView_ptr->setSelectionMode(QAbstractItemView::SingleSelection);
     _nodeListView_ptr->setSelectionBehavior(QAbstractItemView::SelectRows);
 
     m_routeComboBox_ptr->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
@@ -54,6 +56,11 @@ RouteEditor::RouteEditor(QWidget *parent) :
             QVariant data = this->m_routeComboBox_ptr->itemData(index);
             QString pathId = data.toString();
             PathInfoModel::getInstance().selectCurrentPathId(pathId.toStdString());
+        }
+    });
+    connect(_nodeListView_ptr, &QTableView::clicked, this, [this](const QModelIndex &index) {
+        if (index.isValid()) {
+            NodeInfoModel::getInstance().selectCurrentNode(index.row());
         }
     });
 
@@ -144,7 +151,7 @@ void RouteEditor::onPathInfoMapChanged(const QMap<std::string, std::string> &pat
 
 void RouteEditor::onCurrentNodeListChanged(const QList<Node> &nodeList) {
     QSet<QString> newIds;
-    for (const Node &node : nodeList) {
+    for (const Node &node: nodeList) {
         newIds.insert(QString::fromStdString(node.nodeId));
     }
 

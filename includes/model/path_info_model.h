@@ -27,6 +27,8 @@ public:
 
     void setPathInfoMap(const std::vector<Path> &paths);
 
+    QMap<std::string, std::string> getPathInfoMap() const;
+
     void addPathInfo(const std::string& id, const std::string& name);
 
     bool updatePathInfo(const std::string& id, const std::string& name);

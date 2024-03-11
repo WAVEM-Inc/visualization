@@ -1,12 +1,12 @@
 /home/antique/Desktop/gui/node_editor/cmake-build-debug/node_editor_autogen/LS2UEZ57G5/moc_menu_bar.cpp: /home/antique/Desktop/gui/node_editor/includes/ui/menu/menu_bar.h \
   /home/antique/Desktop/gui/node_editor/cmake-build-debug/node_editor_autogen/moc_predefs.h \
   /home/antique/Desktop/gui/node_editor/cmake-build-debug/_deps/json-src/single_include/nlohmann/json.hpp \
+  /home/antique/Desktop/gui/node_editor/includes/struct/DetectionRange.h \
   /home/antique/Desktop/gui/node_editor/includes/struct/MapNode.h \
   /home/antique/Desktop/gui/node_editor/includes/struct/Node.h \
   /home/antique/Desktop/gui/node_editor/includes/struct/Path.h \
   /home/antique/Desktop/gui/node_editor/includes/struct/Position.h \
   /home/antique/Desktop/gui/node_editor/includes/struct/RouteFile.h \
-  /home/antique/Desktop/gui/node_editor/includes/struct/SensingRange.h \
   /home/antique/Desktop/gui/node_editor/includes/utils/patterns/observer/observer.h \
   /home/antique/Desktop/gui/node_editor/includes/utils/patterns/observer/subject.h \
   /home/antique/Desktop/gui/node_editor/includes/utils/patterns/singleton/singleton.h \

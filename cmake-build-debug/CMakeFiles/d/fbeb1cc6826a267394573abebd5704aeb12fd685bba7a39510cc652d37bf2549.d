@@ -1,8 +1,8 @@
 node_editor_autogen/timestamp: \
   /home/antique/Desktop/gui/node_editor/CMakeLists.txt \
-  CMakeFiles/3.28.1/CMakeCCompiler.cmake \
-  CMakeFiles/3.28.1/CMakeCXXCompiler.cmake \
-  CMakeFiles/3.28.1/CMakeSystem.cmake \
+  CMakeFiles/3.27.8/CMakeCCompiler.cmake \
+  CMakeFiles/3.27.8/CMakeCXXCompiler.cmake \
+  CMakeFiles/3.27.8/CMakeSystem.cmake \
   _deps/json-src/single_include/nlohmann/json.hpp \
   node_editor_autogen/moc_predefs.h \
   /home/antique/Desktop/gui/node_editor/includes/enum/Direction.h \
@@ -12,6 +12,7 @@ node_editor_autogen/timestamp: \
   /home/antique/Desktop/gui/node_editor/includes/model/map_node_model.h \
   /home/antique/Desktop/gui/node_editor/includes/model/node_info_model.h \
   /home/antique/Desktop/gui/node_editor/includes/model/path_info_model.h \
+  /home/antique/Desktop/gui/node_editor/includes/struct/DetectionRange.h \
   /home/antique/Desktop/gui/node_editor/includes/struct/FileInfo.h \
   /home/antique/Desktop/gui/node_editor/includes/struct/Link.h \
   /home/antique/Desktop/gui/node_editor/includes/struct/MapNode.h \
@@ -20,8 +21,9 @@ node_editor_autogen/timestamp: \
   /home/antique/Desktop/gui/node_editor/includes/struct/Path.h \
   /home/antique/Desktop/gui/node_editor/includes/struct/Position.h \
   /home/antique/Desktop/gui/node_editor/includes/struct/RouteFile.h \
-  /home/antique/Desktop/gui/node_editor/includes/struct/SensingRange.h \
   /home/antique/Desktop/gui/node_editor/includes/ui/dialog/node_type_dialog.h \
+  /home/antique/Desktop/gui/node_editor/includes/ui/editor/detection_range_list_view.h \
+  /home/antique/Desktop/gui/node_editor/includes/ui/editor/detection_range_view.h \
   /home/antique/Desktop/gui/node_editor/includes/ui/editor/node_editor.h \
   /home/antique/Desktop/gui/node_editor/includes/ui/editor/node_list_model.h \
   /home/antique/Desktop/gui/node_editor/includes/ui/editor/route_editor.h \
@@ -38,11 +40,14 @@ node_editor_autogen/timestamp: \
   /home/antique/Desktop/gui/node_editor/includes/utils/patterns/observer/subject.h \
   /home/antique/Desktop/gui/node_editor/includes/utils/patterns/singleton/singleton.h \
   /home/antique/Desktop/gui/node_editor/main.cpp \
+  /home/antique/Desktop/gui/node_editor/src/enum/Direction.cpp \
+  /home/antique/Desktop/gui/node_editor/src/enum/NodeKind.cpp \
   /home/antique/Desktop/gui/node_editor/src/enum/NodeType.cpp \
   /home/antique/Desktop/gui/node_editor/src/model/file_info_model.cpp \
   /home/antique/Desktop/gui/node_editor/src/model/map_node_model.cpp \
   /home/antique/Desktop/gui/node_editor/src/model/node_info_model.cpp \
   /home/antique/Desktop/gui/node_editor/src/model/path_info_model.cpp \
+  /home/antique/Desktop/gui/node_editor/src/struct/DetectionRange.cpp \
   /home/antique/Desktop/gui/node_editor/src/struct/Link.cpp \
   /home/antique/Desktop/gui/node_editor/src/struct/MapNode.cpp \
   /home/antique/Desktop/gui/node_editor/src/struct/Node.cpp \
@@ -50,8 +55,9 @@ node_editor_autogen/timestamp: \
   /home/antique/Desktop/gui/node_editor/src/struct/Path.cpp \
   /home/antique/Desktop/gui/node_editor/src/struct/Position.cpp \
   /home/antique/Desktop/gui/node_editor/src/struct/RouteFile.cpp \
-  /home/antique/Desktop/gui/node_editor/src/struct/SensingRange.cpp \
   /home/antique/Desktop/gui/node_editor/src/ui/dialog/node_type_dialog.cpp \
+  /home/antique/Desktop/gui/node_editor/src/ui/editor/detection_range_list_view.cpp \
+  /home/antique/Desktop/gui/node_editor/src/ui/editor/detection_range_view.cpp \
   /home/antique/Desktop/gui/node_editor/src/ui/editor/node_editor.cpp \
   /home/antique/Desktop/gui/node_editor/src/ui/editor/node_list_model.cpp \
   /home/antique/Desktop/gui/node_editor/src/ui/editor/route_editor.cpp \
@@ -62,6 +68,32 @@ node_editor_autogen/timestamp: \
   /home/antique/Desktop/gui/node_editor/src/utils/file/file_manager.cpp \
   /home/antique/Desktop/gui/node_editor/src/utils/file/route_file_reader.cpp \
   /home/antique/Desktop/gui/node_editor/src/utils/file/route_file_writer.cpp \
+  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/bin/cmake \
+  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/CMakeCInformation.cmake \
+  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/CMakeCXXInformation.cmake \
+  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/CMakeCommonLanguageInclude.cmake \
+  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/CMakeGenericSystem.cmake \
+  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/CMakeInitializeConfigs.cmake \
+  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/CMakeLanguageInformation.cmake \
+  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/CMakeParseArguments.cmake \
+  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/CMakeSystemSpecificInformation.cmake \
+  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/CMakeSystemSpecificInitialize.cmake \
+  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/Compiler/CMakeCommonCompilerMacros.cmake \
+  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/Compiler/GNU-C.cmake \
+  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/Compiler/GNU-CXX.cmake \
+  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/Compiler/GNU.cmake \
+  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/ExternalProject/shared_internal_commands.cmake \
+  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/FetchContent.cmake \
+  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/FetchContent/CMakeLists.cmake.in \
+  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/FindGit.cmake \
+  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/FindPackageHandleStandardArgs.cmake \
+  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/FindPackageMessage.cmake \
+  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/Platform/Linux-GNU-C.cmake \
+  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/Platform/Linux-GNU-CXX.cmake \
+  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/Platform/Linux-GNU.cmake \
+  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/Platform/Linux-Initialize.cmake \
+  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/Platform/Linux.cmake \
+  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/Platform/UnixPaths.cmake \
   /usr/include/asm-generic/errno-base.h \
   /usr/include/asm-generic/errno.h \
   /usr/include/assert.h \
@@ -489,13 +521,16 @@ node_editor_autogen/timestamp: \
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QComboBox \
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QDialog \
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QGridLayout \
+  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QHBoxLayout \
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QInputDialog \
+  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QLineEdit \
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QListView \
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QMainWindow \
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QMenuBar \
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QPushButton \
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QTabWidget \
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QTableWidget \
+  /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QVBoxLayout \
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/QWidget \
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qabstractbutton.h \
   /usr/include/x86_64-linux-gnu/qt5/QtWidgets/qabstractitemdelegate.h \
@@ -613,30 +648,4 @@ node_editor_autogen/timestamp: \
   /usr/lib/x86_64-linux-gnu/cmake/Qt5Widgets/Qt5WidgetsConfig.cmake \
   /usr/lib/x86_64-linux-gnu/cmake/Qt5Widgets/Qt5WidgetsConfigExtras.cmake \
   /usr/lib/x86_64-linux-gnu/cmake/Qt5Widgets/Qt5WidgetsConfigVersion.cmake \
-  /usr/lib/x86_64-linux-gnu/cmake/Qt5Widgets/Qt5WidgetsMacros.cmake \
-  /usr/local/bin/cmake \
-  /usr/local/share/cmake-3.28/Modules/CMakeCInformation.cmake \
-  /usr/local/share/cmake-3.28/Modules/CMakeCXXInformation.cmake \
-  /usr/local/share/cmake-3.28/Modules/CMakeCommonLanguageInclude.cmake \
-  /usr/local/share/cmake-3.28/Modules/CMakeGenericSystem.cmake \
-  /usr/local/share/cmake-3.28/Modules/CMakeInitializeConfigs.cmake \
-  /usr/local/share/cmake-3.28/Modules/CMakeLanguageInformation.cmake \
-  /usr/local/share/cmake-3.28/Modules/CMakeParseArguments.cmake \
-  /usr/local/share/cmake-3.28/Modules/CMakeSystemSpecificInformation.cmake \
-  /usr/local/share/cmake-3.28/Modules/CMakeSystemSpecificInitialize.cmake \
-  /usr/local/share/cmake-3.28/Modules/Compiler/CMakeCommonCompilerMacros.cmake \
-  /usr/local/share/cmake-3.28/Modules/Compiler/GNU-C.cmake \
-  /usr/local/share/cmake-3.28/Modules/Compiler/GNU-CXX.cmake \
-  /usr/local/share/cmake-3.28/Modules/Compiler/GNU.cmake \
-  /usr/local/share/cmake-3.28/Modules/ExternalProject/shared_internal_commands.cmake \
-  /usr/local/share/cmake-3.28/Modules/FetchContent.cmake \
-  /usr/local/share/cmake-3.28/Modules/FetchContent/CMakeLists.cmake.in \
-  /usr/local/share/cmake-3.28/Modules/FindGit.cmake \
-  /usr/local/share/cmake-3.28/Modules/FindPackageHandleStandardArgs.cmake \
-  /usr/local/share/cmake-3.28/Modules/FindPackageMessage.cmake \
-  /usr/local/share/cmake-3.28/Modules/Platform/Linux-GNU-C.cmake \
-  /usr/local/share/cmake-3.28/Modules/Platform/Linux-GNU-CXX.cmake \
-  /usr/local/share/cmake-3.28/Modules/Platform/Linux-GNU.cmake \
-  /usr/local/share/cmake-3.28/Modules/Platform/Linux-Initialize.cmake \
-  /usr/local/share/cmake-3.28/Modules/Platform/Linux.cmake \
-  /usr/local/share/cmake-3.28/Modules/Platform/UnixPaths.cmake
+  /usr/lib/x86_64-linux-gnu/cmake/Qt5Widgets/Qt5WidgetsMacros.cmake

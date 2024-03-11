@@ -16,6 +16,9 @@ NodeInfoModel::NodeInfoModel(QObject *parent) : QObject(parent) {
 void NodeInfoModel::updateNodes(const QMap<std::string, QList<Node>>& nodesMap) {
     _nodesMap = nodesMap;
     emit nodesMapChanged(_nodesMap);
+
+    _currentNodeList = _nodesMap[PathInfoModel::getInstance().getCurrentPathId()];
+    emit currentNodeListChanged(_currentNodeList);
 }
 
 bool NodeInfoModel::addNodeToCurrentPath(const Node &node) {
@@ -66,6 +69,7 @@ bool NodeInfoModel::selectCurrentNode(int index) {
         return false;
     }
 
+    _currentNodeIndex = index;
     _currentNode = _nodesMap[pathId][index];
     emit currentNodeChanged(_currentNode);
 
@@ -87,4 +91,20 @@ QList<Node> NodeInfoModel::getNodesFromCurrentPath() const {
 
 QMap<std::string, QList<Node>> NodeInfoModel::getAllNodes() const {
     return _nodesMap;
+}
+
+std::string NodeInfoModel::getPreNodeId() {
+    if (_currentNodeIndex > 0 && _currentNodeIndex <= _currentNodeList.size()) {
+        std::cout << "Current Node Index: " << _currentNodeIndex << "\n";
+        return _currentNodeList[_currentNodeIndex - 1].nodeId;
+    }
+    return "";
+}
+
+std::string NodeInfoModel::getNextNodeId() {
+    if (_currentNodeIndex >= 0 && _currentNodeIndex < _currentNodeList.size() - 1) {
+        std::cout << "Current Node Index: " << _currentNodeIndex << "\n";
+        return _currentNodeList[_currentNodeIndex + 1].nodeId;
+    }
+    return "";
 }
