@@ -2,7 +2,7 @@
   /home/antique/Desktop/gui/route_editor/cmake-build-debug/route_editor_autogen/moc_predefs.h \
   /home/antique/Desktop/gui/route_editor/cmake-build-debug/_deps/json-src/single_include/nlohmann/json.hpp \
   /home/antique/Desktop/gui/route_editor/includes/struct/DetectionRange.h \
-  /home/antique/Desktop/gui/route_editor/includes/struct/MapNode.h \
+  /home/antique/Desktop/gui/route_editor/includes/struct/GraphNode.h \
   /home/antique/Desktop/gui/route_editor/includes/struct/Node.h \
   /home/antique/Desktop/gui/route_editor/includes/struct/Path.h \
   /home/antique/Desktop/gui/route_editor/includes/struct/Position.h \

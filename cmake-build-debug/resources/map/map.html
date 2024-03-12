@@ -88,6 +88,18 @@
                     contextMenu.dataset.clickedLng = e.latLng.lng();
                 });
 
+                map.addListener('click', function (e) {
+                    contextMenu.style.display = 'none';
+                });
+
+                map.addListener('dragend', function() {
+                    coordinateHandler.onMouseScrollEnded(getCurrentLocation());
+                });
+
+                map.addListener('zoom_changed', function() {
+                    coordinateHandler.onWheelScrollEnded(map.getZoom());
+                });
+
                 document.getElementById('add-node-btn').addEventListener('click', function() {
                     console.log('노드 추가 클릭됨!');
                     // 우클릭된 위치에 노드(마커) 추가
@@ -103,13 +115,29 @@
                 document.getElementById('none-btn').addEventListener('click', function() {
                     contextMenu.style.display = 'none'; // 메뉴 숨기기
                 });
-
-                map.addListener('click', function (e) {
-                    contextMenu.style.display = 'none';
-                });
             });
 
             initAutocomplete();
+        }
+
+        async function changeCenter(lat, lng) {
+            // 새 중심 위치 설정
+            var newCenter = new google.maps.LatLng(lat, lng);
+            map.setCenter(newCenter);
+        }
+
+        async function changeZoomLevel(zoomLevel) {
+            map.setZoom(zoomLevel);
+        }
+
+
+        function getCurrentLocation() {
+            let location = {
+                lat: map.getCenter().lat(),
+                lng: map.getCenter().lng()
+            }
+
+            return JSON.stringify(location);
         }
 
         function initAutocomplete() {
@@ -214,8 +242,8 @@
                         coordinateHandler.onNodeClickEvent(selectedNodeId);
 
                         const currentPos = marker.getPosition();
-                        const text = `NodeID: ${key}<br>` +
-                            `latitude: ${currentPos.lat()}, longitude: ${currentPos.lng()}`;
+                        const text = `노드명: ${item.nodeName}<br>` +
+                            `위치: ${currentPos.lat().toFixed(7)}, ${currentPos.lng().toFixed(7)}`;
                         infoWindow.setContent(text);
                         infoWindow.open(map, marker);
                     });

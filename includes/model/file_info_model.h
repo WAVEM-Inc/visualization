@@ -29,10 +29,16 @@ public:
 
     [[nodiscard]] bool getFileSavable() const;
 
+    void updateLatestFilePath(const std::string &path);
+
+    std::string getLatestFilePath() const;
+
 signals:
     void fileInfoChanged(const FileInfo &info);
 
     void fileSavableChanged(bool savable);
+
+    void latestFilePathChanged(const std::string &path);
 
 private:
     explicit FileInfoModel(QObject *parent = nullptr);
@@ -40,6 +46,7 @@ private:
 private:
     FileInfo _fileInfo;
     bool _fileSavable;
+    std::string _latestFilePath;
 };
 
 

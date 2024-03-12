@@ -5,7 +5,6 @@
 #include <qfileinfo.h>
 #include <QMessageBox>
 #include <QTextStream>
-#include "utils/file/file_manager.h"
 #include "utils/file/route_file_writer.h"
 #include "utils/patterns/singleton/singleton.h"
 #include "model/file_info_model.h"

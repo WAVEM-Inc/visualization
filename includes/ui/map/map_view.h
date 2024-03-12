@@ -10,7 +10,7 @@
 #include <QWebEngineView>
 #include <QPointer>
 #include "utils/patterns/observer/observer.h"
-#include "struct/MapNode.h"
+#include "struct/GraphNode.h"
 #include "struct/RouteFile.h"
 
 
@@ -29,7 +29,7 @@ private:
     QPointer<QWebChannel> m_web_channel_ptr;
 
 private slots:
-    void onMapNodesChanged(const QMap<std::string, MapNode> &nodeMap);
+    void onMapNodesChanged(const QMap<std::string, GraphNode> &nodeMap);
 };
 
 

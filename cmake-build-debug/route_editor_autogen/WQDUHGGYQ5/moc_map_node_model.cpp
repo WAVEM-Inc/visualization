@@ -23,7 +23,7 @@ QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_MapNodeModel_t {
     QByteArrayData data[10];
-    char stringdata0[128];
+    char stringdata0[132];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -35,19 +35,19 @@ static const qt_meta_stringdata_MapNodeModel_t qt_meta_stringdata_MapNodeModel =
 QT_MOC_LITERAL(0, 0, 12), // "MapNodeModel"
 QT_MOC_LITERAL(1, 13, 15), // "mapNodesChanged"
 QT_MOC_LITERAL(2, 29, 0), // ""
-QT_MOC_LITERAL(3, 30, 25), // "QMap<std::string,MapNode>"
-QT_MOC_LITERAL(4, 56, 7), // "nodeMap"
-QT_MOC_LITERAL(5, 64, 22), // "selectedMapNodeChanged"
-QT_MOC_LITERAL(6, 87, 7), // "MapNode"
-QT_MOC_LITERAL(7, 95, 7), // "mapNode"
-QT_MOC_LITERAL(8, 103, 17), // "useAddModeChanged"
-QT_MOC_LITERAL(9, 121, 6) // "usable"
+QT_MOC_LITERAL(3, 30, 27), // "QMap<std::string,GraphNode>"
+QT_MOC_LITERAL(4, 58, 7), // "nodeMap"
+QT_MOC_LITERAL(5, 66, 22), // "selectedMapNodeChanged"
+QT_MOC_LITERAL(6, 89, 9), // "GraphNode"
+QT_MOC_LITERAL(7, 99, 7), // "mapNode"
+QT_MOC_LITERAL(8, 107, 17), // "useAddModeChanged"
+QT_MOC_LITERAL(9, 125, 6) // "usable"
 
     },
     "MapNodeModel\0mapNodesChanged\0\0"
-    "QMap<std::string,MapNode>\0nodeMap\0"
-    "selectedMapNodeChanged\0MapNode\0mapNode\0"
-    "useAddModeChanged\0usable"
+    "QMap<std::string,GraphNode>\0nodeMap\0"
+    "selectedMapNodeChanged\0GraphNode\0"
+    "mapNode\0useAddModeChanged\0usable"
 };
 #undef QT_MOC_LITERAL
 
@@ -83,22 +83,22 @@ void MapNodeModel::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id
         auto *_t = static_cast<MapNodeModel *>(_o);
         (void)_t;
         switch (_id) {
-        case 0: _t->mapNodesChanged((*reinterpret_cast< const QMap<std::string,MapNode>(*)>(_a[1]))); break;
-        case 1: _t->selectedMapNodeChanged((*reinterpret_cast< const MapNode(*)>(_a[1]))); break;
+        case 0: _t->mapNodesChanged((*reinterpret_cast< const QMap<std::string,GraphNode>(*)>(_a[1]))); break;
+        case 1: _t->selectedMapNodeChanged((*reinterpret_cast< const GraphNode(*)>(_a[1]))); break;
         case 2: _t->useAddModeChanged((*reinterpret_cast< bool(*)>(_a[1]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
         int *result = reinterpret_cast<int *>(_a[0]);
         {
-            using _t = void (MapNodeModel::*)(const QMap<std::string,MapNode> & );
+            using _t = void (MapNodeModel::*)(const QMap<std::string,GraphNode> & );
             if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&MapNodeModel::mapNodesChanged)) {
                 *result = 0;
                 return;
             }
         }
         {
-            using _t = void (MapNodeModel::*)(const MapNode & );
+            using _t = void (MapNodeModel::*)(const GraphNode & );
             if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&MapNodeModel::selectedMapNodeChanged)) {
                 *result = 1;
                 return;
@@ -155,14 +155,14 @@ int MapNodeModel::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 }
 
 // SIGNAL 0
-void MapNodeModel::mapNodesChanged(const QMap<std::string,MapNode> & _t1)
+void MapNodeModel::mapNodesChanged(const QMap<std::string,GraphNode> & _t1)
 {
     void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);
 }
 
 // SIGNAL 1
-void MapNodeModel::selectedMapNodeChanged(const MapNode & _t1)
+void MapNodeModel::selectedMapNodeChanged(const GraphNode & _t1)
 {
     void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
     QMetaObject::activate(this, &staticMetaObject, 1, _a);

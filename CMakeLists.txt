@@ -24,7 +24,7 @@ add_executable(route_editor
         includes/struct/DetectionRange.h
         includes/struct/Link.h
         includes/struct/Node.h
-        includes/struct/MapNode.h
+        includes/struct/GraphNode.h
         includes/struct/Path.h
         src/ui/map/map_view.cpp
         includes/ui/map/map_view.h
@@ -35,7 +35,7 @@ add_executable(route_editor
         includes/utils/patterns/singleton/singleton.h
         includes/utils/patterns/observer/observer.h
         includes/utils/patterns/observer/subject.h
-        src/struct/MapNode.cpp
+        src/struct/GraphNode.cpp
         includes/struct/RouteFile.h
         src/struct/Position.cpp
         src/struct/Position.cpp
@@ -44,8 +44,6 @@ add_executable(route_editor
         src/struct/Node.cpp
         src/struct/Path.cpp
         src/struct/DetectionRange.cpp
-        src/utils/file/file_manager.cpp
-        includes/utils/file/file_manager.h
         includes/utils/events/FileEvents.h
         src/utils/file/route_file_reader.cpp
         includes/utils/file/route_file_reader.h
@@ -82,6 +80,14 @@ add_executable(route_editor
         includes/ui/editor/detection_range_view.h
         src/ui/editor/detection_range_list_view.cpp
         includes/ui/editor/detection_range_list_view.h
+        src/model/map_state_model.cpp
+        includes/model/map_state_model.h
+        src/utils/file/config_file_reader.cpp
+        includes/utils/file/config_file_reader.h
+        includes/struct/ConfigFile.h
+        src/struct/ConfigFile.cpp
+        src/utils/file/config_file_writer.cpp
+        includes/utils/file/config_file_writer.h
 )
 
 include(FetchContent)

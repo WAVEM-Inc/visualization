@@ -13,6 +13,7 @@
 #include "enum/NodeKind.h"
 #include "enum/Direction.h"
 #include "ui/editor/detection_range_view.h"
+#include "model/path_info_model.h"
 
 NodeEditor::NodeEditor(QWidget *parent) :
         QWidget(parent),
@@ -49,9 +50,15 @@ void NodeEditor::init() {
         _nodeKind_ptr->setCurrentText(node.kind.c_str());
         _nodeDirection_ptr->setCurrentText(node.direction.c_str());
         _nodeHeading_ptr->setText(QString::number(node.heading));
-        _nodeLat_ptr->setText(QString::number(node.position.latitude));
-        _nodeLng_ptr->setText(QString::number(node.position.longitude));
+        _nodeLat_ptr->setText(QString::number(node.position.latitude, 'f', 7));
+        _nodeLng_ptr->setText(QString::number(node.position.longitude, 'f', 7));
         _dtrListView_ptr->setDetectionRanges(node.detectionRange);
+    });
+
+    connect(&PathInfoModel::getInstance(), &PathInfoModel::currentPathIdChanged, this, [this](const std::string &pathId) {
+        _pathId_ptr->setText(pathId.c_str());
+        _pathName_ptr->setText(PathInfoModel::getInstance().getCurrentPathName().c_str());
+        this->setVisible(false);
     });
 
     // setup widget events

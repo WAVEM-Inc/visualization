@@ -11,12 +11,12 @@
 #include <QInputDialog>
 #include <QMessageBox>
 #include "struct/Node.h"
-#include "struct/MapNode.h"
+#include "struct/GraphNode.h"
 #include "model/map_node_model.h"
-#include "utils/file/file_manager.h"
 #include "model/file_info_model.h"
 #include "ui/dialog/node_type_dialog.h"
 #include "enum/NodeType.h"
+#include "model/map_state_model.h"
 
 class CoordinateHandler : public QObject {
 Q_OBJECT
@@ -36,7 +36,7 @@ public slots:
                 return;
             }
 
-            NodeTypeDialog  nodeTypeDialog;
+            NodeTypeDialog nodeTypeDialog;
             std::string typeName;
 
             if (nodeTypeDialog.exec() == QDialog::Accepted) {
@@ -46,8 +46,9 @@ public slots:
             }
 
             if (ok && MapNodeModel::getInstance().checkIdUsability(nodeId.toStdString())) {
-                MapNode node;
+                GraphNode node;
                 node.nodeId = "NO-" + FileInfoModel::getInstance().getFileInfo().mapId + "-" + nodeId.toStdString();
+                node.nodeName = node.nodeId;
                 node.type = typeName;
                 node.position = Position(lat, lng);
 
@@ -74,6 +75,20 @@ public slots:
 
     Q_INVOKABLE void onDragendEvent(QString nodeId, double lat, double lng) {
         MapNodeModel::getInstance().updateMapNode(nodeId.toStdString(), lat, lng);
+    }
+
+    Q_INVOKABLE void onMouseScrollEnded(QString locationStr) {
+        nlohmann::json json = nlohmann::json::parse(locationStr.toStdString());
+        double lat = json["lat"];
+        double lng = json["lng"];
+
+        MapStateModel::getInstance().updateCenterLocation(lat, lng);
+    }
+
+    Q_INVOKABLE void onWheelScrollEnded(QString zoomLevelStr) {
+        int zoomLevel = zoomLevelStr.toInt();
+
+        MapStateModel::getInstance().updateZoomLevel(zoomLevel);
     }
 
 private:

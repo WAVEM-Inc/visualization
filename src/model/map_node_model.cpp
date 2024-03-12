@@ -6,14 +6,14 @@
 
 MapNodeModel::MapNodeModel(QObject *parent) : QObject(parent) {}
 
-void MapNodeModel::setMapNodes(const QMap<std::string, MapNode> &mapNodes) {
+void MapNodeModel::setMapNodes(const QMap<std::string, GraphNode> &mapNodes) {
     _mapNodes = mapNodes;
     emit mapNodesChanged(_mapNodes);
 }
 
-void MapNodeModel::setMapNodes(const std::vector<MapNode> &mapNodes) {
-    QMap<std::string, MapNode> nodes;
-    for (const MapNode &node : mapNodes) {
+void MapNodeModel::setMapNodes(const std::vector<GraphNode> &mapNodes) {
+    QMap<std::string, GraphNode> nodes;
+    for (const GraphNode &node : mapNodes) {
         nodes.insert(node.nodeId, node);
     }
 
@@ -22,8 +22,8 @@ void MapNodeModel::setMapNodes(const std::vector<MapNode> &mapNodes) {
 }
 
 void MapNodeModel::updateMapNode(const std::string &nodeId, double lat, double lng) {
-    QMap<std::string, MapNode> nodes = getMapNodes();
-    MapNode node = nodes[nodeId];
+    QMap<std::string, GraphNode> nodes = getMapNodes();
+    GraphNode node = nodes[nodeId];
     node.position.latitude = lat;
     node.position.longitude = lng;
 
@@ -32,7 +32,7 @@ void MapNodeModel::updateMapNode(const std::string &nodeId, double lat, double l
     emit mapNodesChanged(_mapNodes);
 }
 
-void MapNodeModel::addMapNode(const MapNode &node) {
+void MapNodeModel::addMapNode(const GraphNode &node) {
     _mapNodes.insert(node.nodeId, node);
     emit mapNodesChanged(_mapNodes);
 }
@@ -42,12 +42,12 @@ void MapNodeModel::removeMapNode(const std::string &nodeId) {
     emit mapNodesChanged(_mapNodes);
 }
 
-MapNode MapNodeModel::getMapNodeById(const std::string &nodeId) const {
+GraphNode MapNodeModel::getMapNodeById(const std::string &nodeId) const {
     return _mapNodes[nodeId];
 }
 
 
-QMap<std::string, MapNode> MapNodeModel::getMapNodes() const {
+QMap<std::string, GraphNode> MapNodeModel::getMapNodes() const {
     return _mapNodes;
 }
 
@@ -73,6 +73,6 @@ void MapNodeModel::selectMapNode(const std::string &nodeId) {
     emit selectedMapNodeChanged(_selectedMapNode_ptr);
 }
 
-MapNode MapNodeModel::getSelectedMapNode() const {
+GraphNode MapNodeModel::getSelectedMapNode() const {
     return _selectedMapNode_ptr;
 }

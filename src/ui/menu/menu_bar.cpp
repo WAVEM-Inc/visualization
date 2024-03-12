@@ -8,14 +8,11 @@
 #include <QMessageBox>
 #include <QTextStream>
 #include "ui/menu/menu_bar.h"
-#include "nlohmann/json.hpp"
-#include "utils/file/file_manager.h"
 #include "utils/events/FileEvents.h"
 #include "utils/file/route_file_reader.h"
 #include "utils/file/route_file_writer.h"
 #include "model/map_node_model.h"
 #include "ui/dialog/node_type_dialog.h"
-#include "enum/NodeType.h"
 #include "model/file_info_model.h"
 #include "model/path_info_model.h"
 #include "model/node_info_model.h"
@@ -126,8 +123,18 @@ void MenuBar::onNewFile() {
                                       QLineEdit::Normal, "", &ok);
     }
 
-    QString filePath = QFileDialog::getSaveFileName(this, tr("Save File Path"), QDir::home().absolutePath(),
-                                                    tr("Data files (*.dat)"));
+/*    QString filePath = QFileDialog::getSaveFileName(this, tr("Save File Path"), QDir::home().absolutePath(),
+                                                    tr("Data files (*.dat)"));*/
+
+    QString latestFilePath = QString(FileInfoModel::getInstance().getLatestFilePath().c_str());
+    QString filePath;
+    if (latestFilePath.isEmpty()) {
+        filePath = QFileDialog::getSaveFileName(this, tr("Save File Path"), QDir::home().absolutePath(),
+                                                        tr("Data files (*.dat)"));
+    } else {
+        filePath = QFileDialog::getSaveFileName(this, tr("Save File Path"), latestFilePath,
+                                                        tr("Data files (*.dat)"));
+    }
 
     if (!filePath.isEmpty()) {
         RouteFile routeFileData;
@@ -141,7 +148,14 @@ void MenuBar::onNewFile() {
 
 void MenuBar::onOpenFile() {
     bool ok;
-    QString filePath = QFileDialog::getOpenFileName(this, tr("Open File Path"), QDir::home().absolutePath(),
+    QString latestFilePath = QString(FileInfoModel::getInstance().getLatestFilePath().c_str());
+    QString defaultFilePath;
+    if (latestFilePath.isEmpty()) {
+        defaultFilePath = QDir::home().absolutePath();
+    } else {
+        defaultFilePath = latestFilePath;
+    }
+    QString filePath = QFileDialog::getOpenFileName(this, tr("Open File Path"), defaultFilePath,
                                                     tr("Data files (*.dat)"));
 
     if (!filePath.isEmpty()) {
@@ -172,8 +186,8 @@ void MenuBar::onSaveFile() {
     }
     fileData.path = paths;
 
-    std::vector<MapNode> mapNodes;
-    for (const MapNode &mapNode : MapNodeModel::getInstance().getMapNodes()) {
+    std::vector<GraphNode> mapNodes;
+    for (const GraphNode &mapNode : MapNodeModel::getInstance().getMapNodes()) {
         mapNodes.push_back(mapNode);
     }
     fileData.node = mapNodes;

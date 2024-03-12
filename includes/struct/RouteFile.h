@@ -8,13 +8,13 @@
 #include <iostream>
 #include "nlohmann/json.hpp"
 #include "Path.h"
-#include "MapNode.h"
+#include "GraphNode.h"
 
 struct RouteFile {
     std::string version;
     std::string mapId;
     std::vector<Path> path;
-    std::vector<MapNode> node;
+    std::vector<GraphNode> node;
 
     RouteFile() = default;
 };

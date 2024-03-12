@@ -1,7 +1,7 @@
 /home/antique/Desktop/gui/route_editor/cmake-build-debug/route_editor_autogen/WQDUHGGYQ5/moc_map_node_model.cpp: /home/antique/Desktop/gui/route_editor/includes/model/map_node_model.h \
   /home/antique/Desktop/gui/route_editor/cmake-build-debug/route_editor_autogen/moc_predefs.h \
   /home/antique/Desktop/gui/route_editor/cmake-build-debug/_deps/json-src/single_include/nlohmann/json.hpp \
-  /home/antique/Desktop/gui/route_editor/includes/struct/MapNode.h \
+  /home/antique/Desktop/gui/route_editor/includes/struct/GraphNode.h \
   /home/antique/Desktop/gui/route_editor/includes/struct/Position.h \
   /usr/include/asm-generic/errno-base.h \
   /usr/include/asm-generic/errno.h \

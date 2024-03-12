@@ -4,6 +4,7 @@
 
 #include <QLabel>
 #include <QGridLayout>
+#include <iostream>
 #include "ui/editor/detection_range_view.h"
 
 DetectionRangeView::DetectionRangeView(QWidget *parent, int num) : QWidget(parent) {
@@ -46,8 +47,9 @@ DetectionRangeView::~DetectionRangeView() = default;
 
 
 void DetectionRangeView::setDetectionRange(DetectionRange detectionRange) {
-    _latitude_ptr->setText(QString::number(detectionRange.position.latitude));
-    _longitude_ptr->setText(QString::number(detectionRange.position.longitude));
+    std::cout << detectionRange.position.latitude << "\n";
+    _latitude_ptr->setText(QString::number(detectionRange.position.latitude, 'f', 7));
+    _longitude_ptr->setText(QString::number(detectionRange.position.longitude, 'f', 7));
     _width_ptr->setText(QString::number(detectionRange.width));
     _height_ptr->setText(QString::number(detectionRange.height));
     _actionCode_ptr->setCurrentText(detectionRange.processingCode.c_str());

@@ -8,7 +8,6 @@
 #include <QInputDialog>
 #include <QStandardItemModel>
 #include <QMessageBox>
-#include "utils/file/file_manager.h"
 #include "model/path_info_model.h"
 #include "model/file_info_model.h"
 #include "model/node_info_model.h"
@@ -93,7 +92,7 @@ void RouteEditor::onAddRouteButtonClicked() {
 }
 
 void RouteEditor::onAddNodeButtonClicked() {
-    MapNode mapNode = MapNodeModel::getInstance().getSelectedMapNode();
+    GraphNode mapNode = MapNodeModel::getInstance().getSelectedMapNode();
     if (mapNode.nodeId.empty()) {
         QMessageBox::warning(nullptr, "선택된 노드 없음", "선택된 노드가 없습니다. 지도에서 노드를 선택 후 다시 시도해주세요.");
         return;

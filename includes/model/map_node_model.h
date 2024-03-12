@@ -8,7 +8,7 @@
 
 #include <QObject>
 #include <QMap>
-#include "struct/MapNode.h"
+#include "struct/GraphNode.h"
 
 class MapNodeModel : public QObject {
 Q_OBJECT
@@ -23,23 +23,23 @@ public:
 
     MapNodeModel &operator=(const MapNodeModel &) = delete;
 
-    void setMapNodes(const QMap<std::string, MapNode>& mapNodes);
+    void setMapNodes(const QMap<std::string, GraphNode>& mapNodes);
 
-    void setMapNodes(const std::vector<MapNode> &mapNodes);
+    void setMapNodes(const std::vector<GraphNode> &mapNodes);
 
     void updateMapNode(const std::string &nodeId, double lat, double lng);
 
-    void addMapNode(const MapNode &node);
+    void addMapNode(const GraphNode &node);
 
     void removeMapNode(const std::string& nodeId);
 
-    MapNode getMapNodeById(const std::string &nodeId) const;
+    GraphNode getMapNodeById(const std::string &nodeId) const;
 
     void selectMapNode(const std::string &nodeId);
 
-    MapNode getSelectedMapNode() const;
+    GraphNode getSelectedMapNode() const;
 
-    QMap<std::string, MapNode> getMapNodes() const;
+    QMap<std::string, GraphNode> getMapNodes() const;
 
     bool checkIdUsability(const std::string& nodeId);
 
@@ -48,9 +48,9 @@ public:
     bool getAddModeUsability() const;
 
 signals:
-    void mapNodesChanged(const QMap<std::string, MapNode> &nodeMap);
+    void mapNodesChanged(const QMap<std::string, GraphNode> &nodeMap);
 
-    void selectedMapNodeChanged(const MapNode &mapNode);
+    void selectedMapNodeChanged(const GraphNode &mapNode);
 
     void useAddModeChanged(bool usable);
 
@@ -58,8 +58,8 @@ private:
     explicit MapNodeModel(QObject *parent = nullptr);
 
 private:
-    QMap<std::string, MapNode> _mapNodes;
-    MapNode _selectedMapNode_ptr;
+    QMap<std::string, GraphNode> _mapNodes;
+    GraphNode _selectedMapNode_ptr;
     bool _useAddMode = false;
 };
 

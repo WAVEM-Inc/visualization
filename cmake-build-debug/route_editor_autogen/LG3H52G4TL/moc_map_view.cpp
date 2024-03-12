@@ -23,7 +23,7 @@ QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_MapView_t {
     QByteArrayData data[5];
-    char stringdata0[61];
+    char stringdata0[63];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -35,12 +35,12 @@ static const qt_meta_stringdata_MapView_t qt_meta_stringdata_MapView = {
 QT_MOC_LITERAL(0, 0, 7), // "MapView"
 QT_MOC_LITERAL(1, 8, 17), // "onMapNodesChanged"
 QT_MOC_LITERAL(2, 26, 0), // ""
-QT_MOC_LITERAL(3, 27, 25), // "QMap<std::string,MapNode>"
-QT_MOC_LITERAL(4, 53, 7) // "nodeMap"
+QT_MOC_LITERAL(3, 27, 27), // "QMap<std::string,GraphNode>"
+QT_MOC_LITERAL(4, 55, 7) // "nodeMap"
 
     },
     "MapView\0onMapNodesChanged\0\0"
-    "QMap<std::string,MapNode>\0nodeMap"
+    "QMap<std::string,GraphNode>\0nodeMap"
 };
 #undef QT_MOC_LITERAL
 
@@ -72,7 +72,7 @@ void MapView::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, voi
         auto *_t = static_cast<MapView *>(_o);
         (void)_t;
         switch (_id) {
-        case 0: _t->onMapNodesChanged((*reinterpret_cast< const QMap<std::string,MapNode>(*)>(_a[1]))); break;
+        case 0: _t->onMapNodesChanged((*reinterpret_cast< const QMap<std::string,GraphNode>(*)>(_a[1]))); break;
         default: ;
         }
     }

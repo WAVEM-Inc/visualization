@@ -5,12 +5,10 @@
 #include <QMessageBox>
 #include <QWebChannel>
 #include <QWebEngineSettings>
-#include <QEventLoop>
-#include <utility>
 
 #include "map_view.h"
 #include "utils/coordinate_handler.h"
-#include "utils/file/file_manager.h"
+#include "utils/file/config_file_reader.h"
 
 MapView::MapView(QWidget *parent) :
         QWidget(parent),
@@ -40,7 +38,19 @@ MapView::MapView(QWidget *parent) :
 
     connect(&MapNodeModel::getInstance(), &MapNodeModel::mapNodesChanged, this, &MapView::onMapNodesChanged);
 
-//    MapNodeViewModel::Instance().mapNodes()->attach(m_mapNodesListener_ptr);
+    // Initialize config data
+    ConfigFileReader cfgReader;
+    ConfigFile cfgData = cfgReader.loadFile();
+
+    connect(m_webpage_ptr, &QWebEnginePage::loadFinished, this, [this, cfgData]() {
+        m_webpage_ptr->runJavaScript(QString(
+                "changeCenter(%1, %2);\n"
+                "changeZoomLevel(%3);"
+        ).arg(cfgData.center.latitude).arg(cfgData.center.longitude).arg(cfgData.zoomLevel));
+
+        FileInfoModel::getInstance().updateLatestFilePath(cfgData.latestFilePath);
+        std::cout << "Latest Path: " << cfgData.latestFilePath << "\n";
+    });
 }
 
 void MapView::resizeEvent(QResizeEvent *event) {
@@ -48,11 +58,11 @@ void MapView::resizeEvent(QResizeEvent *event) {
     m_webview_ptr->resize(this->size());
 }
 
-void MapView::onMapNodesChanged(const QMap<std::string, MapNode> &nodeMap) {
+void MapView::onMapNodesChanged(const QMap<std::string, GraphNode> &nodeMap) {
     nlohmann::json json = nodeMap.toStdMap();
     QString qString = QString(json.dump().data());
     m_webpage_ptr->runJavaScript(QString(
             "mapNodeJsonData = '" + qString + "';"
-            "updateMarkers(mapNodeJsonData);"
+                                              "updateMarkers(mapNodeJsonData);"
     ));
 }
