@@ -1,0 +1,3 @@
+[submodule "js-markerclusterer"]
+	path = js-markerclusterer
+	url = https://github.com/googlemaps/js-markerclusterer

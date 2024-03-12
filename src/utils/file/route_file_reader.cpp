@@ -38,6 +38,7 @@ bool RouteFileReader::loadFile(const QString &filePath) {
     info.mapId = fileData.mapId;
 
     FileInfoModel::getInstance().updateFileInfo(info);
+    FileInfoModel::getInstance().updateFileSavable(true);
     PathInfoModel::getInstance().setPathInfoMap(fileData.path);
     QMap<std::string, QList<Node>> nodes;
     for (const auto &path : fileData.path) {

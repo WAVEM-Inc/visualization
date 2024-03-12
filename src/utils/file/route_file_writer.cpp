@@ -64,9 +64,9 @@ bool RouteFileWriter::saveFile(const QString &filePath, const RouteFile &routeFi
         info.mapId = routeFileData.mapId;
 
         FileInfoModel::getInstance().updateFileInfo(info);
+        FileInfoModel::getInstance().updateFileSavable(true);
         PathInfoModel::getInstance().setPathInfoMap(routeFileData.path);
         MapNodeModel::getInstance().setMapNodes(routeFileData.node);
-
     } else {
         QMessageBox::warning(nullptr, "실패", "파일 저장에 실패하였습니다.");
 
