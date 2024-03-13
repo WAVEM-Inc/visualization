@@ -1,8 +1,8 @@
 route_editor_autogen/timestamp: \
   /home/antique/Desktop/gui/route_editor/CMakeLists.txt \
-  CMakeFiles/3.27.8/CMakeCCompiler.cmake \
-  CMakeFiles/3.27.8/CMakeCXXCompiler.cmake \
-  CMakeFiles/3.27.8/CMakeSystem.cmake \
+  CMakeFiles/3.28.1/CMakeCCompiler.cmake \
+  CMakeFiles/3.28.1/CMakeCXXCompiler.cmake \
+  CMakeFiles/3.28.1/CMakeSystem.cmake \
   _deps/json-src/single_include/nlohmann/json.hpp \
   route_editor_autogen/moc_predefs.h \
   /home/antique/Desktop/gui/route_editor/includes/enum/CodeType.h \
@@ -78,32 +78,6 @@ route_editor_autogen/timestamp: \
   /home/antique/Desktop/gui/route_editor/src/utils/file/config_file_writer.cpp \
   /home/antique/Desktop/gui/route_editor/src/utils/file/route_file_reader.cpp \
   /home/antique/Desktop/gui/route_editor/src/utils/file/route_file_writer.cpp \
-  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/bin/cmake \
-  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/CMakeCInformation.cmake \
-  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/CMakeCXXInformation.cmake \
-  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/CMakeCommonLanguageInclude.cmake \
-  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/CMakeGenericSystem.cmake \
-  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/CMakeInitializeConfigs.cmake \
-  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/CMakeLanguageInformation.cmake \
-  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/CMakeParseArguments.cmake \
-  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/CMakeSystemSpecificInformation.cmake \
-  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/CMakeSystemSpecificInitialize.cmake \
-  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/Compiler/CMakeCommonCompilerMacros.cmake \
-  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/Compiler/GNU-C.cmake \
-  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/Compiler/GNU-CXX.cmake \
-  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/Compiler/GNU.cmake \
-  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/ExternalProject/shared_internal_commands.cmake \
-  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/FetchContent.cmake \
-  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/FetchContent/CMakeLists.cmake.in \
-  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/FindGit.cmake \
-  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/FindPackageHandleStandardArgs.cmake \
-  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/FindPackageMessage.cmake \
-  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/Platform/Linux-GNU-C.cmake \
-  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/Platform/Linux-GNU-CXX.cmake \
-  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/Platform/Linux-GNU.cmake \
-  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/Platform/Linux-Initialize.cmake \
-  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/Platform/Linux.cmake \
-  /home/antique/clion-2023.3.2/bin/cmake/linux/x64/share/cmake-3.27/Modules/Platform/UnixPaths.cmake \
   /usr/include/asm-generic/errno-base.h \
   /usr/include/asm-generic/errno.h \
   /usr/include/assert.h \
@@ -661,4 +635,30 @@ route_editor_autogen/timestamp: \
   /usr/lib/x86_64-linux-gnu/cmake/Qt5Widgets/Qt5WidgetsConfig.cmake \
   /usr/lib/x86_64-linux-gnu/cmake/Qt5Widgets/Qt5WidgetsConfigExtras.cmake \
   /usr/lib/x86_64-linux-gnu/cmake/Qt5Widgets/Qt5WidgetsConfigVersion.cmake \
-  /usr/lib/x86_64-linux-gnu/cmake/Qt5Widgets/Qt5WidgetsMacros.cmake
+  /usr/lib/x86_64-linux-gnu/cmake/Qt5Widgets/Qt5WidgetsMacros.cmake \
+  /usr/local/bin/cmake \
+  /usr/local/share/cmake-3.28/Modules/CMakeCInformation.cmake \
+  /usr/local/share/cmake-3.28/Modules/CMakeCXXInformation.cmake \
+  /usr/local/share/cmake-3.28/Modules/CMakeCommonLanguageInclude.cmake \
+  /usr/local/share/cmake-3.28/Modules/CMakeGenericSystem.cmake \
+  /usr/local/share/cmake-3.28/Modules/CMakeInitializeConfigs.cmake \
+  /usr/local/share/cmake-3.28/Modules/CMakeLanguageInformation.cmake \
+  /usr/local/share/cmake-3.28/Modules/CMakeParseArguments.cmake \
+  /usr/local/share/cmake-3.28/Modules/CMakeSystemSpecificInformation.cmake \
+  /usr/local/share/cmake-3.28/Modules/CMakeSystemSpecificInitialize.cmake \
+  /usr/local/share/cmake-3.28/Modules/Compiler/CMakeCommonCompilerMacros.cmake \
+  /usr/local/share/cmake-3.28/Modules/Compiler/GNU-C.cmake \
+  /usr/local/share/cmake-3.28/Modules/Compiler/GNU-CXX.cmake \
+  /usr/local/share/cmake-3.28/Modules/Compiler/GNU.cmake \
+  /usr/local/share/cmake-3.28/Modules/ExternalProject/shared_internal_commands.cmake \
+  /usr/local/share/cmake-3.28/Modules/FetchContent.cmake \
+  /usr/local/share/cmake-3.28/Modules/FetchContent/CMakeLists.cmake.in \
+  /usr/local/share/cmake-3.28/Modules/FindGit.cmake \
+  /usr/local/share/cmake-3.28/Modules/FindPackageHandleStandardArgs.cmake \
+  /usr/local/share/cmake-3.28/Modules/FindPackageMessage.cmake \
+  /usr/local/share/cmake-3.28/Modules/Platform/Linux-GNU-C.cmake \
+  /usr/local/share/cmake-3.28/Modules/Platform/Linux-GNU-CXX.cmake \
+  /usr/local/share/cmake-3.28/Modules/Platform/Linux-GNU.cmake \
+  /usr/local/share/cmake-3.28/Modules/Platform/Linux-Initialize.cmake \
+  /usr/local/share/cmake-3.28/Modules/Platform/Linux.cmake \
+  /usr/local/share/cmake-3.28/Modules/Platform/UnixPaths.cmake

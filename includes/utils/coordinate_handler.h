@@ -62,7 +62,12 @@ public slots:
     }
 
     Q_INVOKABLE void onNodeClickEvent(QString nodeId) {
-        MapNodeModel::getInstance().selectMapNode(nodeId.toStdString());
+        QString selectedNodeId = QString::fromStdString(MapNodeModel::getInstance().getSelectedMapNode().nodeId);
+        if (!nodeId.isEmpty() && nodeId == selectedNodeId) {
+            MapNodeModel::getInstance().selectMapNode("");
+        } else {
+            MapNodeModel::getInstance().selectMapNode(nodeId.toStdString());
+        }
     }
 
     Q_INVOKABLE void onRightClickEvent(QString nodeId) {

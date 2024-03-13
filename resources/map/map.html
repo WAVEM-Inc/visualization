@@ -184,86 +184,86 @@
         let selectedMarker = null;
         let selectedNodeId = null;
 
-        async function updateMarkers(jsonData) {
-            // JSON 데이터를 파싱합니다.
+        function updateMarkers(jsonData) {
             const parsedData = JSON.parse(jsonData);
 
-            // 기존 마커들을 검사하고, 필요없는 마커는 지도에서 제거합니다.
-            Object.keys(markers).forEach(key => {
-                if (!parsedData.hasOwnProperty(key)) {
-                    markers[key].setMap(null); // 지도에서 마커 제거
-                    delete markers[key]; // 마커 객체에서 삭제
-                }
-            });
-
-            // JSON 객체의 각 항목(키와 값 쌍)을 반복 처리하고, 새로운 마커를 추가하거나 기존 마커를 업데이트합니다.
             Object.keys(parsedData).forEach(key => {
                 const item = parsedData[key];
-                const newPosition = new google.maps.LatLng(item.position.latitude, item.position.longitude);
-
-                // 마커가 이미 존재하는지 확인합니다.
-                if (markers[key]) {
-                    // 마커의 현재 위치를 가져옵니다.
-                    const currentPosition = markers[key].getPosition();
-
-                    // 마커의 위치가 변경되었는지 확인합니다.
-                    if (!currentPosition.equals(newPosition)) {
-                        // 위치가 변경되었으면, 마커의 위치를 업데이트합니다.
-                        markers[key].setPosition(newPosition);
-                    }
-                    // 위치가 변경되지 않았다면, 업데이트를 수행하지 않습니다.
-                } else {
-                    // 새로운 마커를 생성하고, 이벤트 리스너를 추가합니다.
-                    const marker = new google.maps.Marker({
-                        map: map,
-                        position: newPosition,
-                        draggable: true,
-                        icon: getDefaultMarker(),
-                    });
-
-                    marker.addListener("click", () => {
-                        if (selectedMarker == marker) {
-                            marker.setIcon(getDefaultMarker());
-                            selectedMarker = null;
-                            selectedNodeId = null;
-
-                            infoWindow.close();
-                            coordinateHandler.onNodeClickEvent(selectedNodeId);
-                            return;
-                        }
-
-                        if (selectedMarker) {
-                            selectedMarker.setIcon(getDefaultMarker());
-                        }
-
-                        marker.setIcon(getSelectedMarker());
-                        selectedMarker = marker;
-                        selectedNodeId = key;
-                        coordinateHandler.onNodeClickEvent(selectedNodeId);
-
-                        const currentPos = marker.getPosition();
-                        const text = `노드명: ${item.nodeName}<br>` +
-                            `위치: ${currentPos.lat().toFixed(7)}, ${currentPos.lng().toFixed(7)}`;
-                        infoWindow.setContent(text);
-                        infoWindow.open(map, marker);
-                    });
-
-                    marker.addListener("rightclick", () => {
-                        coordinateHandler.onRightClickEvent(key);
-                    });
-
-                    marker.addListener('dragend', function (event) {
-                        // 드래그 종료 시 새 위치로 업데이트합니다.
-                        const newDragPosition = event.latLng;
-                        markers[key].setPosition(newDragPosition);
-                        // 새 위치 정보를 처리하는 핸들러에 전달합니다.
-                        coordinateHandler.onDragendEvent(key, newDragPosition.lat(), newDragPosition.lng());
-                    });
-
-                    // 마커 객체에 마커를 저장합니다.
-                    markers[key] = marker;
-                }
+                updateOrCreateMarker(key, item);
             });
+        }
+        function updateOrCreateMarker(key, item) {
+            const newPosition = new google.maps.LatLng(item.position.latitude, item.position.longitude);
+
+            if (markers[key]) {
+                updateMarkerPosition(key, newPosition);
+            } else {
+                createMarker(key, item, newPosition);
+            }
+        }
+
+        function updateMarkerPosition(key, newPosition) {
+            const currentPosition = markers[key].getPosition();
+            if (!currentPosition.equals(newPosition)) {
+                markers[key].setPosition(newPosition);
+            }
+        }
+
+        function createMarker(key, item, newPosition) {
+            const marker = new google.maps.Marker({
+                map: map,
+                position: newPosition,
+                draggable: true,
+                icon: getDefaultMarker(),
+            });
+
+            addMarkerListeners(marker, key, item);
+            markers[key] = marker;
+        }
+
+        function addMarkerListeners(marker, key, item) {
+            marker.addListener("click", () => coordinateHandler.onNodeClickEvent(key));
+            marker.addListener("rightclick", () => coordinateHandler.onRightClickEvent(key));
+            marker.addListener('dragend', (event) => handleDragEnd(key, event));
+        }
+
+        function updateSelectedNode(nodeId) {
+            if (nodeId === "") {
+                if (selectedMarker) {
+                    selectedMarker.setIcon(getDefaultMarker());
+                    infoWindow.close();
+                }
+
+                selectedNodeId = null;
+                selectedMarker = null;
+
+                infoWindow.close();
+            } else {
+                if (selectedMarker) {
+                    selectedMarker.setIcon(getDefaultMarker());
+                }
+
+                var marker = markers[nodeId];
+                marker.setIcon(getSelectedMarker());
+                selectedMarker = marker;
+                selectedNodeId = nodeId;
+
+                // 정보창 업데이트 및 표시
+                var currentPos = marker.getPosition();
+                var item = marker.item; // 가정: 마커 객체에 item 정보가 저장되어 있음
+                var text = `노드명: ${"item.nodeName"}<br>위치: ${currentPos.lat().toFixed(7)}, ${currentPos.lng().toFixed(7)}`;
+                infoWindow.setContent(text);
+                infoWindow.open(map, marker);
+            }
+        }
+
+        function handleMarkerClick(marker, key, item) {
+        }
+
+        function handleDragEnd(key, event) {
+            const newDragPosition = event.latLng;
+            markers[key].setPosition(newDragPosition);
+            coordinateHandler.onDragendEvent(key, newDragPosition.lat(), newDragPosition.lng());
         }
 
         function getDefaultMarker() {

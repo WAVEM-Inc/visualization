@@ -13,7 +13,7 @@ void MapNodeModel::setMapNodes(const QMap<std::string, GraphNode> &mapNodes) {
 
 void MapNodeModel::setMapNodes(const std::vector<GraphNode> &mapNodes) {
     QMap<std::string, GraphNode> nodes;
-    for (const GraphNode &node : mapNodes) {
+    for (const GraphNode &node: mapNodes) {
         nodes.insert(node.nodeId, node);
     }
 

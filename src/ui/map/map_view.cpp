@@ -11,6 +11,7 @@
 #include "utils/file/config_file_reader.h"
 #include "model/code_info_model.h"
 #include "utils/file/code_file_reader.h"
+#include "model/node_info_model.h"
 
 MapView::MapView(QWidget *parent) :
         QWidget(parent),
@@ -39,6 +40,18 @@ MapView::MapView(QWidget *parent) :
     m_webview_ptr->load(url);
 
     connect(&MapNodeModel::getInstance(), &MapNodeModel::mapNodesChanged, this, &MapView::onMapNodesChanged);
+    connect(&MapNodeModel::getInstance(), &MapNodeModel::selectedMapNodeChanged, this, [this](const GraphNode &node) {
+        std::cout << node.nodeId << "\n";
+        m_webpage_ptr->runJavaScript(QString(
+                "updateSelectedNode(\"%1\");"
+        ).arg(node.nodeId.c_str()));
+    });
+    connect(&NodeInfoModel::getInstance(), &NodeInfoModel::currentNodeChanged, this, [this](const Node &node) {
+        std::cout << node.nodeId << "\n";
+        m_webpage_ptr->runJavaScript(QString(
+                "updateSelectedNode(\"%1\");"
+        ).arg(node.nodeId.c_str()));
+    });
 
     // Initialize config data
     ConfigFileReader cfgReader;
@@ -67,7 +80,7 @@ void MapView::onMapNodesChanged(const QMap<std::string, GraphNode> &nodeMap) {
     nlohmann::json json = nodeMap.toStdMap();
     QString qString = QString(json.dump().data());
     m_webpage_ptr->runJavaScript(QString(
-            "mapNodeJsonData = '" + qString + "';"
-                                              "updateMarkers(mapNodeJsonData);"
+            "mapNodeJsonData = '" + qString + "';\n" +
+            "updateMarkers(mapNodeJsonData);"
     ));
 }
