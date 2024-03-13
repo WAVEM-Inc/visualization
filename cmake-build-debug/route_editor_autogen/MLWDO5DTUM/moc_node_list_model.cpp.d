@@ -304,16 +304,20 @@
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qconfig.h \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qcontainerfwd.h \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qcontainertools_impl.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtCore/qdatastream.h \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qflags.h \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qgenericatomic.h \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qglobal.h \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qglobalstatic.h \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qhash.h \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qhashfunctions.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtCore/qiodevice.h \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qiterator.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtCore/qline.h \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qlist.h \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qlogging.h \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qmap.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtCore/qmargins.h \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qmetatype.h \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qnamespace.h \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qnumeric.h \
@@ -322,10 +326,16 @@
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qobjectdefs.h \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qobjectdefs_impl.h \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qpair.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtCore/qpoint.h \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qprocessordetection.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtCore/qrect.h \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qrefcount.h \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qregexp.h \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qscopedpointer.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtCore/qshareddata.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtCore/qsharedpointer.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtCore/qsharedpointer_impl.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtCore/qsize.h \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qstring.h \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qstringalgorithms.h \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qstringlist.h \
@@ -340,6 +350,25 @@
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qvarlengtharray.h \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qvector.h \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qversiontagging.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtGui/QStandardItemModel \
+  /usr/include/x86_64-linux-gnu/qt5/QtGui/qbrush.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtGui/qcolor.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtGui/qfont.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtGui/qicon.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtGui/qimage.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtGui/qmatrix.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtGui/qpaintdevice.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtGui/qpixelformat.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtGui/qpixmap.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtGui/qpolygon.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtGui/qregion.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtGui/qrgb.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtGui/qrgba64.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtGui/qstandarditemmodel.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtGui/qtgui-config.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtGui/qtguiglobal.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtGui/qtransform.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtGui/qwindowdefs.h \
   /usr/include/x86_64-linux-gnu/sys/cdefs.h \
   /usr/include/x86_64-linux-gnu/sys/syscall.h \
   /usr/lib/gcc/x86_64-linux-gnu/11/include/limits.h \

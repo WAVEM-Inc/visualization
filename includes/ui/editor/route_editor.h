@@ -15,6 +15,7 @@
 #include <QStandardItemModel>
 #include "struct/RouteFile.h"
 #include "utils/patterns/observer/observer.h"
+#include "node_list_model.h"
 
 class RouteEditor : public QWidget {
 Q_OBJECT
@@ -28,7 +29,7 @@ private:
     QGridLayout *m_layout_ptr;
     QComboBox *m_routeComboBox_ptr;
     QTableView *_nodeListView_ptr;
-    QStandardItemModel *_nodeListModel_ptr;
+    NodeListModel *_nodeListModel_ptr;
     QPushButton *m_addRouteButton_ptr;
     QPushButton *m_addNodeButton_ptr;
 

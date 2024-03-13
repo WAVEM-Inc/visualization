@@ -10,6 +10,7 @@
   /home/antique/Desktop/gui/route_editor/includes/ui/editor/detection_range_list_view.h \
   /home/antique/Desktop/gui/route_editor/includes/ui/editor/detection_range_view.h \
   /home/antique/Desktop/gui/route_editor/includes/ui/editor/node_editor.h \
+  /home/antique/Desktop/gui/route_editor/includes/ui/editor/node_list_model.h \
   /home/antique/Desktop/gui/route_editor/includes/ui/editor/route_editor.h \
   /home/antique/Desktop/gui/route_editor/includes/ui/map/map_view.h \
   /home/antique/Desktop/gui/route_editor/includes/ui/menu/menu_bar.h \
@@ -303,6 +304,7 @@
   /usr/include/x86_64-linux-gnu/c++/11/bits/time_members.h \
   /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
   /usr/include/x86_64-linux-gnu/gnu/stubs.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtCore/QAbstractListModel \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/QFlags \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/QMetaType \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/QObject \

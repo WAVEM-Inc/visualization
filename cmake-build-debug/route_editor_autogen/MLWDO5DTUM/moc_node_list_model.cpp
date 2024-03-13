@@ -64,7 +64,7 @@ void NodeListModel::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _i
 }
 
 QT_INIT_METAOBJECT const QMetaObject NodeListModel::staticMetaObject = { {
-    QMetaObject::SuperData::link<QAbstractListModel::staticMetaObject>(),
+    QMetaObject::SuperData::link<QStandardItemModel::staticMetaObject>(),
     qt_meta_stringdata_NodeListModel.data,
     qt_meta_data_NodeListModel,
     qt_static_metacall,
@@ -83,12 +83,12 @@ void *NodeListModel::qt_metacast(const char *_clname)
     if (!_clname) return nullptr;
     if (!strcmp(_clname, qt_meta_stringdata_NodeListModel.stringdata0))
         return static_cast<void*>(this);
-    return QAbstractListModel::qt_metacast(_clname);
+    return QStandardItemModel::qt_metacast(_clname);
 }
 
 int NodeListModel::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 {
-    _id = QAbstractListModel::qt_metacall(_c, _id, _a);
+    _id = QStandardItemModel::qt_metacall(_c, _id, _a);
     return _id;
 }
 QT_WARNING_POP

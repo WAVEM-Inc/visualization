@@ -7,21 +7,22 @@
 
 
 #include <QAbstractListModel>
+#include <QStandardItemModel>
 #include "struct/Node.h"
 
-class NodeListModel : public QAbstractListModel {
+class NodeListModel : public QStandardItemModel {
 Q_OBJECT
 public:
     explicit NodeListModel(QObject *parent = nullptr);
 
-    void setNodes(const std::vector<Node> nodes);
+    ~NodeListModel() override;
 
-    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    QMimeData * mimeData(const QModelIndexList &indexes) const override;
 
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+    bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) override;
 
-private:
-    QList<Node> m_nodes;
+protected:
+    mutable QModelIndex _dragStartIndex;
 };
 
 

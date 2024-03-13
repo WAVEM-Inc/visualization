@@ -111,3 +111,36 @@ std::string NodeInfoModel::getNextNodeId() {
     }
     return "";
 }
+
+bool NodeInfoModel::changeIndexes(int sourceIndex, int beginIndex) {
+    try {
+        QList<Node> nodes = getNodesFromCurrentPath();
+
+        // 인덱스 유효성 검사
+        if (sourceIndex < 0 || sourceIndex >= nodes.size() || beginIndex < 0 || beginIndex >= nodes.size()) {
+            return false; // 유효하지 않은 인덱스
+        }
+
+        // 노드의 위치를 변경
+        Node temp = nodes[sourceIndex]; // 임시 저장
+        nodes[sourceIndex] = nodes[beginIndex];
+        nodes[beginIndex] = temp;
+
+        std::string pathId = PathInfoModel::getInstance().getCurrentPathId();
+
+        _nodesMap[pathId] = nodes;
+        emit nodesMapChanged(_nodesMap);
+
+        _currentNodeList = nodes;
+        emit currentNodeListChanged(_currentNodeList);
+
+        _currentNodeIndex = beginIndex;
+
+        return true; // 성공적으로 위치 변경
+
+    } catch (const std::exception& e) {
+        // 예외 처리 로직, 필요에 따라 로깅 등을 수행
+        std::cout << "Exception caught in changeIndexes:" << e.what();
+        return false; // 예외 발생 시 false 반환
+    }
+}

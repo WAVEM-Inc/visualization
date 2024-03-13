@@ -7,6 +7,7 @@
   /home/antique/Desktop/gui/route_editor/includes/struct/Path.h \
   /home/antique/Desktop/gui/route_editor/includes/struct/Position.h \
   /home/antique/Desktop/gui/route_editor/includes/struct/RouteFile.h \
+  /home/antique/Desktop/gui/route_editor/includes/ui/editor/node_list_model.h \
   /home/antique/Desktop/gui/route_editor/includes/utils/patterns/observer/observer.h \
   /usr/include/asm-generic/errno-base.h \
   /usr/include/asm-generic/errno.h \
@@ -294,6 +295,7 @@
   /usr/include/x86_64-linux-gnu/c++/11/bits/time_members.h \
   /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
   /usr/include/x86_64-linux-gnu/gnu/stubs.h \
+  /usr/include/x86_64-linux-gnu/qt5/QtCore/QAbstractListModel \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qabstractitemmodel.h \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qalgorithms.h \
   /usr/include/x86_64-linux-gnu/qt5/QtCore/qarraydata.h \

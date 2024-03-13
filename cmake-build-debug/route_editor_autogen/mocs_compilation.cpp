@@ -9,6 +9,7 @@
 #include "MLWDO5DTUM/moc_detection_range_view.cpp"
 #include "MLWDO5DTUM/moc_node_editor.cpp"
 #include "MLWDO5DTUM/moc_node_list_model.cpp"
+#include "MLWDO5DTUM/moc_node_list_view.cpp"
 #include "MLWDO5DTUM/moc_route_editor.cpp"
 #include "I2L42U6DNQ/moc_main_window.cpp"
 #include "LG3H52G4TL/moc_map_view.cpp"

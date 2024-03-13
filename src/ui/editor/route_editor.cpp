@@ -19,7 +19,7 @@ RouteEditor::RouteEditor(QWidget *parent) :
         m_layout_ptr(new QGridLayout(this)),
         m_routeComboBox_ptr(new QComboBox()),
         _nodeListView_ptr(new QTableView()),
-        _nodeListModel_ptr(new QStandardItemModel()),
+        _nodeListModel_ptr(new NodeListModel()),
         m_addRouteButton_ptr(new QPushButton("+")),
         m_addNodeButton_ptr(new QPushButton("+")) {
 
@@ -38,8 +38,11 @@ RouteEditor::RouteEditor(QWidget *parent) :
     _nodeListModel_ptr->setHorizontalHeaderItem(0, new QStandardItem(QString("ID")));
     _nodeListModel_ptr->setHorizontalHeaderItem(1, new QStandardItem(QString("Type")));
 
-    QItemSelectionModel *selectionModel = _nodeListView_ptr->selectionModel();
     _nodeListView_ptr->setModel(_nodeListModel_ptr);
+    _nodeListView_ptr->setDragEnabled(true);
+    _nodeListView_ptr->setAcceptDrops(true);
+    _nodeListView_ptr->setDragDropOverwriteMode(false);
+    _nodeListView_ptr->setDropIndicatorShown(true);
     _nodeListView_ptr->setSelectionMode(QAbstractItemView::SingleSelection);
     _nodeListView_ptr->setSelectionBehavior(QAbstractItemView::SelectRows);
 
@@ -149,35 +152,51 @@ void RouteEditor::onPathInfoMapChanged(const QMap<std::string, std::string> &pat
 }
 
 void RouteEditor::onCurrentNodeListChanged(const QList<Node> &nodeList) {
+    // Step 1: 현재 모델에서 제거해야 할 노드 식별
     QSet<QString> newIds;
-    for (const Node &node: nodeList) {
+    for (const Node& node : nodeList) {
         newIds.insert(QString::fromStdString(node.nodeId));
     }
 
-    QSet<QString> currentIds;
+    QVector<int> rowsToDelete;
     for (int i = 0; i < _nodeListModel_ptr->rowCount(); ++i) {
-        QStandardItem *item = _nodeListModel_ptr->item(i, 0);
-        if (item) {
-            QString nodeId = item->text();
-            currentIds.insert(nodeId);
-
-            // 새 nodeList에 없는 nodeId를 가진 항목을 삭제합니다.
-            if (!newIds.contains(nodeId)) {
-                _nodeListModel_ptr->removeRow(i);
-                currentIds.remove(nodeId); // 현재 ID 집합에서도 삭제
-                i--; // 행을 삭제한 후 인덱스 조정
-            }
+        QStandardItem* item = _nodeListModel_ptr->item(i, 0);
+        if (item && !newIds.contains(item->text())) {
+            rowsToDelete.append(i);
         }
     }
+    // 역순으로 삭제하여 인덱스 변동을 방지
+    std::sort(rowsToDelete.rbegin(), rowsToDelete.rend());
+    for (int row : rowsToDelete) {
+        _nodeListModel_ptr->removeRow(row);
+    }
 
-    // 새로운 nodeList를 순회하면서 모델에 없는 노드를 추가합니다.
-    for (const Node &node: nodeList) {
+    // Step 2: 새 목록에 따라 노드 추가 및 순서 조정
+    for (int i = 0; i < nodeList.size(); ++i) {
+        const Node& node = nodeList[i];
         QString nodeId = QString::fromStdString(node.nodeId);
-        if (!currentIds.contains(nodeId)) {
-            QList<QStandardItem *> itemRow;
-            itemRow.append(new QStandardItem(nodeId));
-            itemRow.append(new QStandardItem(QString::fromStdString(node.type)));
-            _nodeListModel_ptr->appendRow(itemRow);
+
+        // 현재 모델에서 해당 노드 찾기
+        bool found = false;
+        for (int j = 0; j < _nodeListModel_ptr->rowCount(); ++j) {
+            QStandardItem* item = _nodeListModel_ptr->item(j, 0);
+            if (item && item->text() == nodeId) {
+                found = true;
+                // 노드가 이미 존재하지만 잘못된 위치에 있는 경우 이동
+                if (i != j) {
+                    QList<QStandardItem*> row = _nodeListModel_ptr->takeRow(j);
+                    _nodeListModel_ptr->insertRow(i, row);
+                }
+                break;
+            }
+        }
+
+        // 노드가 모델에 없는 경우 추가
+        if (!found) {
+            QList<QStandardItem*> newRow;
+            newRow.append(new QStandardItem(nodeId));
+            newRow.append(new QStandardItem(QString::fromStdString(node.type)));
+            _nodeListModel_ptr->insertRow(i, newRow);
         }
     }
 }

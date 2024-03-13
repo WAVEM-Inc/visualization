@@ -88,6 +88,8 @@ add_executable(route_editor
         src/struct/ConfigFile.cpp
         src/utils/file/config_file_writer.cpp
         includes/utils/file/config_file_writer.h
+        src/ui/editor/node_list_view.cpp
+        includes/ui/editor/node_list_view.h
 )
 
 include(FetchContent)

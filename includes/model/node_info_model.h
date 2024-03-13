@@ -33,6 +33,8 @@ public:
 
     bool updateCurrentNode(const Node &node);
 
+    bool changeIndexes(int sourceIndex, int beginIndex);
+
     std::string getPreNodeId();
 
     std::string getNextNodeId();
