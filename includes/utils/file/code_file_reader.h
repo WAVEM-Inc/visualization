@@ -7,10 +7,11 @@
 
 
 #include "struct/NodeCode.h"
+#include "struct/CodeGroup.h"
 
 class CodeFileReader {
 public:
-    std::vector<NodeCode> loadFile();
+    std::vector<CodeGroup> loadFile();
 };
 
 

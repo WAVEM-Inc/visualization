@@ -4,12 +4,11 @@
 
 #include <string>
 #include <fstream>
-#include <iostream>
 #include "utils/file/code_file_reader.h"
 
-std::vector<NodeCode> CodeFileReader::loadFile() {
+std::vector<CodeGroup> CodeFileReader::loadFile() {
     std::string filePath(RESOURCE_DIR);
-    filePath += "/code/code.json";
+    filePath += "/code/codes.json";
     std::ifstream file(filePath);
     std::string fileContents;
 
@@ -20,7 +19,7 @@ std::vector<NodeCode> CodeFileReader::loadFile() {
     }
 
     nlohmann::json json = nlohmann::json::parse(fileContents);
-    std::vector<NodeCode> codes = json.get<std::vector<NodeCode>>();
+    std::vector<CodeGroup> codes = json.get<std::vector<CodeGroup>>();
 
     file.close();
 

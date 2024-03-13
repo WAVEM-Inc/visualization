@@ -42,7 +42,7 @@ bool RouteFileReader::loadFile(const QString &filePath) {
     PathInfoModel::getInstance().setPathInfoMap(fileData.path);
     QMap<std::string, QList<Node>> nodes;
     for (const auto &path : fileData.path) {
-        nodes.insert(path.id, QList<Node>::fromVector(QVector<Node>::fromStdVector(path.nodelist)));
+        nodes.insert(path.id, QList<Node>::fromVector(QVector<Node>::fromStdVector(path.nodeList)));
     }
     NodeInfoModel::getInstance().updateNodes(nodes);
     MapNodeModel::getInstance().setMapNodes(fileData.node);

@@ -5,14 +5,15 @@ route_editor_autogen/timestamp: \
   CMakeFiles/3.27.8/CMakeSystem.cmake \
   _deps/json-src/single_include/nlohmann/json.hpp \
   route_editor_autogen/moc_predefs.h \
-  /home/antique/Desktop/gui/route_editor/includes/enum/Direction.h \
-  /home/antique/Desktop/gui/route_editor/includes/enum/NodeKind.h \
-  /home/antique/Desktop/gui/route_editor/includes/enum/NodeType.h \
+  /home/antique/Desktop/gui/route_editor/includes/enum/CodeType.h \
+  /home/antique/Desktop/gui/route_editor/includes/model/code_info_model.h \
   /home/antique/Desktop/gui/route_editor/includes/model/file_info_model.h \
   /home/antique/Desktop/gui/route_editor/includes/model/map_node_model.h \
   /home/antique/Desktop/gui/route_editor/includes/model/map_state_model.h \
   /home/antique/Desktop/gui/route_editor/includes/model/node_info_model.h \
   /home/antique/Desktop/gui/route_editor/includes/model/path_info_model.h \
+  /home/antique/Desktop/gui/route_editor/includes/struct/Code.h \
+  /home/antique/Desktop/gui/route_editor/includes/struct/CodeGroup.h \
   /home/antique/Desktop/gui/route_editor/includes/struct/ConfigFile.h \
   /home/antique/Desktop/gui/route_editor/includes/struct/DetectionRange.h \
   /home/antique/Desktop/gui/route_editor/includes/struct/FileInfo.h \
@@ -44,14 +45,15 @@ route_editor_autogen/timestamp: \
   /home/antique/Desktop/gui/route_editor/includes/utils/patterns/observer/subject.h \
   /home/antique/Desktop/gui/route_editor/includes/utils/patterns/singleton/singleton.h \
   /home/antique/Desktop/gui/route_editor/main.cpp \
-  /home/antique/Desktop/gui/route_editor/src/enum/Direction.cpp \
-  /home/antique/Desktop/gui/route_editor/src/enum/NodeKind.cpp \
-  /home/antique/Desktop/gui/route_editor/src/enum/NodeType.cpp \
+  /home/antique/Desktop/gui/route_editor/src/enum/CodeType.cpp \
+  /home/antique/Desktop/gui/route_editor/src/model/code_info_model.cpp \
   /home/antique/Desktop/gui/route_editor/src/model/file_info_model.cpp \
   /home/antique/Desktop/gui/route_editor/src/model/map_node_model.cpp \
   /home/antique/Desktop/gui/route_editor/src/model/map_state_model.cpp \
   /home/antique/Desktop/gui/route_editor/src/model/node_info_model.cpp \
   /home/antique/Desktop/gui/route_editor/src/model/path_info_model.cpp \
+  /home/antique/Desktop/gui/route_editor/src/struct/Code.cpp \
+  /home/antique/Desktop/gui/route_editor/src/struct/CodeGroup.cpp \
   /home/antique/Desktop/gui/route_editor/src/struct/ConfigFile.cpp \
   /home/antique/Desktop/gui/route_editor/src/struct/DetectionRange.cpp \
   /home/antique/Desktop/gui/route_editor/src/struct/GraphNode.cpp \

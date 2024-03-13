@@ -181,7 +181,7 @@ void MenuBar::onSaveFile() {
         Path path;
         path.id = entry.first;
         path.name = PathInfoModel::getInstance().getPathInfoMap()[entry.first];
-        path.nodelist = entry.second.toVector().toStdVector();
+        path.nodeList = entry.second.toVector().toStdVector();
         paths.push_back(path);
     }
     fileData.path = paths;

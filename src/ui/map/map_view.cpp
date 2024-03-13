@@ -9,6 +9,8 @@
 #include "map_view.h"
 #include "utils/coordinate_handler.h"
 #include "utils/file/config_file_reader.h"
+#include "model/code_info_model.h"
+#include "utils/file/code_file_reader.h"
 
 MapView::MapView(QWidget *parent) :
         QWidget(parent),
@@ -42,14 +44,17 @@ MapView::MapView(QWidget *parent) :
     ConfigFileReader cfgReader;
     ConfigFile cfgData = cfgReader.loadFile();
 
-    connect(m_webpage_ptr, &QWebEnginePage::loadFinished, this, [this, cfgData]() {
+    CodeFileReader codeReader;
+    std::vector<CodeGroup> codeData = codeReader.loadFile();
+
+    connect(m_webpage_ptr, &QWebEnginePage::loadFinished, this, [this, cfgData, codeData]() {
         m_webpage_ptr->runJavaScript(QString(
                 "changeCenter(%1, %2);\n"
                 "changeZoomLevel(%3);"
         ).arg(cfgData.center.latitude).arg(cfgData.center.longitude).arg(cfgData.zoomLevel));
 
         FileInfoModel::getInstance().updateLatestFilePath(cfgData.latestFilePath);
-        std::cout << "Latest Path: " << cfgData.latestFilePath << "\n";
+        CodeInfoModel::getInstance().setCodeMap(codeData);
     });
 }
 

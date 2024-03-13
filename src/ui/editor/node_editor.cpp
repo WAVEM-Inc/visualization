@@ -10,10 +10,10 @@
 #include "ui/editor/node_editor.h"
 #include "model/file_info_model.h"
 #include "model/node_info_model.h"
-#include "enum/NodeKind.h"
-#include "enum/Direction.h"
 #include "ui/editor/detection_range_view.h"
 #include "model/path_info_model.h"
+#include "model/code_info_model.h"
+#include "enum/CodeType.h"
 
 NodeEditor::NodeEditor(QWidget *parent) :
         QWidget(parent),
@@ -47,19 +47,48 @@ void NodeEditor::init() {
         _nodeType_ptr->setText(node.type.c_str());
         _preNode_ptr->setText(NodeInfoModel::getInstance().getPreNodeId().c_str());
         _nextNode_ptr->setText(NodeInfoModel::getInstance().getNextNodeId().c_str());
-        _nodeKind_ptr->setCurrentText(node.kind.c_str());
-        _nodeDirection_ptr->setCurrentText(node.direction.c_str());
+        _nodeKind_ptr->setCurrentText(CodeInfoModel::getInstance().getNameByCode(CodeType::NODE_KIND, node.kind).c_str());
+        _nodeDirection_ptr->setCurrentText(CodeInfoModel::getInstance().getNameByCode(CodeType::DIRECTION, node.direction).c_str());
         _nodeHeading_ptr->setText(QString::number(node.heading));
         _nodeLat_ptr->setText(QString::number(node.position.latitude, 'f', 7));
         _nodeLng_ptr->setText(QString::number(node.position.longitude, 'f', 7));
         _dtrListView_ptr->setDetectionRanges(node.detectionRange);
+
+        std::cout << "Data Kind: " << node.kind << "\n";
+        std::cout << "View Kind: " << _nodeKind_ptr->currentText().toStdString() << "\n";
     });
 
-    connect(&PathInfoModel::getInstance(), &PathInfoModel::currentPathIdChanged, this, [this](const std::string &pathId) {
-        _pathId_ptr->setText(pathId.c_str());
-        _pathName_ptr->setText(PathInfoModel::getInstance().getCurrentPathName().c_str());
-        this->setVisible(false);
-    });
+    connect(&PathInfoModel::getInstance(), &PathInfoModel::currentPathIdChanged, this,
+            [this](const std::string &pathId) {
+                _pathId_ptr->setText(pathId.c_str());
+                _pathName_ptr->setText(PathInfoModel::getInstance().getCurrentPathName().c_str());
+                this->setVisible(false);
+            }
+    );
+
+    connect(&CodeInfoModel::getInstance(), &CodeInfoModel::codeMapChanged, this,
+            [this](const std::map<std::string, CodeGroup> &codeMap) {
+
+                _nodeKind_ptr->clear();
+                _nodeDirection_ptr->clear();
+
+                std::vector<Code> nodeKindCodes = codeMap.at(CodeType::NODE_KIND).codes;
+                for (const Code &code: nodeKindCodes) {
+                    _nodeKind_ptr->addItem(
+                            QString::fromStdString(code.name),
+                            QVariant::fromValue(QString::fromStdString(code.code))
+                    );
+                }
+
+                std::vector<Code> directionCodes = codeMap.at(CodeType::DIRECTION).codes;
+                for (const Code &code: directionCodes) {
+                    _nodeDirection_ptr->addItem(
+                            QString::fromStdString(code.name),
+                            QVariant::fromValue(QString::fromStdString(code.code))
+                    );
+                }
+            }
+    );
 
     // setup widget events
     connect(_okBtn_ptr, &QPushButton::clicked, this, [this]() {
@@ -69,7 +98,8 @@ void NodeEditor::init() {
         node.nodeId = _nodeId_ptr->text().toStdString();
         node.type = _nodeType_ptr->text().toStdString();
         node.direction = _nodeType_ptr->text().toStdString();
-        node.kind = _nodeKind_ptr->currentText().toStdString();
+        node.kind = _nodeKind_ptr->currentData().toString().toStdString();
+        node.direction = _nodeDirection_ptr->currentData().toString().toStdString();
         node.heading = _nodeHeading_ptr->text().toInt();
         node.detectionRange = _dtrListView_ptr->getDetectionRanges();
 
@@ -77,7 +107,7 @@ void NodeEditor::init() {
         this->setVisible(false);
     });
 
-    connect(_addRangeBtn_ptr, &QPushButton::clicked, this, [this](){
+    connect(_addRangeBtn_ptr, &QPushButton::clicked, this, [this]() {
         DetectionRange range;
         _dtrListView_ptr->addDetectionRange(range);
     });
@@ -188,17 +218,13 @@ void NodeEditor::initTaskInfoWidget() {
 
     QLabel *kindLb = new QLabel("작업 구분");
     _nodeKind_ptr = new QComboBox();
-    std::vector<NodeKind> kinds = {NodeKind::INTERSECTION, NodeKind::CONNECTING, NodeKind::ENDPOINT, NodeKind::WAITING};
-    for (const NodeKind &kind: kinds) {
-        _nodeKind_ptr->addItem(QString(getKindKorName(kind).c_str()));
-    }
+
     layout->addWidget(kindLb, 1, 0);
     layout->addWidget(_nodeKind_ptr, 1, 1);
 
     QLabel *directionLb = new QLabel("진출 방향");
     _nodeDirection_ptr = new QComboBox();
-    _nodeDirection_ptr->addItem(QString(getDirectionKorName(Direction::FORWARD).c_str()));
-    _nodeDirection_ptr->addItem(QString(getDirectionKorName(Direction::BACKWARD).c_str()));
+
     layout->addWidget(directionLb, 2, 0);
     layout->addWidget(_nodeDirection_ptr, 2, 1);
 

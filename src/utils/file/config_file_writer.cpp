@@ -31,7 +31,6 @@ bool ConfigFileWriter::saveFile() {
         return false;
     }
 
-    std::cout << jsonData.dump(4) << "\n";
     outFile << jsonData.dump(4) << std::endl;
 
     outFile.close();

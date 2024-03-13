@@ -68,14 +68,8 @@ add_executable(route_editor
         includes/model/node_info_model.h
         src/model/map_node_model.cpp
         includes/model/map_node_model.h
-        includes/enum/NodeType.h
-        includes/enum/NodeKind.h
-        includes/enum/Direction.h
         src/ui/dialog/node_type_dialog.cpp
         includes/ui/dialog/node_type_dialog.h
-        src/enum/NodeType.cpp
-        src/enum/NodeKind.cpp
-        src/enum/Direction.cpp
         src/ui/editor/detection_range_view.cpp
         includes/ui/editor/detection_range_view.h
         src/ui/editor/detection_range_list_view.cpp
@@ -90,6 +84,14 @@ add_executable(route_editor
         includes/utils/file/config_file_writer.h
         src/ui/editor/node_list_view.cpp
         includes/ui/editor/node_list_view.h
+        includes/struct/Code.h
+        src/struct/Code.cpp
+        includes/struct/CodeGroup.h
+        src/struct/CodeGroup.cpp
+        includes/enum/CodeType.h
+        src/enum/CodeType.cpp
+        src/model/code_info_model.cpp
+        includes/model/code_info_model.h
 )
 
 include(FetchContent)

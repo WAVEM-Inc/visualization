@@ -15,7 +15,6 @@
 #include "model/map_node_model.h"
 #include "model/file_info_model.h"
 #include "ui/dialog/node_type_dialog.h"
-#include "enum/NodeType.h"
 #include "model/map_state_model.h"
 
 class CoordinateHandler : public QObject {
@@ -37,19 +36,17 @@ public slots:
             }
 
             NodeTypeDialog nodeTypeDialog;
-            std::string typeName;
+            std::string typeCode;
 
             if (nodeTypeDialog.exec() == QDialog::Accepted) {
-                std::string selected = nodeTypeDialog.selectedOption();
-                NodeType type = getTypeFromKorName(selected);
-                typeName = getTypeName(type);
+                typeCode = nodeTypeDialog.selectedOption();
             }
 
             if (ok && MapNodeModel::getInstance().checkIdUsability(nodeId.toStdString())) {
                 GraphNode node;
                 node.nodeId = "NO-" + FileInfoModel::getInstance().getFileInfo().mapId + "-" + nodeId.toStdString();
                 node.nodeName = node.nodeId;
-                node.type = typeName;
+                node.type = typeCode;
                 node.position = Position(lat, lng);
 
                 MapNodeModel::getInstance().addMapNode(node);

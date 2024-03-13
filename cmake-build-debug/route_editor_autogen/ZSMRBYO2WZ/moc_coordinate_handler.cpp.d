@@ -1,7 +1,6 @@
 /home/antique/Desktop/gui/route_editor/cmake-build-debug/route_editor_autogen/ZSMRBYO2WZ/moc_coordinate_handler.cpp: /home/antique/Desktop/gui/route_editor/includes/utils/coordinate_handler.h \
   /home/antique/Desktop/gui/route_editor/cmake-build-debug/route_editor_autogen/moc_predefs.h \
   /home/antique/Desktop/gui/route_editor/cmake-build-debug/_deps/json-src/single_include/nlohmann/json.hpp \
-  /home/antique/Desktop/gui/route_editor/includes/enum/NodeType.h \
   /home/antique/Desktop/gui/route_editor/includes/model/file_info_model.h \
   /home/antique/Desktop/gui/route_editor/includes/model/map_node_model.h \
   /home/antique/Desktop/gui/route_editor/includes/model/map_state_model.h \

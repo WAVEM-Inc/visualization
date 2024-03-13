@@ -13,7 +13,7 @@
 struct Path {
     std::string id;
     std::string name;
-    std::vector<Node> nodelist;
+    std::vector<Node> nodeList;
 
     Path() = default;
 };
