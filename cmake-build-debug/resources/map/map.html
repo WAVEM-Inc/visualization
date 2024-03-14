@@ -56,6 +56,8 @@
 
         let mapNodeJsonData;
         let markers = [];
+        let markerMenu;
+        let rightClickNodeId;
 
         async function initMap() {
             //@ts-ignore
@@ -84,8 +86,8 @@
                     contextMenu.style.display = 'block';
 
                     // 클릭된 위치 저장
-                    contextMenu.dataset.clickedLat = e.latLng.lat();
-                    contextMenu.dataset.clickedLng = e.latLng.lng();
+                    contextMenu.dataset.clickedLat = e.latLng.lat().toFixed(7);
+                    contextMenu.dataset.clickedLng = e.latLng.lng().toFixed(7);
                 });
 
                 map.addListener('click', function (e) {
@@ -115,6 +117,12 @@
                 document.getElementById('none-btn').addEventListener('click', function() {
                     contextMenu.style.display = 'none'; // 메뉴 숨기기
                 });
+            });
+
+            markerMenu = document.getElementById('marker-menu');
+            document.getElementById('remove-marker-btn').addEventListener('click', function () {
+                coordinateHandler.onRightClickEvent(rightClickNodeId);
+                markerMenu.style.display = 'none';
             });
 
             initAutocomplete();
@@ -223,8 +231,22 @@
 
         function addMarkerListeners(marker, key, item) {
             marker.addListener("click", () => coordinateHandler.onNodeClickEvent(key));
-            marker.addListener("rightclick", () => coordinateHandler.onRightClickEvent(key));
             marker.addListener('dragend', (event) => handleDragEnd(key, event));
+            marker.addListener("rightclick", (e) => {
+                var currentPos = marker.getPosition();
+                var numTiles = 1 << map.getZoom();
+                var projection = map.getProjection();
+                var worldCoordinate = projection.fromLatLngToPoint(currentPos);
+                var pixelCoordinate = new google.maps.Point(
+                    worldCoordinate.x * numTiles,
+                    worldCoordinate.y * numTiles);
+
+                markerMenu.style.left = marker.positionX + 'px';
+                markerMenu.style.top = marker.positionY + 'px';
+                markerMenu.style.display = 'block';
+
+                rightClickNodeId = key;
+            });
         }
 
         function updateSelectedNode(nodeId) {
@@ -306,6 +328,9 @@
 <div id="context-menu" class="context-menu">
     <div id="add-node-btn" class="context-menu-item">노드 추가</div>
     <div id="none-btn" class="context-menu-item">None</div>
+</div>
+<div id="marker-menu" class="context-menu">
+    <div id="remove-marker-btn" class="context-menu-item">노드 삭제</div>
 </div>
 </body>
 </html>

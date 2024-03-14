@@ -121,10 +121,9 @@ bool NodeInfoModel::changeIndexes(int sourceIndex, int beginIndex) {
             return false; // 유효하지 않은 인덱스
         }
 
-        // 노드의 위치를 변경
-        Node temp = nodes[sourceIndex]; // 임시 저장
-        nodes[sourceIndex] = nodes[beginIndex];
-        nodes[beginIndex] = temp;
+        // 노드 이동 로직
+        Node nodeToMove = nodes.takeAt(sourceIndex); // sourceIndex 위치의 노드를 제거하고 반환
+        nodes.insert(beginIndex, nodeToMove); // beginIndex 위치에 노드 삽입
 
         std::string pathId = PathInfoModel::getInstance().getCurrentPathId();
 
@@ -134,7 +133,12 @@ bool NodeInfoModel::changeIndexes(int sourceIndex, int beginIndex) {
         _currentNodeList = nodes;
         emit currentNodeListChanged(_currentNodeList);
 
-        _currentNodeIndex = beginIndex;
+        // currentNodeIndex 업데이트 로직 개선 필요
+        if (sourceIndex < beginIndex) {
+            _currentNodeIndex = beginIndex - 1;
+        } else {
+            _currentNodeIndex = beginIndex;
+        }
 
         return true; // 성공적으로 위치 변경
 
