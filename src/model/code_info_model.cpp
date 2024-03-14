@@ -25,7 +25,6 @@ std::map<std::string, CodeGroup> CodeInfoModel::getCodeMap() {
 
 std::vector<Code> CodeInfoModel::getCodesByCategory(const std::string& category) {
     nlohmann::json json = _codeMap[category];
-    std::cout << json.dump(4) << "\n";
 
     return _codeMap[category].codes;
 }

@@ -6,6 +6,8 @@
 #include <QGridLayout>
 #include <iostream>
 #include "ui/editor/detection_range_view.h"
+#include "model/code_info_model.h"
+#include "enum/CodeType.h"
 
 DetectionRangeView::DetectionRangeView(QWidget *parent, int num) : QWidget(parent) {
     QGridLayout *layout = new QGridLayout(this);
@@ -41,6 +43,16 @@ DetectionRangeView::DetectionRangeView(QWidget *parent, int num) : QWidget(paren
     _actionCode_ptr = new QComboBox();
     layout->addWidget(actionLabel, 5, 0);
     layout->addWidget(_actionCode_ptr, 5, 1);
+
+    std::vector<Code> actionCodes = CodeInfoModel::getInstance().getCodesByCategory(CodeType::ACTION_CODE);
+    for (const Code &code: actionCodes) {
+        _actionCode_ptr->addItem(
+                QString::fromStdString(code.name),
+                QVariant::fromValue(QString::fromStdString(code.code))
+        );
+    }
+    nlohmann::json json = actionCodes;
+    std::cout << json.dump(4) << "\n";
 }
 
 DetectionRangeView::~DetectionRangeView() = default;
@@ -52,7 +64,7 @@ void DetectionRangeView::setDetectionRange(DetectionRange detectionRange) {
     _longitude_ptr->setText(QString::number(detectionRange.position.longitude, 'f', 7));
     _width_ptr->setText(QString::number(detectionRange.width));
     _height_ptr->setText(QString::number(detectionRange.height));
-    _actionCode_ptr->setCurrentText(detectionRange.actionCode.c_str());
+    _actionCode_ptr->setCurrentText(CodeInfoModel::getInstance().getNameByCode(CodeType::ACTION_CODE, detectionRange.actionCode).c_str());
 }
 
 DetectionRange DetectionRangeView::getDetectionRange() {
@@ -61,7 +73,7 @@ DetectionRange DetectionRangeView::getDetectionRange() {
     range.position.longitude = _longitude_ptr->text().toDouble();
     range.width = _width_ptr->text().toDouble();
     range.height = _height_ptr->text().toDouble();
-    range.actionCode = _actionCode_ptr->currentText().toStdString();
+    range.actionCode = _actionCode_ptr->currentData().toString().toStdString();
 
     return range;
 }
