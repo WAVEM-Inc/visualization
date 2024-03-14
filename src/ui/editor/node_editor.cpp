@@ -91,6 +91,10 @@ void NodeEditor::init() {
     );
 
     // setup widget events
+    connect(_cancelBtn_ptr, &QPushButton::clicked, this, [this]() {
+       this->setVisible(false);
+    });
+
     connect(_okBtn_ptr, &QPushButton::clicked, this, [this]() {
         Node node;
         node.position.latitude = _nodeLat_ptr->text().toDouble();
@@ -136,10 +140,20 @@ void NodeEditor::initTabWidget() {
 
 
     // Node tab - add ok button
-    _okBtn_ptr = new QPushButton("완료");
-    _okBtn_ptr->setFixedWidth(150);
+    QWidget *buttonsWidget = new QWidget();
+    QHBoxLayout *buttonsLayout = new QHBoxLayout(buttonsWidget);
+
+    _cancelBtn_ptr = new QPushButton("닫기");
+    _okBtn_ptr = new QPushButton("저장");
+
+    buttonsLayout->addWidget(_cancelBtn_ptr);
+    buttonsLayout->addWidget(_okBtn_ptr);
+
     nodeLayout->addStretch(1);
-    nodeLayout->addWidget(_okBtn_ptr, 0, Qt::AlignRight);
+    nodeLayout->addWidget(buttonsWidget);
+/*    _okBtn_ptr->setFixedWidth(150);
+    nodeLayout->addStretch(1);
+    nodeLayout->addWidget(_okBtn_ptr, 0, Qt::AlignRight);*/
 
     // Node tab - set scroll area
     QScrollArea *nodeScrollArea = new QScrollArea();

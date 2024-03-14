@@ -18,7 +18,7 @@ void DetectionRangeListView::setDetectionRanges(const std::vector<DetectionRange
 }
 
 void DetectionRangeListView::addDetectionRange(const DetectionRange &range) {
-    auto *view = new DetectionRangeView();
+    auto *view = new DetectionRangeView(this, _views_ptr.size() + 1);
     view->setDetectionRange(range);
 
     _layout_ptr->addWidget(view);
