@@ -41,7 +41,6 @@ std::vector<DetectionRange> DetectionRangeListView::getDetectionRanges() {
     for (DetectionRangeView *view: _views_ptr)
         ranges.push_back(view->getDetectionRange());
 
-
     return ranges;
 }
 

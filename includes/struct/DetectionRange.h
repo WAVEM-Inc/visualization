@@ -12,9 +12,7 @@ struct DetectionRange {
     Position position;
     double width = 0;
     double height = 0;
-    std::string processingCode;
-
-
+    std::string actionCode;
 };
 
 void to_json(nlohmann::json& j, const DetectionRange& sr);

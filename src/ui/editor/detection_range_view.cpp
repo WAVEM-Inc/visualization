@@ -52,7 +52,7 @@ void DetectionRangeView::setDetectionRange(DetectionRange detectionRange) {
     _longitude_ptr->setText(QString::number(detectionRange.position.longitude, 'f', 7));
     _width_ptr->setText(QString::number(detectionRange.width));
     _height_ptr->setText(QString::number(detectionRange.height));
-    _actionCode_ptr->setCurrentText(detectionRange.processingCode.c_str());
+    _actionCode_ptr->setCurrentText(detectionRange.actionCode.c_str());
 }
 
 DetectionRange DetectionRangeView::getDetectionRange() {
@@ -61,7 +61,7 @@ DetectionRange DetectionRangeView::getDetectionRange() {
     range.position.longitude = _longitude_ptr->text().toDouble();
     range.width = _width_ptr->text().toDouble();
     range.height = _height_ptr->text().toDouble();
-    range.processingCode = _actionCode_ptr->currentText().toStdString();
+    range.actionCode = _actionCode_ptr->currentText().toStdString();
 
     return range;
 }
