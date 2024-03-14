@@ -18,14 +18,14 @@ DetectionRangeView::DetectionRangeView(QWidget *parent, int num) : QWidget(paren
     QLabel *latLabel = new QLabel("위도");
     _latitude_ptr = new QLineEdit();
     _latitude_ptr->setValidator(new QDoubleValidator(_latitude_ptr));
-    layout->addWidget(latLabel, 2, 0);
-    layout->addWidget(_latitude_ptr, 2, 1);
+    layout->addWidget(latLabel, 1, 0);
+    layout->addWidget(_latitude_ptr, 1, 1);
 
     QLabel *lngLabel = new QLabel("경도");
     _longitude_ptr = new QLineEdit();
     _longitude_ptr->setValidator(new QDoubleValidator(_longitude_ptr));
-    layout->addWidget(lngLabel, 1, 0);
-    layout->addWidget(_longitude_ptr, 1, 1);
+    layout->addWidget(lngLabel, 2, 0);
+    layout->addWidget(_longitude_ptr, 2, 1);
 
     QLabel *widthLabel = new QLabel("감지 폭");
     _width_ptr = new QLineEdit();
