@@ -51,6 +51,9 @@ MenuBar::MenuBar(QWidget *parent) : QMenuBar(parent) {
     QAction *saveFileAs = fileMenu->addAction(tr("&다른 이름으로 저장"));
     saveFileAs->setShortcut(QKeySequence("Ctrl+Shift+S"));
     saveFileAs->setEnabled(false);
+    connect(saveFileAs, &QAction::triggered, this, [this]() {
+       this->onSaveFileAs();
+    });
 
     // Menu-Edit
     QMenu *editMenu = this->addMenu(tr("&편집"));
@@ -70,13 +73,6 @@ MenuBar::MenuBar(QWidget *parent) : QMenuBar(parent) {
         saveFile->setEnabled(savable);
         addNewNode->setEnabled(savable);
     });
-
-/*    // Listen savable state
-    m_listener.listen([&saveFile, &saveFileAs](const event::FILE_SAVABLE &event) {
-        std::cout << "Savable state: " << event.isSavable << "\n";
-        saveFile->setEnabled(event.isSavable);
-        saveFileAs->setEnabled(event.isSavable);
-    });*/
 }
 
 void MenuBar::initializeStyleSheet() {
@@ -193,4 +189,45 @@ void MenuBar::onSaveFile() {
     fileData.node = mapNodes;
 
     writer.saveFile(QString(info.filePath.c_str()), fileData);
+}
+
+void MenuBar::onSaveFileAs() {
+    bool ok;
+
+    QString latestFilePath = QString(FileInfoModel::getInstance().getLatestFilePath().c_str());
+    QString filePath;
+    if (latestFilePath.isEmpty()) {
+        filePath = QFileDialog::getSaveFileName(this, tr("Save File Path"), QDir::home().absolutePath(),
+                                                tr("Data files (*.dat)"));
+    } else {
+        filePath = QFileDialog::getSaveFileName(this, tr("Save File Path"), latestFilePath,
+                                                tr("Data files (*.dat)"));
+    }
+
+    if (!filePath.isEmpty()) {
+        FileInfo info = FileInfoModel::getInstance().getFileInfo();
+        RouteFileWriter writer;
+
+        RouteFile fileData;
+        fileData.version = info.fileVersion;
+        fileData.mapId = info.mapId;
+
+        std::vector<Path> paths;
+        for (const auto &entry : NodeInfoModel::getInstance().getAllNodes().toStdMap()) {
+            Path path;
+            path.id = entry.first;
+            path.name = PathInfoModel::getInstance().getPathInfoMap()[entry.first];
+            path.nodeList = entry.second.toVector().toStdVector();
+            paths.push_back(path);
+        }
+        fileData.path = paths;
+
+        std::vector<GraphNode> mapNodes;
+        for (const GraphNode &mapNode : MapNodeModel::getInstance().getMapNodes()) {
+            mapNodes.push_back(mapNode);
+        }
+        fileData.node = mapNodes;
+
+        writer.saveFile(filePath, fileData);
+    }
 }

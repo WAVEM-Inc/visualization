@@ -108,7 +108,6 @@ void NodeEditor::init() {
         node.detectionRange = _dtrListView_ptr->getDetectionRanges();
 
         NodeInfoModel::getInstance().updateCurrentNode(node);
-        this->setVisible(false);
     });
 
     connect(_addRangeBtn_ptr, &QPushButton::clicked, this, [this]() {
