@@ -53,6 +53,7 @@
         let map;
         let coordinateHandler;
         let infoWindow;
+        let linePath;
 
         let mapNodeJsonData;
         let markers = [];
@@ -192,7 +193,7 @@
         let selectedMarker = null;
         let selectedNodeId = null;
 
-        function updateMarkers(jsonData) {
+        function updateMarkers(jsonData, showAll) {
             const parsedData = JSON.parse(jsonData);
             const currentDataKeys = Object.keys(parsedData);
 
@@ -202,6 +203,22 @@
             });
 
             removeMissingMarkers(currentDataKeys);
+
+            if (linePath) {
+                linePath.setMap(null);
+            }
+
+            if (!showAll) {
+                linePath = new google.maps.Polyline({
+                    path: Object.values(markers).map(marker => marker.getPosition()), // Adjusted for object
+                    geodesic: true, // 대지 곡률을 고려한 선을 그림
+                    strokeColor: '#FF0000', // 선의 색상
+                    strokeOpacity: 1.0, // 선의 투명도
+                    strokeWeight: 2, // 선의 두께
+                });
+
+                linePath.setMap(map);
+            }
         }
 
         function updateOrCreateMarker(key, item) {
@@ -271,7 +288,8 @@
                 if (selectedMarker) {
                     selectedMarker.setIcon({
                         url: getDefaultMarker(),
-                        scaledSize: new google.maps.Size(20, 20)
+                        scaledSize: new google.maps.Size(20, 20),
+                        anchor: new google.maps.Point(10, 10),
                     });
                     infoWindow.close();
                 }
@@ -284,14 +302,16 @@
                 if (selectedMarker) {
                     selectedMarker.setIcon({
                         url: getDefaultMarker(),
-                        scaledSize: new google.maps.Size(20, 20)
+                        scaledSize: new google.maps.Size(20, 20),
+                        anchor: new google.maps.Point(10, 10),
                     });
                 }
 
                 var marker = markers[nodeId];
                 marker.setIcon({
                     url: getSelectedMarker(),
-                    scaledSize: new google.maps.Size(20, 20)
+                    scaledSize: new google.maps.Size(20, 20),
+                    anchor: new google.maps.Point(10, 10),
                 });
                 selectedMarker = marker;
                 selectedNodeId = nodeId;

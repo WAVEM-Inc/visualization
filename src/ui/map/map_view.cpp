@@ -81,8 +81,8 @@ void MapView::onMapNodesChanged(const QMap<std::string, GraphNode> &nodeMap) {
     QString qString = QString(json.dump().data());
     m_webpage_ptr->runJavaScript(QString(
             "mapNodeJsonData = '" + qString + "';\n" +
-            "updateMarkers(mapNodeJsonData);"
-    ));
+            "updateMarkers(mapNodeJsonData, %1);"
+    ).arg(MapNodeModel::getInstance().getShowAllNodes()));
 
     std::cout << json.dump(4) << "\n";
 }
