@@ -56,22 +56,32 @@ MenuBar::MenuBar(QWidget *parent) : QMenuBar(parent) {
     });
 
     // Menu-Edit
-    QMenu *editMenu = this->addMenu(tr("&편집"));
+    QMenu *editMenu = this->addMenu(tr("&보기"));
 
-    QAction *addNewNode = editMenu->addAction(tr("&지도에 노드 추가"));
-    addNewNode->setShortcut(QKeySequence("Ctrl+Alt+N"));
-    addNewNode->setEnabled(false);
-    connect(addNewNode, &QAction::triggered, this, [this]() {
-       this->onAddNewNode();
+    QAction *showAllNode = editMenu->addAction(tr("&전체 노드 보기"));
+    showAllNode->setShortcut(QKeySequence("Ctrl+A"));
+    showAllNode->setCheckable(true);
+    showAllNode->setChecked(true);
+    MapNodeModel::getInstance().setShowAllNodes(true);
+    connect(showAllNode, &QAction::triggered, this, [showAllNode]() {
+        MapNodeModel::getInstance().setShowAllNodes(showAllNode->isChecked());
+    });
+
+    QAction *fixMapCenter = editMenu->addAction(tr("%선택된 노드로 시점 이동"));
+    fixMapCenter->setCheckable(true);
+    fixMapCenter->setChecked(true);
+    MapNodeModel::getInstance().setChangeCenterToSelectedNode(true);
+    connect(fixMapCenter, &QAction::triggered, this, [fixMapCenter]() {
+        bool useAutoCenter = fixMapCenter->isChecked();
+        MapNodeModel::getInstance().setChangeCenterToSelectedNode(useAutoCenter);
     });
 
     // connect to models
     connect(&FileInfoModel::getInstance(), &FileInfoModel::fileSavableChanged, this,
-            [saveFile, saveFileAs, addNewNode](bool savable) {
+            [saveFile, saveFileAs](bool savable) {
 
         saveFileAs->setEnabled(savable);
         saveFile->setEnabled(savable);
-        addNewNode->setEnabled(savable);
     });
 }
 
@@ -119,9 +129,6 @@ void MenuBar::onNewFile() {
                                       QLineEdit::Normal, "", &ok);
     }
 
-/*    QString filePath = QFileDialog::getSaveFileName(this, tr("Save File Path"), QDir::home().absolutePath(),
-                                                    tr("Data files (*.dat)"));*/
-
     QString latestFilePath = QString(FileInfoModel::getInstance().getLatestFilePath().c_str());
     QString filePath;
     if (latestFilePath.isEmpty()) {
@@ -158,10 +165,6 @@ void MenuBar::onOpenFile() {
         RouteFileReader reader;
         reader.loadFile(filePath);
     }
-}
-
-void MenuBar::onAddNewNode() {
-    MapNodeModel::getInstance().updateUseAddMode(true);
 }
 
 void MenuBar::onSaveFile() {

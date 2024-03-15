@@ -194,12 +194,16 @@
 
         function updateMarkers(jsonData) {
             const parsedData = JSON.parse(jsonData);
+            const currentDataKeys = Object.keys(parsedData);
 
             Object.keys(parsedData).forEach(key => {
                 const item = parsedData[key];
                 updateOrCreateMarker(key, item);
             });
+
+            removeMissingMarkers(currentDataKeys);
         }
+
         function updateOrCreateMarker(key, item) {
             const newPosition = new google.maps.LatLng(item.position.latitude, item.position.longitude);
 
@@ -233,6 +237,15 @@
             markers[key] = marker;
         }
 
+        function removeMissingMarkers(currentDataKeys) {
+            Object.keys(markers).forEach((key) => {
+                if (!currentDataKeys.includes(key)) {
+                    markers[key].setMap(null); // 마커를 지도에서 제거
+                    delete markers[key]; // 마커 객체에서 삭제
+                }
+            });
+        }
+
         function addMarkerListeners(marker, key, item) {
             marker.addListener("click", () => coordinateHandler.onNodeClickEvent(key));
             marker.addListener('dragend', (event) => handleDragEnd(key, event));
@@ -253,7 +266,7 @@
             });
         }
 
-        function updateSelectedNode(nodeId) {
+        function updateSelectedNode(nodeId, changeCenter) {
             if (nodeId === "") {
                 if (selectedMarker) {
                     selectedMarker.setIcon({
@@ -289,10 +302,11 @@
                 var text = `노드ID: ${nodeId}<br>위치: ${currentPos.lat().toFixed(7)}, ${currentPos.lng().toFixed(7)}`;
                 infoWindow.setContent(text);
                 infoWindow.open(map, marker);
-            }
-        }
 
-        function handleMarkerClick(marker, key, item) {
+                if (changeCenter) {
+                    map.setCenter(selectedMarker.getPosition());
+                }
+            }
         }
 
         function handleDragEnd(key, event) {
@@ -302,17 +316,6 @@
         }
 
         function getDefaultMarker() {
-/*            const svgMarker = {
-                path: "M-1.547 12l6.563-6.609-1.406-1.406-5.156 5.203-2.063-2.109-1.406 1.406zM0 0q2.906 0 4.945 2.039t2.039 4.945q0 1.453-0.727 3.328t-1.758 3.516-2.039 3.070-1.711 2.273l-0.75 0.797q-0.281-0.328-0.75-0.867t-1.688-2.156-2.133-3.141-1.664-3.445-0.75-3.375q0-2.906 2.039-4.945t4.945-2.039z",
-                fillColor: "red",
-                fillOpacity: 0.6,
-                strokeWeight: 0,
-                rotation: 0,
-                scale: 2,
-                anchor: new google.maps.Point(0, 20),
-            };
-
-            return svgMarker;*/
             var svgCode = '<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><g><title>Layer 1</title><ellipse stroke="#000000" ry="45.37804" rx="45.37804" id="svg_1" cy="48.99135" cx="50" fill="#ffffff"/><ellipse ry="40" rx="40" id="svg_2" cy="48.65521" cx="50" stroke="#ffffff" fill="red"/></g></svg>';
             var svgUri = 'data:image/svg+xml;base64,' + btoa(svgCode);
 
@@ -320,18 +323,6 @@
         }
 
         function getSelectedMarker() {
-/*            const svgMarker = {
-                path: "M-1.547 12l6.563-6.609-1.406-1.406-5.156 5.203-2.063-2.109-1.406 1.406zM0 0q2.906 0 4.945 2.039t2.039 4.945q0 1.453-0.727 3.328t-1.758 3.516-2.039 3.070-1.711 2.273l-0.75 0.797q-0.281-0.328-0.75-0.867t-1.688-2.156-2.133-3.141-1.664-3.445-0.75-3.375q0-2.906 2.039-4.945t4.945-2.039z",
-                fillColor: "blue",
-                fillOpacity: 0.6,
-                strokeWeight: 0,
-                rotation: 0,
-                scale: 2,
-                anchor: new google.maps.Point(0, 20),
-            };
-
-            return svgMarker;*/
-
             var svgCode = '<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><g><title>Layer 1</title><ellipse stroke="#000000" ry="45.37804" rx="45.37804" id="svg_1" cy="48.99135" cx="50" fill="#ffffff"/><ellipse ry="40" rx="40" id="svg_2" cy="48.65521" cx="50" stroke="#ffffff" fill="blue"/></g></svg>';
             var svgUri = 'data:image/svg+xml;base64,' + btoa(svgCode);
 

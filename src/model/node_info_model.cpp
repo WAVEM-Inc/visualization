@@ -14,6 +14,8 @@ NodeInfoModel::NodeInfoModel(QObject *parent) : QObject(parent) {
 }
 
 void NodeInfoModel::updateNodes(const QMap<std::string, QList<Node>>& nodesMap) {
+    _nodesMap.clear();
+
     _nodesMap = nodesMap;
     emit nodesMapChanged(_nodesMap);
 

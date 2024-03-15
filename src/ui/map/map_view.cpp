@@ -41,10 +41,10 @@ MapView::MapView(QWidget *parent) :
 
     connect(&MapNodeModel::getInstance(), &MapNodeModel::mapNodesChanged, this, &MapView::onMapNodesChanged);
     connect(&MapNodeModel::getInstance(), &MapNodeModel::selectedMapNodeChanged, this, [this](const GraphNode &node) {
-        std::cout << node.nodeId << "\n";
+        std::cout << MapNodeModel::getInstance().getChangeCenterToSelectedNode() << "\n";
         m_webpage_ptr->runJavaScript(QString(
-                "updateSelectedNode(\"%1\");"
-        ).arg(node.nodeId.c_str()));
+                "updateSelectedNode(\"%1\", %2);"
+        ).arg(node.nodeId.c_str()).arg(MapNodeModel::getInstance().getChangeCenterToSelectedNode()));
     });
     connect(&NodeInfoModel::getInstance(), &NodeInfoModel::currentNodeChanged, this, [this](const Node &node) {
         std::cout << node.nodeId << "\n";
@@ -83,4 +83,6 @@ void MapView::onMapNodesChanged(const QMap<std::string, GraphNode> &nodeMap) {
             "mapNodeJsonData = '" + qString + "';\n" +
             "updateMarkers(mapNodeJsonData);"
     ));
+
+    std::cout << json.dump(4) << "\n";
 }

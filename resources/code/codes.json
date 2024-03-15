@@ -23,14 +23,14 @@
     "category": "node_kind",
     "codes": [
       {
-        "code": "intersection",
-        "name": "교차로",
-        "description": "교차로 노드"
-      },
-      {
         "code": "connecting",
         "name": "연결",
         "description": "직진 노드"
+      },
+      {
+        "code": "intersection",
+        "name": "교차로",
+        "description": "교차로 노드"
       },
       {
         "code": "complete",

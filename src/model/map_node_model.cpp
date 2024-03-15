@@ -3,15 +3,30 @@
 //
 
 #include "model/map_node_model.h"
+#include "model/path_info_model.h"
+#include "model/node_info_model.h"
 
-MapNodeModel::MapNodeModel(QObject *parent) : QObject(parent) {}
+MapNodeModel::MapNodeModel(QObject *parent) : QObject(parent) {
+    connect(this, &MapNodeModel::showAllNodesOptionChanged, this, [this](bool showAll) {
+        showNodes(showAll);
+    });
+    connect(&PathInfoModel::getInstance(), &PathInfoModel::currentPathIdChanged, this,  [this](const std::string &pathId) {
+        showNodes(_showAllNodes);
+    });
+}
 
 void MapNodeModel::setMapNodes(const QMap<std::string, GraphNode> &mapNodes) {
+    _mapNodes.clear();
+
     _mapNodes = mapNodes;
     emit mapNodesChanged(_mapNodes);
+
+    showNodes(_showAllNodes);
 }
 
 void MapNodeModel::setMapNodes(const std::vector<GraphNode> &mapNodes) {
+    _mapNodes.clear();
+
     QMap<std::string, GraphNode> nodes;
     for (const GraphNode &node: mapNodes) {
         nodes.insert(node.nodeId, node);
@@ -19,6 +34,8 @@ void MapNodeModel::setMapNodes(const std::vector<GraphNode> &mapNodes) {
 
     _mapNodes = nodes;
     emit mapNodesChanged(_mapNodes);
+
+    showNodes(_showAllNodes);
 }
 
 void MapNodeModel::updateMapNode(const std::string &nodeId, double lat, double lng) {
@@ -59,15 +76,6 @@ bool MapNodeModel::checkIdUsability(const std::string &nodeId) {
     }
 }
 
-void MapNodeModel::updateUseAddMode(bool usable) {
-    _useAddMode = usable;
-    emit useAddModeChanged(_useAddMode);
-}
-
-bool MapNodeModel::getAddModeUsability() const {
-    return _useAddMode;
-}
-
 void MapNodeModel::selectMapNode(const std::string &nodeId) {
     _selectedMapNode_ptr = getMapNodeById(nodeId);
     emit selectedMapNodeChanged(_selectedMapNode_ptr);
@@ -75,4 +83,44 @@ void MapNodeModel::selectMapNode(const std::string &nodeId) {
 
 GraphNode MapNodeModel::getSelectedMapNode() const {
     return _selectedMapNode_ptr;
+}
+
+void MapNodeModel::setChangeCenterToSelectedNode(bool use) {
+    _changeCenterToSelectedNode = use;
+}
+
+bool MapNodeModel::getChangeCenterToSelectedNode() const {
+    return _changeCenterToSelectedNode;
+}
+
+void MapNodeModel::setShowAllNodes(bool show) {
+    _showAllNodes = show;
+    emit showAllNodesOptionChanged(_showAllNodes);
+}
+
+bool MapNodeModel::getShowAllNodes() const {
+    return _showAllNodes;
+}
+
+void MapNodeModel::showNodes(bool showAll) {
+    try {
+        if (!_mapNodes.empty()) {
+            std::cout << "MapNode is not Empty" << "\n";
+            if (showAll) {
+                emit mapNodesChanged(_mapNodes);
+            } else {
+                std::string pathId = PathInfoModel::getInstance().getCurrentPathId();
+                QList<Node> currentNodes = NodeInfoModel::getInstance().getAllNodes()[pathId];
+
+                QMap<std::string, GraphNode> nodes;
+                for (const Node &node : currentNodes) {
+                    nodes[node.nodeId] = getMapNodes()[node.nodeId];
+                }
+
+                emit mapNodesChanged(nodes);
+            }
+        }
+    } catch (std::exception &exception) {
+        std::cout << "Error occured in showAllNodeOptionChanged event: " << exception.what() << "\n";
+    }
 }

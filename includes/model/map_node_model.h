@@ -43,16 +43,22 @@ public:
 
     bool checkIdUsability(const std::string& nodeId);
 
-    void updateUseAddMode(bool usable);
+    void setChangeCenterToSelectedNode(bool use);
 
-    bool getAddModeUsability() const;
+    bool getChangeCenterToSelectedNode() const;
+
+    void setShowAllNodes(bool show);
+
+    bool getShowAllNodes() const;
+
+    void showNodes(bool showAll);
 
 signals:
     void mapNodesChanged(const QMap<std::string, GraphNode> &nodeMap);
 
     void selectedMapNodeChanged(const GraphNode &mapNode);
 
-    void useAddModeChanged(bool usable);
+    void showAllNodesOptionChanged(bool show);
 
 private:
     explicit MapNodeModel(QObject *parent = nullptr);
@@ -60,7 +66,8 @@ private:
 private:
     QMap<std::string, GraphNode> _mapNodes;
     GraphNode _selectedMapNode_ptr;
-    bool _useAddMode = false;
+    bool _changeCenterToSelectedNode;
+    bool _showAllNodes;
 };
 
 

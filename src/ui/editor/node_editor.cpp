@@ -150,9 +150,6 @@ void NodeEditor::initTabWidget() {
 
     nodeLayout->addStretch(1);
     nodeLayout->addWidget(buttonsWidget);
-/*    _okBtn_ptr->setFixedWidth(150);
-    nodeLayout->addStretch(1);
-    nodeLayout->addWidget(_okBtn_ptr, 0, Qt::AlignRight);*/
 
     // Node tab - set scroll area
     QScrollArea *nodeScrollArea = new QScrollArea();
@@ -177,11 +174,13 @@ void NodeEditor::initRouteInfoWidget() {
 
     QLabel *pathIdLb = new QLabel("경로 ID");
     _pathId_ptr = new QLineEdit();
+    _pathId_ptr->setReadOnly(true);
     layout->addWidget(pathIdLb, 1, 0);
     layout->addWidget(_pathId_ptr, 1, 1);
 
     QLabel *pathNameLb = new QLabel("경로 이름");
     _pathName_ptr = new QLineEdit();
+    _pathName_ptr->setReadOnly(true);
     layout->addWidget(pathNameLb, 2, 0);
     layout->addWidget(_pathName_ptr, 2, 1);
 
