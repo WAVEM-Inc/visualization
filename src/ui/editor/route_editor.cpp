@@ -8,6 +8,7 @@
 #include <QInputDialog>
 #include <QStandardItemModel>
 #include <QMessageBox>
+#include <QMenu>
 #include "model/path_info_model.h"
 #include "model/file_info_model.h"
 #include "model/node_info_model.h"
@@ -45,6 +46,7 @@ RouteEditor::RouteEditor(QWidget *parent) :
     _nodeListView_ptr->setDropIndicatorShown(true);
     _nodeListView_ptr->setSelectionMode(QAbstractItemView::SingleSelection);
     _nodeListView_ptr->setSelectionBehavior(QAbstractItemView::SelectRows);
+    _nodeListView_ptr->setContextMenuPolicy(Qt::CustomContextMenu);
 
     m_routeComboBox_ptr->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     m_addRouteButton_ptr->setFixedSize(30, 30);
@@ -63,6 +65,18 @@ RouteEditor::RouteEditor(QWidget *parent) :
     connect(_nodeListView_ptr, &QTableView::clicked, this, [this](const QModelIndex &index) {
         if (index.isValid()) {
             NodeInfoModel::getInstance().selectCurrentNode(index.row());
+        }
+    });
+    connect(_nodeListView_ptr, &QTableView::customContextMenuRequested, [this](const QPoint &pos) {
+        QModelIndex index = _nodeListView_ptr->indexAt(pos);
+        if (index.isValid()) {
+            QMenu contextMenu;
+            QAction *action1 = contextMenu.addAction("삭제");
+            QObject::connect(action1, &QAction::triggered, [index]() {
+                NodeInfoModel::getInstance().removeNodeFromCurrentPath(index.row());
+            });
+            // 추가 액션 구현
+            contextMenu.exec(QCursor::pos());
         }
     });
 

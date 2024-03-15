@@ -92,6 +92,8 @@ add_executable(route_editor
         src/enum/CodeType.cpp
         src/model/code_info_model.cpp
         includes/model/code_info_model.h
+        src/ui/menu/node_popup_menu.cpp
+        includes/ui/menu/node_popup_menu.h
 )
 
 include(FetchContent)
