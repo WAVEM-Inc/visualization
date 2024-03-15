@@ -16,6 +16,9 @@ find_package(Qt5 COMPONENTS
         WebEngineWidgets
         WebChannel
         REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(std_msgs REQUIRED)
 
 add_executable(route_editor
         main.cpp
@@ -94,6 +97,8 @@ add_executable(route_editor
         includes/model/code_info_model.h
         src/ui/menu/node_popup_menu.cpp
         includes/ui/menu/node_popup_menu.h
+        src/ros2/nav_sat_fix_subscriber.cpp
+        includes/ros2/nav_sat_fix_subscriber.h
 )
 
 include(FetchContent)
@@ -122,5 +127,8 @@ target_link_libraries(route_editor
         Qt5::WebEngineWidgets
         Qt5::WebChannel
         nlohmann_json::nlohmann_json
+        rclcpp::rclcpp
+        ${sensor_msgs_TARGETS}
+        ${std_msgs_TARGETS}
 )
 
