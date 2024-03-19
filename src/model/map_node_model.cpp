@@ -10,9 +10,10 @@ MapNodeModel::MapNodeModel(QObject *parent) : QObject(parent) {
     connect(this, &MapNodeModel::showAllNodesOptionChanged, this, [this](bool showAll) {
         showNodes(showAll);
     });
-    connect(&PathInfoModel::getInstance(), &PathInfoModel::currentPathIdChanged, this,  [this](const std::string &pathId) {
-        showNodes(_showAllNodes);
-    });
+    connect(&PathInfoModel::getInstance(), &PathInfoModel::currentPathIdChanged, this,
+            [this](const std::string &pathId) {
+                showNodes(_showAllNodes);
+            });
 }
 
 void MapNodeModel::setMapNodes(const QMap<std::string, GraphNode> &mapNodes) {
@@ -103,7 +104,7 @@ bool MapNodeModel::getShowAllNodes() const {
 }
 
 void MapNodeModel::showNodes(bool showAll) {
-    try {
+/*    try {
         if (!_mapNodes.empty()) {
             std::cout << "MapNode is not Empty" << "\n";
             if (showAll) {
@@ -118,6 +119,30 @@ void MapNodeModel::showNodes(bool showAll) {
                 }
 
                 emit mapNodesChanged(nodes);
+            }
+        }
+    } catch (std::exception &exception) {
+        std::cout << "Error occured in showAllNodeOptionChanged event: " << exception.what() << "\n";
+    }*/
+
+    try {
+        if (!_mapNodes.empty()) {
+            if (showAll) {
+                _showingNodes.clear();
+                for (const GraphNode &node: _mapNodes.values()) {
+                    _showingNodes.push_back(node);
+                }
+
+                emit showingNodesChanged(_showingNodes);
+            } else {
+                std::string pathId = PathInfoModel::getInstance().getCurrentPathId();
+                QList<Node> currentNodes = NodeInfoModel::getInstance().getAllNodes()[pathId];
+
+                _showingNodes.clear();
+                for (const Node &node: currentNodes) {
+                    _showingNodes.push_back(_mapNodes[node.nodeId]);
+                }
+                emit showingNodesChanged(_showingNodes);
             }
         }
     } catch (std::exception &exception) {

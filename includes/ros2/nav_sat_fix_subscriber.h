@@ -14,7 +14,7 @@ class NavSatFixSubscriber : public rclcpp::Node{
 public:
     explicit NavSatFixSubscriber();
 
-    virtual ~NavSatFixSubscriber();
+    ~NavSatFixSubscriber() override;
 
 private:
     void topicCallback(const sensor_msgs::msg::NavSatFix::SharedPtr msg) const;

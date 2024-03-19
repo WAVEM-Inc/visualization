@@ -5,6 +5,7 @@
 #include "WQDUHGGYQ5/moc_map_state_model.cpp"
 #include "WQDUHGGYQ5/moc_node_info_model.cpp"
 #include "WQDUHGGYQ5/moc_path_info_model.cpp"
+#include "WQDUHGGYQ5/moc_ros_2_data_model.cpp"
 #include "42W3TILHGL/moc_node_type_dialog.cpp"
 #include "MLWDO5DTUM/moc_detection_range_list_view.cpp"
 #include "MLWDO5DTUM/moc_detection_range_view.cpp"

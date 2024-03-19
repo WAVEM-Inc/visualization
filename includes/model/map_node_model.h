@@ -60,11 +60,14 @@ signals:
 
     void showAllNodesOptionChanged(bool show);
 
+    void showingNodesChanged(std::vector<GraphNode> showingNodes);
+
 private:
     explicit MapNodeModel(QObject *parent = nullptr);
 
 private:
     QMap<std::string, GraphNode> _mapNodes;
+    std::vector<GraphNode> _showingNodes;
     GraphNode _selectedMapNode_ptr;
     bool _changeCenterToSelectedNode;
     bool _showAllNodes;

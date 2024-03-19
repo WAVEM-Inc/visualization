@@ -195,14 +195,20 @@
 
         function updateMarkers(jsonData, showAll) {
             const parsedData = JSON.parse(jsonData);
-            const currentDataKeys = Object.keys(parsedData);
+            let keys = [];
+            // const currentDataKeys = Object.keys(parsedData);
 
-            Object.keys(parsedData).forEach(key => {
-                const item = parsedData[key];
-                updateOrCreateMarker(key, item);
+            parsedData.forEach((item, index) => {
+                keys.push(item.nodeId);
+                updateOrCreateMarker(item.nodeId, item);
             });
 
-            removeMissingMarkers(currentDataKeys);
+/*            Object.keys(parsedData).forEach(key => {
+                const item = parsedData[key];
+                updateOrCreateMarker(key, item);
+            });*/
+
+            removeMissingMarkers(keys);
 
             if (linePath) {
                 linePath.setMap(null);
