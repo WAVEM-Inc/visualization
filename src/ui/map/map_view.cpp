@@ -49,7 +49,6 @@ MapView::MapView(QWidget *parent) :
                 ).arg(MapNodeModel::getInstance().getShowAllNodes()));
             });
 
-//    connect(&MapNodeModel::getInstance(), &MapNodeModel::mapNodesChanged, this, &MapView::onMapNodesChanged);
     connect(&MapNodeModel::getInstance(), &MapNodeModel::selectedMapNodeChanged, this, [this](const GraphNode &node) {
         std::cout << MapNodeModel::getInstance().getChangeCenterToSelectedNode() << "\n";
         m_webpage_ptr->runJavaScript(QString(
@@ -61,6 +60,12 @@ MapView::MapView(QWidget *parent) :
         m_webpage_ptr->runJavaScript(QString(
                 "updateSelectedNode(\"%1\");"
         ).arg(node.nodeId.c_str()));
+
+        if (MapNodeModel::getInstance().getChangeCenterToSelectedNode()) {
+            m_webpage_ptr->runJavaScript(QString(
+                    "changeCenter(%1, %2);"
+            ).arg(node.position.latitude).arg(node.position.longitude));
+        }
     });
 
     // Initialize config data

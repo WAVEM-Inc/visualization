@@ -67,7 +67,7 @@ MenuBar::MenuBar(QWidget *parent) : QMenuBar(parent) {
         MapNodeModel::getInstance().setShowAllNodes(showAllNode->isChecked());
     });
 
-    QAction *fixMapCenter = editMenu->addAction(tr("%선택된 노드로 시점 이동"));
+    QAction *fixMapCenter = editMenu->addAction(tr("&선택된 노드로 시점 이동"));
     fixMapCenter->setCheckable(true);
     fixMapCenter->setChecked(true);
     MapNodeModel::getInstance().setChangeCenterToSelectedNode(true);

@@ -3,14 +3,14 @@
     "category": "node_type",
     "codes": [
       {
-        "code": "work_node",
-        "name": "작업",
-        "description": "작업이 이루어져야 하는 노드"
-      },
-      {
         "code": "path_node",
         "name": "경로",
         "description": "단순 경로용으로만 사용되는 노드"
+      },
+      {
+        "code": "work_node",
+        "name": "작업",
+        "description": "작업이 이루어져야 하는 노드"
       },
       {
         "code": "workplace_node",
@@ -81,11 +81,6 @@
         "code": "stop",
         "name": "정지",
         "description": "주행 정지"
-      },
-      {
-        "code": "force",
-        "name": "강제",
-        "description": "자율주행 조건 무시"
       },
       {
         "code": "skip",

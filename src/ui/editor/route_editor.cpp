@@ -87,6 +87,9 @@ RouteEditor::RouteEditor(QWidget *parent) :
             &RouteEditor::onPathInfoMapChanged);
     connect(&NodeInfoModel::getInstance(), &NodeInfoModel::currentNodeListChanged, this,
             &RouteEditor::onCurrentNodeListChanged);
+    connect(&NodeInfoModel::getInstance(), &NodeInfoModel::currentNodeChanged, this, [this]() {
+
+    });
 }
 
 void RouteEditor::resizeEvent(QResizeEvent *event) {
