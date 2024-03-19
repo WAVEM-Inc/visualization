@@ -18,7 +18,7 @@ struct Node {
     Position position;
     std::string type;
     std::string kind;
-    int heading;
+    int heading = -1;
     std::string direction;
     std::vector<DetectionRange> detectionRange;
 

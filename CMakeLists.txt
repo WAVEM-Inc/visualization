@@ -101,6 +101,7 @@ add_executable(route_editor
         includes/ros2/nav_sat_fix_subscriber.h
         src/model/ros_2_data_model.cpp
         includes/model/ros_2_data_model.h
+        includes/utils/GeoPositionUtil.h
 )
 
 include(FetchContent)

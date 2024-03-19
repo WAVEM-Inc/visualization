@@ -150,3 +150,16 @@ bool NodeInfoModel::changeIndexes(int sourceIndex, int beginIndex) {
         return false; // 예외 발생 시 false 반환
     }
 }
+
+Node NodeInfoModel::getSelectedNode() const {
+    return _currentNode;
+}
+
+Node NodeInfoModel::getNextNode() const {
+    if (_currentNodeIndex >= 0 && _currentNodeIndex < _currentNodeList.size() - 1) {
+        std::cout << "Current Node Index: " << _currentNodeIndex << "\n";
+        return _currentNodeList[_currentNodeIndex + 1];
+    }
+
+    throw std::out_of_range("getNextNode() called with _currentNodeIndex out of valid range.");
+}

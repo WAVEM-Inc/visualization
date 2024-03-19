@@ -35,7 +35,11 @@ public:
 
     bool changeIndexes(int sourceIndex, int beginIndex);
 
+    Node getSelectedNode() const;
+
     std::string getPreNodeId();
+
+    Node getNextNode() const;
 
     std::string getNextNodeId();
 

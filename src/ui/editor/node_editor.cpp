@@ -14,6 +14,7 @@
 #include "model/path_info_model.h"
 #include "model/code_info_model.h"
 #include "enum/CodeType.h"
+#include "utils/GeoPositionUtil.h"
 
 NodeEditor::NodeEditor(QWidget *parent) :
         QWidget(parent),
@@ -47,8 +48,10 @@ void NodeEditor::init() {
         _nodeType_ptr->setText(node.type.c_str());
         _preNode_ptr->setText(NodeInfoModel::getInstance().getPreNodeId().c_str());
         _nextNode_ptr->setText(NodeInfoModel::getInstance().getNextNodeId().c_str());
-        _nodeKind_ptr->setCurrentText(CodeInfoModel::getInstance().getNameByCode(CodeType::NODE_KIND, node.kind).c_str());
-        _nodeDirection_ptr->setCurrentText(CodeInfoModel::getInstance().getNameByCode(CodeType::DIRECTION, node.direction).c_str());
+        _nodeKind_ptr->setCurrentText(
+                CodeInfoModel::getInstance().getNameByCode(CodeType::NODE_KIND, node.kind).c_str());
+        _nodeDirection_ptr->setCurrentText(
+                CodeInfoModel::getInstance().getNameByCode(CodeType::DIRECTION, node.direction).c_str());
         _nodeHeading_ptr->setText(QString::number(node.heading));
         _nodeLat_ptr->setText(QString::number(node.position.latitude, 'f', 7));
         _nodeLng_ptr->setText(QString::number(node.position.longitude, 'f', 7));
@@ -92,7 +95,7 @@ void NodeEditor::init() {
 
     // setup widget events
     connect(_cancelBtn_ptr, &QPushButton::clicked, this, [this]() {
-       this->setVisible(false);
+        this->setVisible(false);
     });
 
     connect(_okBtn_ptr, &QPushButton::clicked, this, [this]() {
@@ -106,6 +109,17 @@ void NodeEditor::init() {
         node.direction = _nodeDirection_ptr->currentData().toString().toStdString();
         node.heading = _nodeHeading_ptr->text().toInt();
         node.detectionRange = _dtrListView_ptr->getDetectionRanges();
+
+        if (node.heading < 0) {
+            try {
+                Position curPos = node.position;
+                Position nextPos = NodeInfoModel::getInstance().getNextNode().position;
+                double bearing = 360 - getBearingBetweenPoints(curPos.latitude, curPos.longitude, nextPos.latitude, nextPos.longitude);
+                node.heading = bearing;
+            } catch (std::out_of_range &e) {
+                std::cout << e.what() << "\n";
+            }
+        }
 
         NodeInfoModel::getInstance().updateCurrentNode(node);
     });

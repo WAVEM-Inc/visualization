@@ -14,6 +14,9 @@ MapNodeModel::MapNodeModel(QObject *parent) : QObject(parent) {
             [this](const std::string &pathId) {
                 showNodes(_showAllNodes);
             });
+    connect(this, &MapNodeModel::mapNodesChanged, this, [this](const QMap<std::string, GraphNode> &nodeMap) {
+        showNodes(_showAllNodes);
+    });
 }
 
 void MapNodeModel::setMapNodes(const QMap<std::string, GraphNode> &mapNodes) {
@@ -27,6 +30,7 @@ void MapNodeModel::setMapNodes(const QMap<std::string, GraphNode> &mapNodes) {
 
 void MapNodeModel::setMapNodes(const std::vector<GraphNode> &mapNodes) {
     _mapNodes.clear();
+    _showingNodes.clear();
 
     QMap<std::string, GraphNode> nodes;
     for (const GraphNode &node: mapNodes) {
@@ -126,24 +130,22 @@ void MapNodeModel::showNodes(bool showAll) {
     }*/
 
     try {
-        if (!_mapNodes.empty()) {
-            if (showAll) {
-                _showingNodes.clear();
-                for (const GraphNode &node: _mapNodes.values()) {
-                    _showingNodes.push_back(node);
-                }
-
-                emit showingNodesChanged(_showingNodes);
-            } else {
-                std::string pathId = PathInfoModel::getInstance().getCurrentPathId();
-                QList<Node> currentNodes = NodeInfoModel::getInstance().getAllNodes()[pathId];
-
-                _showingNodes.clear();
-                for (const Node &node: currentNodes) {
-                    _showingNodes.push_back(_mapNodes[node.nodeId]);
-                }
-                emit showingNodesChanged(_showingNodes);
+        if (showAll) {
+            _showingNodes.clear();
+            for (const GraphNode &node: _mapNodes.values()) {
+                _showingNodes.push_back(node);
             }
+
+            emit showingNodesChanged(_showingNodes);
+        } else {
+            std::string pathId = PathInfoModel::getInstance().getCurrentPathId();
+            QList<Node> currentNodes = NodeInfoModel::getInstance().getAllNodes()[pathId];
+
+            _showingNodes.clear();
+            for (const Node &node: currentNodes) {
+                _showingNodes.push_back(_mapNodes[node.nodeId]);
+            }
+            emit showingNodesChanged(_showingNodes);
         }
     } catch (std::exception &exception) {
         std::cout << "Error occured in showAllNodeOptionChanged event: " << exception.what() << "\n";
