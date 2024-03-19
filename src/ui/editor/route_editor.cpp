@@ -9,6 +9,8 @@
 #include <QStandardItemModel>
 #include <QMessageBox>
 #include <QMenu>
+#include <QHeaderView>
+
 #include "model/path_info_model.h"
 #include "model/file_info_model.h"
 #include "model/node_info_model.h"
@@ -40,6 +42,7 @@ RouteEditor::RouteEditor(QWidget *parent) :
     _nodeListModel_ptr->setHorizontalHeaderItem(1, new QStandardItem(QString("Type")));
 
     _nodeListView_ptr->setModel(_nodeListModel_ptr);
+    _nodeListView_ptr->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     _nodeListView_ptr->setDragEnabled(true);
     _nodeListView_ptr->setAcceptDrops(true);
     _nodeListView_ptr->setDragDropOverwriteMode(false);

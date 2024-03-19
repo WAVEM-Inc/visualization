@@ -10,6 +10,7 @@
 #include <QComboBox>
 #include <QPushButton>
 #include <QTableWidget>
+#include <QTableView>
 #include <QGridLayout>
 #include <QListView>
 #include <QStandardItemModel>
