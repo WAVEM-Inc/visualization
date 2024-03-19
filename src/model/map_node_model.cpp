@@ -138,13 +138,13 @@ void MapNodeModel::showNodes(bool showAll) {
 
             emit showingNodesChanged(_showingNodes);
         } else {
-            std::string pathId = PathInfoModel::getInstance().getCurrentPathId();
-            QList<Node> currentNodes = NodeInfoModel::getInstance().getAllNodes()[pathId];
-
             _showingNodes.clear();
+
+            QList<Node> currentNodes = NodeInfoModel::getInstance().getNodesFromCurrentPath();
             for (const Node &node: currentNodes) {
                 _showingNodes.push_back(_mapNodes[node.nodeId]);
             }
+
             emit showingNodesChanged(_showingNodes);
         }
     } catch (std::exception &exception) {

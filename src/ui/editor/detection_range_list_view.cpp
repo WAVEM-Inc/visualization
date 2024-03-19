@@ -2,6 +2,7 @@
 // Created by antique on 24. 3. 11.
 //
 
+#include <QMessageBox>
 #include "ui/editor/detection_range_list_view.h"
 
 DetectionRangeListView::DetectionRangeListView(QWidget *parent) : QWidget(parent) {
@@ -18,11 +19,15 @@ void DetectionRangeListView::setDetectionRanges(const std::vector<DetectionRange
 }
 
 void DetectionRangeListView::addDetectionRange(const DetectionRange &range) {
-    auto *view = new DetectionRangeView(this, _views_ptr.size() + 1);
-    view->setDetectionRange(range);
+    if (_views_ptr.size() < 3) {
+        auto *view = new DetectionRangeView(this, _views_ptr.size() + 1);
+        view->setDetectionRange(range);
 
-    _layout_ptr->addWidget(view);
-    _views_ptr.push_back(view);
+        _layout_ptr->addWidget(view);
+        _views_ptr.push_back(view);
+    } else {
+        QMessageBox::information(nullptr, "감지 범위 개수 제한", "감지 범위는 최대 3개까지 추가가 가능 합니다.");
+    }
 }
 
 void DetectionRangeListView::clear() {
