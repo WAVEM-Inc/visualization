@@ -12,6 +12,7 @@ void to_json(nlohmann::json& j, const Node& n) {
             {"kind", n.kind},
             {"heading", n.heading},
             {"direction", n.direction},
+            {"drivingOption", n.drivingOption},
             {"detectionRange", n.detectionRange} // DetectionRange 구조체 배열에 대한 to_json 가정
     };
 }
@@ -23,6 +24,7 @@ void from_json(const nlohmann::json& j, Node& n) {
     j.at("kind").get_to(n.kind);
     j.at("heading").get_to(n.heading);
     j.at("direction").get_to(n.direction);
+    j.at("drivingOption").get_to(n.drivingOption);
 
     if (j.find("detectionRange") != j.end()) { // SensingRange가 존재하는 경우만 처리
         j.at("detectionRange").get_to(n.detectionRange); // DetectionRange 구조체 배열에 대한 from_json 가정

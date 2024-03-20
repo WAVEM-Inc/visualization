@@ -108,27 +108,6 @@ bool MapNodeModel::getShowAllNodes() const {
 }
 
 void MapNodeModel::showNodes(bool showAll) {
-/*    try {
-        if (!_mapNodes.empty()) {
-            std::cout << "MapNode is not Empty" << "\n";
-            if (showAll) {
-                emit mapNodesChanged(_mapNodes);
-            } else {
-                std::string pathId = PathInfoModel::getInstance().getCurrentPathId();
-                QList<Node> currentNodes = NodeInfoModel::getInstance().getAllNodes()[pathId];
-
-                QMap<std::string, GraphNode> nodes;
-                for (const Node &node : currentNodes) {
-                    nodes[node.nodeId] = getMapNodes()[node.nodeId];
-                }
-
-                emit mapNodesChanged(nodes);
-            }
-        }
-    } catch (std::exception &exception) {
-        std::cout << "Error occured in showAllNodeOptionChanged event: " << exception.what() << "\n";
-    }*/
-
     try {
         if (showAll) {
             _showingNodes.clear();

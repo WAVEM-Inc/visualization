@@ -195,11 +195,13 @@
 
         function updateMarkers(jsonData, showAll) {
             const parsedData = JSON.parse(jsonData);
+            const lineCoordinates = [];
             let keys = [];
             // const currentDataKeys = Object.keys(parsedData);
 
             parsedData.forEach((item, index) => {
                 keys.push(item.nodeId);
+                lineCoordinates.push({ lat: item.position.latitude, lng: item.position.longitude })
                 updateOrCreateMarker(item.nodeId, item);
             });
 
@@ -215,8 +217,16 @@
             }
 
             if (!showAll) {
-                linePath = new google.maps.Polyline({
+/*                linePath = new google.maps.Polyline({
                     path: Object.values(markers).map(marker => marker.getPosition()), // Adjusted for object
+                    geodesic: true, // 대지 곡률을 고려한 선을 그림
+                    strokeColor: '#FF0000', // 선의 색상
+                    strokeOpacity: 1.0, // 선의 투명도
+                    strokeWeight: 2, // 선의 두께
+                });*/
+
+                linePath = new google.maps.Polyline({
+                    path: lineCoordinates, // Adjusted for object
                     geodesic: true, // 대지 곡률을 고려한 선을 그림
                     strokeColor: '#FF0000', // 선의 색상
                     strokeOpacity: 1.0, // 선의 투명도

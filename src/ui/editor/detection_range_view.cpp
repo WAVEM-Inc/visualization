@@ -4,7 +4,6 @@
 
 #include <QLabel>
 #include <QGridLayout>
-#include <iostream>
 #include "ui/editor/detection_range_view.h"
 #include "model/code_info_model.h"
 #include "enum/CodeType.h"
@@ -32,24 +31,18 @@ DetectionRangeView::DetectionRangeView(QWidget *parent, int num) : QWidget(paren
     layout->addWidget(actionLabel, 3, 0);
     layout->addWidget(_actionCode_ptr, 3, 1);
 
-    QLabel *latLabel = new QLabel("위도");
-    _latitude_ptr = new QLineEdit();
-    _latitude_ptr->setValidator(new QDoubleValidator(_latitude_ptr));
+    QLabel *latLabel = new QLabel("영역 거리");
+    _offset_ptr = new QLineEdit();
+    _offset_ptr->setValidator(new QDoubleValidator(_offset_ptr));
     layout->addWidget(latLabel, 4, 0);
-    layout->addWidget(_latitude_ptr, 4, 1);
-
-    QLabel *lngLabel = new QLabel("경도");
-    _longitude_ptr = new QLineEdit();
-    _longitude_ptr->setValidator(new QDoubleValidator(_longitude_ptr));
-    layout->addWidget(lngLabel, 5, 0);
-    layout->addWidget(_longitude_ptr, 5, 1);
+    layout->addWidget(_offset_ptr, 4, 1);
 
     _mapPosBtn_ptr = new QPushButton("지도 위치로 지정");
     _mapPosBtn_ptr->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     _vehiclePosBtn_ptr = new QPushButton("차량 위치로 지정");
     _vehiclePosBtn_ptr->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    layout->addWidget(_mapPosBtn_ptr, 6, 0);
-    layout->addWidget(_vehiclePosBtn_ptr, 6, 1);
+    layout->addWidget(_mapPosBtn_ptr, 5, 0);
+    layout->addWidget(_vehiclePosBtn_ptr, 5, 1);
 
 
 
@@ -66,9 +59,7 @@ DetectionRangeView::~DetectionRangeView() = default;
 
 
 void DetectionRangeView::setDetectionRange(DetectionRange detectionRange) {
-    std::cout << detectionRange.position.latitude << "\n";
-    _latitude_ptr->setText(QString::number(detectionRange.position.latitude, 'f', 7));
-    _longitude_ptr->setText(QString::number(detectionRange.position.longitude, 'f', 7));
+    _offset_ptr->setText(QString::number(detectionRange.offset, 'f', 2));
     _width_ptr->setText(QString::number(detectionRange.width));
     _height_ptr->setText(QString::number(detectionRange.height));
     _actionCode_ptr->setCurrentText(CodeInfoModel::getInstance().getNameByCode(CodeType::ACTION_CODE, detectionRange.actionCode).c_str());
@@ -76,8 +67,7 @@ void DetectionRangeView::setDetectionRange(DetectionRange detectionRange) {
 
 DetectionRange DetectionRangeView::getDetectionRange() {
     DetectionRange range;
-    range.position.latitude = _latitude_ptr->text().toDouble();
-    range.position.longitude = _longitude_ptr->text().toDouble();
+    range.offset = _offset_ptr->text().toDouble();
     range.width = _width_ptr->text().toDouble();
     range.height = _height_ptr->text().toDouble();
     range.actionCode = _actionCode_ptr->currentData().toString().toStdString();

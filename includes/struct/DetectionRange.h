@@ -9,7 +9,7 @@
 #include "Position.h"
 
 struct DetectionRange {
-    Position position;
+    double offset = 0; //감지 영역 거리
     double width = 0;
     double height = 0;
     std::string actionCode;

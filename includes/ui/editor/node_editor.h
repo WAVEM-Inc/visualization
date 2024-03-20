@@ -51,6 +51,7 @@ private:
 
     QComboBox *_nodeKind_ptr;
     QComboBox *_nodeDirection_ptr;
+    QComboBox *_drivingOption_ptr;
     QLineEdit *_nodeHeading_ptr;
     DetectionRangeListView *_dtrListView_ptr;
     QPushButton *_addRangeBtn_ptr;

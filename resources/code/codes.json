@@ -118,5 +118,20 @@
         "description": ""
       }
     ]
+  },
+  {
+    "category": "driving_option",
+    "codes": [
+      {
+        "code": "odom",
+        "name": "odometry 정보",
+        "description": "위치 추정에 odometry 정보사용"
+      },
+      {
+        "code": "gps",
+        "name": "gps수신 정보",
+        "description": "위치 추정에 경위도 정보사용"
+      }
+    ]
   }
 ]

@@ -24,8 +24,7 @@ public:
     DetectionRange getDetectionRange();
 
 private:
-    QLineEdit *_latitude_ptr;
-    QLineEdit *_longitude_ptr;
+    QLineEdit *_offset_ptr;
     QLineEdit *_width_ptr;
     QLineEdit *_height_ptr;
     QComboBox *_actionCode_ptr;

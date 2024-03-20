@@ -13,3 +13,5 @@ std::string CodeType::DIRECTION = "direction";
 std::string CodeType::ACTION_CODE = "action_code";
 
 std::string CodeType::NODE_POINT = "node_point";
+
+std::string CodeType::DRIVING_OPTION = "driving_option";

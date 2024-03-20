@@ -20,6 +20,7 @@ struct Node {
     std::string kind;
     int heading = -1;
     std::string direction;
+    std::string drivingOption;
     std::vector<DetectionRange> detectionRange;
 
     Node() = default;

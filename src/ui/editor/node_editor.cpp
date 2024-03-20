@@ -52,6 +52,8 @@ void NodeEditor::init() {
                 CodeInfoModel::getInstance().getNameByCode(CodeType::NODE_KIND, node.kind).c_str());
         _nodeDirection_ptr->setCurrentText(
                 CodeInfoModel::getInstance().getNameByCode(CodeType::DIRECTION, node.direction).c_str());
+        _drivingOption_ptr->setCurrentText(
+                CodeInfoModel::getInstance().getNameByCode(CodeType::DRIVING_OPTION, node.drivingOption).c_str());
         _nodeHeading_ptr->setText(QString::number(node.heading));
         _nodeLat_ptr->setText(QString::number(node.position.latitude, 'f', 7));
         _nodeLng_ptr->setText(QString::number(node.position.longitude, 'f', 7));
@@ -74,6 +76,7 @@ void NodeEditor::init() {
 
                 _nodeKind_ptr->clear();
                 _nodeDirection_ptr->clear();
+                _drivingOption_ptr->clear();
 
                 std::vector<Code> nodeKindCodes = codeMap.at(CodeType::NODE_KIND).codes;
                 for (const Code &code: nodeKindCodes) {
@@ -86,6 +89,14 @@ void NodeEditor::init() {
                 std::vector<Code> directionCodes = codeMap.at(CodeType::DIRECTION).codes;
                 for (const Code &code: directionCodes) {
                     _nodeDirection_ptr->addItem(
+                            QString::fromStdString(code.name),
+                            QVariant::fromValue(QString::fromStdString(code.code))
+                    );
+                }
+
+                std::vector<Code> drivingOptionCodes = codeMap.at(CodeType::DRIVING_OPTION).codes;
+                for (const Code &code: drivingOptionCodes) {
+                    _drivingOption_ptr->addItem(
                             QString::fromStdString(code.name),
                             QVariant::fromValue(QString::fromStdString(code.code))
                     );
@@ -107,6 +118,7 @@ void NodeEditor::init() {
         node.direction = _nodeType_ptr->text().toStdString();
         node.kind = _nodeKind_ptr->currentData().toString().toStdString();
         node.direction = _nodeDirection_ptr->currentData().toString().toStdString();
+        node.drivingOption = _drivingOption_ptr->currentData().toString().toStdString();
         node.heading = _nodeHeading_ptr->text().toInt();
         node.detectionRange = _dtrListView_ptr->getDetectionRanges();
 
@@ -114,7 +126,8 @@ void NodeEditor::init() {
             try {
                 Position curPos = node.position;
                 Position nextPos = NodeInfoModel::getInstance().getNextNode().position;
-                double bearing = 360 - getBearingBetweenPoints(curPos.latitude, curPos.longitude, nextPos.latitude, nextPos.longitude);
+                double bearing = 360 - getBearingBetweenPoints(curPos.latitude, curPos.longitude, nextPos.latitude,
+                                                               nextPos.longitude);
                 node.heading = bearing;
             } catch (std::out_of_range &e) {
                 std::cout << e.what() << "\n";
@@ -173,8 +186,6 @@ void NodeEditor::initTabWidget() {
 
     // Initialize Link tab
     QWidget *linkTab = new QWidget();
-
-
     m_tab_ptr->addTab(nodeScrollArea, "Node");
     m_tab_ptr->addTab(linkTab, "Link");
 }
@@ -244,39 +255,43 @@ void NodeEditor::initTaskInfoWidget() {
 
     QLabel *kindLb = new QLabel("작업 구분");
     _nodeKind_ptr = new QComboBox();
-
     layout->addWidget(kindLb, 1, 0);
     layout->addWidget(_nodeKind_ptr, 1, 1);
 
     QLabel *directionLb = new QLabel("진출 방향");
     _nodeDirection_ptr = new QComboBox();
-
     layout->addWidget(directionLb, 2, 0);
     layout->addWidget(_nodeDirection_ptr, 2, 1);
+
+
+    QLabel *drivingOptionLb = new QLabel("위치 추정 방법");
+    _drivingOption_ptr = new QComboBox();
+    layout->addWidget(drivingOptionLb, 3, 0);
+    layout->addWidget(_drivingOption_ptr, 3, 1);
 
     QLabel *headingLb = new QLabel("차량 방향");
     _nodeHeading_ptr = new QLineEdit();
     _nodeHeading_ptr->setValidator(new QIntValidator(_nodeHeading_ptr));
-    layout->addWidget(headingLb, 3, 0);
-    layout->addWidget(_nodeHeading_ptr, 3, 1);
+    layout->addWidget(headingLb, 4, 0);
+    layout->addWidget(_nodeHeading_ptr, 4, 1);
 
     QLabel *detectionRangeLb = new QLabel("감지 범위");
     _addRangeBtn_ptr->setFixedSize(30, 30);
-    layout->addWidget(detectionRangeLb, 4, 0);
-    layout->addWidget(_addRangeBtn_ptr, 4, 1, Qt::AlignLeft);
-    layout->addWidget(_dtrListView_ptr, 5, 0, 1, 2);
+    layout->addWidget(detectionRangeLb, 5, 0);
+    layout->addWidget(_addRangeBtn_ptr, 5, 1, Qt::AlignLeft);
+    layout->addWidget(_dtrListView_ptr, 6, 0, 1, 2);
 
     QLabel *latitudeLb = new QLabel("위도");
     _nodeLat_ptr = new QLineEdit();
     _nodeLat_ptr->setValidator(new QDoubleValidator(_nodeLat_ptr));
-    layout->addWidget(latitudeLb, 6, 0);
-    layout->addWidget(_nodeLat_ptr, 6, 1);
+    layout->addWidget(latitudeLb, 7, 0);
+    layout->addWidget(_nodeLat_ptr, 7, 1);
 
     QLabel *longitudeLb = new QLabel("경도");
     _nodeLng_ptr = new QLineEdit();
     _nodeLng_ptr->setValidator(new QDoubleValidator(_nodeLng_ptr));
-    layout->addWidget(longitudeLb, 7, 0);
-    layout->addWidget(_nodeLng_ptr, 7, 1);
+    layout->addWidget(longitudeLb, 8, 0);
+    layout->addWidget(_nodeLng_ptr, 8, 1);
 
     m_task_info_ptr->setLayout(layout);
 }

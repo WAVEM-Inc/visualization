@@ -13,6 +13,7 @@ struct CodeType {
     static std::string DIRECTION;
     static std::string ACTION_CODE;
     static std::string NODE_POINT;
+    static std::string DRIVING_OPTION;
 };
 
 #endif //ROUTE_EDITOR_CODETYPE_H
