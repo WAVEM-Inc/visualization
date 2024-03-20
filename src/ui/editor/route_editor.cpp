@@ -65,11 +65,13 @@ RouteEditor::RouteEditor(QWidget *parent) :
             PathInfoModel::getInstance().selectCurrentPathId(pathId.toStdString());
         }
     });
+
     connect(_nodeListView_ptr, &QTableView::clicked, this, [this](const QModelIndex &index) {
         if (index.isValid()) {
             NodeInfoModel::getInstance().selectCurrentNode(index.row());
         }
     });
+
     connect(_nodeListView_ptr, &QTableView::customContextMenuRequested, [this](const QPoint &pos) {
         QModelIndex index = _nodeListView_ptr->indexAt(pos);
         if (index.isValid()) {
@@ -90,9 +92,6 @@ RouteEditor::RouteEditor(QWidget *parent) :
             &RouteEditor::onPathInfoMapChanged);
     connect(&NodeInfoModel::getInstance(), &NodeInfoModel::currentNodeListChanged, this,
             &RouteEditor::onCurrentNodeListChanged);
-    connect(&NodeInfoModel::getInstance(), &NodeInfoModel::currentNodeChanged, this, [this]() {
-
-    });
 }
 
 void RouteEditor::resizeEvent(QResizeEvent *event) {

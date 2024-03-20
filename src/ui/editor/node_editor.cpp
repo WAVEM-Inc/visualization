@@ -15,6 +15,8 @@
 #include "model/code_info_model.h"
 #include "enum/CodeType.h"
 #include "utils/GeoPositionUtil.h"
+#include "model/ros_2_data_model.h"
+#include "model/map_node_model.h"
 
 NodeEditor::NodeEditor(QWidget *parent) :
         QWidget(parent),
@@ -140,6 +142,20 @@ void NodeEditor::init() {
     connect(_addRangeBtn_ptr, &QPushButton::clicked, this, [this]() {
         DetectionRange range;
         _dtrListView_ptr->addDetectionRange(range);
+    });
+
+    connect(_vehiclePoseBtn_ptr, &QPushButton::clicked, this, [this]() {
+        sensor_msgs::msg::NavSatFix nsf = ROS2DataModel::getInstance().getNavSatFixData();
+        _nodeLat_ptr->setText(QString::number(nsf.latitude));
+        _nodeLng_ptr->setText(QString::number(nsf.longitude));
+    });
+
+    connect(_mapPoseBtn_ptr, &QPushButton::clicked, this, [this]() {
+        std::string nodeId = NodeInfoModel::getInstance().getSelectedNode().nodeId;
+        Position mapPosition = MapNodeModel::getInstance().getMapNodeById(nodeId).position;
+
+        _nodeLat_ptr->setText(QString::number(mapPosition.latitude, 'f', 7));
+        _nodeLng_ptr->setText(QString::number(mapPosition.longitude, 'f', 7));
     });
 }
 

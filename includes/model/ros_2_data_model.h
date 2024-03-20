@@ -24,7 +24,7 @@ public:
 
     void updateNaxSatFixData(const sensor_msgs::msg::NavSatFix::SharedPtr msg);
 
-    sensor_msgs::msg::NavSatFix::SharedPtr getNavSatFixData() const;
+    sensor_msgs::msg::NavSatFix getNavSatFixData() const;
 
 signals:
     void onNavSatFixChanged(const sensor_msgs::msg::NavSatFix &navSatFix);

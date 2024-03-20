@@ -18,6 +18,6 @@ CMake Deprecation Warning at cmake-build-debug/_deps/json-src/CMakeLists.txt:1 (
 
 
 -- Using the single-header code from /home/antique/Desktop/gui/route_editor/cmake-build-debug/_deps/json-src/single_include/
--- Configuring done (16.6s)
+-- Configuring done (0.9s)
 -- Generating done (0.0s)
 -- Build files have been written to: /home/antique/Desktop/gui/route_editor/cmake-build-debug

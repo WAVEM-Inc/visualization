@@ -47,13 +47,6 @@ MapView::MapView(QWidget *parent) :
                         "mapNodeJsonData = '" + qString + "';\n" +
                         "updateMarkers(mapNodeJsonData, %1);"
                 ).arg(MapNodeModel::getInstance().getShowAllNodes()));
-
-                std::cout << qString.toStdString() << "\n";
-
-/*                nlohmann::json json = nodes;
-                m_webpage_ptr->runJavaScript(QString(
-                        "updateMarkers(%1, %2)"
-                ).arg(QString(json.dump().data())).arg(MapNodeModel::getInstance().getShowAllNodes()));*/
             });
 
     connect(&MapNodeModel::getInstance(), &MapNodeModel::selectedMapNodeChanged, this, [this](const GraphNode &node) {
@@ -74,6 +67,10 @@ MapView::MapView(QWidget *parent) :
                     "changeCenter(%1, %2);"
             ).arg(node.position.latitude).arg(node.position.longitude));
         }
+    });
+
+    connect(&NodeInfoModel::getInstance(), &NodeInfoModel::currentNodeListChanged, this, [this](const QList<Node> &nodeList) {
+       nlohmann::json json;
     });
 
     // Initialize config data
