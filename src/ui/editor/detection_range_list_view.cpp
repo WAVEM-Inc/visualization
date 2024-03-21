@@ -25,6 +25,25 @@ void DetectionRangeListView::addDetectionRange(const DetectionRange &range) {
 
         _layout_ptr->addWidget(view);
         _views_ptr.push_back(view);
+
+        connect(view, &DetectionRangeView::deleteButtonClicked, this, [this, view]() {
+            // view를 _views_ptr에서 찾아 인덱스를 얻음
+            auto it = std::find(_views_ptr.begin(), _views_ptr.end(), view);
+            if (it != _views_ptr.end()) {
+                int index = std::distance(_views_ptr.begin(), it);
+
+                // 해당 DetectionRangeView 삭제
+                _layout_ptr->removeWidget(view);
+                _views_ptr.erase(it);
+                delete view;
+
+                // 나머지 view들의 인덱스 업데이트
+                updateIndexes();
+
+                // 선택적: 변경사항 UI에 반영
+                this->update();
+            }
+        });
     } else {
         QMessageBox::information(nullptr, "감지 범위 개수 제한", "감지 범위는 최대 3개까지 추가가 가능 합니다.");
     }
@@ -47,6 +66,14 @@ std::vector<DetectionRange> DetectionRangeListView::getDetectionRanges() {
         ranges.push_back(view->getDetectionRange());
 
     return ranges;
+}
+
+void DetectionRangeListView::updateIndexes() {
+    int newIndex = 1;
+    for (auto *view : _views_ptr) {
+        // 각 view의 새로운 인덱스 설정
+        view->updateIndex(newIndex++);
+    }
 }
 
 DetectionRangeListView::~DetectionRangeListView() = default;

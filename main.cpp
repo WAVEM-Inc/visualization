@@ -21,7 +21,7 @@ int main(int argc, char *argv[]) {
     QObject::connect(&app, &QApplication::aboutToQuit, []() {
         ConfigFileWriter writer;
         writer.saveFile();
-
+        
         rclcpp::shutdown();
     });
 

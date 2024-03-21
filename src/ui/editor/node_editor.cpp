@@ -20,7 +20,6 @@
 
 NodeEditor::NodeEditor(QWidget *parent) :
         QWidget(parent),
-        m_tab_ptr(new QTabWidget(this)),
         m_route_info_ptr(new QWidget()),
         m_node_info_ptr(new QWidget()),
         m_task_info_ptr(new QWidget()),
@@ -35,9 +34,10 @@ void NodeEditor::init() {
     initNodeInfoWidget();
     initTaskInfoWidget();
 
-    initTabWidget();
+    initLayout();
 
     this->setVisible(false);
+    this->layout()->setContentsMargins(0, 0, 0, 0);
     connect(&NodeInfoModel::getInstance(), &NodeInfoModel::currentNodeChanged, this, [this](const Node &node) {
         if (node.nodeId.empty()) {
             this->setVisible(false);
@@ -159,7 +159,53 @@ void NodeEditor::init() {
     });
 }
 
-void NodeEditor::initTabWidget() {
+void NodeEditor::initLayout() {
+    // 메인 레이아웃 설정
+    QVBoxLayout *mainLayout = new QVBoxLayout(this);
+
+    // 정보 위젯 추가
+    mainLayout->addWidget(m_route_info_ptr);
+    mainLayout->addWidget(m_node_info_ptr);
+    mainLayout->addWidget(m_task_info_ptr);
+
+    // 위도/경도 버튼 위젯
+    QWidget *latlngBtnWidget = new QWidget();
+    QHBoxLayout *latlngBtnLayout = new QHBoxLayout();
+
+    _mapPoseBtn_ptr = new QPushButton("지도 위치로 지정");
+    _vehiclePoseBtn_ptr = new QPushButton("차량 위치로 지정");
+    latlngBtnLayout->addWidget(_mapPoseBtn_ptr);
+    latlngBtnLayout->addWidget(_vehiclePoseBtn_ptr);
+
+    latlngBtnWidget->setLayout(latlngBtnLayout);
+    mainLayout->addWidget(latlngBtnWidget);
+
+    // 확인/취소 버튼 위젯
+    QWidget *buttonsWidget = new QWidget();
+    QHBoxLayout *buttonsLayout = new QHBoxLayout(buttonsWidget);
+
+    _cancelBtn_ptr = new QPushButton("닫기");
+    _okBtn_ptr = new QPushButton("저장");
+
+    buttonsLayout->addWidget(_cancelBtn_ptr);
+    buttonsLayout->addWidget(_okBtn_ptr);
+
+    mainLayout->addStretch(1);
+    mainLayout->addWidget(buttonsWidget);
+
+    // 스크롤 영역 설정 (필요한 경우)
+    QScrollArea *scrollArea = new QScrollArea();
+    QWidget *contentWidget = new QWidget(); // 스크롤 영역에 들어갈 콘텐츠 위젯
+    contentWidget->setLayout(mainLayout); // 메인 레이아웃을 콘텐츠 위젯에 설정
+    scrollArea->setWidget(contentWidget); // 스크롤 영역에 콘텐츠 위젯 설정
+    scrollArea->setWidgetResizable(true);
+
+    // 최종적으로 스크롤 영역을 this의 레이아웃으로 설정
+    QVBoxLayout *thisLayout = new QVBoxLayout(this); // this의 새로운 메인 레이아웃
+    thisLayout->addWidget(scrollArea); // 스크롤 영역 추가
+}
+
+/*void NodeEditor::initTabWidget() {
     // Node tab - add info widgets
     QWidget *nodeTab = new QWidget();
 
@@ -201,10 +247,9 @@ void NodeEditor::initTabWidget() {
     nodeTab->setLayout(nodeLayout);
 
     // Initialize Link tab
-    QWidget *linkTab = new QWidget();
     m_tab_ptr->addTab(nodeScrollArea, "Node");
     m_tab_ptr->addTab(linkTab, "Link");
-}
+}*/
 
 void NodeEditor::initRouteInfoWidget() {
     QGridLayout *layout = new QGridLayout(m_route_info_ptr);
@@ -315,6 +360,6 @@ void NodeEditor::initTaskInfoWidget() {
 void NodeEditor::resizeEvent(QResizeEvent *event) {
     QWidget::resizeEvent(event);
 
-    m_tab_ptr->resize(this->width(), this->height());
+//    m_tab_ptr->resize(this->width(), this->height());
 }
 

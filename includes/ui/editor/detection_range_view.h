@@ -10,6 +10,7 @@
 #include <QLineEdit>
 #include <QComboBox>
 #include <QPushButton>
+#include <QLabel>
 #include "struct/DetectionRange.h"
 
 class DetectionRangeView : public QWidget {
@@ -23,13 +24,19 @@ public:
 
     DetectionRange getDetectionRange();
 
+    void updateIndex(int num);
+
+signals:
+    void deleteButtonClicked(int index);
+
 private:
+    int _index;
+    QLabel *_numLb_ptr;
     QLineEdit *_offset_ptr;
     QLineEdit *_width_ptr;
     QLineEdit *_height_ptr;
     QComboBox *_actionCode_ptr;
-    QPushButton *_mapPosBtn_ptr;
-    QPushButton *_vehiclePosBtn_ptr;
+    QPushButton *_deleteBtn_ptr;
 };
 
 

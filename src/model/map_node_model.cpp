@@ -119,7 +119,7 @@ void MapNodeModel::showNodes(bool showAll) {
         } else {
             _showingNodes.clear();
 
-            QList<Node> currentNodes = NodeInfoModel::getInstance().getNodesFromCurrentPath();
+            QList<Node> currentNodes = NodeInfoModel::getInstance().getAllNodes()[PathInfoModel::getInstance().getCurrentPathId()];
             for (const Node &node: currentNodes) {
                 _showingNodes.push_back(_mapNodes[node.nodeId]);
             }

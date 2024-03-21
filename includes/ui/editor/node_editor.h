@@ -27,7 +27,7 @@ public:
 protected:
     void init();
 
-    void initTabWidget();
+    void initLayout();
 
     void initRouteInfoWidget();
 
@@ -36,7 +36,6 @@ protected:
     void initTaskInfoWidget();
 
 private:
-    QTabWidget *m_tab_ptr;
     QWidget *m_route_info_ptr;
     QWidget *m_node_info_ptr;
     QWidget *m_task_info_ptr;

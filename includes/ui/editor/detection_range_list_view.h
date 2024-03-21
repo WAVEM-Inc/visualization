@@ -25,6 +25,8 @@ public:
 
     void clear();
 
+    void updateIndexes();
+
 private:
     QList<DetectionRangeView *> _views_ptr;
 

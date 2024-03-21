@@ -9,10 +9,15 @@
 #include "enum/CodeType.h"
 
 DetectionRangeView::DetectionRangeView(QWidget *parent, int num) : QWidget(parent) {
+    _index = num;
+
     QGridLayout *layout = new QGridLayout(this);
 
-    QLabel *numLabel = new QLabel(QString::number(num) + QString("번 감지범위"));
-    layout->addWidget(numLabel, 0, 0);
+    _numLb_ptr = new QLabel(QString::number(_index) + QString("번 감지범위"));
+    _deleteBtn_ptr = new QPushButton("X");
+    _deleteBtn_ptr->setFixedSize(30, 30);
+    layout->addWidget(_numLb_ptr, 0, 0);
+    layout->addWidget(_deleteBtn_ptr, 0, 1, Qt::AlignRight);
 
     QLabel *widthLabel = new QLabel("감지 폭");
     _width_ptr = new QLineEdit();
@@ -37,15 +42,6 @@ DetectionRangeView::DetectionRangeView(QWidget *parent, int num) : QWidget(paren
     layout->addWidget(latLabel, 4, 0);
     layout->addWidget(_offset_ptr, 4, 1);
 
-    _mapPosBtn_ptr = new QPushButton("지도 위치로 지정");
-    _mapPosBtn_ptr->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    _vehiclePosBtn_ptr = new QPushButton("차량 위치로 지정");
-    _vehiclePosBtn_ptr->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    layout->addWidget(_mapPosBtn_ptr, 5, 0);
-    layout->addWidget(_vehiclePosBtn_ptr, 5, 1);
-
-
-
     std::vector<Code> actionCodes = CodeInfoModel::getInstance().getCodesByCategory(CodeType::ACTION_CODE);
     for (const Code &code: actionCodes) {
         _actionCode_ptr->addItem(
@@ -53,6 +49,10 @@ DetectionRangeView::DetectionRangeView(QWidget *parent, int num) : QWidget(paren
                 QVariant::fromValue(QString::fromStdString(code.code))
         );
     }
+
+    connect(_deleteBtn_ptr, &QPushButton::clicked, [this]() {
+        emit deleteButtonClicked(_index);
+    });
 }
 
 DetectionRangeView::~DetectionRangeView() = default;
@@ -73,4 +73,9 @@ DetectionRange DetectionRangeView::getDetectionRange() {
     range.actionCode = _actionCode_ptr->currentData().toString().toStdString();
 
     return range;
+}
+
+void DetectionRangeView::updateIndex(int num) {
+    _index = num;
+    _numLb_ptr->setText(QString::number(_index) + QString("번 감지범위"));
 }
