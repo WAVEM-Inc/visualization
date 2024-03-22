@@ -1,3 +1,7 @@
 [submodule "js-markerclusterer"]
 	path = js-markerclusterer
 	url = https://github.com/googlemaps/js-markerclusterer
+[submodule "third_party/PROJ"]
+	path = third_party/PROJ
+	url = https://github.com/OSGeo/PROJ.git
+	branch = 9.3
