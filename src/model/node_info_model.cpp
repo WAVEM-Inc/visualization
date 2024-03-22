@@ -11,6 +11,13 @@ NodeInfoModel::NodeInfoModel(QObject *parent) : QObject(parent) {
        _currentNodeList = nodes;
        emit currentNodeListChanged(_currentNodeList);
     });
+    connect(&PathInfoModel::getInstance(), &PathInfoModel::pathInfoMapChanged, this, [this](const QMap<std::string , std::string> &pathInfoMap) {
+        for (const std::string &pathId: _nodesMap.keys()) {
+            if (!pathInfoMap.contains(pathId)) {
+                _nodesMap.remove(pathId);
+            }
+        }
+    });
 }
 
 void NodeInfoModel::updateNodes(const QMap<std::string, QList<Node>>& nodesMap) {

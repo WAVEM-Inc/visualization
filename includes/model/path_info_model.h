@@ -31,6 +31,8 @@ public:
 
     void addPathInfo(const std::string& id, const std::string& name);
 
+    void removePathInfo(const std::string &pathId);
+
     bool updatePathInfo(const std::string& id, const std::string& name);
 
     void selectCurrentPathId(const std::string &pathId);

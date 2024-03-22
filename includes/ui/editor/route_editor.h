@@ -32,6 +32,7 @@ private:
     QTableView *_nodeListView_ptr;
     NodeListModel *_nodeListModel_ptr;
     QPushButton *m_addRouteButton_ptr;
+    QPushButton *_deleteRouteButton_ptr;
     QPushButton *m_addNodeButton_ptr;
 
 private slots:

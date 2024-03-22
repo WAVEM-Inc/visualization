@@ -24,7 +24,8 @@ RouteEditor::RouteEditor(QWidget *parent) :
         _nodeListView_ptr(new QTableView()),
         _nodeListModel_ptr(new NodeListModel()),
         m_addRouteButton_ptr(new QPushButton("+")),
-        m_addNodeButton_ptr(new QPushButton("+")) {
+        m_addNodeButton_ptr(new QPushButton("+")),
+        _deleteRouteButton_ptr(new QPushButton("X")){
 
     this->setVisible(false);
 
@@ -34,8 +35,9 @@ RouteEditor::RouteEditor(QWidget *parent) :
     m_layout_ptr->setMargin(1);
     m_layout_ptr->addWidget(m_routeComboBox_ptr, 0, 0);
     m_layout_ptr->addWidget(m_addRouteButton_ptr, 0, 1);
-    m_layout_ptr->addWidget(_nodeListView_ptr, 1, 0, 1, 2);
-    m_layout_ptr->addWidget(m_addNodeButton_ptr, 2, 0, 1, 2);
+    m_layout_ptr->addWidget(_deleteRouteButton_ptr, 0, 2);
+    m_layout_ptr->addWidget(_nodeListView_ptr, 1, 0, 1, 3);
+    m_layout_ptr->addWidget(m_addNodeButton_ptr, 2, 0, 1, 3);
 
 
     _nodeListModel_ptr->setHorizontalHeaderItem(0, new QStandardItem(QString("ID")));
@@ -53,11 +55,16 @@ RouteEditor::RouteEditor(QWidget *parent) :
 
     m_routeComboBox_ptr->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     m_addRouteButton_ptr->setFixedSize(30, 30);
+    _deleteRouteButton_ptr->setFixedSize(30, 30);
     m_addNodeButton_ptr->setFixedHeight(30);
 
     // Initialize UI Events
     connect(m_addRouteButton_ptr, &QPushButton::clicked, this, &RouteEditor::onAddRouteButtonClicked);
     connect(m_addNodeButton_ptr, &QPushButton::clicked, this, &RouteEditor::onAddNodeButtonClicked);
+    connect(_deleteRouteButton_ptr, &QPushButton::clicked, this, [this]() {
+        std::string pathId = this->m_routeComboBox_ptr->currentData().toString().toStdString();
+        PathInfoModel::getInstance().removePathInfo(pathId);
+    });
     connect(m_routeComboBox_ptr, QOverload<int>::of(&QComboBox::currentIndexChanged), [this](int index) {
         if (index >= 0) {
             QVariant data = this->m_routeComboBox_ptr->itemData(index);

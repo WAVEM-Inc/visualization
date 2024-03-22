@@ -8,6 +8,8 @@
 PathInfoModel::PathInfoModel(QObject *parent) : QObject(parent) {}
 
 void PathInfoModel::setPathInfoMap(const QMap<std::string, std::string>& pathInfoMap) {
+    clearPathInfoMap();
+
     _pathInfoMap = pathInfoMap;
     emit pathInfoMapChanged(_pathInfoMap);
 }
@@ -24,6 +26,11 @@ void PathInfoModel::setPathInfoMap(const std::vector<Path> &paths) {
 
 void PathInfoModel::addPathInfo(const std::string& id, const std::string& name) {
     _pathInfoMap.insert(id, name);
+    emit pathInfoMapChanged(_pathInfoMap);
+}
+
+void PathInfoModel::removePathInfo(const std::string &pathId) {
+    _pathInfoMap.remove(pathId);
     emit pathInfoMapChanged(_pathInfoMap);
 }
 
