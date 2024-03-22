@@ -92,6 +92,10 @@ bool NodeInfoModel::updateCurrentNode(const Node &node) {
 
         _nodesMap[PathInfoModel::getInstance().getCurrentPathId()][_currentNodeIndex] = _currentNode;
         emit nodesMapChanged(_nodesMap);
+
+        std::string pathId = PathInfoModel::getInstance().getCurrentPathId();
+        _currentNodeList = _nodesMap[pathId];
+        emit currentNodeListChanged(_currentNodeList);
     }
 
     return true;

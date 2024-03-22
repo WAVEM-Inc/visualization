@@ -6,7 +6,6 @@
 #include "utils/GeoPositionUtil.h"
 
 int main(int argc, char *argv[]) {
-    std::cout << convert_wgs84_to_utm(36.1128827, 128.3703862)[0] << ", " << convert_wgs84_to_utm(36.1128827, 128.3703862)[1] << "\n";
     QApplication app(argc, argv);
 
     rclcpp::init(argc, argv);

@@ -60,6 +60,8 @@
         let markerMenu;
         let rightClickNodeId;
 
+        let detectionRanges = [];
+
         async function initMap() {
             //@ts-ignore
             const {Map} = await google.maps.importLibrary("maps");
@@ -205,11 +207,6 @@
                 updateOrCreateMarker(item.nodeId, item);
             });
 
-/*            Object.keys(parsedData).forEach(key => {
-                const item = parsedData[key];
-                updateOrCreateMarker(key, item);
-            });*/
-
             removeMissingMarkers(keys);
 
             if (linePath) {
@@ -217,14 +214,6 @@
             }
 
             if (!showAll) {
-/*                linePath = new google.maps.Polyline({
-                    path: Object.values(markers).map(marker => marker.getPosition()), // Adjusted for object
-                    geodesic: true, // 대지 곡률을 고려한 선을 그림
-                    strokeColor: '#FF0000', // 선의 색상
-                    strokeOpacity: 1.0, // 선의 투명도
-                    strokeWeight: 2, // 선의 두께
-                });*/
-
                 linePath = new google.maps.Polyline({
                     path: lineCoordinates, // Adjusted for object
                     geodesic: true, // 대지 곡률을 고려한 선을 그림
@@ -349,6 +338,35 @@
             const newDragPosition = event.latLng;
             markers[key].setPosition(newDragPosition);
             coordinateHandler.onDragendEvent(key, newDragPosition.lat(), newDragPosition.lng());
+        }
+
+        let detectionRangesJsonData;
+        function updateDetectionRanges(jsonData) {
+            const parsedData = JSON.parse(jsonData);
+
+            detectionRanges.forEach((polygon) => {
+                polygon.setMap(null);
+            });
+            detectionRanges = [];
+
+            parsedData.forEach((item) => {
+                const polyCoordinates = item.map((coordinate) => {
+                   return { lat: coordinate.latitude, lng: coordinate.longitude };
+                });
+
+                const polygon = new google.maps.Polygon({
+                   paths: polyCoordinates,
+                    strokeColor: '#FF0000',
+                    strokeOpacity: 0.8,
+                    strokeWeight: 2,
+                    fillColor: '#FF0000',
+                    fillOpacity: 0.35
+                });
+
+                polygon.setMap(map);
+
+                detectionRanges.push(polygon);
+            });
         }
 
         function getDefaultMarker() {

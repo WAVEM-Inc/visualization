@@ -12,6 +12,8 @@
 #include "model/code_info_model.h"
 #include "utils/file/code_file_reader.h"
 #include "model/node_info_model.h"
+#include "utils/GeoPositionUtil.h"
+#include "GeographicLib/UTMUPS.hpp"
 
 MapView::MapView(QWidget *parent) :
         QWidget(parent),
@@ -69,9 +71,7 @@ MapView::MapView(QWidget *parent) :
         }
     });
 
-    connect(&NodeInfoModel::getInstance(), &NodeInfoModel::currentNodeListChanged, this, [this](const QList<Node> &nodeList) {
-       nlohmann::json json;
-    });
+    connect(&NodeInfoModel::getInstance(), &NodeInfoModel::currentNodeListChanged, this, &MapView::showDetectionRanges);
 
     // Initialize config data
     ConfigFileReader cfgReader;
@@ -99,6 +99,8 @@ MapView::MapView(QWidget *parent) :
                 "updateMarkers(mapNodeJsonData, %1);"
         ).arg(MapNodeModel::getInstance().getShowAllNodes()));
 
+        showDetectionRanges(NodeInfoModel::getInstance().getNodesFromCurrentPath());
+
         std::cout << "Refresh Event Occured!" << "\n";
     });
 }
@@ -108,11 +110,66 @@ void MapView::resizeEvent(QResizeEvent *event) {
     m_webview_ptr->resize(this->size());
 }
 
-void MapView::onMapNodesChanged(const QMap<std::string, GraphNode> &nodeMap) {
-    nlohmann::json json = nodeMap.toStdMap();
+void MapView::showDetectionRanges(const QList<Node> &nodeList) {
+    std::vector<std::array<Position, 4>> rectangles;
+
+    for (int i = 0; i < nodeList.size(); i++) {
+        const Node &node = nodeList[i];
+        Node preNode;
+        if (i >= 1) {
+            preNode = nodeList[i - 1];
+        }
+
+        if (!preNode.nodeId.empty()) {
+            for (const DetectionRange &range : node.detectionRange) {
+                std::array<Position, 4> rectanglesVertex;
+
+                // Convert Nodes Lat/Lng to UTM Coordinates
+                int zone;
+                bool northp;
+                double nodeX, nodeY;
+                GeographicLib::UTMUPS::Forward(node.position.latitude, node.position.longitude, zone, northp,  nodeX, nodeY);
+
+                // Calculate DetectionRanges rectangle vertex coordinates.
+                double x1 = nodeX - range.widthLeft, y1 = nodeY + range.offset;
+                double x2 = nodeX + range.widthRight, y2 = y1;
+                double x3 = x2, y3 = y1 + range.height;
+                double x4 = x1, y4 = y3;
+
+
+                // Calculate real rectangles vertex coordinates from node heading.
+                double radian = toRadians(preNode.heading);
+                double x1p = cos(radian) * (x1 - nodeX) - sin(radian) * (y1 - nodeY) + nodeX;
+                double y1p = sin(radian) * (x1 - nodeX) + cos(radian) * (y1 - nodeY) + nodeY;
+                double x2p = cos(radian) * (x2 - nodeX) - sin(radian) * (y2 - nodeY) + nodeX;
+                double y2p = sin(radian) * (x2 - nodeX) + cos(radian) * (y2 - nodeY) + nodeY;
+                double x3p = cos(radian) * (x3 - nodeX) - sin(radian) * (y3 - nodeY) + nodeX;
+                double y3p = sin(radian) * (x3 - nodeX) + cos(radian) * (y3 - nodeY) + nodeY;
+                double x4p = cos(radian) * (x4 - nodeX) - sin(radian) * (y4 - nodeY) + nodeX;
+                double y4p = sin(radian) * (x4 - nodeX) + cos(radian) * (y4 - nodeY) + nodeY;
+
+                // Reconvert UTM Coordinates to WGS84 Lat/Lng.
+                double lat1, lng1, lat2, lng2, lat3, lng3, lat4, lng4;
+                GeographicLib::UTMUPS::Reverse(zone, northp, x1p, y1p, lat1, lng1);
+                GeographicLib::UTMUPS::Reverse(zone, northp, x2p, y2p, lat2, lng2);
+                GeographicLib::UTMUPS::Reverse(zone, northp, x3p, y3p, lat3, lng3);
+                GeographicLib::UTMUPS::Reverse(zone, northp, x4p, y4p, lat4, lng4);
+
+                rectanglesVertex[0] = Position(lat1, lng1);
+                rectanglesVertex[1] = Position(lat2, lng2);
+                rectanglesVertex[2] = Position(lat3, lng3);
+                rectanglesVertex[3] = Position(lat4, lng4);
+
+                rectangles.push_back(rectanglesVertex);
+            }
+        }
+    }
+
+    nlohmann::json json = rectangles;
     QString qString = QString(json.dump().data());
+
     m_webpage_ptr->runJavaScript(QString(
-            "mapNodeJsonData = '" + qString + "';\n" +
-            "updateMarkers(mapNodeJsonData, %1);"
-    ).arg(MapNodeModel::getInstance().getShowAllNodes()));
+            "detectionRangesJsonData = '" + qString + "';\n" +
+            "updateDetectionRanges(detectionRangesJsonData);"
+    ));
 }

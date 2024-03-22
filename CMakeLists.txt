@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.22.1)
 project(route_editor)
 
+if(POLICY CMP0100)
+    cmake_policy(SET CMP0100 NEW)
+endif()
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -19,6 +23,8 @@ find_package(Qt5 COMPONENTS
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
+
+add_subdirectory(third_party/geographiclib)
 
 add_executable(route_editor
         main.cpp
@@ -134,5 +140,6 @@ target_link_libraries(route_editor
         rclcpp::rclcpp
         ${sensor_msgs_TARGETS}
         ${std_msgs_TARGETS}
+        GeographicLib
 )
 

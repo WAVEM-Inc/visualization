@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include "utils/GeoPositionUtil.h"
+#include <GeographicLib/UTMUPS.hpp>
 
 double toRadians(double degree) {
     return degree * M_PI / 180.0;
@@ -47,14 +48,15 @@ Position translateLatLng(double lat, double lng, double distance, double degree)
 }
 
 std::array<double, 2> convert_wgs84_to_utm(double lat, double lng) {
-    PJ *P = proj_create_crs_to_crs(PJ_DEFAULT_CTX, "EPSG:4326", "EPSG:32633", NULL);
-    if (P == NULL) {
-        std::cout << "Projection object creation failed." << "\n";
-        return {0.0, 0.0};
-    }
+    int zone;
+    bool northp;
+    double x, y;
 
-    PJ_COORD a = proj_coord(lng, lat, 0, 0);
-    PJ_COORD b = proj_trans(P, PJ_FWD, a);
+    GeographicLib::UTMUPS::Forward(lat, lng, zone, northp, x, y);
 
-    return {b.enu.e, b.enu.n};
+    return {x, y};
+}
+
+std::array<double, 2> convert_utm_to_wgs84(double x, double y) {
+
 }

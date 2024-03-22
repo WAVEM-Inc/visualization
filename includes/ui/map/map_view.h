@@ -29,7 +29,7 @@ private:
     QPointer<QWebChannel> m_web_channel_ptr;
 
 private slots:
-    void onMapNodesChanged(const QMap<std::string, GraphNode> &nodeMap);
+    void showDetectionRanges(const QList<Node> &nodeList);
 };
 
 
