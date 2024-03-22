@@ -89,6 +89,18 @@ MapView::MapView(QWidget *parent) :
         FileInfoModel::getInstance().updateLatestFilePath(cfgData.latestFilePath);
         CodeInfoModel::getInstance().setCodeMap(codeData);
     });
+
+    connect(&MapNodeModel::getInstance(), &MapNodeModel::refreshEventOccured, this, [this]() {
+
+        nlohmann::json json = MapNodeModel::getInstance().getShowingNodes();
+        QString qString = QString(json.dump().data());
+        m_webpage_ptr->runJavaScript(QString(
+                "mapNodeJsonData = '" + qString + "';\n" +
+                "updateMarkers(mapNodeJsonData, %1);"
+        ).arg(MapNodeModel::getInstance().getShowAllNodes()));
+
+        std::cout << "Refresh Event Occured!" << "\n";
+    });
 }
 
 void MapView::resizeEvent(QResizeEvent *event) {

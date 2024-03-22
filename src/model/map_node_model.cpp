@@ -130,3 +130,11 @@ void MapNodeModel::showNodes(bool showAll) {
         std::cout << "Error occured in showAllNodeOptionChanged event: " << exception.what() << "\n";
     }
 }
+
+void MapNodeModel::refreshMap() {
+    emit refreshEventOccured();
+}
+
+std::vector<GraphNode> MapNodeModel::getShowingNodes() const {
+    return _showingNodes;
+}

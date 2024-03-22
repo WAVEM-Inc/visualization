@@ -76,6 +76,12 @@ MenuBar::MenuBar(QWidget *parent) : QMenuBar(parent) {
         MapNodeModel::getInstance().setChangeCenterToSelectedNode(useAutoCenter);
     });
 
+    QAction *mapRefresh = editMenu->addAction(tr("&지도 새로고침"));
+    mapRefresh->setShortcut(QKeySequence("F5"));
+    connect(mapRefresh, &QAction::triggered, this, []() {
+       MapNodeModel::getInstance().refreshMap();
+    });
+
     // connect to models
     connect(&FileInfoModel::getInstance(), &FileInfoModel::fileSavableChanged, this,
             [saveFile, saveFileAs](bool savable) {

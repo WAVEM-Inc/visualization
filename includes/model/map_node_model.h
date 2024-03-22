@@ -53,6 +53,10 @@ public:
 
     void showNodes(bool showAll);
 
+    std::vector<GraphNode> getShowingNodes() const;
+
+    void refreshMap();
+
 signals:
     void mapNodesChanged(const QMap<std::string, GraphNode> &nodeMap);
 
@@ -61,6 +65,8 @@ signals:
     void showAllNodesOptionChanged(bool show);
 
     void showingNodesChanged(std::vector<GraphNode> showingNodes);
+
+    void refreshEventOccured();
 
 private:
     explicit MapNodeModel(QObject *parent = nullptr);
