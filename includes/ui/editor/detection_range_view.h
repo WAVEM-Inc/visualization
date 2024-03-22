@@ -33,7 +33,8 @@ private:
     int _index;
     QLabel *_numLb_ptr;
     QLineEdit *_offset_ptr;
-    QLineEdit *_width_ptr;
+    QLineEdit *_widthLeft_ptr;
+    QLineEdit *_widthRight_ptr;
     QLineEdit *_height_ptr;
     QComboBox *_actionCode_ptr;
     QPushButton *_deleteBtn_ptr;

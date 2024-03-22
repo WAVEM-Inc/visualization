@@ -146,8 +146,8 @@ void NodeEditor::init() {
 
     connect(_vehiclePoseBtn_ptr, &QPushButton::clicked, this, [this]() {
         sensor_msgs::msg::NavSatFix nsf = ROS2DataModel::getInstance().getNavSatFixData();
-        _nodeLat_ptr->setText(QString::number(nsf.latitude));
-        _nodeLng_ptr->setText(QString::number(nsf.longitude));
+        _nodeLat_ptr->setText(QString::number(nsf.latitude, 'f', 7));
+        _nodeLng_ptr->setText(QString::number(nsf.longitude, 'f', 7));
     });
 
     connect(_mapPoseBtn_ptr, &QPushButton::clicked, this, [this]() {
