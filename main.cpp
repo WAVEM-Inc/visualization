@@ -3,8 +3,10 @@
 #include "utils/file/code_file_reader.h"
 #include "utils/file/config_file_writer.h"
 #include "ros2/nav_sat_fix_subscriber.h"
+#include "utils/GeoPositionUtil.h"
 
 int main(int argc, char *argv[]) {
+    std::cout << convert_wgs84_to_utm(36.1128827, 128.3703862)[0] << ", " << convert_wgs84_to_utm(36.1128827, 128.3703862)[1] << "\n";
     QApplication app(argc, argv);
 
     rclcpp::init(argc, argv);

@@ -1,3 +1,6 @@
 [submodule "js-markerclusterer"]
 	path = js-markerclusterer
 	url = https://github.com/googlemaps/js-markerclusterer
+[submodule "third_party/geographiclib"]
+	path = third_party/geographiclib
+	url = https://github.com/geographiclib/geographiclib.git
