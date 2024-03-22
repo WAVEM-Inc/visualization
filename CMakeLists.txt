@@ -20,11 +20,6 @@ find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 
-add_custom_target(
-        BuildGeoConvert ALL
-        COMMAND make -C ${CMAKE_SOURCE_DIR}/third_party/GeoConvert
-)
-
 add_executable(route_editor
         main.cpp
         includes/utils/coordinate_handler.h
@@ -108,8 +103,6 @@ add_executable(route_editor
         includes/model/ros_2_data_model.h
         includes/utils/GeoPositionUtil.h
 )
-
-add_dependencies(route_editor BuildGeoConvert)
 
 include(FetchContent)
 
