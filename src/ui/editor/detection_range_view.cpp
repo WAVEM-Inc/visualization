@@ -25,7 +25,7 @@ DetectionRangeView::DetectionRangeView(QWidget *parent, int num) : QWidget(paren
     layout->addWidget(widthLeftLabel, 1, 0);
     layout->addWidget(_widthLeft_ptr, 1, 1);
 
-    QLabel *widthRightLabel = new QLabel("감지 폭(좌)");
+    QLabel *widthRightLabel = new QLabel("감지 폭(우)");
     _widthRight_ptr = new QLineEdit();
     _widthRight_ptr->setValidator(new QIntValidator(_widthRight_ptr));
     layout->addWidget(widthRightLabel, 2, 0);

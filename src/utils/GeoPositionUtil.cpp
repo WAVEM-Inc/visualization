@@ -22,7 +22,9 @@ double getBearingBetweenPoints(double lat1, double lon1, double lat2, double lon
     double y = sin(lon_diff_rad) * cos(lat2_rad);
     double x = cos(lat1_rad) * sin(lat2_rad) - sin(lat1_rad) * cos(lat2_rad) * cos(lon_diff_rad);
 
-    return ((int) toDegrees(atan2(y, x)) + 360) % 360;
+    double bearing = fmod(toDegrees(atan2(y, x)) + 360.0, 360.0);
+
+    return bearing;
 }
 
 Position translateLatLng(double lat, double lng, double distance, double degree) {
