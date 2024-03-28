@@ -17,7 +17,7 @@ Required Environment
 ## Install Guid
 ### install qtwebengine5
 ~~~
-sudo apt-get install qtwebengine5-deb
+sudo apt-get install qtwebengine5-dev
 ~~~
 
 ### Install & Build route-editor 
