@@ -75,27 +75,32 @@ class UdpClient {
     }
 
     private fun getPayloadFromArray(data: ByteArray): Pair<ProtoMessageType, ByteArray>? {
-        if (data.size < 13) {
+        if (data.size < 13) { // Minimum size check based on the new protocol definition
             return null
         }
 
-        val stx = data.slice(0..3)
-        if (!stx.equals("/STX")) {
+        // Check for start point "/STX" instead of "/STX"
+        val stx = String(data.sliceArray(0..3))
+        if (stx != "STX/") { // Corrected to match "STX/" as the start point example value
             return null
         }
 
-        val msgId = data[4].toInt() and 0xFF
-        val payloadLength = ByteBuffer.wrap(data.sliceArray(5..8)).order(ByteOrder.LITTLE_ENDIAN).getInt();
-        if (data.size < 9 + payloadLength + 4) {
+        val msgId = data[4].toInt() and 0xFF // No change needed here
+        val payloadLength = ByteBuffer.wrap(data.sliceArray(5..8)).order(ByteOrder.LITTLE_ENDIAN).getInt() // No change needed
+
+        // Check if the total size matches or exceeds expected size (start + msgId + payloadLength + end)
+        if (data.size < 9 + payloadLength + 4) { // Adjusted to reflect the new protocol definition
             return null
         }
 
-        val end = String(data.sliceArray(9 + payloadLength..9 + payloadLength + 3))
-        if (!end.equals("/ETX")) {
+        // Adjust end point extraction based on the new protocol definition
+        val end = String(data.sliceArray((9 + payloadLength)..(9 + payloadLength + 3)))
+        if (end != "/ETX") { // Corrected to match "/ETX" as the end point example value
             return null
         }
 
-        val body: ByteArray = data.sliceArray(9 until 9 + payloadLength)
+        // Extract the payload with the updated indices based on the new protocol
+        val body: ByteArray = data.sliceArray(9 until (9 + payloadLength))
 
         return Pair(ProtoMessageType.get(msgId), body)
     }
