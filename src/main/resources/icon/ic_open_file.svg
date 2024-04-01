@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 24">
+    <g id="Files_Folder33" transform="scale(0.8) translate(2.5)">
+        <g id="그룹_86" data-name="그룹 86" transform="translate(13.2 6)">
+            <path id="패스_24" data-name="패스 24" d="M28,7v3a1,1,0,0,1-1,1H16a.99.99,0,0,1-.86-.49l-1.8-3A1,1,0,0,1,14.2,6H27A1,1,0,0,1,28,7Z" transform="translate(-13.2 -6)" fill="#fe9803"/>
+        </g>
+        <g id="그룹_87" data-name="그룹 87" transform="translate(1 4)">
+            <path id="패스_25" data-name="패스 25" d="M31,10V27a1,1,0,0,1-1,1H2a1,1,0,0,1-1-1V5A1,1,0,0,1,2,4H13a.99.99,0,0,1,.86.49L16.57,9H30A1,1,0,0,1,31,10Z" transform="translate(-1 -4)" fill="#ffc10a"/>
+        </g>
+    </g>
+</svg>
