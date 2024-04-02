@@ -1,0 +1,6 @@
+---
+draw: true
+useDynamicColor: true
+farColor: "#111111"
+nearColor: "#653452"
+maxDistance: 30

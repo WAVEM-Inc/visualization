@@ -17,6 +17,14 @@ object LidarOption {
     var front: String = gson.toJson(LidarCalibration())
     var right: String = gson.toJson(LidarCalibration())
 
+    init {
+        CoroutineScope(Dispatchers.Main).launch {
+            ConfigDataViewModel.subscribePointCloudOption(collector = {option ->
+                pointCloudOption = option.copy()
+            })
+        }
+    }
+
     fun updateData() {
         CoroutineScope(Dispatchers.Main).launch {
             val option = ConfigDataViewModel.getPointCloudOption()

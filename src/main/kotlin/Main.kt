@@ -25,6 +25,7 @@ import kotlinx.coroutines.launch
 import ui.component.title.EvizTitleBar
 import ui.layout.MainLayout
 import ui.theme.Navy_100
+import utils.getDefaultCachePath
 import viewmodel.ConfigDataViewModel
 import viewmodel.UdpDataViewModel
 import java.awt.Dimension
@@ -33,6 +34,7 @@ import java.awt.Dimension
 @Preview
 fun App() {
     LaunchedEffect(Unit) {
+        println(getDefaultCachePath())
         EvizConfigManager
 
         val client = UdpClient()

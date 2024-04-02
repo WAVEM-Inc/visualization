@@ -63,7 +63,7 @@ compose.desktop {
             packageVersion = "1.0.0"
 
             appResourcesRootDir.set(project.layout.projectDirectory.dir("resources"))
-            outputBaseDir.set(project.buildDir.resolve("Eviz"))
+            outputBaseDir.set(project.buildDir.resolve("testOutputDir"))
         }
     }
 }
