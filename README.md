@@ -27,4 +27,3 @@ make
 ~~~
 ./YOUR_DIRECTORY/visualization/build/route_editor
 ~~~
-Run program file will be locate in 'YOUR_DIRECTORY/visualization/build/route_editor'
