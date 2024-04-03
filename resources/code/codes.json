@@ -1,0 +1,137 @@
+[
+  {
+    "category": "node_type",
+    "codes": [
+      {
+        "code": "path_node",
+        "name": "경로",
+        "description": "단순 경로용으로만 사용되는 노드"
+      },
+      {
+        "code": "work_node",
+        "name": "작업",
+        "description": "작업이 이루어져야 하는 노드"
+      },
+      {
+        "code": "workplace_node",
+        "name": "대기",
+        "description": "작업 대기장소 노드"
+      }
+    ]
+  },
+  {
+    "category": "node_kind",
+    "codes": [
+      {
+        "code": "connecting",
+        "name": "연결",
+        "description": "직진 노드"
+      },
+      {
+        "code": "intersection",
+        "name": "교차로",
+        "description": "교차로 노드"
+      },
+      {
+        "code": "complete",
+        "name": "완료",
+        "description": "작업 완료 노드"
+      },
+      {
+        "code": "endpoint",
+        "name": "종점",
+        "description": "종점 노드"
+      },
+      {
+        "code": "waiting",
+        "name": "일시정지",
+        "description": "장애물 여부 감지를 위한 대기 지점"
+      }
+    ]
+  },
+  {
+    "category": "direction",
+    "codes": [
+      {
+        "code": "forward",
+        "name": "전방",
+        "description": ""
+      },
+      {
+        "code": "backward",
+        "name": "후방",
+        "description": ""
+      }
+    ]
+  },
+  {
+    "category": "action_code",
+    "codes": [
+      {
+        "code": "waiting",
+        "name": "대기",
+        "description": "주행 가능시 까지 대기"
+      },
+      {
+        "code": "driving",
+        "name": "주행",
+        "description": "지정 시간 대기 후 주행"
+      },
+      {
+        "code": "stop",
+        "name": "정지",
+        "description": "주행 정지"
+      },
+      {
+        "code": "skip",
+        "name": "무시",
+        "description": "계속 진행"
+      }
+    ]
+  },
+  {
+    "category": "node_point",
+    "codes": [
+      {
+        "code": "1",
+        "name": "대기지점",
+        "description": ""
+      },
+      {
+        "code": "10",
+        "name": "상차지점",
+        "description": ""
+      },
+      {
+        "code": "30",
+        "name": "하차지점",
+        "description": ""
+      },
+      {
+        "code": "50",
+        "name": "택배상차 지점",
+        "description": ""
+      },
+      {
+        "code": "70",
+        "name": "택배하차 지점",
+        "description": ""
+      }
+    ]
+  },
+  {
+    "category": "driving_option",
+    "codes": [
+      {
+        "code": "odom",
+        "name": "odometry 정보",
+        "description": "위치 추정에 odometry 정보사용"
+      },
+      {
+        "code": "gps",
+        "name": "gps수신 정보",
+        "description": "위치 추정에 경위도 정보사용"
+      }
+    ]
+  }
+]

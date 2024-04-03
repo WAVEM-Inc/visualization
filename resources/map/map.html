@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Map</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
+    <style>
+        #map {
+            height: 100%;
+        }
+
+        .controls {
+            border-radius: 25px; /* 테두리를 둥글게 합니다 */
+            width: 300px; /* 넓이를 200px로 설정합니다 */
+            height: 40px; /* 높이를 50px로 설정합니다 */
+            font-size: 16px; /* 텍스트 사이즈를 16px로 설정합니다 */
+            padding-left: 20px; /* 내부 왼쪽 여백 추가로 입력 텍스트와 테두리 간 간격을 조정합니다 */
+            border: 1px solid #ccc; /* 테두리 색상을 설정합니다, 필요에 따라 조정 가능 */
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3); /* 약간의 그림자 효과를 추가합니다 */
+            margin-top: 10px; /* 상단 여백을 추가합니다 */
+            margin-right: 10px;
+            outline: none; /* 입력 필드 선택 시 나타나는 외곽선을 제거합니다 */
+        }
+
+        .context-menu {
+            display: none;
+            position: absolute;
+            background-color: #fff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            padding: 2px 0;
+            z-index: 1000;
+            border-radius: 2px;
+        }
+        .context-menu-item {
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        .context-menu-item:hover {
+            background-color: #f1f1f1;
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+
+    <script type="text/javascript" src="qrc:///qtwebchannel/qwebchannel.js"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDDqjcUU8O-ZdGy4Q2Wl0n1SlM78WTA5xA&libraries=places&callback=initMap"></script>
+    <script>
+        let map;
+        let coordinateHandler;
+        let infoWindow;
+        let linePath;
+
+        let mapNodeJsonData;
+        let markers = [];
+        let markerMenu;
+        let rightClickNodeId;
+
+        let detectionRanges = [];
+
+        async function initMap() {
+            //@ts-ignore
+            const {Map} = await google.maps.importLibrary("maps");
+
+            map = new Map(document.getElementById("map"), {
+                center: {lat: 37.392605, lng: 126.938820},
+                zoom: 10,
+                streetViewControl: false,
+                mapId: '7f4e79d00bc82231',
+            });
+
+            infoWindow = new google.maps.InfoWindow({
+                content: "",
+                disableAutoPan: true,
+            });
+
+            new QWebChannel(qt.webChannelTransport, function (channel) {
+                coordinateHandler = channel.objects.coordinateHandler;
+
+                var contextMenu = document.getElementById('context-menu');
+                map.addListener('rightclick', function(e) {
+                    // 플로팅 메뉴 위치 설정
+                    contextMenu.style.left = e.pixel.x + 'px';
+                    contextMenu.style.top = e.pixel.y + 'px';
+                    contextMenu.style.display = 'block';
+
+                    // 클릭된 위치 저장
+                    contextMenu.dataset.clickedLat = e.latLng.lat().toFixed(7);
+                    contextMenu.dataset.clickedLng = e.latLng.lng().toFixed(7);
+                });
+
+                map.addListener('click', function (e) {
+                    contextMenu.style.display = 'none';
+                });
+
+                map.addListener('dragend', function() {
+                    coordinateHandler.onMouseScrollEnded(getCurrentLocation());
+                });
+
+                map.addListener('zoom_changed', function() {
+                    coordinateHandler.onWheelScrollEnded(map.getZoom());
+                });
+
+                document.getElementById('add-node-btn').addEventListener('click', function() {
+                    console.log('노드 추가 클릭됨!');
+                    // 우클릭된 위치에 노드(마커) 추가
+                    var clickedLat = parseFloat(contextMenu.dataset.clickedLat);
+                    var clickedLng = parseFloat(contextMenu.dataset.clickedLng);
+
+                    coordinateHandler.onClickEvent(clickedLat, clickedLng);
+
+                    contextMenu.style.display = 'none'; // 메뉴 숨기기
+                });
+
+                // 'None' 메뉴 아이템 클릭 이벤트 처리
+                document.getElementById('none-btn').addEventListener('click', function() {
+                    contextMenu.style.display = 'none'; // 메뉴 숨기기
+                });
+            });
+
+            markerMenu = document.getElementById('marker-menu');
+            document.getElementById('remove-marker-btn').addEventListener('click', function () {
+                coordinateHandler.onRightClickEvent(rightClickNodeId);
+                markerMenu.style.display = 'none';
+            });
+
+            initAutocomplete();
+        }
+
+        async function changeCenter(lat, lng) {
+            // 새 중심 위치 설정
+            var newCenter = new google.maps.LatLng(lat, lng);
+            map.setCenter(newCenter);
+        }
+
+        async function changeZoomLevel(zoomLevel) {
+            map.setZoom(zoomLevel);
+        }
+
+
+        function getCurrentLocation() {
+            let location = {
+                lat: map.getCenter().lat(),
+                lng: map.getCenter().lng()
+            }
+
+            return JSON.stringify(location);
+        }
+
+        function initAutocomplete() {
+            // 검색창 UI 요소를 생성하고 지도에 연결합니다.
+            const input = document.getElementById("pac-input");
+            const searchBox = new google.maps.places.SearchBox(input);
+
+            // 검색창을 지도의 상단 왼쪽에 배치합니다.
+            map.controls[google.maps.ControlPosition.TOP_CENTER].push(input);
+
+            // 지도의 뷰포트가 변경될 때마다 SearchBox 결과의 범위를 현재 지도 뷰포트로 설정합니다.
+            map.addListener("bounds_changed", () => {
+                searchBox.setBounds(map.getBounds());
+            });
+
+            // 사용자가 검색 결과 중 하나를 선택했을 때 발생하는 이벤트를 처리합니다.
+            searchBox.addListener("places_changed", () => {
+                const places = searchBox.getPlaces();
+
+                if (places.length == 0) {
+                    return;
+                }
+
+                // 각 장소에 대한 위치 정보를 가져와 지도의 뷰포트를 업데이트합니다.
+                const bounds = new google.maps.LatLngBounds();
+                places.forEach((place) => {
+                    if (!place.geometry || !place.geometry.location) {
+                        console.log("Returned place contains no geometry");
+                        return;
+                    }
+
+                    if (place.geometry.viewport) {
+                        // 장소가 viewport 정보를 포함하고 있다면, 해당 viewport를 사용합니다.
+                        bounds.union(place.geometry.viewport);
+                    } else {
+                        // viewport 정보가 없다면, 위치 정보를 직접 사용하여 bounds를 확장합니다.
+                        bounds.extend(place.geometry.location);
+                    }
+                });
+                map.fitBounds(bounds);
+            });
+        }
+
+        let selectedMarker = null;
+        let selectedNodeId = null;
+
+        function updateMarkers(jsonData, showAll) {
+            const parsedData = JSON.parse(jsonData);
+            const lineCoordinates = [];
+            let keys = [];
+            // const currentDataKeys = Object.keys(parsedData);
+
+            parsedData.forEach((item, index) => {
+                keys.push(item.nodeId);
+                lineCoordinates.push({ lat: item.position.latitude, lng: item.position.longitude })
+                updateOrCreateMarker(item.nodeId, item);
+            });
+
+            removeMissingMarkers(keys);
+
+            if (linePath) {
+                linePath.setMap(null);
+            }
+
+            if (!showAll) {
+                linePath = new google.maps.Polyline({
+                    path: lineCoordinates, // Adjusted for object
+                    geodesic: true, // 대지 곡률을 고려한 선을 그림
+                    strokeColor: '#FF0000', // 선의 색상
+                    strokeOpacity: 1.0, // 선의 투명도
+                    strokeWeight: 2, // 선의 두께
+                });
+
+                linePath.setMap(map);
+            }
+        }
+
+        function updateOrCreateMarker(key, item) {
+            const newPosition = new google.maps.LatLng(item.position.latitude, item.position.longitude);
+
+            if (markers[key]) {
+                updateMarkerPosition(key, newPosition);
+            } else {
+                createMarker(key, item, newPosition);
+            }
+        }
+
+        function updateMarkerPosition(key, newPosition) {
+            const currentPosition = markers[key].getPosition();
+            if (!currentPosition.equals(newPosition)) {
+                markers[key].setPosition(newPosition);
+            }
+        }
+
+        function createMarker(key, item, newPosition) {
+            const marker = new google.maps.Marker({
+                map: map,
+                position: newPosition,
+                draggable: true,
+                icon:  {
+                    url: getDefaultMarker(),
+                    scaledSize: new google.maps.Size(20, 20),
+                    anchor: new google.maps.Point(10, 10),
+                },
+            });
+
+            addMarkerListeners(marker, key, item);
+            markers[key] = marker;
+        }
+
+        function removeMissingMarkers(currentDataKeys) {
+            Object.keys(markers).forEach((key) => {
+                if (!currentDataKeys.includes(key)) {
+                    markers[key].setMap(null); // 마커를 지도에서 제거
+                    delete markers[key]; // 마커 객체에서 삭제
+                }
+            });
+        }
+
+        function addMarkerListeners(marker, key, item) {
+            marker.addListener("click", () => coordinateHandler.onNodeClickEvent(key));
+            marker.addListener('dragend', (event) => handleDragEnd(key, event));
+            marker.addListener("rightclick", (e) => {
+                var currentPos = marker.getPosition();
+                var numTiles = 1 << map.getZoom();
+                var projection = map.getProjection();
+                var worldCoordinate = projection.fromLatLngToPoint(currentPos);
+                var pixelCoordinate = new google.maps.Point(
+                    worldCoordinate.x * numTiles,
+                    worldCoordinate.y * numTiles);
+
+                markerMenu.style.left = marker.positionX + 'px';
+                markerMenu.style.top = marker.positionY + 'px';
+                markerMenu.style.display = 'block';
+
+                rightClickNodeId = key;
+            });
+        }
+
+        function updateSelectedNode(nodeId, changeCenter) {
+            if (nodeId === "") {
+                if (selectedMarker) {
+                    selectedMarker.setIcon({
+                        url: getDefaultMarker(),
+                        scaledSize: new google.maps.Size(20, 20),
+                        anchor: new google.maps.Point(10, 10),
+                    });
+                    infoWindow.close();
+                }
+
+                selectedNodeId = null;
+                selectedMarker = null;
+
+                infoWindow.close();
+            } else {
+                if (selectedMarker) {
+                    selectedMarker.setIcon({
+                        url: getDefaultMarker(),
+                        scaledSize: new google.maps.Size(20, 20),
+                        anchor: new google.maps.Point(10, 10),
+                    });
+                }
+
+                var marker = markers[nodeId];
+                marker.setIcon({
+                    url: getSelectedMarker(),
+                    scaledSize: new google.maps.Size(20, 20),
+                    anchor: new google.maps.Point(10, 10),
+                });
+                selectedMarker = marker;
+                selectedNodeId = nodeId;
+
+                // 정보창 업데이트 및 표시
+                var currentPos = marker.getPosition();
+                var item = marker.item; // 가정: 마커 객체에 item 정보가 저장되어 있음
+                var text = `노드ID: ${nodeId}<br>위치: ${currentPos.lat().toFixed(7)}, ${currentPos.lng().toFixed(7)}`;
+                infoWindow.setContent(text);
+                infoWindow.open(map, marker);
+
+                if (changeCenter) {
+                    map.setCenter(selectedMarker.getPosition());
+                }
+            }
+        }
+
+        function handleDragEnd(key, event) {
+            const newDragPosition = event.latLng;
+            markers[key].setPosition(newDragPosition);
+            coordinateHandler.onDragendEvent(key, newDragPosition.lat(), newDragPosition.lng());
+        }
+
+        let detectionRangesJsonData;
+        function updateDetectionRanges(jsonData) {
+            const parsedData = JSON.parse(jsonData);
+
+            detectionRanges.forEach((polygon) => {
+                polygon.setMap(null);
+            });
+            detectionRanges = [];
+
+            parsedData.forEach((item) => {
+                const polyCoordinates = item.map((coordinate) => {
+                   return { lat: coordinate.latitude, lng: coordinate.longitude };
+                });
+
+                const polygon = new google.maps.Polygon({
+                   paths: polyCoordinates,
+                    strokeColor: '#FF0000',
+                    strokeOpacity: 0.8,
+                    strokeWeight: 2,
+                    fillColor: '#FF0000',
+                    fillOpacity: 0.35
+                });
+
+                polygon.setMap(map);
+
+                detectionRanges.push(polygon);
+            });
+        }
+
+        function getDefaultMarker() {
+            var svgCode = '<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><g><title>Layer 1</title><ellipse stroke="#000000" ry="45.37804" rx="45.37804" id="svg_1" cy="48.99135" cx="50" fill="#ffffff"/><ellipse ry="40" rx="40" id="svg_2" cy="48.65521" cx="50" stroke="#ffffff" fill="red"/></g></svg>';
+            var svgUri = 'data:image/svg+xml;base64,' + btoa(svgCode);
+
+            return svgUri;
+        }
+
+        function getSelectedMarker() {
+            var svgCode = '<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><g><title>Layer 1</title><ellipse stroke="#000000" ry="45.37804" rx="45.37804" id="svg_1" cy="48.99135" cx="50" fill="#ffffff"/><ellipse ry="40" rx="40" id="svg_2" cy="48.65521" cx="50" stroke="#ffffff" fill="blue"/></g></svg>';
+            var svgUri = 'data:image/svg+xml;base64,' + btoa(svgCode);
+
+            return svgUri;
+        }
+    </script>
+</head>
+<body>
+<div id="map"></div>
+<input
+        id="pac-input"
+        class="controls"
+        type="text"
+        placeholder="Search Box"
+/>
+<div id="context-menu" class="context-menu">
+    <div id="add-node-btn" class="context-menu-item">노드 추가</div>
+    <div id="none-btn" class="context-menu-item">None</div>
+</div>
+<div id="marker-menu" class="context-menu">
+    <div id="remove-marker-btn" class="context-menu-item">노드 삭제</div>
+</div>
+</body>
+</html>
