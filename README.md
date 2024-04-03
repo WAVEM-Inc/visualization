@@ -1,13 +1,5 @@
-Required Environment
-
-- Tested on Ubuntu 22.04
-- CMake 3.22.1
-- Qt5
-- qtwebengine5-dev
-- @googlemaps/markerclusterer
-
 ## Required Environment
-- Ubuntu 22.04
+- Linux
 - ROS2
 - cmake 3.22.1 or higher
 - Qt5
@@ -31,7 +23,16 @@ cmake ..
 make
 ~~~
 
-Run program file will be locate in 'YOUR_DIRECTORY/visualization/build/route_editor'
+#### Set Google Map API Key
+From /resources/map/map.html file, you should change dummy google map api key to YOUR_API_KEY.
+Find this cord.
+~~~
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDDqjcUU8O-ZdGy4Q2Wl0n1SlM78WTA5xA&libraries=places&callback=initMap"></script>
+~~~
+and change like this.
+~~~
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUT_API_KEY&libraries=places&callback=initMap"></script>
+~~~
 
 #### Run route_editor
 ~~~
