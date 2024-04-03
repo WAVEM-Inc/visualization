@@ -27,11 +27,11 @@ make
 From /resources/map/map.html file, you should change dummy google map api key to YOUR_API_KEY.
 Find this cord.
 ~~~
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=***AIzaSyDDqjcUU8O-ZdGy4Q2Wl0n1SlM78WTA5xA***&libraries=places&callback=initMap"></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDDqjcUU8O-ZdGy4Q2Wl0n1SlM78WTA5xA&libraries=places&callback=initMap"></script>
 ~~~
 and change like this.
 ~~~
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=***YOUT_API_KEY***&libraries=places&callback=initMap"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUT_API_KEY&libraries=places&callback=initMap"></script>
 ~~~
 
 #### Run route_editor
