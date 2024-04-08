@@ -10,6 +10,7 @@ ROS2DataModel::ROS2DataModel(QObject *parent) : QObject(parent), _navSatFix(std:
 
 void ROS2DataModel::updateNaxSatFixData(const sensor_msgs::msg::NavSatFix::SharedPtr msg) {
     _navSatFix = msg;
+    emit onNavSatFixChanged(*msg);
 }
 
 sensor_msgs::msg::NavSatFix ROS2DataModel::getNavSatFixData() const {
