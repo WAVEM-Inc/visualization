@@ -15,7 +15,7 @@ sudo apt-get install qtwebengine5-dev
 ### Install & Build route-editor 
 #### Install & Build
 ~~~
-git clone  -b KEC/Linux/Develop https://github.com/WAVEM-Inc/visualization.git --recurse-submodules
+git clone -b KEC/Linux/Jaehyeok/Feature/route_editor/VehicleLocation https://github.com/WAVEM-Inc/visualization.git --recurse-submodules
 cd visualization
 mkdir build
 cd build
