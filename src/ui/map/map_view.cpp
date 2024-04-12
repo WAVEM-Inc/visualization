@@ -14,6 +14,7 @@
 #include "model/node_info_model.h"
 #include "utils/GeoPositionUtil.h"
 #include "GeographicLib/UTMUPS.hpp"
+#include "model/ros_2_data_model.h"
 
 MapView::MapView(QWidget *parent) :
         QWidget(parent),
@@ -70,6 +71,18 @@ MapView::MapView(QWidget *parent) :
             ).arg(node.position.latitude).arg(node.position.longitude));
         }
     });
+
+    connect(&ROS2DataModel::getInstance(), &ROS2DataModel::onNavSatFixChanged, this,
+            [this](const sensor_msgs::msg::NavSatFix &navSatFix) {
+
+                double lat = navSatFix.latitude;
+                double lng = navSatFix.longitude;
+
+                std::cout << navSatFix.latitude << "\n";
+
+                m_webpage_ptr->runJavaScript(QString(
+                        "updateVehicleLocation(%1, %2);").arg(lat, 0, 'f', 6).arg(lng, 0, 'f', 6));
+            });
 
     connect(&NodeInfoModel::getInstance(), &NodeInfoModel::currentNodeListChanged, this, &MapView::showDetectionRanges);
 

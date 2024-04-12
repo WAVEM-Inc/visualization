@@ -6,6 +6,7 @@
 #include "model/ros_2_data_model.h"
 
 NavSatFixSubscriber::NavSatFixSubscriber() : rclcpp::Node("route_editor_navsatfix_subscriber") {
+    std::cout << "create node" << "\n";
     _subscription_ptr = this->create_subscription<sensor_msgs::msg::NavSatFix>(
             "sensor/ublox/fix", rclcpp::QoS(rclcpp::KeepLast(10)), std::bind(&NavSatFixSubscriber::topicCallback, this, _1));
 }

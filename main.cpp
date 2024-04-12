@@ -15,6 +15,8 @@ int main(int argc, char *argv[]) {
         rclcpp::spin(node);
     });
 
+    qRegisterMetaType<sensor_msgs::msg::NavSatFix>("sensor_msgs::msg::NavSatFix");
+
     MainWindow *window = new MainWindow();
     window->resize(800, 600);
     window->show();
