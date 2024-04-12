@@ -16,3 +16,7 @@ void ROS2DataModel::updateNaxSatFixData(const sensor_msgs::msg::NavSatFix::Share
 sensor_msgs::msg::NavSatFix ROS2DataModel::getNavSatFixData() const {
     return *_navSatFix;
 }
+
+void ROS2DataModel::emergency_button_clicked() {
+    emit onEmergencyButtonClicked();
+}

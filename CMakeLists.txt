@@ -23,6 +23,7 @@ find_package(Qt5 COMPONENTS
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
+find_package(can_msgs REQUIRED)
 
 add_subdirectory(third_party/geographiclib)
 
@@ -140,6 +141,7 @@ target_link_libraries(route_editor
         rclcpp::rclcpp
         ${sensor_msgs_TARGETS}
         ${std_msgs_TARGETS}
+        ${can_msgs_TARGETS}
         GeographicLib
 )
 

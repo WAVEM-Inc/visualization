@@ -26,8 +26,12 @@ public:
 
     sensor_msgs::msg::NavSatFix getNavSatFixData() const;
 
+    void emergency_button_clicked();
+
 signals:
     void onNavSatFixChanged(const sensor_msgs::msg::NavSatFix &navSatFix);
+
+    void onEmergencyButtonClicked();
 
 private:
     explicit ROS2DataModel(QObject *parent = nullptr);

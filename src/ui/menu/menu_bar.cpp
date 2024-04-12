@@ -16,6 +16,7 @@
 #include "model/file_info_model.h"
 #include "model/path_info_model.h"
 #include "model/node_info_model.h"
+#include "model/ros_2_data_model.h"
 
 MenuBar::MenuBar(QWidget *parent) : QMenuBar(parent) {
     initializeStyleSheet();
@@ -80,6 +81,13 @@ MenuBar::MenuBar(QWidget *parent) : QMenuBar(parent) {
     mapRefresh->setShortcut(QKeySequence("F5"));
     connect(mapRefresh, &QAction::triggered, this, []() {
        MapNodeModel::getInstance().refreshMap();
+    });
+
+    // Menu-Emergency
+    QAction *emergency = this->addAction(tr("&비상정지"));
+    emergency->setShortcut(QKeySequence("Ctrl+e"));
+    connect(emergency, &QAction::triggered, this, [](){
+       ROS2DataModel::getInstance().emergency_button_clicked();
     });
 
     // connect to models
