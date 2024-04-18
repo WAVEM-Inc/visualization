@@ -1,46 +1,51 @@
-# Getting Started with Create React App
+# ktp_visualization
+- 내부 테스트 용 KTP 대체 웹 어플리케이션
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Document
+- [ktp_visualization](#ktp_visualization)
+  - [Document](#document)
+  - [Environment](#1-environment)
+  - [SetUp Installation](#2-setup-installation)
+    - [Prerequisites](#2-1-prerequisites)
+  - [Clone & Build Project](#3-clone--build-project)
+    - [Clone Project](#3-1-clone-project)
+    - [Build Project](#3-2-build-project)
+  - [Launch Check](#4-build-check)
 
-## Available Scripts
 
-In the project directory, you can run:
+## 1. Environment
+* <img src="https://img.shields.io/badge/ROS2 humble-22314E?style=for-the-badge&logo=ros&logoColor=white">
+* <img src="https://img.shields.io/badge/ubuntu 22.04-E95420?style=for-the-badge&logo=ubuntu&logoColor=white">
+* <img src="https://img.shields.io/badge/react-61DAFB?style=for-the-badge&logo=react&logoColor=black">
+* <img src="https://img.shields.io/badge/Typescript-3178C6.svg?style=for-the-badge&logo=typescript&logoColor=white">
 
-### `npm start`
+## 2. SetUp Installation
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### 2-1. Prerequisites
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+Before installing, please ensure the following software is installed and configured on your system:
 
-### `npm test`
+- [ubuntu](https://ubuntu.com/) version required 20.04 - **INSTALL [ubuntu 22.04](https://ubuntu.com/)**
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- [ROS2](https://index.ros.org/doc/ros2/Installation/) version required humble-hawksbill -
+  **INSTALL [ROS2 humble-hawksbill](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html)**
 
-### `npm run build`
+## 3. Clone & Build Project
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 3-1. Clone Project
+```bash
+cd ~/kec_ws/src/rms/
+git clone https://github.com/WAVEM-Inc/rms.git
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 3-2. Build Project
+```bash
+cd ~/kec_ws/src/rms/
+colcon build --packages-select ktp_task_controller
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 4. Launch Check
+```bash
+source ~/kec_ws/src/rms/install/setup.bash
+ros2 launch ktp_task_controller ktp_task_controller.launch.py
+```
