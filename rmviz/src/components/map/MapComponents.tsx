@@ -8,7 +8,7 @@ interface MapComponentProps {
 
 const MapComponent = ({ pathData, gpsData }: MapComponentProps) => {
     const { naver } = window;
-    const mapRef: React.MutableRefObject<null> = useRef(null);
+    const mapRef: React.MutableRefObject<HTMLDivElement | null> = useRef<HTMLDivElement>(null);
 
     let map: naver.maps.Map | null = null;
     const [currMarker, setCurrMarker] = useState<naver.maps.Marker | null>(null);
@@ -64,14 +64,14 @@ const MapComponent = ({ pathData, gpsData }: MapComponentProps) => {
 
         naver.maps.Event.once(map, 'init', function () {
             const controlHtml: string =
-            `
+                `
             <div style="position: absolute; z-index: 100; margin: 0px; padding: 0px; pointer-events: none; top: 0px;">
                 <div style="border: 0px; margin: 0px; padding: 0px; pointer-events: none; float: left;"">
                     <div style="position: relative; z-index: 69; margin: 10px; pointer-events: auto;">
                         <ul class="move_btn_ul">
-                            <li class="move_btn_li"><button class="move_btn">부산 원광밸브</button></li>
-                            <li class="move_btn_li"><button class="move_btn">용인 블루스페이스</button></li>
-                            <li class="move_btn_li"><button class="move_btn">KEC 구미</button></li>
+                            <li class="move_btn_li"><button class="move_btn move_btn_wk">부산 원광밸브</button></li>
+                            <li class="move_btn_li"><button class="move_btn move_btn_bs">용인 블루스페이스</button></li>
+                            <li class="move_btn_li"><button class="move_btn move_btn_kec">KEC 구미</button></li>
                         </ul>
                     </div>
                 </div>
@@ -155,6 +155,33 @@ const MapComponent = ({ pathData, gpsData }: MapComponentProps) => {
             currMarker!.setAnimation(naver.maps.Animation.BOUNCE);
         }
     }, [gpsData]);
+
+    useEffect(() => {
+        if (mapRef.current) {
+            console.info(`currentMode : ${currentMode}`);
+            const moveControlsElement = mapRef.current.querySelector('.move_btn_ul');
+
+            if (moveControlsElement) {
+                console.info(`li`);
+                const li = moveControlsElement.querySelector('.move_btn_li');
+
+                if (li) {
+                    switch(li.textContent!.trim()) {
+                        case "부산 원광밸브":
+                            moveControlsElement.classList.add('active');
+                            break;
+                        default:
+                            break;
+                    }
+                    if (li.textContent!.trim() === currentMode) {
+                        moveControlsElement.classList.add('active');
+                    } else {
+                        moveControlsElement.classList.remove('active');
+                    }
+                }
+            }
+        }
+    }, [currentMode]);
 
     useEffect(() => {
         if (mapRef.current && naver) {

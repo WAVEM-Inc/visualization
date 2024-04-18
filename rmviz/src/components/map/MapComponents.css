@@ -47,6 +47,14 @@
     box-sizing: content-box !important;
 }
 
+.move_btn_li {
+    background-color: white; /* 기본 배경색 */
+}
+
+.move_btn_ul.active {
+    background-color: blue; /* currentMode가 해당하는 경우 배경색을 파란색으로 변경 */
+}
+
 .move_btn {
     margin: 0px;
     padding: 0px 7px;
