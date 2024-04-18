@@ -6,7 +6,7 @@ export default function TopComponents() {
         <div className={"top_components"}>
             <div className="top_title_container">
                 <Link className={"top_dash_board_link"} to={"/"}>
-                    <div id={"top_dash_board_link_title"}>KTP ViZ</div>
+                    <div id={"top_dash_board_link_title"}>RMViZ</div>
                 </Link>
             </div>
             <div className="top_nav_bar_container">

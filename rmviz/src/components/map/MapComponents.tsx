@@ -20,16 +20,17 @@ const MapComponent = ({ pathData, gpsData }: MapComponentProps) => {
     let pathMarkerArray: Array<naver.maps.Marker> = [];
 
     const [currentMode, setCurrentMode] = useState<string>("KEC");
+    const [defaultZoom, setDefaultZoom] = useState<number>(19);
 
     const wkValveCoord: naver.maps.LatLng = new naver.maps.LatLng(35.157851, 128.858111);
-    const blueSpaceCoord: naver.maps.LatLng = new naver.maps.LatLng(37.3060542, 127.2399165);
+    const blueSpaceCoord: naver.maps.LatLng = new naver.maps.LatLng(37.305985, 127.2401652);
     const kecCoord: naver.maps.LatLng = new naver.maps.LatLng(36.1137155, 128.3676005);
 
     const initializeMap = (): void => {
         const openStreetMapType: naver.maps.ImageMapType = new naver.maps.ImageMapType({
             name: "OSM",
             minZoom: 0,
-            maxZoom: 19,
+            maxZoom: defaultZoom,
             tileSize: new naver.maps.Size(256, 256),
             projection: naver.maps.EPSG3857,
             repeatX: true,
@@ -47,7 +48,7 @@ const MapComponent = ({ pathData, gpsData }: MapComponentProps) => {
         const mapOpts: any = {
             center: kecCoord,
             mapTypeId: naver.maps.MapTypeId.HYBRID,
-            zoom: 19,
+            zoom: defaultZoom,
             zoomControl: true,
             zoomControlOptions: {
                 style: naver.maps.ZoomControlStyle.SMALL,
@@ -88,14 +89,20 @@ const MapComponent = ({ pathData, gpsData }: MapComponentProps) => {
                 switch (locationName.trim()) {
                     case "부산 원광밸브":
                         setCurrentMode("WkValve");
+                        setDefaultZoom(19);
+                        map!.setZoom(19);
                         map!.setCenter(wkValveCoord);
                         break;
                     case "용인 블루스페이스":
                         setCurrentMode("BlueSpace");
+                        setDefaultZoom(20);
+                        map!.setZoom(20);
                         map!.setCenter(blueSpaceCoord);
                         break;
                     case "KEC 구미":
                         setCurrentMode("KEC");
+                        setDefaultZoom(19);
+                        map!.setZoom(19);
                         map!.setCenter(kecCoord);
                         break;
                     default:

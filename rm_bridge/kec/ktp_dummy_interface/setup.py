@@ -2,7 +2,7 @@ import os;
 from glob import glob;
 from setuptools import find_packages, setup;
 
-package_name: str = "rm_bridge";
+package_name: str = "ktp_dummy_interface";
 
 setup(
     name=package_name,
@@ -26,4 +26,4 @@ setup(
             f"{package_name} = {package_name}.main:main"
         ],
     },
-);
+)
