@@ -35,6 +35,8 @@ MQTT_OBSTACLE_STATUS_TOPIC: str = "/rms/ktp/dummy/request/obstacle/status";
 MQTT_DRIVE_OBSTACLE_COOPERATIVE_TOPIC: str = "/rms/ktp/dummy/request/obstacle/cooperative";
 MQTT_CAN_EMERGENCY_STOP_TOPIC: str = "/rms/ktp/dummy/request/can/emergency";
 MQTT_ROUTE_TO_POSE_TOPIC: str = "/rms/ktp/dummy/request/route_to_pose";
+MQTT_ROUTE_TO_POSE_STATUS_TOPIC: str = "/rms/ktp/dummy/response/route_to_pose/status";
+MQTT_GOAL_CANCEL_TOPIC: str = "/rms/ktp/dummy/request/goal/cancel";
 
 ASSIGN_CONTROL_SERVICE_NAME: str = "/ktp_data_manager/assign/control";
 ASSIGN_MISSION_SERVICE_NAME: str = "/ktp_data_manager/assign/mission";
@@ -113,6 +115,7 @@ class RequestBridge:
         
         self.__route_to_pose_goal_index: int = 0;
         self.__route_to_pose_goal_list: list[RouteToPose.Goal] = [];
+        self.__goal_handle: ClientGoalHandle = None;
         
         route_to_pose_action_client_cb_group: MutuallyExclusiveCallbackGroup = MutuallyExclusiveCallbackGroup();
         self.__route_to_pose_action_client: ActionClient = rclpy_action.ActionClient(
@@ -147,6 +150,9 @@ class RequestBridge:
         
         self.__mqtt_client.subscribe(topic=MQTT_ROUTE_TO_POSE_TOPIC, qos=0);
         self.__mqtt_client.client.message_callback_add(sub=MQTT_ROUTE_TO_POSE_TOPIC, callback=self.mqtt_route_to_pose_cb);
+        
+        self.__mqtt_client.subscribe(topic=MQTT_GOAL_CANCEL_TOPIC, qos=0);
+        self.__mqtt_client.client.message_callback_add(sub=MQTT_GOAL_CANCEL_TOPIC, callback=self.mqtt_goal_cancel_cb);
 
     def mqtt_control_request_cb(self, mqtt_client: mqtt.Client, mqtt_user_data: Dict, mqtt_message: mqtt.MQTTMessage) -> None:
         try:
@@ -356,6 +362,12 @@ class RequestBridge:
         self.__drive_obstacle_cooperative_publisher.publish(msg=obstacle_cooperative);
         
     def can_emergency_publish(self, emergency: Emergency) -> None:
+        if emergency.stop is True:
+            cancel_goal_future: Future = self.__route_to_pose_action_client._cancel_goal_async(goal_handle=self.__goal_handle);
+            self.__log.info(f"{ROUTE_TO_POSE_ACTION} cancel_goal future : {cancel_goal_future.result()}");
+            self.__log.info(f"{ROUTE_TO_POSE_ACTION} goal cancelled\n{json.dumps(obj=message_conversion.extract_values(inst=self.__route_to_pose_goal_list[self.__route_to_pose_goal_index]), indent=4)}");
+        else:
+            self.route_to_pose_send_goal();
         self.__can_emergency_stop_publisher.publish(msg=emergency);
         
     def mqtt_can_emergency_cb(self, mqtt_client: mqtt.Client, mqtt_user_data: Dict, mqtt_message: mqtt.MQTTMessage) -> None:
@@ -426,14 +438,14 @@ class RequestBridge:
             self.__log.error(f"{ROUTE_TO_POSE_ACTION} is not ready...");
 
     def goal_response_callback(self, future: Future) -> None:
-        goal_handle: ClientGoalHandle = future.result();
-        if not goal_handle.accepted:
+        self.__goal_handle: ClientGoalHandle = future.result();
+        if not self.__goal_handle.accepted:
             self.__log.info(f"{ROUTE_TO_POSE_ACTION} Goal rejected");
             return;
 
         self.__log.info(f"{ROUTE_TO_POSE_ACTION} Goal accepted");
 
-        self.__route_to_pose_action_get_result_future = goal_handle.get_result_async();
+        self.__route_to_pose_action_get_result_future = self.__goal_handle.get_result_async();
         self.__route_to_pose_action_get_result_future.add_done_callback(callback=self.route_to_pose_get_result_cb);
 
     def route_to_pose_feedback_cb(self, feedback_msg: RouteToPose.Impl.FeedbackMessage) -> None:
@@ -452,10 +464,53 @@ class RequestBridge:
         if result.result == 1001:
             is_finished: bool = (self.__route_to_pose_goal_index + 1 == len(self.__route_to_pose_goal_list) - 1);
             if is_finished:
+                self.__log.info(f"{ROUTE_TO_POSE_ACTION} navigation finished...");
+                status: dict = {
+                    "index": self.__route_to_pose_goal_index,
+                    "code": 2
+                }
+                self.__mqtt_client.publish(topic=MQTT_ROUTE_TO_POSE_STATUS_TOPIC, payload=json.dumps(status), qos=0);
                 self.__route_to_pose_goal_index = 0;
+                self.__route_to_pose_goal_list = [];
             else:
+                status: dict = {
+                    "index": self.__route_to_pose_goal_index,
+                    "code": 1
+                }
+                self.__mqtt_client.publish(topic=MQTT_ROUTE_TO_POSE_STATUS_TOPIC, payload=json.dumps(status), qos=0);
                 self.__route_to_pose_goal_index = self.__route_to_pose_goal_index + 1;
                 self.__log.info(f"{ROUTE_TO_POSE_ACTION} To Source will proceed Next Goal [{self.__route_to_pose_goal_index}]");
                 self.route_to_pose_send_goal();
+                
+    def mqtt_goal_cancel_cb(self, mqtt_client: mqtt.Client, mqtt_user_data: Dict, mqtt_message: mqtt.MQTTMessage) -> None:
+        try:
+            mqtt_topic: str = mqtt_message.topic;
+            mqtt_decoded_payload: str = mqtt_message.payload.decode();
+            mqtt_json: Any = json.loads(mqtt_message.payload);
+            
+            if len(self.__route_to_pose_goal_list) != 0:
+                self.__route_to_pose_goal_list = [];
+                self.__route_to_pose_goal_index = 0;
+                cancel_goal_future: Future = self.__route_to_pose_action_client._cancel_goal(self.__goal_handle);
+                self.__goal_handle = None;
+                self.__log.info(f"{ROUTE_TO_POSE_ACTION} goal cancelled");
+            else:
+                self.__log.error(f"{ROUTE_TO_POSE_ACTION} goal list is empty")
+                return;
+        except KeyError as ke:
+            self.__log.error(f"Invalid JSON Key in MQTT {mqtt_topic} subscription callback: {ke}");
+            return;
+
+        except json.JSONDecodeError as jde:
+            self.__log.error(f"Invalid JSON format in MQTT {mqtt_topic} subscription callback: {jde.msg}");
+            return;
+
+        except message_conversion.NonexistentFieldException as nefe:
+            self.__log.error(f"{mqtt_topic} : {nefe}");
+            return;
+
+        except Exception as e:
+            self.__log.error(f"Exception in MQTT {mqtt_topic} subscription callback: {e}");
+            return;
 
 __all__ = ["RequestBridge"];
