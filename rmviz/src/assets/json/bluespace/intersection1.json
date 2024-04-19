@@ -9,7 +9,7 @@
                 },
                 "type": "",
                 "kind": "connecting",
-                "heading": 219.0,
+                "heading": 130.0,
                 "direction": "",
                 "driving_option": "",
                 "detection_range": []
@@ -22,10 +22,18 @@
                 },
                 "type": "",
                 "kind": "waiting",
-                "heading": 220.0,
+                "heading": 130.0,
                 "direction": "",
                 "driving_option": "",
-                "detection_range": []
+                "detection_range": [
+                    {
+                        "offset": 3.0,
+                        "width_left": 10.0,
+                        "width_right": 0.5,
+                        "height": 4.0,
+                        "action_code": "test"
+                    }
+                ]
             }
         },
         {
@@ -37,10 +45,12 @@
                 },
                 "type": "",
                 "kind": "waiting",
-                "heading": 220.0,
+                "heading": 130.0,
                 "direction": "",
                 "driving_option": "",
-                "detection_range": []
+                "detection_range": [
+                    
+                ]
             },
             "end_node": {
                 "node_id": "203",
@@ -50,7 +60,7 @@
                 },
                 "type": "",
                 "kind": "intersection",
-                "heading": 310.0,
+                "heading": 220.0,
                 "direction": "",
                 "driving_option": "",
                 "detection_range": []
@@ -65,7 +75,7 @@
                 },
                 "type": "",
                 "kind": "intersection",
-                "heading": 310.0,
+                "heading": 220.0,
                 "direction": "",
                 "driving_option": "",
                 "detection_range": []
@@ -78,7 +88,7 @@
                 },
                 "type": "",
                 "kind": "connecting",
-                "heading": 310.0,
+                "heading": -1,
                 "direction": "",
                 "driving_option": "",
                 "detection_range": []

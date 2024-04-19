@@ -17,14 +17,14 @@
     background-color: #fff;
 }
 
-.btn_request:hover {
+.bluespace_btn_request:hover {
     background-color: #ccc;
 }
 
 .bluespace_btn_emergency_resume {
-    background-color: green;
+    background-color: red;
 }
 
 .bluespace_btn_emergency_stop {
-    background-color: red;
+    background-color: green;
 }
