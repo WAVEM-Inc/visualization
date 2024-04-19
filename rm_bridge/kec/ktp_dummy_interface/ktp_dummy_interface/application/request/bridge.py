@@ -4,6 +4,10 @@ from rclpy.node import Node;
 from rclpy.impl.rcutils_logger import RcutilsLogger;
 from rclpy.client import Client;
 from rclpy.publisher import Publisher;
+import rclpy.action as rclpy_action;
+from rclpy.action.client import ClientGoalHandle;
+from rclpy.action.client import ActionClient;
+from rclpy.task import Future;
 from rclpy.callback_groups import MutuallyExclusiveCallbackGroup;
 from rclpy.qos import qos_profile_system_default;
 from rclpy.qos import qos_profile_services_default;
@@ -16,6 +20,9 @@ from ktp_data_msgs.msg import DetectedObject;
 from std_msgs.msg import String;
 from obstacle_msgs.msg import Status;
 from can_msgs.msg import Emergency;
+from route_msgs.action import RouteToPose;
+import route_msgs.msg as route;
+from action_msgs.msg import GoalStatus;
 from ktp_dummy_interface.application.mqtt import Client;
 from typing import Dict;
 from typing import Any;
@@ -27,6 +34,7 @@ MQTT_ERROR_STATUS_TOPIC: str = "/rms/ktp/dummy/request/error_status";
 MQTT_OBSTACLE_STATUS_TOPIC: str = "/rms/ktp/dummy/request/obstacle/status";
 MQTT_DRIVE_OBSTACLE_COOPERATIVE_TOPIC: str = "/rms/ktp/dummy/request/obstacle/cooperative";
 MQTT_CAN_EMERGENCY_STOP_TOPIC: str = "/rms/ktp/dummy/request/can/emergency";
+MQTT_ROUTE_TO_POSE_TOPIC: str = "/rms/ktp/dummy/request/route_to_pose";
 
 ASSIGN_CONTROL_SERVICE_NAME: str = "/ktp_data_manager/assign/control";
 ASSIGN_MISSION_SERVICE_NAME: str = "/ktp_data_manager/assign/mission";
@@ -35,6 +43,7 @@ ERROR_STATUS_TOPIC: str = "/rms/ktp/data/notify/error/status";
 OBSTACLE_EVENT_TOPIC: str = "/drive/obstacle/event";
 DRIVE_OBSTACLE_COOPERATIVE_TOPIC: str = "/drive/obstacle/cooperative";
 CAN_EMERGENCY_STOP_TOPIC: str = "/drive/can/emergency";
+ROUTE_TO_POSE_ACTION: str = "/route_to_pose";
 
 
 class RequestBridge:
@@ -101,6 +110,18 @@ class RequestBridge:
             qos_profile=qos_profile_system_default,
             callback_group=can_emergency_stop_cb_group
         );
+        
+        self.__route_to_pose_goal_index: int = 0;
+        self.__route_to_pose_goal_list: list[RouteToPose.Goal] = [];
+        
+        route_to_pose_action_client_cb_group: MutuallyExclusiveCallbackGroup = MutuallyExclusiveCallbackGroup();
+        self.__route_to_pose_action_client: ActionClient = rclpy_action.ActionClient(
+            node=self.__node,
+            action_name=ROUTE_TO_POSE_ACTION,
+            action_type=RouteToPose,
+            callback_group=route_to_pose_action_client_cb_group
+        );
+        
 
     def mqtt_subscribe_for_request(self) -> None:
         self.__mqtt_client.subscribe(topic=MQTT_CONTROL_REQUEST_TOPIC, qos=0);
@@ -123,6 +144,9 @@ class RequestBridge:
         
         self.__mqtt_client.subscribe(topic=MQTT_CAN_EMERGENCY_STOP_TOPIC, qos=0);
         self.__mqtt_client.client.message_callback_add(sub=MQTT_CAN_EMERGENCY_STOP_TOPIC, callback=self.mqtt_can_emergency_cb);
+        
+        self.__mqtt_client.subscribe(topic=MQTT_ROUTE_TO_POSE_TOPIC, qos=0);
+        self.__mqtt_client.client.message_callback_add(sub=MQTT_ROUTE_TO_POSE_TOPIC, callback=self.mqtt_route_to_pose_cb);
 
     def mqtt_control_request_cb(self, mqtt_client: mqtt.Client, mqtt_user_data: Dict, mqtt_message: mqtt.MQTTMessage) -> None:
         try:
@@ -360,6 +384,78 @@ class RequestBridge:
         except Exception as e:
             self.__log.error(f"Exception in MQTT {mqtt_topic} subscription callback: {e}");
             return;
+        
+    def mqtt_route_to_pose_cb(self, mqtt_client: mqtt.Client, mqtt_user_data: Dict, mqtt_message: mqtt.MQTTMessage) -> None:
+        try:
+            mqtt_topic: str = mqtt_message.topic;
+            mqtt_decoded_payload: str = mqtt_message.payload.decode();
+            mqtt_json: Any = json.loads(mqtt_message.payload);
+            node_list: list[Any] = mqtt_json["node_list"];
+            
+            for node in node_list:
+                goal: RouteToPose.Goal = message_conversion.populate_instance(msg=json.loads(json.dumps(node)), inst=RouteToPose.Goal());
+                self.__log.info(f"{mqtt_topic} cb\n{json.dumps(obj=message_conversion.extract_values(inst=goal), indent=4)}");
+                self.__route_to_pose_goal_list.append(goal);
 
+            self.route_to_pose_send_goal();
+        except KeyError as ke:
+            self.__log.error(f"Invalid JSON Key in MQTT {mqtt_topic} subscription callback: {ke}");
+            return;
+
+        except json.JSONDecodeError as jde:
+            self.__log.error(f"Invalid JSON format in MQTT {mqtt_topic} subscription callback: {jde.msg}");
+            return;
+
+        except message_conversion.NonexistentFieldException as nefe:
+            self.__log.error(f"{mqtt_topic} : {nefe}");
+            return;
+
+        except Exception as e:
+            self.__log.error(f"Exception in MQTT {mqtt_topic} subscription callback: {e}");
+            return;
+        
+    def route_to_pose_send_goal(self) -> None:
+        goal: RouteToPose.Goal = self.__route_to_pose_goal_list[self.__route_to_pose_goal_index];
+        
+        self.__log.info(f"{ROUTE_TO_POSE_ACTION} Send Goal[{self.__route_to_pose_goal_index}]\n{json.dumps(obj=message_conversion.extract_values(inst=goal), indent=4)}");
+
+        if self.__route_to_pose_action_client.wait_for_server(timeout_sec=0.75):
+            self.__route_to_pose_send_goal_future = self.__route_to_pose_action_client.send_goal_async(goal=goal, feedback_callback=self.route_to_pose_feedback_cb);
+            self.__route_to_pose_send_goal_future.add_done_callback(callback=self.goal_response_callback);
+        else:
+            self.__log.error(f"{ROUTE_TO_POSE_ACTION} is not ready...");
+
+    def goal_response_callback(self, future: Future) -> None:
+        goal_handle: ClientGoalHandle = future.result();
+        if not goal_handle.accepted:
+            self.__log.info(f"{ROUTE_TO_POSE_ACTION} Goal rejected");
+            return;
+
+        self.__log.info(f"{ROUTE_TO_POSE_ACTION} Goal accepted");
+
+        self.__route_to_pose_action_get_result_future = goal_handle.get_result_async();
+        self.__route_to_pose_action_get_result_future.add_done_callback(callback=self.route_to_pose_get_result_cb);
+
+    def route_to_pose_feedback_cb(self, feedback_msg: RouteToPose.Impl.FeedbackMessage) -> None:
+        feedback: RouteToPose.Feedback = feedback_msg.feedback;
+        self.__log.info(f"{ROUTE_TO_POSE_ACTION} feedback cb\n{json.dumps(obj=message_conversion.extract_values(inst=feedback), indent=4)}");
+        
+    def route_to_pose_get_result_cb(self, future: Future) -> None:
+        result: RouteToPose.Result = future.result().result;
+        status: int = future.result().status;
+
+        if status == GoalStatus.STATUS_SUCCEEDED:
+            self.__log.info(f"{ROUTE_TO_POSE_ACTION} Goal succeeded!");
+        else:
+            self.__log.error(f"{ROUTE_TO_POSE_ACTION} Goal failed");
+            
+        if result.result == 1001:
+            is_finished: bool = (self.__route_to_pose_goal_index + 1 == len(self.__route_to_pose_goal_list) - 1);
+            if is_finished:
+                self.__route_to_pose_goal_index = 0;
+            else:
+                self.__route_to_pose_goal_index = self.__route_to_pose_goal_index + 1;
+                self.__log.info(f"{ROUTE_TO_POSE_ACTION} To Source will proceed Next Goal [{self.__route_to_pose_goal_index}]");
+                self.route_to_pose_send_goal();
 
 __all__ = ["RequestBridge"];

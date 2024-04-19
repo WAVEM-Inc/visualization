@@ -1,7 +1,6 @@
 import { IPublishPacket } from "mqtt/*";
 import { useEffect, useState } from "react";
 import MqttClient from "../../api/mqttClient";
-import * as dectectedObjectJSON from "../../assets/json/detected_object.json";
 import ResponseComponent from "../../components/response/ResponseComponent";
 import TopComponents from "../../components/top/TopComponent";
 import './DataBoardPage.css';
@@ -99,13 +98,13 @@ export default function DataBoardPage() {
         handleResponseMQTTCallback(mqttClient);
     }, []);
 
-    setInterval(() => {
-        if (lidarSwitch) {
-            mqttClient!.publish("/rms/ktp/dummy/request/detected_object", JSON.stringify(filterJSON(dectectedObjectJSON)));
-        } else {
-            return;
-        }
-    }, 500);
+    // setInterval(() => {
+    //     if (lidarSwitch) {
+    //         mqttClient!.publish("/rms/ktp/dummy/request/detected_object", JSON.stringify(filterJSON(dectectedObjectJSON)));
+    //     } else {
+    //         return;
+    //     }
+    // }, 500);
 
     return (
         <div className="data_board_container">

@@ -7,7 +7,7 @@ interface RequestComponentProps {
     onControlMsCompleteClick: () => void;
     onMissionClick: () => void;
     onDetectedObjectClick: () => void;
-    onErrorStatusClick: () => void;
+    onRouteToPoseClick: () => void;
     onObstacleStatusClick: () => void;
     onCooperativeStartClick: () => void;
     onCooperativeStopClick: () => void;
@@ -20,7 +20,7 @@ const RequestComponent: React.FC<RequestComponentProps> = ({
     onControlMsCompleteClick,
     onMissionClick,
     onDetectedObjectClick,
-    onErrorStatusClick,
+    onRouteToPoseClick,
     onObstacleStatusClick,
     onCooperativeStartClick,
     onCooperativeStopClick,
@@ -33,11 +33,10 @@ const RequestComponent: React.FC<RequestComponentProps> = ({
             <button className={"btn_request"} onClick={onControlMsCompleteClick}>제어(MsComplete)</button>
             <button className={"btn_request"} onClick={onMissionClick}>임무</button>
             <button className={"btn_request"} onClick={onDetectedObjectClick}>가상 장애물 감지</button>
-            <button className={"btn_request"}  onClick={onErrorStatusClick}>가상 에러</button>
-            <button className={"btn_request"}  onClick={onObstacleStatusClick}>가상 장애물 정보</button>
-            <button className={"btn_request btn_cooperative_start"} onClick={onCooperativeStartClick}>협동 주행 시작(LiDAR)</button>
-            <button className={"btn_request btn_cooperative_stop"} onClick={onCooperativeStopClick}>협동 주행 중지(LiDAR)</button>
+            <button className={"btn_request"} onClick={onRouteToPoseClick}>RouteToPose Goal</button>
+            <button className={"btn_request"} onClick={onObstacleStatusClick}>가상 장애물 정보</button>
             <button className={"btn_request"} onClick={onCanEmergencyClick}>비상 정지</button>
+            <button className={"btn_request"} onClick={onCanEmergencyClick}>재개</button>
         </div>
     );
 };

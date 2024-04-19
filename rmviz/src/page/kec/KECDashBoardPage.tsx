@@ -13,9 +13,9 @@ import MapComponent from "../../components/map/MapComponents";
 import RequestComponent from "../../components/request/RequestComponent";
 import TopComponents from "../../components/top/TopComponent";
 import { KTP_DEV_ID, getCurrentTime } from "../../utils/Utils";
-import "./DashBoardPage.css";
+import "./KECDashBoardPage.css";
 
-export default function DashBoardPage() {
+export default function KECDashBoardPage() {
     const [mqttClient, setMqttClient] = useState<MqttClient | undefined>();
     const [pathData, setPathData] = useState<any>(null);
     const [gpsData, setGpsData] = useState<any>(null);

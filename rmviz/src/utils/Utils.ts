@@ -1,3 +1,5 @@
+import MqttClient from "../api/mqttClient";
+
 export const KTP_DEV_ID: string = "KECDSEMITB001";
 
 export function getCurrentTime(): string {
@@ -12,4 +14,17 @@ export function getCurrentTime(): string {
 
     const currentTime: string = year + month + date + hours + minutes + seconds + milliseconds;
     return currentTime;
+}
+
+export const filterJSON = (json: any): any => {
+    const { default: removedDefault, ...newData } = json;
+
+    return newData;
+}
+
+export const onClickMqttPublish = (mqttClient: MqttClient, topic: string, json: any): void => {
+    const filteredJSON: any = filterJSON(json);
+    const stringifiedJSON: string = JSON.stringify(filteredJSON);
+    console.info(`${topic} publish with : ${stringifiedJSON}`);
+    mqttClient!.publish(topic, stringifiedJSON);
 }
