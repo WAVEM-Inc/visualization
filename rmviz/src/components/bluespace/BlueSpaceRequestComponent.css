@@ -1,5 +1,4 @@
-.request_btn_container {
-    margin-top: 1%;
+.bluespace_request_btn_container {
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -9,12 +8,12 @@
     height: 100%;
 }
 
-.btn_request {
-    width: 165px;
+.bluespace_btn_request {
+    margin-top: 3%;
+    width: 150px;
     height: 65px;
     border-radius: 50px;
-    font-size: 18px;
-    margin: 15px;
+    font-size: 17px;
     background-color: #fff;
 }
 
@@ -22,10 +21,10 @@
     background-color: #ccc;
 }
 
-.btn_cooperative_start {
+.bluespace_btn_emergency_resume {
     background-color: green;
 }
 
-.btn_cooperative_stop {
+.bluespace_btn_emergency_stop {
     background-color: red;
 }

@@ -1,7 +1,6 @@
 import { IPublishPacket } from "mqtt/*";
 import { useEffect, useState } from "react";
 import MqttClient from "../../api/mqttClient";
-import * as routeToPoseJSON from "../../assets/json/route_to_pose.json";
 import * as controlGraphSyncJSON from "../../assets/json/control_graphsync.json";
 import * as controlMoveToDestJSON from "../../assets/json/control_movetodest.json";
 import * as controlMsCompleteJSON from "../../assets/json/control_mscomplete.json";
@@ -9,6 +8,7 @@ import * as cooperativeStartJSON from "../../assets/json/cooperative_start.json"
 import * as cooperativeStopJSON from "../../assets/json/cooperative_stop.json";
 import * as errorStatusJSON from "../../assets/json/error_status.json";
 import * as obstacleStatusJSON from "../../assets/json/obstacle_status.json";
+import * as routeToPoseJSON from "../../assets/json/route_to_pose.json";
 import MapComponent from "../../components/map/MapComponents";
 import RequestComponent from "../../components/request/RequestComponent";
 import TopComponents from "../../components/top/TopComponent";
@@ -20,6 +20,7 @@ export default function KECDashBoardPage() {
     const [pathData, setPathData] = useState<any>(null);
     const [gpsData, setGpsData] = useState<any>(null);
 
+    const kecCoord: naver.maps.LatLng = new naver.maps.LatLng(36.1137155, 128.3676005);
     const requestTopicFormat: string = "/rms/ktp/dummy/request";
 
     const requiredRequestTopicList: Array<string> = [
@@ -152,7 +153,7 @@ export default function KECDashBoardPage() {
                 <TopComponents />
             </div>
             <div className="map_component_container">
-                <MapComponent pathData={pathData} gpsData={gpsData} />
+                <MapComponent center={kecCoord} pathData={pathData} gpsData={gpsData} />
             </div>
             <div className="request_component_container">
                 <RequestComponent

@@ -4,9 +4,10 @@ import "./MapComponents.css";
 interface MapComponentProps {
     pathData: any;
     gpsData: any;
+    center: naver.maps.LatLng;
 }
 
-const MapComponent = ({ pathData, gpsData }: MapComponentProps) => {
+const MapComponent = ({ center, pathData, gpsData }: MapComponentProps) => {
     const { naver } = window;
     const mapRef: React.MutableRefObject<HTMLDivElement | null> = useRef<HTMLDivElement>(null);
 
@@ -46,7 +47,7 @@ const MapComponent = ({ pathData, gpsData }: MapComponentProps) => {
         });
 
         const mapOpts: any = {
-            center: kecCoord,
+            center: center,
             mapTypeId: naver.maps.MapTypeId.HYBRID,
             zoom: defaultZoom,
             zoomControl: true,
@@ -166,7 +167,7 @@ const MapComponent = ({ pathData, gpsData }: MapComponentProps) => {
                 const li = moveControlsElement.querySelector('.move_btn_li');
 
                 if (li) {
-                    switch(li.textContent!.trim()) {
+                    switch (li.textContent!.trim()) {
                         case "부산 원광밸브":
                             moveControlsElement.classList.add('active');
                             break;

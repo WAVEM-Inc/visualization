@@ -22,6 +22,7 @@ export default function BlueSpaceDashBoardPage() {
     const [pathData, setPathData] = useState<any>(null);
     const [gpsData, setGpsData] = useState<any>(null);
 
+    const blueSpaceCoord: naver.maps.LatLng = new naver.maps.LatLng(37.305985, 127.2401652);
     const requestTopicFormat: string = "/rms/ktp/dummy/request";
     const requestRouteToPoseTopic: string = `${requestTopicFormat}/route_to_pose`;
     const requestEmergencyTopic: string = `${requestRouteToPoseTopic}/can/emergency`;
@@ -97,7 +98,7 @@ export default function BlueSpaceDashBoardPage() {
                 <TopComponents />
             </div>
             <div className="map_component_container">
-                <MapComponent pathData={pathData} gpsData={gpsData} />
+                <MapComponent center={blueSpaceCoord} pathData={pathData} gpsData={gpsData} />
             </div>
             <div className="request_component_container">
                 <BlueSpaceRequestComponent
