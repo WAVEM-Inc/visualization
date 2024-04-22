@@ -38,9 +38,9 @@ const BlueSpaceRequestComponent: React.FC<BlueSpaceRequestComponentProps> = ({
             <button className={"bluespace_btn_request"} onClick={onLanding2Click}>하차 - 2</button>
             <button className={"bluespace_btn_request"} onClick={onGPSShadow1Click}>GPS 음영 지역 - 1</button>
             <button className={"bluespace_btn_request"} onClick={onGPSShadow2Click}>GPS 음영 지역 - 2</button>
-            <button className={"bluespace_btn_request bluespace_btn_emergency_resume"} onClick={onEmergencyStopClick}>비상 정지</button>
-            <button className={"bluespace_btn_request bluespace_btn_emergency_stop"} onClick={onEmergencyResumeClick}>재개</button>
+            <button className={"bluespace_btn_request bluespace_btn_emergency_stop"} onClick={onEmergencyStopClick}>비상 정지</button>
             <button className={"bluespace_btn_request bluespace_btn_emergency_stop"} onClick={onGoalCancelClick}>주행 취소</button>
+            <button className={"bluespace_btn_request bluespace_btn_emergency_resume"} onClick={onEmergencyResumeClick}>재개</button>
         </div>
     );
 };

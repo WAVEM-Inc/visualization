@@ -21,10 +21,10 @@
     background-color: #ccc;
 }
 
-.bluespace_btn_emergency_resume {
+.bluespace_btn_emergency_stop {
     background-color: red;
 }
 
-.bluespace_btn_emergency_stop {
+.bluespace_btn_emergency_resume {
     background-color: green;
 }

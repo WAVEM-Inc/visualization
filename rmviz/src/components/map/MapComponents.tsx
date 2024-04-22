@@ -19,6 +19,7 @@ const MapComponent = ({ center, pathData, gpsData }: MapComponentProps) => {
     });
 
     let pathMarkerArray: Array<naver.maps.Marker> = [];
+    let pathInfoWindowarray: Array<naver.maps.InfoWindow> = [];
 
     const [currentMode, setCurrentMode] = useState<string>("KEC");
     const [defaultZoom, setDefaultZoom] = useState<number>(19);
@@ -96,8 +97,8 @@ const MapComponent = ({ center, pathData, gpsData }: MapComponentProps) => {
                         break;
                     case "용인 블루스페이스":
                         setCurrentMode("BlueSpace");
-                        setDefaultZoom(20);
-                        map!.setZoom(20);
+                        setDefaultZoom(map!.getMaxZoom());
+                        map!.setZoom(map!.getMaxZoom());
                         map!.setCenter(blueSpaceCoord);
                         break;
                     case "KEC 구미":
@@ -114,15 +115,81 @@ const MapComponent = ({ center, pathData, gpsData }: MapComponentProps) => {
     }
 
     const addPathMarker = (node: any): any => {
-        console.info(`position lat : ${node.position.latitude}, lon : ${node.position.longitude}`);
+        console.info(`addPathMarker node : ${JSON.stringify(node)}`);
 
         const marker: naver.maps.Marker = new naver.maps.Marker({
             position: new naver.maps.LatLng(node.position.latitude, node.position.longitude),
             map: map,
-            title: node.node_id
+            title: `${node.node_id}/${node.kind}`,
+            zIndex: 100
         });
 
         return marker;
+    }
+
+    const getClickHandler =(seq: number): Function => {
+        return function(e: any) {
+            const marker: naver.maps.Marker = pathMarkerArray[seq];
+            const infoWindow: naver.maps.InfoWindow = pathInfoWindowarray[seq];
+    
+            if (infoWindow.getMap()) {
+                infoWindow.close();
+            } else {
+                infoWindow.open(map!, marker);
+            }
+        }
+    }
+    
+    const drawPathPolyline = (): void => {
+        if (pathData) {
+            const nodeList: Array<any> = pathData.node_list;
+
+            for (const [index, node] of nodeList.entries()) {
+                console.info(`Node : ${JSON.stringify(node)}`);
+
+                let marker: naver.maps.Marker | null = null;
+                if (index === 0) {
+                    marker = addPathMarker(node.start_node);
+                } else {
+                    marker = addPathMarker(node.end_node);
+                }
+                pathMarkerArray.push(marker!);
+
+                const contentString: string = [
+                    '<div class="iw_inner">',
+                    `   <h3>ID : ${marker!.getTitle().split("/")[0]}</h3>`,
+                    `   <p>종류 : ${marker!.getTitle().split("/")[1]}</p>`,
+                    `   <p>경도 : ${marker!.getPosition().x}</p>`,
+                    `   <p>위도 : ${marker!.getPosition().y}</p>`,
+                    '</div>'
+                ].join('');
+        
+                const infoWindow: naver.maps.InfoWindow = new naver.maps.InfoWindow({
+                    content: contentString
+                });
+
+                pathInfoWindowarray.push(infoWindow);
+            }
+
+            for (var i=0, ii=pathMarkerArray.length; i<ii; i++) {
+                naver.maps.Event.addListener(pathMarkerArray[i], "click", getClickHandler(i));
+            }
+
+            let path: Array<any> = [];
+            for (const pathMarker of pathMarkerArray) {
+                path.push(pathMarker.getPosition());
+            }
+
+            const polyline: naver.maps.Polyline = new naver.maps.Polyline({
+                map: map,
+                path: path,
+                clickable: true,
+                strokeColor: 'red',
+                strokeStyle: 'line',
+                strokeOpacity: 1.0,
+                strokeWeight: 6.5
+            });
+        }
     }
 
     useEffect(() => {
@@ -135,15 +202,19 @@ const MapComponent = ({ center, pathData, gpsData }: MapComponentProps) => {
             map: map,
             title: "RobotCurrentPos",
             icon: {
-                url: process.env.PUBLIC_URL + "location-dot-solid.png",
-                size: new naver.maps.Size(25, 34),
-                scaledSize: new naver.maps.Size(25, 34),
+                url: process.env.PUBLIC_URL + "car-solid.png",
+                size: new naver.maps.Size(25, 25),
+                scaledSize: new naver.maps.Size(25, 25),
                 origin: new naver.maps.Point(0, 0),
                 anchor: new naver.maps.Point(12, 34)
             }
         });
         setCurrMarker(initialCurrMarker);
-    }, [naver, map]);
+
+        if (mapRef.current && naver && map) {
+            drawPathPolyline();
+        }
+    }, [naver, map, pathData]);
 
     useEffect(() => {
         if (gpsData) {
@@ -153,7 +224,6 @@ const MapComponent = ({ center, pathData, gpsData }: MapComponentProps) => {
             });
 
             currMarker!.setPosition(new naver.maps.LatLng(gpsData.latitude, gpsData.longitude));
-            currMarker!.setAnimation(naver.maps.Animation.BOUNCE);
         }
     }, [gpsData]);
 
@@ -184,29 +254,30 @@ const MapComponent = ({ center, pathData, gpsData }: MapComponentProps) => {
         }
     }, [currentMode]);
 
-    useEffect(() => {
-        if (mapRef.current && naver) {
-            if (pathData) {
-                const nodeList: Array<any> = pathData.node_list;
+    // useEffect(() => {
+    //     if (mapRef.current && naver) {
+    //         if (pathData) {
+    //             const nodeList: Array<any> = pathData.node_list;
 
-                for (const node of nodeList) {
-                    console.info(`Node : ${JSON.stringify(node)}`);
-                    const marker: naver.maps.Marker = addPathMarker(node);
-                    pathMarkerArray.push(marker);
-                }
+    //             for (const node of nodeList) {
+    //                 console.info(`Node : ${JSON.stringify(node)}`);
+    //                 const marker: naver.maps.Marker = addPathMarker(node);
+    //                 pathMarkerArray.push(marker);
+    //             }
 
-                let path: Array<any> = [];
-                for (const pathMarker of pathMarkerArray) {
-                    path.push(pathMarker.getPosition());
-                }
+    //             let path: Array<any> = [];
+    //             for (const pathMarker of pathMarkerArray) {
+    //                 path.push(pathMarker.getPosition());
+    //                 pathMarker.setMap(map);
+    //             }
 
-                const polyline: naver.maps.Polyline = new naver.maps.Polyline({
-                    map: map,
-                    path: path
-                });
-            }
-        }
-    }, [pathData]);
+    //             const polyline: naver.maps.Polyline = new naver.maps.Polyline({
+    //                 map: map,
+    //                 path: path
+    //             });
+    //         }
+    //     }
+    // }, [pathData]);
 
     useEffect(() => {
         return () => {

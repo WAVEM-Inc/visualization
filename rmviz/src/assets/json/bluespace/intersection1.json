@@ -4,12 +4,12 @@
             "start_node": {
                 "node_id": "201",
                 "position": {
-                    "latitude": 37.3061471,
-                    "longitude": 127.2401769
+                    "latitude": 37.3061467,
+                    "longitude": 127.2401776
                 },
                 "type": "",
                 "kind": "connecting",
-                "heading": 130.0,
+                "heading": 148.0,
                 "direction": "",
                 "driving_option": "",
                 "detection_range": []
@@ -17,21 +17,21 @@
             "end_node": {
                 "node_id": "202",
                 "position": {
-                    "latitude": 37.3061047,
-                    "longitude": 127.2401450
+                    "latitude": 37.3061114,
+                    "longitude": 127.2401561
                 },
                 "type": "",
                 "kind": "waiting",
-                "heading": 130.0,
+                "heading": 148.0,
                 "direction": "",
                 "driving_option": "",
                 "detection_range": [
                     {
-                        "offset": 3.0,
-                        "width_left": 10.0,
+                        "offset": 4.0,
+                        "width_left": 5.0,
                         "width_right": 0.5,
                         "height": 4.0,
-                        "action_code": "test"
+                        "action_code": "driving"
                     }
                 ]
             }
@@ -40,12 +40,12 @@
             "start_node": {
                 "node_id": "202",
                 "position": {
-                    "latitude": 37.3061047,
-                    "longitude": 127.2401450
+                    "latitude": 37.3061114,
+                    "longitude": 127.2401561
                 },
                 "type": "",
                 "kind": "waiting",
-                "heading": 130.0,
+                "heading": 148.0,
                 "direction": "",
                 "driving_option": "",
                 "detection_range": [
@@ -55,8 +55,8 @@
             "end_node": {
                 "node_id": "203",
                 "position": {
-                    "latitude": 37.3060612,
-                    "longitude": 127.2401142
+                    "latitude": 37.3060611,
+                    "longitude": 127.2401137
                 },
                 "type": "",
                 "kind": "intersection",
@@ -70,8 +70,8 @@
             "start_node": {
                 "node_id": "203",
                 "position": {
-                    "latitude": 37.3060612,
-                    "longitude": 127.2401142
+                    "latitude": 37.3060611,
+                    "longitude": 127.2401137
                 },
                 "type": "",
                 "kind": "intersection",
@@ -83,8 +83,8 @@
             "end_node": {
                 "node_id": "204",
                 "position": {
-                    "latitude": 37.3061527,
-                    "longitude": 127.2402745
+                    "latitude": 37.3060192,
+                    "longitude": 127.2401999
                 },
                 "type": "",
                 "kind": "connecting",

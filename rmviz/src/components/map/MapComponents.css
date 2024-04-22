@@ -70,3 +70,9 @@
     letter-spacing: -1px;
     font-family: Helvetica, AppleSDGothicNeo-Light, nanumgothic, NanumGothic, "나눔고딕", Dotum, "돋움", sans-serif;
 }
+
+.iw_inner {
+    background-color: #fff;
+    width: 150px;
+    font-size: 15px;
+}
