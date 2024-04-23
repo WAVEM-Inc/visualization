@@ -60,7 +60,7 @@
                 },
                 "type": "",
                 "kind": "intersection",
-                "heading": 220.0,
+                "heading": 237.0,
                 "direction": "",
                 "driving_option": "",
                 "detection_range": []
@@ -75,7 +75,7 @@
                 },
                 "type": "",
                 "kind": "intersection",
-                "heading": 220.0,
+                "heading": 237.0,
                 "direction": "",
                 "driving_option": "",
                 "detection_range": []
@@ -83,11 +83,11 @@
             "end_node": {
                 "node_id": "204",
                 "position": {
-                    "latitude": 37.3060192,
-                    "longitude": 127.2401999
+                    "latitude": 37.3060182,
+                    "longitude": 127.2401997
                 },
                 "type": "",
-                "kind": "connecting",
+                "kind": "endpoint",
                 "heading": -1,
                 "direction": "",
                 "driving_option": "",
