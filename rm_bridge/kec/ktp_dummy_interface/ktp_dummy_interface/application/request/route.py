@@ -54,12 +54,10 @@ class RouteProcessor:
     
     def can_emergency_publish(self, emergency: Emergency) -> None:
         if emergency.stop is True:
-            cancel_goal_future: Future = self.__route_to_pose_action_client._cancel_goal_async(goal_handle=self.__goal_handle);
-            self.__log.info(f"{ROUTE_TO_POSE_ACTION} cancel_goal future : {cancel_goal_future.result()}");
-            self.__log.info(f"{ROUTE_TO_POSE_ACTION} goal cancelled\n{json.dumps(obj=message_conversion.extract_values(inst=self.__route_to_pose_goal_list[self.__route_to_pose_goal_index]), indent=4)}");
+            self.__log.info(f"{CAN_EMERGENCY_STOP_TOPIC} emergency stop...");
+            self.__can_emergency_stop_publisher.publish(msg=emergency);
         else:
-            self.route_to_pose_send_goal();
-        self.__can_emergency_stop_publisher.publish(msg=emergency);
+            return; 
         
     def mqtt_can_emergency_cb(self, mqtt_client: paho.Client, mqtt_user_data: Dict, mqtt_message: paho.MQTTMessage) -> None:
         try:
@@ -178,7 +176,7 @@ class RouteProcessor:
                 self.__goal_handle = None;
                 self.__log.info(f"{ROUTE_TO_POSE_ACTION} goal cancelled");
             else:
-                self.__log.error(f"{ROUTE_TO_POSE_ACTION} goal list is empty")
+                self.__log.error(f"{ROUTE_TO_POSE_ACTION} goal is None");
                 return;
         except KeyError as ke:
             self.__log.error(f"Invalid JSON Key in MQTT {mqtt_topic} subscription callback: {ke}");
