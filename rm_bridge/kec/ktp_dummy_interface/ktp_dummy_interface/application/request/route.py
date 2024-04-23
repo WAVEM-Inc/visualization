@@ -18,8 +18,10 @@ from typing import Dict;
 from typing import Any;
 from ktp_dummy_interface.application.message.conversion import json_to_ros_message;
 from ktp_dummy_interface.application.mqtt import Client;
+from ktp_dummy_interface.domain.route import RouteStatus;
 
 MQTT_PATH_TOPIC: str = "/rms/ktp/dummy/response/path";
+MQTT_ROUTE_STATUS_TOPIC: str = "/rms/ktp/dummy/response/route/status";
 
 CAN_EMERGENCY_STOP_TOPIC: str = "/drive/can/emergency";
 ROUTE_TO_POSE_ACTION: str = "/route_to_pose";
@@ -32,6 +34,8 @@ class RouteProcessor:
         self.__log: RcutilsLogger = self.__node.get_logger();
         self.__mqtt_client: Client = mqtt_client;
         
+        self.__route_status: RouteStatus = RouteStatus();
+        
         can_emergency_stop_cb_group: MutuallyExclusiveCallbackGroup = MutuallyExclusiveCallbackGroup();
         self.__can_emergency_stop_publisher: Publisher = self.__node.create_publisher(
             topic=CAN_EMERGENCY_STOP_TOPIC,
@@ -42,7 +46,7 @@ class RouteProcessor:
         
         self.__route_to_pose_goal_index: int = 0;
         self.__route_to_pose_goal_list: list[RouteToPose.Goal] = [];
-        self.__goal_handle: ClientGoalHandle = None;
+        self.__route_to_pose_goal_handle: ClientGoalHandle = None;
         
         route_to_pose_action_client_cb_group: MutuallyExclusiveCallbackGroup = MutuallyExclusiveCallbackGroup();
         self.__route_to_pose_action_client: ActionClient = rclpy_action.ActionClient(
@@ -127,21 +131,40 @@ class RouteProcessor:
             self.__route_to_pose_send_goal_future.add_done_callback(callback=self.goal_response_callback);
         else:
             self.__log.error(f"{ROUTE_TO_POSE_ACTION} is not ready...");
+            
+    def route_to_pose_notify_status(self, driving_flag: bool, status_code: int) -> None:
+        self.__route_status.is_driving = driving_flag;
+        self.__route_status.node_index = self.__route_to_pose_goal_index;
+        self.__route_status.status_code = status_code;
+        current_goal: RouteToPose.Goal = self.__route_to_pose_goal_list[self.__route_to_pose_goal_index];
+        self.__route_status.node_info = [current_goal.start_node.node_id, current_goal.end_node.node_id];
+            
+        payload: str = json.dumps(obj=self.__route_status.__dict__, indent=4);
+        self.__log.info(f"{MQTT_ROUTE_STATUS_TOPIC} payload : {payload}");
+        self.__mqtt_client.publish(topic=MQTT_ROUTE_STATUS_TOPIC, payload=payload, qos=0);
+        
 
     def goal_response_callback(self, future: Future) -> None:
-        self.__goal_handle: ClientGoalHandle = future.result();
-        if not self.__goal_handle.accepted:
+        self.__route_to_pose_goal_handle: ClientGoalHandle = future.result();
+        if not self.__route_to_pose_goal_handle.accepted:
             self.__log.info(f"{ROUTE_TO_POSE_ACTION} Goal rejected");
             return;
 
         self.__log.info(f"{ROUTE_TO_POSE_ACTION} Goal accepted");
 
-        self.__route_to_pose_action_get_result_future = self.__goal_handle.get_result_async();
+        self.__route_to_pose_action_get_result_future = self.__route_to_pose_goal_handle.get_result_async();
         self.__route_to_pose_action_get_result_future.add_done_callback(callback=self.route_to_pose_get_result_cb);
 
     def route_to_pose_feedback_cb(self, feedback_msg: RouteToPose.Impl.FeedbackMessage) -> None:
         feedback: RouteToPose.Feedback = feedback_msg.feedback;
         self.__log.info(f"{ROUTE_TO_POSE_ACTION} feedback cb\n{json.dumps(obj=message_conversion.extract_values(inst=feedback), indent=4)}");
+        
+        status_code: int = feedback.status_code;
+        
+        if status_code == 1001:
+            self.route_to_pose_notify_status(driving_flag=True, status_code=0);
+        else:
+            return;
         
     def route_to_pose_get_result_cb(self, future: Future) -> None:
         result: RouteToPose.Result = future.result().result;
@@ -153,14 +176,18 @@ class RouteProcessor:
             self.__log.error(f"{ROUTE_TO_POSE_ACTION} Goal failed");
             
         if result.result == 1001:
-            is_finished: bool = (self.__route_to_pose_goal_index + 1 == len(self.__route_to_pose_goal_list) - 1);
+            self.__log.info(f"{ROUTE_TO_POSE_ACTION} Goal[{self.__route_to_pose_goal_index}] Arrived");
+            
+            is_finished: bool = (self.__route_to_pose_goal_index == len(self.__route_to_pose_goal_list) - 1);
             if is_finished:
+                self.route_to_pose_notify_status(driving_flag=False, status_code=2);
                 self.__log.info(f"{ROUTE_TO_POSE_ACTION} navigation finished...");
                 self.__route_to_pose_goal_index = 0;
                 self.__route_to_pose_goal_list = [];
             else:
+                self.route_to_pose_notify_status(driving_flag=False, status_code=1);
                 self.__route_to_pose_goal_index = self.__route_to_pose_goal_index + 1;
-                self.__log.info(f"{ROUTE_TO_POSE_ACTION} To Source will proceed Next Goal [{self.__route_to_pose_goal_index}]");
+                self.__log.info(f"{ROUTE_TO_POSE_ACTION} It will proceed Next Goal [{self.__route_to_pose_goal_index}]");
                 self.route_to_pose_send_goal();
                 
     def mqtt_goal_cancel_cb(self, mqtt_client: paho.Client, mqtt_user_data: Dict, mqtt_message: paho.MQTTMessage) -> None:
@@ -169,11 +196,21 @@ class RouteProcessor:
             mqtt_decoded_payload: str = mqtt_message.payload.decode();
             mqtt_json: Any = json.loads(mqtt_message.payload);
             
+            self.__log.info(f"{ROUTE_TO_POSE_ACTION} cancel callback");
+            self.__log.info(f"\n{json.dumps(mqtt_json, indent=4)}");
+            
             if len(self.__route_to_pose_goal_list) != 0:
+                self.route_to_pose_notify_status(driving_flag=False, status_code=5);
                 self.__route_to_pose_goal_list = [];
                 self.__route_to_pose_goal_index = 0;
-                cancel_goal_future: Future = self.__route_to_pose_action_client._cancel_goal(self.__goal_handle);
-                self.__goal_handle = None;
+                
+                if self.__route_to_pose_goal_handle != None:
+                    self.__log.info(f"{ROUTE_TO_POSE_ACTION} goal_handle : {json.dumps(message_conversion.extract_values(inst=self.__route_to_pose_goal_handle), 4)}");
+                    cancel_goal_future: Future = self.__route_to_pose_action_client.cancel_goal_async(self.__route_to_pose_goal_handle);
+                else:
+                    self.__log.error(f"{ROUTE_TO_POSE_ACTION} goal_handle is None");
+                    
+                self.__route_to_pose_goal_handle = None;
                 self.__log.info(f"{ROUTE_TO_POSE_ACTION} goal cancelled");
             else:
                 self.__log.error(f"{ROUTE_TO_POSE_ACTION} goal is None");
