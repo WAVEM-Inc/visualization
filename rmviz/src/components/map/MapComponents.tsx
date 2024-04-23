@@ -7,9 +7,10 @@ interface MapComponentProps {
     gpsData: any;
     center: naver.maps.LatLng;
     odomEularData: any;
+    routeStatus: any;
 }
 
-const MapComponent = ({ center, pathData, gpsData, odomEularData }: MapComponentProps) => {
+const MapComponent = ({ center, pathData, gpsData, odomEularData, routeStatus }: MapComponentProps) => {
     const { naver } = window;
     const mapRef: React.MutableRefObject<HTMLDivElement | null> = useRef<HTMLDivElement>(null);
 
@@ -20,6 +21,7 @@ const MapComponent = ({ center, pathData, gpsData, odomEularData }: MapComponent
         longitude: 0.0
     });
     const [currentOdomEular, setCurrentOdomEular] = useState<number>();
+    const [currentRouteStatus, setCurrentRouteStatus] = useState<any | null>(null);
 
     let pathMarkerArray: Array<naver.maps.Marker> = [];
     let pathInfoWindowarray: Array<naver.maps.InfoWindow> = [];
@@ -140,7 +142,7 @@ const MapComponent = ({ center, pathData, gpsData, odomEularData }: MapComponent
         const marker: naver.maps.Marker = new naver.maps.Marker({
             position: new naver.maps.LatLng(node.position.latitude, node.position.longitude),
             map: map,
-            title: `${node.node_id}/${node.kind}`,
+            title: `${node.node_id}/${node.kind}/${node.heading}`,
             icon: {
                 url: process.env.PUBLIC_URL + "free-icon-location-7009904.png",
                 size: new naver.maps.Size(30, 30),
@@ -149,7 +151,7 @@ const MapComponent = ({ center, pathData, gpsData, odomEularData }: MapComponent
                 anchor: new naver.maps.Point(12, 34)
             }
         });
-        
+
 
         return marker;
     }
@@ -195,6 +197,7 @@ const MapComponent = ({ center, pathData, gpsData, odomEularData }: MapComponent
                     '<div class="iw_inner">',
                     `   <h3>ID : ${pathMarker!.getTitle().split("/")[0]}</h3>`,
                     `   <p>종류 : ${pathMarker!.getTitle().split("/")[1]}</p>`,
+                    `   <p>진출 각도 : ${pathMarker!.getTitle().split("/")[2]}</p>`,
                     `   <p>경도 : ${pathMarker!.getPosition().x}</p>`,
                     `   <p>위도 : ${pathMarker!.getPosition().y}</p>`,
                     '</div>'
@@ -211,6 +214,8 @@ const MapComponent = ({ center, pathData, gpsData, odomEularData }: MapComponent
                 }
                 path.push(pathMarker.getPosition());
             }
+
+            localStorage.setItem("path", JSON.stringify(path));
 
             const polyline: naver.maps.Polyline = new naver.maps.Polyline({
                 map: map,
@@ -256,8 +261,40 @@ const MapComponent = ({ center, pathData, gpsData, odomEularData }: MapComponent
             const angle: number = 360 - currentOdomEular!;
             $("div[title|='RobotCurrentPos'").css("transform", `rotate(${angle}deg)`);
         }
-        
+
     }, [odomEularData]);
+
+    useEffect(() => {
+        if (routeStatus) {
+            console.info(`currentRouteStatus : ${JSON.stringify(routeStatus)}`);
+
+            let driving_flag: boolean = false;
+            if (routeStatus._is_driving) {
+                driving_flag = true;
+            } else {
+                driving_flag = false;
+            }
+
+            let status: string = "";
+            if (routeStatus._status_code === 0) {
+                status = "출발";
+            } else if (routeStatus._status_code === 1) {
+                status = "경유지 도착";
+            } else if (routeStatus._status_code === 2) {
+                status = "주행 완료";
+            } else if (routeStatus._status_code === 5) {
+                status = "주행 취소";
+            }
+
+            const currRouteStatus: any = {
+                driving_flag: driving_flag,
+                status: status,
+                node_info: routeStatus._node_info
+            };
+
+            setCurrentRouteStatus(currRouteStatus);
+        }
+    }, [routeStatus]);
 
     useEffect(() => {
         if (mapRef.current) {
@@ -303,13 +340,29 @@ const MapComponent = ({ center, pathData, gpsData, odomEularData }: MapComponent
                 <div className="data_container">
                     <div className={"gps_data_container"}>
                         <h3>GPS</h3>
-                        longitude : {currentGps.longitude}
-                        <br></br>
-                        latitude : {currentGps.latitude}
+                        <div className="">
+                            longitude : {currentGps.longitude}
+                            <br></br>
+                            latitude : {currentGps.latitude}
+                        </div>
                     </div>
                     <div className={"odom_eular_data_container"}>
-                        <h3>Odom Eular</h3>
-                        angle : {currentOdomEular}
+                        <h3>정북 기준 각도</h3>
+                        <div className="">
+                            angle : {currentOdomEular}
+                        </div>
+                    </div>
+                    <div className={"route_status_data_container"}>
+                        <h3>주행 상태</h3>
+                        <div className="">
+                            주행 중 : {currentRouteStatus?.driving_flag.toString()}
+                            <br></br>
+                            상태 : {currentRouteStatus?.status}
+                            <br></br>
+                            출발지 : {currentRouteStatus?.node_info[0]}
+                            <br></br>
+                            도착지 : {currentRouteStatus?.node_info[1]}
+                        </div>
                     </div>
                 </div>
             </div>

@@ -18,19 +18,29 @@
     height: 750px;
 }
 
-.gps_data_container {
+.data_container > div {
     margin: 0 auto;
-    align-items: center;
-    width: 320px;
-    height: 120px;
     border-bottom: 2px solid #ccc;
 }
 
-.odom_eular_data_container {
-    margin: 0 auto;
+.data_container > div > div {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
     align-items: center;
+}
+
+.gps_data_container {
+    height: 120px;
+}
+
+.odom_eular_data_container {
     height: 100px;
-    border-bottom: 2px solid #ccc;
+}
+
+.route_status_data_container {
+    height: 150px;
 }
 
 .move_btn_ul {

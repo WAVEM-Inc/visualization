@@ -22,7 +22,7 @@ export default function BlueSpaceDashBoardPage() {
     const [mqttClient, setMqttClient] = useState<MqttClient | undefined>();
     const [pathData, setPathData] = useState<any>(null);
     const [gpsData, setGpsData] = useState<any>(null);
-    const [routeToPoseStatus, setRouteToPoseStatus] = useState<any>(null);
+    const [routeStatus, setRouteStatus] = useState<any>(null);
     const [odomEularData, setOdomEularData] = useState<any>(null);
 
     const blueSpaceCoord: naver.maps.LatLng = new naver.maps.LatLng(37.305985, 127.2401652);
@@ -34,7 +34,7 @@ export default function BlueSpaceDashBoardPage() {
     const responseTopicFormat: string = "/rms/ktp/dummy/response";
     const responsePathTopic: string = `${responseTopicFormat}/path`;
     const resposneGpsTopic: string = `${responseTopicFormat}/gps`;
-    const responseRouteToPoseStatusTopic: string = `${responseTopicFormat}/route_to_pose/status`;
+    const responseRouteStatusTopic: string = `${responseTopicFormat}/route/status`;
     const responseOdomEularTopic: string = `${responseTopicFormat}/odom/eular`;
 
     const on201202Click = (): void => {
@@ -95,8 +95,8 @@ export default function BlueSpaceDashBoardPage() {
                 setPathData(JSON.parse(payload.toString()));
             } else if (topic === resposneGpsTopic) {
                 setGpsData(JSON.parse(payload.toString()));
-            } else if (topic === responseRouteToPoseStatusTopic) {
-                setRouteToPoseStatus(JSON.parse(payload.toString()));
+            } else if (topic === responseRouteStatusTopic) {
+                setRouteStatus(JSON.parse(payload.toString()));
             } else if (topic === responseOdomEularTopic) {
                 setOdomEularData(JSON.parse(payload.toString()));
             } else {
@@ -110,36 +110,22 @@ export default function BlueSpaceDashBoardPage() {
         setMqttClient(mqttClient);
         mqttClient.subscribe(responsePathTopic);
         mqttClient.subscribe(resposneGpsTopic);
-        mqttClient.subscribe(responseRouteToPoseStatusTopic);
+        mqttClient.subscribe(responseRouteStatusTopic);
         mqttClient.subscribe(responseOdomEularTopic);
         handleResponseMQTTCallback(mqttClient);
     }, []);
 
     useEffect(() => {
-        if (routeToPoseStatus) {
-            console.info(`routeToPoseStatus : ${JSON.stringify(routeToPoseStatus)}`);
-
-            const index: number = routeToPoseStatus.index;
-            const code: number = routeToPoseStatus.code;
-
-            switch (code) {
-                case 1:
-                    alert(`[${index}] Goal Arrived`);
-                    break;
-                case 2:
-                    alert(`[${index}] Goal Finished`);
-                    break;
-                default:
-                    break;
-            }
+        if (routeStatus) {
+            console.info(`routeStatus : ${JSON.stringify(routeStatus)}`);
         } else {
             return;
         }
 
         return () => {
-            setRouteToPoseStatus(null);
+            setRouteStatus(null);
         }
-    }, [routeToPoseStatus]);
+    }, [routeStatus]);
 
     return (
         <div className="dash_board_container">
@@ -147,7 +133,7 @@ export default function BlueSpaceDashBoardPage() {
                 <TopComponents />
             </div>
             <div className="map_component_container">
-                <MapComponent center={blueSpaceCoord} pathData={pathData} gpsData={gpsData} odomEularData={odomEularData} />
+                <MapComponent center={blueSpaceCoord} pathData={pathData} gpsData={gpsData} odomEularData={odomEularData} routeStatus={routeStatus} />
             </div>
             <div className="request_component_container">
                 <BlueSpaceRequestComponent

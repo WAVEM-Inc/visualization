@@ -153,7 +153,7 @@ export default function KECDashBoardPage() {
                 <TopComponents />
             </div>
             <div className="map_component_container">
-                <MapComponent center={kecCoord} pathData={pathData} gpsData={gpsData} odomEularData={{}} />
+                <MapComponent center={kecCoord} pathData={pathData} gpsData={gpsData} odomEularData={{}} routeStatus={{}} />
             </div>
             <div className="request_component_container">
                 <RequestComponent
