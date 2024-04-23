@@ -2,6 +2,7 @@ import "./BlueSpaceRequestComponent.css";
 
 
 interface BlueSpaceRequestComponentProps {
+    on201202Click: () => void;
     onStraightClick: () => void;
     onIntersection1Click: () => void;
     onIntersection2Click: () => void;
@@ -16,6 +17,7 @@ interface BlueSpaceRequestComponentProps {
 }
 
 const BlueSpaceRequestComponent: React.FC<BlueSpaceRequestComponentProps> = ({
+    on201202Click,
     onStraightClick,
     onIntersection1Click,
     onIntersection2Click,
@@ -30,6 +32,7 @@ const BlueSpaceRequestComponent: React.FC<BlueSpaceRequestComponentProps> = ({
 }: BlueSpaceRequestComponentProps) => {
     return (
         <div className={"bluespace_request_btn_container"}>
+            <button className={"bluespace_btn_request"} onClick={on201202Click}>201 to 202</button>
             <button className={"bluespace_btn_request"} onClick={onStraightClick}>직진 이탈</button>
             <button className={"bluespace_btn_request"} onClick={onIntersection1Click}>교차로 - 1</button>
             <button className={"bluespace_btn_request"} onClick={onIntersection2Click}>교차로 - 2</button>

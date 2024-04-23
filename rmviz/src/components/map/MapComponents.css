@@ -11,10 +11,24 @@
     height: 100%;
 }
 
+.data_container {
+    margin: 0 auto;
+    align-items: center;
+    width: 320px;
+    height: 750px;
+}
+
 .gps_data_container {
     margin: 0 auto;
     align-items: center;
     width: 320px;
+    height: 120px;
+    border-bottom: 2px solid #ccc;
+}
+
+.odom_eular_data_container {
+    margin: 0 auto;
+    align-items: center;
     height: 100px;
     border-bottom: 2px solid #ccc;
 }

@@ -1,3 +1,4 @@
+import $ from "jquery";
 import { useEffect, useRef, useState } from "react";
 import "./MapComponents.css";
 
@@ -5,9 +6,10 @@ interface MapComponentProps {
     pathData: any;
     gpsData: any;
     center: naver.maps.LatLng;
+    odomEularData: any;
 }
 
-const MapComponent = ({ center, pathData, gpsData }: MapComponentProps) => {
+const MapComponent = ({ center, pathData, gpsData, odomEularData }: MapComponentProps) => {
     const { naver } = window;
     const mapRef: React.MutableRefObject<HTMLDivElement | null> = useRef<HTMLDivElement>(null);
 
@@ -17,6 +19,7 @@ const MapComponent = ({ center, pathData, gpsData }: MapComponentProps) => {
         latitude: 0.0,
         longitude: 0.0
     });
+    const [currentOdomEular, setCurrentOdomEular] = useState<number>();
 
     let pathMarkerArray: Array<naver.maps.Marker> = [];
     let pathInfoWindowarray: Array<naver.maps.InfoWindow> = [];
@@ -114,6 +117,23 @@ const MapComponent = ({ center, pathData, gpsData }: MapComponentProps) => {
         });
     }
 
+    const initializeRobotMarker = (): void => {
+        const initialCurrMarker: naver.maps.Marker = new naver.maps.Marker({
+            position: map!.getCenter(),
+            map: map,
+            title: "RobotCurrentPos",
+            icon: {
+                url: process.env.PUBLIC_URL + "free-icon-gps-12795350.png",
+                size: new naver.maps.Size(35, 35),
+                scaledSize: new naver.maps.Size(35, 35),
+                origin: new naver.maps.Point(0, 0),
+                anchor: new naver.maps.Point(12, 34)
+            },
+            zIndex: 1000
+        });
+        setCurrMarker(initialCurrMarker);
+    }
+
     const addPathMarker = (node: any): any => {
         console.info(`addPathMarker node : ${JSON.stringify(node)}`);
 
@@ -121,17 +141,24 @@ const MapComponent = ({ center, pathData, gpsData }: MapComponentProps) => {
             position: new naver.maps.LatLng(node.position.latitude, node.position.longitude),
             map: map,
             title: `${node.node_id}/${node.kind}`,
-            zIndex: 100
+            icon: {
+                url: process.env.PUBLIC_URL + "free-icon-location-7009904.png",
+                size: new naver.maps.Size(30, 30),
+                scaledSize: new naver.maps.Size(30, 30),
+                origin: new naver.maps.Point(0, 0),
+                anchor: new naver.maps.Point(12, 34)
+            }
         });
+        
 
         return marker;
     }
 
-    const getClickHandler =(seq: number): Function => {
-        return function(e: any) {
+    const getClickHandler = (seq: number): Function => {
+        return function (e: any) {
             const marker: naver.maps.Marker = pathMarkerArray[seq];
             const infoWindow: naver.maps.InfoWindow = pathInfoWindowarray[seq];
-    
+
             if (infoWindow.getMap()) {
                 infoWindow.close();
             } else {
@@ -139,44 +166,49 @@ const MapComponent = ({ center, pathData, gpsData }: MapComponentProps) => {
             }
         }
     }
-    
+
     const drawPathPolyline = (): void => {
         if (pathData) {
             const nodeList: Array<any> = pathData.node_list;
 
-            for (const [index, node] of nodeList.entries()) {
-                console.info(`Node : ${JSON.stringify(node)}`);
-
-                let marker: naver.maps.Marker | null = null;
-                if (index === 0) {
-                    marker = addPathMarker(node.start_node);
-                } else {
-                    marker = addPathMarker(node.end_node);
-                }
-                pathMarkerArray.push(marker!);
-
-                const contentString: string = [
-                    '<div class="iw_inner">',
-                    `   <h3>ID : ${marker!.getTitle().split("/")[0]}</h3>`,
-                    `   <p>종류 : ${marker!.getTitle().split("/")[1]}</p>`,
-                    `   <p>경도 : ${marker!.getPosition().x}</p>`,
-                    `   <p>위도 : ${marker!.getPosition().y}</p>`,
-                    '</div>'
-                ].join('');
-        
-                const infoWindow: naver.maps.InfoWindow = new naver.maps.InfoWindow({
-                    content: contentString
-                });
-
-                pathInfoWindowarray.push(infoWindow);
+            const uniqueNodeIds: Set<string> = new Set();
+            for (const node of nodeList) {
+                uniqueNodeIds.add(node.start_node.node_id);
+                uniqueNodeIds.add(node.end_node.node_id);
             }
 
-            for (var i=0, ii=pathMarkerArray.length; i<ii; i++) {
+            for (const nodeId of uniqueNodeIds) {
+                const node = nodeList.find((node) => node.start_node.node_id === nodeId || node.end_node.node_id === nodeId);
+                if (node) {
+                    pathMarkerArray.push(addPathMarker(node.start_node));
+                    pathMarkerArray.push(addPathMarker(node.end_node));
+                }
+            }
+
+            for (var i = 0, ii = pathMarkerArray.length; i < ii; i++) {
                 naver.maps.Event.addListener(pathMarkerArray[i], "click", getClickHandler(i));
             }
 
             let path: Array<any> = [];
             for (const pathMarker of pathMarkerArray) {
+                const contentString: string = [
+                    '<div class="iw_inner">',
+                    `   <h3>ID : ${pathMarker!.getTitle().split("/")[0]}</h3>`,
+                    `   <p>종류 : ${pathMarker!.getTitle().split("/")[1]}</p>`,
+                    `   <p>경도 : ${pathMarker!.getPosition().x}</p>`,
+                    `   <p>위도 : ${pathMarker!.getPosition().y}</p>`,
+                    '</div>'
+                ].join('');
+
+                const infoWindow: naver.maps.InfoWindow = new naver.maps.InfoWindow({
+                    content: contentString
+                });
+
+                pathInfoWindowarray.push(infoWindow);
+
+                for (var i = 0, ii = pathMarkerArray.length; i < ii; i++) {
+                    naver.maps.Event.addListener(pathMarkerArray[i], "click", getClickHandler(i));
+                }
                 path.push(pathMarker.getPosition());
             }
 
@@ -184,10 +216,10 @@ const MapComponent = ({ center, pathData, gpsData }: MapComponentProps) => {
                 map: map,
                 path: path,
                 clickable: true,
-                strokeColor: 'red',
-                strokeStyle: 'line',
+                strokeColor: "white",
+                strokeStyle: "line",
                 strokeOpacity: 1.0,
-                strokeWeight: 6.5
+                strokeWeight: 6.0
             });
         }
     }
@@ -197,19 +229,7 @@ const MapComponent = ({ center, pathData, gpsData }: MapComponentProps) => {
             initializeMap();
         } else return;
 
-        const initialCurrMarker: naver.maps.Marker = new naver.maps.Marker({
-            position: map!.getCenter(),
-            map: map,
-            title: "RobotCurrentPos",
-            icon: {
-                url: process.env.PUBLIC_URL + "car-solid.png",
-                size: new naver.maps.Size(25, 25),
-                scaledSize: new naver.maps.Size(25, 25),
-                origin: new naver.maps.Point(0, 0),
-                anchor: new naver.maps.Point(12, 34)
-            }
-        });
-        setCurrMarker(initialCurrMarker);
+        initializeRobotMarker();
 
         if (mapRef.current && naver && map) {
             drawPathPolyline();
@@ -219,13 +239,25 @@ const MapComponent = ({ center, pathData, gpsData }: MapComponentProps) => {
     useEffect(() => {
         if (gpsData) {
             setCurrentGps({
-                latitude: gpsData.latitude,
-                longitude: gpsData.longitude
+                latitude: parseFloat(gpsData.latitude.toFixed(7)),
+                longitude: parseFloat(gpsData.longitude.toFixed(7))
             });
 
             currMarker!.setPosition(new naver.maps.LatLng(gpsData.latitude, gpsData.longitude));
         }
     }, [gpsData]);
+
+    useEffect(() => {
+        if (odomEularData) {
+            setCurrentOdomEular(parseFloat(odomEularData.pose.orientation.y.toFixed(2)));
+        }
+
+        if (currentOdomEular) {
+            const angle: number = 360 - currentOdomEular!;
+            $("div[title|='RobotCurrentPos'").css("transform", `rotate(${angle}deg)`);
+        }
+        
+    }, [odomEularData]);
 
     useEffect(() => {
         if (mapRef.current) {
@@ -254,31 +286,6 @@ const MapComponent = ({ center, pathData, gpsData }: MapComponentProps) => {
         }
     }, [currentMode]);
 
-    // useEffect(() => {
-    //     if (mapRef.current && naver) {
-    //         if (pathData) {
-    //             const nodeList: Array<any> = pathData.node_list;
-
-    //             for (const node of nodeList) {
-    //                 console.info(`Node : ${JSON.stringify(node)}`);
-    //                 const marker: naver.maps.Marker = addPathMarker(node);
-    //                 pathMarkerArray.push(marker);
-    //             }
-
-    //             let path: Array<any> = [];
-    //             for (const pathMarker of pathMarkerArray) {
-    //                 path.push(pathMarker.getPosition());
-    //                 pathMarker.setMap(map);
-    //             }
-
-    //             const polyline: naver.maps.Polyline = new naver.maps.Polyline({
-    //                 map: map,
-    //                 path: path
-    //             });
-    //         }
-    //     }
-    // }, [pathData]);
-
     useEffect(() => {
         return () => {
             if (map) {
@@ -293,10 +300,17 @@ const MapComponent = ({ center, pathData, gpsData }: MapComponentProps) => {
         <div className={"map_components"}>
             <div className={"map_container"}>
                 <div ref={mapRef} id={"map"} />
-                <div className={"gps_data_container"}>
-                    longitude : {currentGps.longitude}
-                    <br></br>
-                    latitude : {currentGps.latitude}
+                <div className="data_container">
+                    <div className={"gps_data_container"}>
+                        <h3>GPS</h3>
+                        longitude : {currentGps.longitude}
+                        <br></br>
+                        latitude : {currentGps.latitude}
+                    </div>
+                    <div className={"odom_eular_data_container"}>
+                        <h3>Odom Eular</h3>
+                        angle : {currentOdomEular}
+                    </div>
                 </div>
             </div>
         </div>
