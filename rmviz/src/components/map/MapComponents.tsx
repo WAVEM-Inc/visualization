@@ -355,13 +355,15 @@ const MapComponent = ({ center, pathData, gpsData, odomEularData, routeStatus }:
                     <div className={"route_status_data_container"}>
                         <h3>주행 상태</h3>
                         <div className="">
-                            주행 중 : {currentRouteStatus?.driving_flag.toString()}
-                            <br></br>
-                            상태 : {currentRouteStatus?.status}
-                            <br></br>
-                            출발지 : {currentRouteStatus?.node_info[0]}
-                            <br></br>
-                            도착지 : {currentRouteStatus?.node_info[1]}
+                            <div className="route_status_current_route">
+                                {currentRouteStatus?.node_info[0]} {"->"} {currentRouteStatus?.node_info[1]}
+                            </div>
+                            <div className="">
+                                주행 중 : {currentRouteStatus?.driving_flag.toString()}
+                            </div>
+                            <div className="">
+                                상태 : {currentRouteStatus?.status}
+                            </div>
                         </div>
                     </div>
                 </div>
