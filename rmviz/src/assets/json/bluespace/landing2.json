@@ -9,8 +9,8 @@
                 },
                 "type": "path_node",
                 "kind": "endpoint",
-                "heading": 322,
-                "direction": "forward",
+                "heading": 142,
+                "direction": "backward",
                 "driving_option": "gps",
                 "detection_range": []
             },
@@ -22,8 +22,8 @@
                 },
                 "type": "path_node",
                 "kind": "waiting",
-                "heading": 324.0,
-                "direction": "forward",
+                "heading": 142.0,
+                "direction": "backward",
                 "driving_option": "gps",
                 "detection_range": []
             }
@@ -37,8 +37,8 @@
                 },
                 "type": "path_node",
                 "kind": "waiting",
-                "heading": 324.0,
-                "direction": "forward",
+                "heading": 142.0,
+                "direction": "backward",
                 "driving_option": "gps",
                 "detection_range": []
             },

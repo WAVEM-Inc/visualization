@@ -1,5 +1,6 @@
 import $ from "jquery";
 import React, { useEffect, useRef, useState } from "react";
+import { useDevice } from "../../utils/Utils";
 import "./MapComponents.css";
 
 interface MapComponentProps {
@@ -118,7 +119,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
         const marker: naver.maps.Marker = new naver.maps.Marker({
             position: new naver.maps.LatLng(node.position.latitude, node.position.longitude),
             map: map,
-            title: `${node.node_id}/${node.kind}/${node.heading}/${node.driving_option}`,
+            title: `${node.node_id}/${node.kind}/${node.heading}/${node.driving_option}/${node.direction}`,
             icon: {
                 url: iconUrl,
                 size: new naver.maps.Size(30, 30),
@@ -188,6 +189,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
                 `   <p>종류 : ${pathMarker!.getTitle().split("/")[1]}</p>`,
                 `   <p>진출 각도 : ${pathMarker!.getTitle().split("/")[2]}</p>`,
                 `   <p>주행 옵션 : ${pathMarker!.getTitle().split("/")[3]}</p>`,
+                `   <p>주행 방향 : ${pathMarker!.getTitle().split("/")[4]}</p>`,
                 `   <p>경도 : ${pathMarker!.getPosition().x}</p>`,
                 `   <p>위도 : ${pathMarker!.getPosition().y}</p>`,
                 '</div>'
@@ -313,48 +315,52 @@ const MapComponent: React.FC<MapComponentProps> = ({
     }, []);
 
     return (
-        <div className={"map_components"}>
-            <div className={"map_container"}>
-                <div ref={mapRef} id={"map"} />
-                <div className="data_container">
-                    <div className={"gps_data_container"}>
-                        <h3>GPS</h3>
-                        <div className="">
-                            경도 : {currentGps.longitude}
-                            <br></br>
-                            위도 : {currentGps.latitude}
-                        </div>
-                    </div>
-                    <div className={"odom_eular_data_container"}>
-                        <h3>차량 각도</h3>
-                        <div className="">
-                            {currentOdomEular}
-                        </div>
-                    </div>
-                    <div className={"route_status_data_container"}>
-                        <h3>주행 상태</h3>
-                        <div className="">
-                            <div className="route_status_current_route">
-                                {currentRouteStatus?.node_info[0]} {currentRouteStatus?.is_driving ? `->` : ""} {currentRouteStatus?.node_info[1]}
+        <div className="">
+            {useDevice() &&
+                <div className={"map_components"}>
+                    <div className={"map_container"}>
+                        <div ref={mapRef} id={"map"} />
+                        <div className="data_container">
+                            <div className={"gps_data_container"}>
+                                <h3>GPS</h3>
+                                <div className="">
+                                    경도 : {currentGps.longitude}
+                                    <br></br>
+                                    위도 : {currentGps.latitude}
+                                </div>
                             </div>
-                            <div className="">
-                                주행 중 : {currentRouteStatus?.driving_flag.toString()}
+                            <div className={"odom_eular_data_container"}>
+                                <h3>차량 각도</h3>
+                                <div className="">
+                                    {currentOdomEular}
+                                </div>
                             </div>
-                            <div className="">
-                                상태 : {currentRouteStatus?.status}
+                            <div className={"route_status_data_container"}>
+                                <h3>주행 상태</h3>
+                                <div className="">
+                                    <div className="route_status_current_route">
+                                        {currentRouteStatus?.node_info[0]} {currentRouteStatus?.is_driving ? `->` : ""} {currentRouteStatus?.node_info[1]}
+                                    </div>
+                                    <div className="">
+                                        주행 중 : {currentRouteStatus?.driving_flag.toString()}
+                                    </div>
+                                    <div className="">
+                                        상태 : {currentRouteStatus?.status}
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <div className={"route_request_btn_container"}>
-                        <div className="">
-                        <button className={"route_btn_request route_btn_can_init"} onClick={onInitClick}>CAN 초기화</button>
-                            <button className={"route_btn_request route_btn_emergency_stop"} onClick={onEmergencyStopClick}>비상 정지</button>
-                            <button className={"route_btn_request route_btn_emergency_stop"} onClick={onGoalCancelClick}>주행 취소</button>
-                            <button className={"route_btn_request route_btn_emergency_resume"} onClick={onEmergencyResumeClick}>재개</button>
+                            <div className={"route_request_btn_container"}>
+                                <div className="">
+                                    <button className={"route_btn_request route_btn_can_init"} onClick={onInitClick}>CAN 초기화</button>
+                                    <button className={"route_btn_request route_btn_emergency_stop"} onClick={onEmergencyStopClick}>비상 정지</button>
+                                    <button className={"route_btn_request route_btn_emergency_stop"} onClick={onGoalCancelClick}>주행 취소</button>
+                                    <button className={"route_btn_request route_btn_emergency_resume"} onClick={onEmergencyResumeClick}>재개</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            }
         </div>
     );
 };

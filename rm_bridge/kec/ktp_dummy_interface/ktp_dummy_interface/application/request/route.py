@@ -267,8 +267,8 @@ class RouteProcessor:
             mqtt_json: Any = json.loads(mqtt_message.payload);
             
             init: Init = json_to_ros_message(log=self.__log, json_payload=mqtt_json, target_ros_class=Init);
-            self.__log.info(f"{CAN_INIT_TOPIC} init : {json.dumps(message_conversion.extract_values(inst=init), 4)}");
-            self.__can_init_publisher.publish(init=init);
+            self.__log.info(f"{CAN_INIT_TOPIC} init : {init}");
+            self.can_init_publish(init=init);
         except KeyError as ke:
             self.__log.error(f"Invalid JSON Key in MQTT {mqtt_topic} subscription callback: {ke}");
             return;
