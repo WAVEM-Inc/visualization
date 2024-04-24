@@ -7,11 +7,11 @@
                     "latitude": 37.3061467,
                     "longitude": 127.2401776
                 },
-                "type": "",
+                "type": "path_node",
                 "kind": "connecting",
                 "heading": 148.0,
-                "direction": "",
-                "driving_option": "",
+                "direction": "forward",
+                "driving_option": "gps",
                 "detection_range": []
             },
             "end_node": {
@@ -20,11 +20,11 @@
                     "latitude": 37.3061114,
                     "longitude": 127.2401561
                 },
-                "type": "",
+                "type": "path_node",
                 "kind": "waiting",
                 "heading": 148.0,
-                "direction": "",
-                "driving_option": "",
+                "direction": "forward",
+                "driving_option": "gps",
                 "detection_range": [
                     {
                         "offset": 4.0,
@@ -43,14 +43,12 @@
                     "latitude": 37.3061114,
                     "longitude": 127.2401561
                 },
-                "type": "",
+                "type": "path_node",
                 "kind": "waiting",
                 "heading": 148.0,
-                "direction": "",
-                "driving_option": "",
-                "detection_range": [
-                    
-                ]
+                "direction": "forward",
+                "driving_option": "gps",
+                "detection_range": []
             },
             "end_node": {
                 "node_id": "203",
@@ -58,11 +56,11 @@
                     "latitude": 37.3060611,
                     "longitude": 127.2401137
                 },
-                "type": "",
+                "type": "path_node",
                 "kind": "intersection",
                 "heading": 237.0,
-                "direction": "",
-                "driving_option": "",
+                "direction": "forward",
+                "driving_option": "gps",
                 "detection_range": []
             }
         },
@@ -73,11 +71,11 @@
                     "latitude": 37.3060611,
                     "longitude": 127.2401137
                 },
-                "type": "",
+                "type": "path_node",
                 "kind": "intersection",
                 "heading": 237.0,
-                "direction": "",
-                "driving_option": "",
+                "direction": "forward",
+                "driving_option": "gps",
                 "detection_range": []
             },
             "end_node": {
@@ -86,11 +84,11 @@
                     "latitude": 37.3060182,
                     "longitude": 127.2401997
                 },
-                "type": "",
+                "type": "work_node",
                 "kind": "endpoint",
                 "heading": -1,
-                "direction": "",
-                "driving_option": "",
+                "direction": "forward",
+                "driving_option": "gps",
                 "detection_range": []
             }
         }

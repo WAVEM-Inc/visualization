@@ -2,85 +2,57 @@
     "node_list": [
         {
             "start_node": {
-                "node_id": "201",
+                "node_id": "101",
                 "position": {
-                    "latitude": 37.3061471,
-                    "longitude": 127.2401769
+                    "latitude": 37.30598829986177,
+                    "longitude": 127.24015720091757
                 },
-                "type": "",
-                "kind": "connecting",
-                "heading": 219.0,
-                "direction": "",
-                "driving_option": "",
+                "type": "workplace_node",
+                "kind": "endpoint",
+                "heading": 355.5,
+                "direction": "forward",
+                "driving_option": "odom",
                 "detection_range": []
             },
             "end_node": {
-                "node_id": "202",
+                "node_id": "205",
                 "position": {
-                    "latitude": 37.3061047,
-                    "longitude": 127.2401450
+                    "latitude": 37.30603689105478,
+                    "longitude": 127.2401607929309
                 },
-                "type": "",
-                "kind": "waiting",
-                "heading": 220.0,
-                "direction": "",
-                "driving_option": "",
+                "type": "path_node",
+                "kind": "connecting",
+                "heading": 329.8,
+                "direction": "forward",
+                "driving_option": "gps",
                 "detection_range": []
             }
         },
         {
             "start_node": {
-                "node_id": "202",
+                "node_id": "205",
                 "position": {
-                    "latitude": 37.3061047,
-                    "longitude": 127.2401450
+                    "latitude": 37.30603689105478,
+                    "longitude": 127.2401607929309
                 },
-                "type": "",
-                "kind": "waiting",
-                "heading": 220.0,
-                "direction": "",
-                "driving_option": "",
-                "detection_range": []
-            },
-            "end_node": {
-                "node_id": "203",
-                "position": {
-                    "latitude": 37.3060612,
-                    "longitude": 127.2401142
-                },
-                "type": "",
-                "kind": "intersection",
-                "heading": 310.0,
-                "direction": "",
-                "driving_option": "",
-                "detection_range": []
-            }
-        },
-        {
-            "start_node": {
-                "node_id": "203",
-                "position": {
-                    "latitude": 37.3060612,
-                    "longitude": 127.2401142
-                },
-                "type": "",
-                "kind": "intersection",
-                "heading": 310.0,
-                "direction": "",
-                "driving_option": "",
-                "detection_range": []
-            },
-            "end_node": {
-                "node_id": "204",
-                "position": {
-                    "latitude": 37.3061527,
-                    "longitude": 127.2402745
-                },
-                "type": "",
+                "type": "path_node",
                 "kind": "connecting",
-                "heading": 310.0,
-                "direction": "",
-                "driving_option": "",
+                "heading": 329.8,
+                "direction": "forward",
+                "driving_option": "gps",
+                "detection_range": []
+            },
+            "end_node": {
+                "node_id": "301",
+                "position": {
+                    "latitude": 37.306125057365925,
+                    "longitude": 127.24022224691551
+                },
+                "type": "path_node",
+                "kind": "connecting",
+                "heading": -1,
+                "direction": "forward",
+                "driving_option": "gps",
                 "detection_range": []
             }
         }

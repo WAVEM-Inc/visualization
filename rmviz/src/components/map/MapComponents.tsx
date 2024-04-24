@@ -125,26 +125,37 @@ const MapComponent = ({ center, pathData, gpsData, odomEularData, routeStatus }:
             map: map,
             title: "RobotCurrentPos",
             icon: {
-                url: process.env.PUBLIC_URL + "free-icon-gps-12795350.png",
+                url: process.env.PUBLIC_URL + "marker_current_position.png",
                 size: new naver.maps.Size(35, 35),
                 scaledSize: new naver.maps.Size(35, 35),
                 origin: new naver.maps.Point(0, 0),
                 anchor: new naver.maps.Point(12, 34)
             },
-            zIndex: 1000
+            zIndex: 1000,
+            clickable: false
         });
         setCurrMarker(initialCurrMarker);
     }
 
-    const addPathMarker = (node: any): any => {
+    const addPathMarker = (node: any, is_start: boolean, is_end: boolean): any => {
         console.info(`addPathMarker node : ${JSON.stringify(node)}`);
+
+        let iconUrl: string = "";
+
+        if (is_start && !is_end) {
+            iconUrl = process.env.PUBLIC_URL + "marker_start.png";
+        } else if (!is_start && is_end) {
+            iconUrl = process.env.PUBLIC_URL + "marker_arrive.png";
+        } else {
+            iconUrl = process.env.PUBLIC_URL + "marker_landmark.png";
+        }
 
         const marker: naver.maps.Marker = new naver.maps.Marker({
             position: new naver.maps.LatLng(node.position.latitude, node.position.longitude),
             map: map,
             title: `${node.node_id}/${node.kind}/${node.heading}`,
             icon: {
-                url: process.env.PUBLIC_URL + "free-icon-location-7009904.png",
+                url: iconUrl,
                 size: new naver.maps.Size(30, 30),
                 scaledSize: new naver.maps.Size(30, 30),
                 origin: new naver.maps.Point(0, 0),
@@ -180,10 +191,21 @@ const MapComponent = ({ center, pathData, gpsData, odomEularData, routeStatus }:
             }
 
             for (const nodeId of uniqueNodeIds) {
-                const node = nodeList.find((node) => node.start_node.node_id === nodeId || node.end_node.node_id === nodeId);
+                const node: any = nodeList.find((node) => node.start_node.node_id === nodeId || node.end_node.node_id === nodeId);
                 if (node) {
-                    pathMarkerArray.push(addPathMarker(node.start_node));
-                    pathMarkerArray.push(addPathMarker(node.end_node));
+                    const isFirstNode = nodeList.indexOf(node) === 0;
+                    const isLastNode = nodeList.indexOf(node) === nodeList.length - 1;
+
+                    if (isFirstNode) {
+                        pathMarkerArray.push(addPathMarker(node.start_node, true, false));
+                        pathMarkerArray.push(addPathMarker(node.end_node, false, false));
+                    } else if (isLastNode) {
+                        pathMarkerArray.push(addPathMarker(node.start_node, false, false));
+                        pathMarkerArray.push(addPathMarker(node.end_node, false, true));
+                    } else {
+                        pathMarkerArray.push(addPathMarker(node.start_node, false, false));
+                        pathMarkerArray.push(addPathMarker(node.end_node, false, false));
+                    }
                 }
             }
 
@@ -215,7 +237,7 @@ const MapComponent = ({ center, pathData, gpsData, odomEularData, routeStatus }:
                 path.push(pathMarker.getPosition());
             }
 
-            localStorage.setItem("path", JSON.stringify(path));
+            // localStorage.setItem("path", JSON.stringify(path));
 
             const polyline: naver.maps.Polyline = new naver.maps.Polyline({
                 map: map,
@@ -347,7 +369,7 @@ const MapComponent = ({ center, pathData, gpsData, odomEularData, routeStatus }:
                         </div>
                     </div>
                     <div className={"odom_eular_data_container"}>
-                        <h3>정북 기준 각도</h3>
+                        <h3>차량 각도</h3>
                         <div className="">
                             angle : {currentOdomEular}
                         </div>

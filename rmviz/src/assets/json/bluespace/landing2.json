@@ -2,85 +2,113 @@
     "node_list": [
         {
             "start_node": {
-                "node_id": "201",
+                "node_id": "405",
                 "position": {
-                    "latitude": 37.3061471,
-                    "longitude": 127.2401769
+                    "latitude": 37.3060037,
+                    "longitude": 127.2401598
                 },
-                "type": "",
-                "kind": "connecting",
-                "heading": 219.0,
-                "direction": "",
-                "driving_option": "",
+                "type": "path_node",
+                "kind": "endpoint",
+                "heading": 322,
+                "direction": "forward",
+                "driving_option": "gps",
                 "detection_range": []
             },
             "end_node": {
-                "node_id": "202",
+                "node_id": "404",
                 "position": {
-                    "latitude": 37.3061047,
-                    "longitude": 127.2401450
+                    "latitude": 37.3060379,
+                    "longitude": 127.2401854
                 },
-                "type": "",
+                "type": "path_node",
                 "kind": "waiting",
-                "heading": 220.0,
-                "direction": "",
-                "driving_option": "",
+                "heading": 324.0,
+                "direction": "forward",
+                "driving_option": "gps",
                 "detection_range": []
             }
         },
         {
             "start_node": {
-                "node_id": "202",
+                "node_id": "404",
                 "position": {
-                    "latitude": 37.3061047,
-                    "longitude": 127.2401450
+                    "latitude": 37.3060379,
+                    "longitude": 127.2401854
                 },
-                "type": "",
+                "type": "path_node",
                 "kind": "waiting",
-                "heading": 220.0,
-                "direction": "",
-                "driving_option": "",
+                "heading": 324.0,
+                "direction": "forward",
+                "driving_option": "gps",
                 "detection_range": []
             },
             "end_node": {
-                "node_id": "203",
+                "node_id": "406",
                 "position": {
-                    "latitude": 37.3060612,
-                    "longitude": 127.2401142
+                    "latitude": 37.3061064,
+                    "longitude": 127.2402339
                 },
-                "type": "",
-                "kind": "intersection",
-                "heading": 310.0,
-                "direction": "",
-                "driving_option": "",
+                "type": "path_node",
+                "kind": "waiting",
+                "heading": 151.0,
+                "direction": "forward",
+                "driving_option": "gps",
                 "detection_range": []
             }
         },
         {
             "start_node": {
-                "node_id": "203",
+                "node_id": "406",
                 "position": {
-                    "latitude": 37.3060612,
-                    "longitude": 127.2401142
+                    "latitude": 37.3061064,
+                    "longitude": 127.2402339
                 },
-                "type": "",
-                "kind": "intersection",
-                "heading": 310.0,
-                "direction": "",
-                "driving_option": "",
+                "type": "path_node",
+                "kind": "waiting",
+                "heading": 151.0,
+                "direction": "forward",
+                "driving_option": "gps",
                 "detection_range": []
             },
             "end_node": {
-                "node_id": "204",
+                "node_id": "403",
                 "position": {
-                    "latitude": 37.3061527,
-                    "longitude": 127.2402745
+                    "latitude": 37.3060722,
+                    "longitude": 127.2402109
                 },
-                "type": "",
+                "type": "path_node",
+                "kind": "intersection",
+                "heading": 41.0,
+                "direction": "forward",
+                "driving_option": "gps",
+                "detection_range": []
+            }
+        },
+        {
+            "start_node": {
+                "node_id": "403",
+                "position": {
+                    "latitude": 37.3060722,
+                    "longitude": 127.2402109
+                },
+                "type": "path_node",
+                "kind": "intersection",
+                "heading": 41.0,
+                "direction": "forward",
+                "driving_option": "gps",
+                "detection_range": []
+            },
+            "end_node": {
+                "node_id": "407",
+                "position": {
+                    "latitude": 37.3061118,
+                    "longitude": 127.2401292
+                },
+                "type": "path_node",
                 "kind": "connecting",
-                "heading": 310.0,
-                "direction": "",
-                "driving_option": "",
+                "heading": -1,
+                "direction": "forward",
+                "driving_option": "gps",
                 "detection_range": []
             }
         }
