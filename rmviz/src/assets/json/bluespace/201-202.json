@@ -7,11 +7,11 @@
                     "latitude": 37.3061467,
                     "longitude": 127.2401776
                 },
-                "type": "",
+                "type": "path_node",
                 "kind": "connecting",
                 "heading": 148.0,
-                "direction": "",
-                "driving_option": "",
+                "direction": "forward",
+                "driving_option": "odom",
                 "detection_range": []
             },
             "end_node": {
@@ -20,20 +20,12 @@
                     "latitude": 37.3061114,
                     "longitude": 127.2401561
                 },
-                "type": "",
-                "kind": "waiting",
-                "heading": 148.0,
-                "direction": "",
-                "driving_option": "",
-                "detection_range": [
-                    {
-                        "offset": 4.0,
-                        "width_left": 5.0,
-                        "width_right": 0.5,
-                        "height": 4.0,
-                        "action_code": "driving"
-                    }
-                ]
+                "type": "path_node",
+                "kind": "endpoint",
+                "heading": -1,
+                "direction": "forward",
+                "driving_option": "odom",
+                "detection_range": []
             }
         }
     ]
