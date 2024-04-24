@@ -1,5 +1,5 @@
 import $ from "jquery";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./MapComponents.css";
 
 interface MapComponentProps {
@@ -10,30 +10,30 @@ interface MapComponentProps {
     routeStatus: any;
 }
 
-const MapComponent = ({ center, pathData, gpsData, odomEularData, routeStatus }: MapComponentProps) => {
-    const { naver } = window;
+const MapComponent: React.FC<MapComponentProps> = ({ center, pathData, gpsData, odomEularData, routeStatus }: MapComponentProps) => {
+    const { naver }: Window & typeof globalThis = window;
     const mapRef: React.MutableRefObject<HTMLDivElement | null> = useRef<HTMLDivElement>(null);
 
     let map: naver.maps.Map | null = null;
-    const [currMarker, setCurrMarker] = useState<naver.maps.Marker | null>(null);
-    const [currentGps, setCurrentGps] = useState<any>({
+    const [currMarker, setCurrMarker]: [naver.maps.Marker | null, React.Dispatch<React.SetStateAction<naver.maps.Marker | null>>] = useState<naver.maps.Marker | null>(null);
+    const [currentGps, setCurrentGps]: [any, React.Dispatch<any>] = useState<any>({
         latitude: 0.0,
         longitude: 0.0
     });
-    const [currentOdomEular, setCurrentOdomEular] = useState<number>();
-    const [currentRouteStatus, setCurrentRouteStatus] = useState<any | null>(null);
+    const [currentOdomEular, setCurrentOdomEular]: [number | undefined, React.Dispatch<React.SetStateAction<number | undefined>>] = useState<number>();
+    const [currentRouteStatus, setCurrentRouteStatus]: [any, React.Dispatch<any>] = useState<any | null>(null);
 
     let pathMarkerArray: Array<naver.maps.Marker> = [];
     let pathInfoWindowarray: Array<naver.maps.InfoWindow> = [];
 
-    const [currentMode, setCurrentMode] = useState<string>("KEC");
-    const [defaultZoom, setDefaultZoom] = useState<number>(19);
+    const [currentMode, setCurrentMode]: [string, React.Dispatch<React.SetStateAction<string>>] = useState<string>("KEC");
+    const [defaultZoom, setDefaultZoom]: [number, React.Dispatch<React.SetStateAction<number>>] = useState<number>(19);
 
     const wkValveCoord: naver.maps.LatLng = new naver.maps.LatLng(35.157851, 128.858111);
     const blueSpaceCoord: naver.maps.LatLng = new naver.maps.LatLng(37.305985, 127.2401652);
     const kecCoord: naver.maps.LatLng = new naver.maps.LatLng(36.1137155, 128.3676005);
 
-    const initializeMap = (): void => {
+    const initializeMap: Function = (): void => {
         const openStreetMapType: naver.maps.ImageMapType = new naver.maps.ImageMapType({
             name: "OSM",
             minZoom: 0,
@@ -119,7 +119,7 @@ const MapComponent = ({ center, pathData, gpsData, odomEularData, routeStatus }:
         });
     }
 
-    const initializeRobotMarker = (): void => {
+    const initializeRobotMarker: Function = (): void => {
         const initialCurrMarker: naver.maps.Marker = new naver.maps.Marker({
             position: map!.getCenter(),
             map: map,
@@ -137,7 +137,7 @@ const MapComponent = ({ center, pathData, gpsData, odomEularData, routeStatus }:
         setCurrMarker(initialCurrMarker);
     }
 
-    const addPathMarker = (node: any, is_start: boolean, is_end: boolean): any => {
+    const addPathMarker: Function = (node: any, is_start: boolean, is_end: boolean): any => {
         console.info(`addPathMarker node : ${JSON.stringify(node)}`);
 
         let iconUrl: string = "";
@@ -167,7 +167,7 @@ const MapComponent = ({ center, pathData, gpsData, odomEularData, routeStatus }:
         return marker;
     }
 
-    const getClickHandler = (seq: number): Function => {
+    const getClickHandler: Function = (seq: number): Function => {
         return function (e: any) {
             const marker: naver.maps.Marker = pathMarkerArray[seq];
             const infoWindow: naver.maps.InfoWindow = pathInfoWindowarray[seq];
@@ -180,11 +180,11 @@ const MapComponent = ({ center, pathData, gpsData, odomEularData, routeStatus }:
         }
     }
 
-    const drawPathPolyline = (): void => {
+    const drawPathMarker: Function = (): void => {
         if (pathData) {
             const nodeList: Array<any> = pathData.node_list;
 
-            const uniqueNodeIds: Set<string> = new Set();
+            const uniqueNodeIds: Set<string> = new Set<string>();
             for (const node of nodeList) {
                 uniqueNodeIds.add(node.start_node.node_id);
                 uniqueNodeIds.add(node.end_node.node_id);
@@ -208,50 +208,52 @@ const MapComponent = ({ center, pathData, gpsData, odomEularData, routeStatus }:
                     }
                 }
             }
+        }
+    }
+
+    const drawPathPolyline: Function = (): void => {
+        for (var i = 0, ii = pathMarkerArray.length; i < ii; i++) {
+            naver.maps.Event.addListener(pathMarkerArray[i], "click", getClickHandler(i));
+        }
+
+        let path: Array<any> = [];
+        for (const pathMarker of pathMarkerArray) {
+            const contentString: string = [
+                '<div class="iw_inner">',
+                `   <h3>ID : ${pathMarker!.getTitle().split("/")[0]}</h3>`,
+                `   <p>종류 : ${pathMarker!.getTitle().split("/")[1]}</p>`,
+                `   <p>진출 각도 : ${pathMarker!.getTitle().split("/")[2]}</p>`,
+                `   <p>경도 : ${pathMarker!.getPosition().x}</p>`,
+                `   <p>위도 : ${pathMarker!.getPosition().y}</p>`,
+                '</div>'
+            ].join('');
+
+            const infoWindow: naver.maps.InfoWindow = new naver.maps.InfoWindow({
+                content: contentString
+            });
+
+            pathInfoWindowarray.push(infoWindow);
 
             for (var i = 0, ii = pathMarkerArray.length; i < ii; i++) {
                 naver.maps.Event.addListener(pathMarkerArray[i], "click", getClickHandler(i));
             }
-
-            let path: Array<any> = [];
-            for (const pathMarker of pathMarkerArray) {
-                const contentString: string = [
-                    '<div class="iw_inner">',
-                    `   <h3>ID : ${pathMarker!.getTitle().split("/")[0]}</h3>`,
-                    `   <p>종류 : ${pathMarker!.getTitle().split("/")[1]}</p>`,
-                    `   <p>진출 각도 : ${pathMarker!.getTitle().split("/")[2]}</p>`,
-                    `   <p>경도 : ${pathMarker!.getPosition().x}</p>`,
-                    `   <p>위도 : ${pathMarker!.getPosition().y}</p>`,
-                    '</div>'
-                ].join('');
-
-                const infoWindow: naver.maps.InfoWindow = new naver.maps.InfoWindow({
-                    content: contentString
-                });
-
-                pathInfoWindowarray.push(infoWindow);
-
-                for (var i = 0, ii = pathMarkerArray.length; i < ii; i++) {
-                    naver.maps.Event.addListener(pathMarkerArray[i], "click", getClickHandler(i));
-                }
-                path.push(pathMarker.getPosition());
-            }
-
-            // localStorage.setItem("path", JSON.stringify(path));
-
-            const polyline: naver.maps.Polyline = new naver.maps.Polyline({
-                map: map,
-                path: path,
-                clickable: true,
-                strokeColor: "white",
-                strokeStyle: "line",
-                strokeOpacity: 1.0,
-                strokeWeight: 6.0
-            });
+            path.push(pathMarker.getPosition());
         }
+
+        // localStorage.setItem("path", JSON.stringify(path));
+
+        const polyline: naver.maps.Polyline = new naver.maps.Polyline({
+            map: map,
+            path: path,
+            clickable: true,
+            strokeColor: "white",
+            strokeStyle: "line",
+            strokeOpacity: 1.0,
+            strokeWeight: 6.0
+        });
     }
 
-    useEffect(() => {
+    useEffect((): void => {
         if (mapRef.current && naver && !map) {
             initializeMap();
         } else return;
@@ -259,11 +261,12 @@ const MapComponent = ({ center, pathData, gpsData, odomEularData, routeStatus }:
         initializeRobotMarker();
 
         if (mapRef.current && naver && map) {
+            drawPathMarker();
             drawPathPolyline();
-        }
+        } else return;
     }, [naver, map, pathData]);
 
-    useEffect(() => {
+    useEffect((): void => {
         if (gpsData) {
             setCurrentGps({
                 latitude: parseFloat(gpsData.latitude.toFixed(7)),
@@ -274,7 +277,7 @@ const MapComponent = ({ center, pathData, gpsData, odomEularData, routeStatus }:
         }
     }, [gpsData]);
 
-    useEffect(() => {
+    useEffect((): void => {
         if (odomEularData) {
             setCurrentOdomEular(parseFloat(odomEularData.pose.orientation.y.toFixed(2)));
         }
@@ -286,7 +289,7 @@ const MapComponent = ({ center, pathData, gpsData, odomEularData, routeStatus }:
 
     }, [odomEularData]);
 
-    useEffect(() => {
+    useEffect((): void => {
         if (routeStatus) {
             console.info(`currentRouteStatus : ${JSON.stringify(routeStatus)}`);
 
@@ -298,14 +301,21 @@ const MapComponent = ({ center, pathData, gpsData, odomEularData, routeStatus }:
             }
 
             let status: string = "";
-            if (routeStatus._status_code === 0) {
-                status = "출발";
-            } else if (routeStatus._status_code === 1) {
-                status = "경유지 도착";
-            } else if (routeStatus._status_code === 2) {
-                status = "주행 완료";
-            } else if (routeStatus._status_code === 5) {
-                status = "주행 취소";
+            switch (routeStatus._status_code) {
+                case 0:
+                    status = "출발";
+                    break;
+                case 1:
+                    status = "경유지 도착";
+                    break;
+                case 2:
+                    status = "주행 완료";
+                    break;
+                case 5:
+                    break;
+                default:
+                    status = "주행 취소";
+                    break;
             }
 
             const currRouteStatus: any = {
@@ -318,7 +328,7 @@ const MapComponent = ({ center, pathData, gpsData, odomEularData, routeStatus }:
         }
     }, [routeStatus]);
 
-    useEffect(() => {
+    useEffect((): void => {
         if (mapRef.current) {
             console.info(`currentMode : ${currentMode}`);
             const moveControlsElement = mapRef.current.querySelector('.move_btn_ul');
@@ -363,22 +373,22 @@ const MapComponent = ({ center, pathData, gpsData, odomEularData, routeStatus }:
                     <div className={"gps_data_container"}>
                         <h3>GPS</h3>
                         <div className="">
-                            longitude : {currentGps.longitude}
+                            경도 : {currentGps.longitude}
                             <br></br>
-                            latitude : {currentGps.latitude}
+                            위도 : {currentGps.latitude}
                         </div>
                     </div>
                     <div className={"odom_eular_data_container"}>
                         <h3>차량 각도</h3>
                         <div className="">
-                            angle : {currentOdomEular}
+                            {currentOdomEular}
                         </div>
                     </div>
                     <div className={"route_status_data_container"}>
                         <h3>주행 상태</h3>
                         <div className="">
                             <div className="route_status_current_route">
-                                {currentRouteStatus?.node_info[0]} {"->"} {currentRouteStatus?.node_info[1]}
+                                {currentRouteStatus?.is_driving ? `${currentRouteStatus?.node_info[0]} -> ${currentRouteStatus?.node_info[1]}` : ""}
                             </div>
                             <div className="">
                                 주행 중 : {currentRouteStatus?.driving_flag.toString()}
