@@ -11,6 +11,7 @@
 
 .bluespace_btn_request {
     margin-top: 3%;
+    margin-right: 30px;
     width: 153px;
     height: 65px;
     border-radius: 50px;
@@ -21,12 +22,4 @@
 
 .bluespace_btn_request:hover {
     background-color: #ccc;
-}
-
-.bluespace_btn_emergency_stop {
-    background-color: red;
-}
-
-.bluespace_btn_emergency_resume {
-    background-color: green;
 }

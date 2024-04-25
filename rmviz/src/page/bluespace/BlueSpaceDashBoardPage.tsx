@@ -30,6 +30,7 @@ export default function BlueSpaceDashBoardPage() {
     const requestRouteToPoseTopic: string = `${requestTopicFormat}/route_to_pose`;
     const requestEmergencyTopic: string = `${requestTopicFormat}/can/emergency`;
     const requestGoalCancelTopic: string = `${requestTopicFormat}/goal/cancel`;
+    const requestInitTopic: string = `${requestTopicFormat}/can/init`;
 
     const responseTopicFormat: string = "/rms/ktp/dummy/response";
     const responsePathTopic: string = `${responseTopicFormat}/path`;
@@ -88,6 +89,13 @@ export default function BlueSpaceDashBoardPage() {
         setPathData(null);
     }
 
+    const onInitClick = (): void => {
+        onClickMqttPublish(mqttClient!, requestInitTopic, {
+            "can_sign_tran_state": true
+        });
+        setPathData(null);
+    }
+
     const handleResponseMQTTCallback = (mqttClient: MqttClient): void => {
         mqttClient.client.on("message", (topic: string, payload: Buffer, packet: IPublishPacket) => {
             if (topic === responsePathTopic) {
@@ -133,7 +141,17 @@ export default function BlueSpaceDashBoardPage() {
                 <TopComponents />
             </div>
             <div className="map_component_container">
-                <MapComponent center={blueSpaceCoord} pathData={pathData} gpsData={gpsData} odomEularData={odomEularData} routeStatus={routeStatus} />
+                <MapComponent
+                    center={blueSpaceCoord}
+                    pathData={pathData}
+                    gpsData={gpsData}
+                    odomEularData={odomEularData}
+                    routeStatus={routeStatus}
+                    onEmergencyStopClick={onEmergencyStopClick}
+                    onEmergencyResumeClick={onEmergencyResumeClick}
+                    onGoalCancelClick={onGoalCancelClick}
+                    onInitClick={onInitClick}
+                />
             </div>
             <div className="request_component_container">
                 <BlueSpaceRequestComponent
@@ -146,9 +164,6 @@ export default function BlueSpaceDashBoardPage() {
                     onLanding2Click={onLanding2Click}
                     onGPSShadow1Click={onGPSShadow1Click}
                     onGPSShadow2Click={onGPSShadow2Click}
-                    onEmergencyStopClick={onEmergencyStopClick}
-                    onEmergencyResumeClick={onEmergencyResumeClick}
-                    onGoalCancelClick={onGoalCancelClick}
                 />
             </div>
         </div>

@@ -14,6 +14,7 @@ MQTT_CAN_EMERGENCY_STOP_TOPIC: str = "/rms/ktp/dummy/request/can/emergency";
 MQTT_ROUTE_TO_POSE_TOPIC: str = "/rms/ktp/dummy/request/route_to_pose";
 MQTT_ROUTE_TO_POSE_STATUS_TOPIC: str = "/rms/ktp/dummy/response/route_to_pose/status";
 MQTT_GOAL_CANCEL_TOPIC: str = "/rms/ktp/dummy/request/goal/cancel";
+MQTT_CAN_INIT_TOPIC: str = "/rms/ktp/dummy/request/can/init";
 
 
 class RequestBridge:
@@ -52,6 +53,9 @@ class RequestBridge:
         
         self.__mqtt_client.subscribe(topic=MQTT_GOAL_CANCEL_TOPIC, qos=0);
         self.__mqtt_client.client.message_callback_add(sub=MQTT_GOAL_CANCEL_TOPIC, callback=self.__route_processor.mqtt_goal_cancel_cb);
+        
+        self.__mqtt_client.subscribe(topic=MQTT_CAN_INIT_TOPIC, qos=0);
+        self.__mqtt_client.client.message_callback_add(sub=MQTT_CAN_INIT_TOPIC, callback=self.__route_processor.mqtt_can_init_cb);
         
     
 

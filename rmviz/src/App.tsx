@@ -1,9 +1,8 @@
 import { Route, Switch } from 'react-router-dom';
 import './App.css';
 import BlueSpaceDashBoardPage from './page/bluespace/BlueSpaceDashBoardPage';
-import DataBoardPage from './page/databoard/DataBoardPage';
-import KECDashBoardPage from './page/kec/KECDashBoardPage';
 import DashBoardPage from './page/dashboard/DashBoardPage';
+import DataBoardPage from './page/databoard/DataBoardPage';
 
 function App() {
   return (
@@ -11,9 +10,6 @@ function App() {
       <Switch>
         <Route exact path={"/"}>
           <DashBoardPage />
-        </Route>
-        <Route exact path={"/kec"}>
-          <KECDashBoardPage />
         </Route>
         <Route exact path={"/bluespace"}>
           <BlueSpaceDashBoardPage />
