@@ -27,7 +27,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ center, pathData, gpsData, 
     let pathInfoWindowarray: Array<naver.maps.InfoWindow> = [];
 
     const [currentMode, setCurrentMode]: [string, React.Dispatch<React.SetStateAction<string>>] = useState<string>("KEC");
-    const [defaultZoom, setDefaultZoom]: [number, React.Dispatch<React.SetStateAction<number>>] = useState<number>(19);
+    const [defaultZoom, setDefaultZoom]: [number, React.Dispatch<React.SetStateAction<number>>] = useState<number>(20);
 
     const wkValveCoord: naver.maps.LatLng = new naver.maps.LatLng(35.157851, 128.858111);
     const blueSpaceCoord: naver.maps.LatLng = new naver.maps.LatLng(37.305985, 127.2401652);
@@ -68,55 +68,6 @@ const MapComponent: React.FC<MapComponentProps> = ({ center, pathData, gpsData, 
         }
         map = new naver.maps.Map(mapRef.current, mapOpts);
         map!.mapTypes.set("osm", openStreetMapType);
-
-        naver.maps.Event.once(map, 'init', function () {
-            const controlHtml: string =
-                `
-            <div style="position: absolute; z-index: 100; margin: 0px; padding: 0px; pointer-events: none; top: 0px;">
-                <div style="border: 0px; margin: 0px; padding: 0px; pointer-events: none; float: left;"">
-                    <div style="position: relative; z-index: 69; margin: 10px; pointer-events: auto;">
-                        <ul class="move_btn_ul">
-                            <li class="move_btn_li"><button class="move_btn move_btn_wk">부산 원광밸브</button></li>
-                            <li class="move_btn_li"><button class="move_btn move_btn_bs">용인 블루스페이스</button></li>
-                            <li class="move_btn_li"><button class="move_btn move_btn_kec">KEC 구미</button></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            `;
-            const moveControls: naver.maps.CustomControl = new naver.maps.CustomControl(controlHtml, {
-                position: naver.maps.Position.TOP_LEFT
-            });
-            moveControls.setMap(map);
-
-            naver.maps.Event.addDOMListener(moveControls.getElement(), 'click', function (e: Event) {
-                const target: HTMLElement = e.target as HTMLElement;
-                const locationName: string = target.textContent || "";
-
-                switch (locationName.trim()) {
-                    case "부산 원광밸브":
-                        setCurrentMode("WkValve");
-                        setDefaultZoom(19);
-                        map!.setZoom(19);
-                        map!.setCenter(wkValveCoord);
-                        break;
-                    case "용인 블루스페이스":
-                        setCurrentMode("BlueSpace");
-                        setDefaultZoom(map!.getMaxZoom());
-                        map!.setZoom(map!.getMaxZoom());
-                        map!.setCenter(blueSpaceCoord);
-                        break;
-                    case "KEC 구미":
-                        setCurrentMode("KEC");
-                        setDefaultZoom(19);
-                        map!.setZoom(19);
-                        map!.setCenter(kecCoord);
-                        break;
-                    default:
-                        break;
-                }
-            });
-        });
     }
 
     const initializeRobotMarker: Function = (): void => {
@@ -153,7 +104,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ center, pathData, gpsData, 
         const marker: naver.maps.Marker = new naver.maps.Marker({
             position: new naver.maps.LatLng(node.position.latitude, node.position.longitude),
             map: map,
-            title: `${node.node_id}/${node.kind}/${node.heading}`,
+            title: `${node.node_id}/${node.kind}/${node.heading}/${node.driving_option}`,
             icon: {
                 url: iconUrl,
                 size: new naver.maps.Size(30, 30),
@@ -162,7 +113,6 @@ const MapComponent: React.FC<MapComponentProps> = ({ center, pathData, gpsData, 
                 anchor: new naver.maps.Point(12, 34)
             }
         });
-
 
         return marker;
     }
@@ -223,6 +173,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ center, pathData, gpsData, 
                 `   <h3>ID : ${pathMarker!.getTitle().split("/")[0]}</h3>`,
                 `   <p>종류 : ${pathMarker!.getTitle().split("/")[1]}</p>`,
                 `   <p>진출 각도 : ${pathMarker!.getTitle().split("/")[2]}</p>`,
+                `   <p>주행 옵션 : ${pathMarker!.getTitle().split("/")[3]}</p>`,
                 `   <p>경도 : ${pathMarker!.getPosition().x}</p>`,
                 `   <p>위도 : ${pathMarker!.getPosition().y}</p>`,
                 '</div>'
@@ -240,17 +191,21 @@ const MapComponent: React.FC<MapComponentProps> = ({ center, pathData, gpsData, 
             path.push(pathMarker.getPosition());
         }
 
-        // localStorage.setItem("path", JSON.stringify(path));
-
         const polyline: naver.maps.Polyline = new naver.maps.Polyline({
             map: map,
             path: path,
             clickable: true,
             strokeColor: "white",
             strokeStyle: "line",
+            strokeLineCap: "round",
+            strokeLineJoin: "round",
             strokeOpacity: 1.0,
-            strokeWeight: 6.0
+            strokeWeight: 5.0
         });
+    }
+
+    const changeMapCenter = (coord: naver.maps.Coord): void => {
+        map?.setCenter(coord);
     }
 
     useEffect((): void => {
@@ -263,6 +218,11 @@ const MapComponent: React.FC<MapComponentProps> = ({ center, pathData, gpsData, 
         if (mapRef.current && naver && map) {
             drawPathMarker();
             drawPathPolyline();
+            setDefaultZoom(21);
+
+            if (currMarker) {
+                changeMapCenter(currMarker!.getPosition());
+            }
         } else return;
     }, [naver, map, pathData]);
 
@@ -328,33 +288,6 @@ const MapComponent: React.FC<MapComponentProps> = ({ center, pathData, gpsData, 
         }
     }, [routeStatus]);
 
-    useEffect((): void => {
-        if (mapRef.current) {
-            console.info(`currentMode : ${currentMode}`);
-            const moveControlsElement = mapRef.current.querySelector('.move_btn_ul');
-
-            if (moveControlsElement) {
-                console.info(`li`);
-                const li = moveControlsElement.querySelector('.move_btn_li');
-
-                if (li) {
-                    switch (li.textContent!.trim()) {
-                        case "부산 원광밸브":
-                            moveControlsElement.classList.add('active');
-                            break;
-                        default:
-                            break;
-                    }
-                    if (li.textContent!.trim() === currentMode) {
-                        moveControlsElement.classList.add('active');
-                    } else {
-                        moveControlsElement.classList.remove('active');
-                    }
-                }
-            }
-        }
-    }, [currentMode]);
-
     useEffect(() => {
         return () => {
             if (map) {
@@ -388,7 +321,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ center, pathData, gpsData, 
                         <h3>주행 상태</h3>
                         <div className="">
                             <div className="route_status_current_route">
-                                {currentRouteStatus?.is_driving ? `${currentRouteStatus?.node_info[0]} -> ${currentRouteStatus?.node_info[1]}` : ""}
+                                {currentRouteStatus?.node_info[0]} {currentRouteStatus?.is_driving ? `->` : ""} {currentRouteStatus?.node_info[1]}
                             </div>
                             <div className="">
                                 주행 중 : {currentRouteStatus?.driving_flag.toString()}

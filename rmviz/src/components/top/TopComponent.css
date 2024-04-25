@@ -1,38 +1,22 @@
 .top_components {
-    width: 1920px;
-    margin: 0 auto;
+    position: relative;
     display: flex;
-    justify-content: center;
+    align-items: center;
+    justify-content: space-between;
+    width: 1857px;
 }
 
-.top_title_container {
-    width: 1300px;
+.top_logo {
+    margin: 0 auto;
 }
 
-.top_dash_board_link {
-    font-size: 30px;
-    font-weight: bold;
-    text-decoration: none;
-    margin-right: auto;
+.top_logo_title {
+    font-size: 24px;
 }
 
-#top_dash_board_link_title {
-    color: black;
-}
-
-#top_dash_board_link_title:hover {
-    color: grey;
-}
-
-.top_data_board_link {
-    margin-left: auto;
-    text-decoration: none;
-}
-
-#top_data_board_link_title {
-    color: black;
-}
-
-#top_data_board_link_title:hover {
-    color: grey;
+.top_dropdown_toggle_label {
+    cursor: pointer;
+    position: absolute;
+    font-size: 24px;
+    margin-left: 20px;
 }

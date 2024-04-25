@@ -1,0 +1,25 @@
+.top_components ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    position: absolute;
+    left: 0;
+    top: calc(100%);
+    background-color: white;
+    border: 1px solid #ccc;
+    z-index: 1;
+}
+
+.top_components ul li {
+    cursor: pointer;
+}
+
+.top_components ul li:hover {
+    background-color: #f0f0f0;
+}
+
+.top_dropdown_menu {
+    width: 200px;
+    height: 30px;
+    border-bottom: 2px solid #ccc;
+}

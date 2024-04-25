@@ -1,11 +1,11 @@
 .top_component_container {
-    width: 100%;
+    width: 1857px;
     border-bottom: 2px solid #ccc;
 }
 
 @media all and (max-width: 1920px) {
     .dash_board_container {
-        width: 1920px;
+        width: 1857px;
         height: 870px;
         /* width: 1775px;
         height: 870px; */
