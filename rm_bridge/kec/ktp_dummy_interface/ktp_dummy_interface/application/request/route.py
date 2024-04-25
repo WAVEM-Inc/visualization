@@ -108,21 +108,25 @@ class RouteProcessor:
             mqtt_json: Any = json.loads(mqtt_message.payload);
             self.__log.info(f"{mqtt_topic} node : {json.dumps(mqtt_json, indent=4)}");
             
-            node_list: list[Any] = mqtt_json["node_list"];
-            self.__route_to_pose_goal_list_size = len(node_list);
-            self.__log.info(f"{mqtt_topic} node_list_size : {self.__route_to_pose_goal_list_size}");
-            
-            for node in node_list:
-                goal: RouteToPose.Goal = json_to_ros_message(log=self.__log, json_payload=json.loads(json.dumps(node)), target_ros_class=RouteToPose.Goal);
-                self.__log.info(f"{mqtt_topic} cb\n{json.dumps(obj=message_conversion.extract_values(inst=goal), indent=4)}");
-                self.__route_to_pose_goal_list.append(goal);
+            if self.__route_to_pose_goal_list_size == 0:
+                node_list: list[Any] = mqtt_json["node_list"];
+                self.__route_to_pose_goal_list_size = len(node_list);
+                self.__log.info(f"{mqtt_topic} node_list_size : {self.__route_to_pose_goal_list_size}");
                 
-                if (len(self.__route_to_pose_goal_list) == self.__route_to_pose_goal_list_size):
-                    self.__log.info(f"{mqtt_topic} converting node to goal finished...");
-                    break;
+                for node in node_list:
+                    goal: RouteToPose.Goal = json_to_ros_message(log=self.__log, json_payload=json.loads(json.dumps(node)), target_ros_class=RouteToPose.Goal);
+                    self.__log.info(f"{mqtt_topic} cb\n{json.dumps(obj=message_conversion.extract_values(inst=goal), indent=4)}");
+                    self.__route_to_pose_goal_list.append(goal);
+                    
+                    if (len(self.__route_to_pose_goal_list) == self.__route_to_pose_goal_list_size):
+                        self.__log.info(f"{mqtt_topic} converting node to goal finished...");
+                        break;
 
-            self.__mqtt_client.publish(topic=MQTT_PATH_TOPIC, payload=json.dumps(mqtt_json), qos=0);
-            self.route_to_pose_send_goal();
+                self.__mqtt_client.publish(topic=MQTT_PATH_TOPIC, payload=json.dumps(mqtt_json), qos=0);
+                self.route_to_pose_send_goal();
+            else:
+                self.__log.error(f"{mqtt_topic} navigation is already proceeding...");
+                return;
         except KeyError as ke:
             self.__log.error(f"Invalid JSON Key in MQTT {mqtt_topic} subscription callback: {ke}");
             return;
@@ -206,6 +210,7 @@ class RouteProcessor:
                 self.__log.info(f"{ROUTE_TO_POSE_ACTION} navigation finished...");
                 self.__route_to_pose_goal_index = 0;
                 self.__route_to_pose_goal_list = [];
+                self.__route_to_pose_goal_list_size = 0;
             else:
                 self.route_to_pose_notify_status(driving_flag=False, status_code=1);
                 self.__route_to_pose_goal_index = self.__route_to_pose_goal_index + 1;
@@ -221,22 +226,18 @@ class RouteProcessor:
             self.__log.info(f"{ROUTE_TO_POSE_ACTION} cancel callback");
             self.__log.info(f"\n{json.dumps(mqtt_json, indent=4)}");
             
-            if len(self.__route_to_pose_goal_list) != 0:
-                self.route_to_pose_notify_status(driving_flag=False, status_code=5);
-                self.__route_to_pose_goal_list = [];
-                self.__route_to_pose_goal_index = 0;
-                
-                if self.__route_to_pose_goal_handle != None:
-                    self.__log.info(f"{ROUTE_TO_POSE_ACTION} goal_handle : {json.dumps(message_conversion.extract_values(inst=self.__route_to_pose_goal_handle), 4)}");
-                    cancel_goal_future: Future = self.__route_to_pose_action_client.cancel_goal_async(self.__route_to_pose_goal_handle);
-                else:
-                    self.__log.error(f"{ROUTE_TO_POSE_ACTION} goal_handle is None");
-                    
-                self.__route_to_pose_goal_handle = None;
-                self.__log.info(f"{ROUTE_TO_POSE_ACTION} goal cancelled");
+            self.route_to_pose_notify_status(driving_flag=False, status_code=5);
+            self.__route_to_pose_goal_list = [];
+            self.__route_to_pose_goal_index = 0;
+            self.__route_to_pose_goal_list_size = 0;
+            
+            if self.__route_to_pose_goal_handle != None:
+                self.__log.info(f"{ROUTE_TO_POSE_ACTION} goal_handle : {json.dumps(message_conversion.extract_values(inst=self.__route_to_pose_goal_handle), 4)}");
+                cancel_goal_future: Future = self.__route_to_pose_action_client.cancel_goal_async(self.__route_to_pose_goal_handle);
             else:
-                self.__log.error(f"{ROUTE_TO_POSE_ACTION} goal is None");
-                return;
+                self.__log.error(f"{ROUTE_TO_POSE_ACTION} goal_handle is None");
+            self.__route_to_pose_goal_handle = None;
+            self.__log.info(f"{ROUTE_TO_POSE_ACTION} goal cancelled");
         except KeyError as ke:
             self.__log.error(f"Invalid JSON Key in MQTT {mqtt_topic} subscription callback: {ke}");
             return;

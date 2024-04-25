@@ -9,7 +9,7 @@
                 },
                 "type": "path_node",
                 "kind": "endpoint",
-                "heading": 142,
+                "heading": 152,
                 "direction": "backward",
                 "driving_option": "gps",
                 "detection_range": []
@@ -22,7 +22,7 @@
                 },
                 "type": "path_node",
                 "kind": "waiting",
-                "heading": 142.0,
+                "heading": 152.0,
                 "direction": "backward",
                 "driving_option": "gps",
                 "detection_range": []
@@ -37,7 +37,7 @@
                 },
                 "type": "path_node",
                 "kind": "waiting",
-                "heading": 142.0,
+                "heading": 152.0,
                 "direction": "backward",
                 "driving_option": "gps",
                 "detection_range": []
@@ -50,7 +50,7 @@
                 },
                 "type": "path_node",
                 "kind": "waiting",
-                "heading": 151.0,
+                "heading": 159.0,
                 "direction": "forward",
                 "driving_option": "gps",
                 "detection_range": []
@@ -65,7 +65,7 @@
                 },
                 "type": "path_node",
                 "kind": "waiting",
-                "heading": 151.0,
+                "heading": 159.0,
                 "direction": "forward",
                 "driving_option": "gps",
                 "detection_range": []
@@ -78,7 +78,7 @@
                 },
                 "type": "path_node",
                 "kind": "intersection",
-                "heading": 41.0,
+                "heading": 66.0,
                 "direction": "forward",
                 "driving_option": "gps",
                 "detection_range": []
@@ -93,7 +93,7 @@
                 },
                 "type": "path_node",
                 "kind": "intersection",
-                "heading": 41.0,
+                "heading": 66.0,
                 "direction": "forward",
                 "driving_option": "gps",
                 "detection_range": []

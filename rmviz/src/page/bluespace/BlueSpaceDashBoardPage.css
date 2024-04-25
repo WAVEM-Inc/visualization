@@ -3,7 +3,7 @@
     border-bottom: 2px solid #ccc;
 }
 
-@media all and (max-width: 1024px) {
+/* @media all and (max-width: 1024px) {
     .dash_board_container {
         width: 1024px;
         height: 768px;
@@ -29,4 +29,4 @@
         width: 1920px;
         height: 1080px;
     }
-}
+} */

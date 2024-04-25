@@ -20,12 +20,12 @@
     justify-content: space-between;
 }
 
-.data_container > div {
+.data_container>div {
     margin: 0 auto;
     border-bottom: 2px solid #ccc;
 }
 
-.data_container > div > div {
+.data_container>div>div {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -34,18 +34,18 @@
 }
 
 .gps_data_container {
-    height: 120px;
-}
-
-.odom_eular_data_container {
-    height: 100px;
-}
-
-.route_status_data_container {
     height: 150px;
 }
 
-.route_status_current_route {
+.odom_eular_data_container {
+    height: 80px;
+}
+
+.route_status_data_container {
+    height: 140px;
+}
+
+.route_status_current_route_container {
     font-size: 20px;
     font-weight: bold;
 }
@@ -63,7 +63,6 @@
     height: 65px;
     border-radius: 50px;
     font-size: 17px;
-    background-color: #fff;
     font-weight: bold;
 }
 
@@ -90,39 +89,61 @@
     font-size: 15px;
 }
 
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 1023px) {
     .map_container {
         width: 1024px;
         height: 400px;
     }
+
     #map {
         width: 800px;
         height: 100%;
     }
+
     .data_container {
         width: calc(1024px - 800px);
         height: 400px;
     }
 }
 
-@media screen and (min-width: 1025px) and (max-width: 1280px) {
+@media screen and (min-width: 1024px) and (max-width: 1279px) {
     .map_container {
-        width: 1280px;
+        width: 1025px;
         height: 500px;
     }
     #map {
-        width: 1080px;
-        height: 100%;
+        width: 800px;
+        height: 500px;
     }
     .data_container {
-        width: calc(1280px - 1080px);
+        width: calc(1025px - 800px);
         height: 500px;
+    }
+    .gps_data_container {
+        height: 100px;
+        font-size: 10px;
+    }
+    .odom_eular_data_container {
+        height: 70px;
+        font-size: 10px;
+    }
+    .route_status_data_container {
+        font-size: 10px;
+        height: 100px;
+    }
+    .route_request_btn_container {
+        height: 190px;
+    }
+    .route_btn_request {
+        width: 80px;
+        height: 50px;
+        font-size: 12px;
     }
 }
 
-@media screen and (min-width: 1281px) and (max-width: 1440px) {
+@media screen and (min-width: 1280px) and (max-width: 1439px) {
     .map_container {
-        width: 1300px;
+        width: 1280px;
         height: 600px;
     }
     #map {
@@ -130,37 +151,58 @@
         height: 100%;
     }
     .data_container {
-        width: calc(1300px - 1000px);
+        width: calc(1280px - 1000px);
         height: 600px;
     }
+    .route_request_btn_container {
+        height: 170px;
+    }
+    .route_btn_request {
+        width: 100px;
+        height: 50px;
+        font-size: 12px;
+    }
 }
 
-@media screen and (min-width: 1440px) and (max-width: 1650px) {
+@media screen and (min-width: 1440px) and (max-width: 1590px) {
     .map_container {
-        width: 1500px;
-        height: 750px;
+        width: 1440px;
+        height: 650px;
     }
     #map {
-        width: 1200px;
-        height: 100%;
+        width: 1080px;
+        height: 650px;
     }
     .data_container {
-        width: calc(1500px - 1200px);
-        height: 750px;
+        width: calc(1440px - 1080px);
+        height: 650px;
+    }
+    .route_request_btn_container {
+        height: 220px;
+    }
+    .route_btn_request {
+        width: 100px;
+        height: 50px;
+        font-size: 12px;
     }
 }
 
-/* @media screen and (min-width: 1401px) and (max-width: 1920px) {
+@media screen and (min-width: 1600px) and (max-width: 1799px) {
     .map_container {
-        width: 1857px;
-        height: 750px;
-    }
-    #map {
         width: 1600px;
-        height: 100%;
+        height: 1050px;
+    }
+    #map {
+        width: 1480px;
+        height: 1050px;
     }
     .data_container {
-        width: calc(1857px - 1600px);
-        height: 750px;
+        width: calc(1600px - 1480px);
+        height: 1050px;
     }
-} */
+    .route_btn_request {
+        width: 100px;
+        height: 50px;
+        font-size: 12px;
+    }
+}

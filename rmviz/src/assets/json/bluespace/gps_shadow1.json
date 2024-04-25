@@ -8,7 +8,7 @@
                     "longitude": 127.2401278
                 },
                 "type": "path_node",
-                "kind": "connecting",
+                "kind": "waiting",
                 "heading": 241.0,
                 "direction": "forward",
                 "driving_option": "gps",
@@ -22,7 +22,7 @@
                 },
                 "type": "path_node",
                 "kind": "intersection",
-                "heading": 299.0,
+                "heading": 338.0,
                 "direction": "forward",
                 "driving_option": "gps",
                 "detection_range": []
@@ -37,7 +37,7 @@
                 },
                 "type": "path_node",
                 "kind": "intersection",
-                "heading": 299.0,
+                "heading": 338.0,
                 "direction": "forward",
                 "driving_option": "gps",
                 "detection_range": []

@@ -31,6 +31,8 @@ const MapComponent: React.FC<MapComponentProps> = ({
     let map: naver.maps.Map | null = null;
     const [currMarker, setCurrMarker]: [naver.maps.Marker | null, React.Dispatch<React.SetStateAction<naver.maps.Marker | null>>] = useState<naver.maps.Marker | null>(null);
     const [currentGps, setCurrentGps]: [any, React.Dispatch<any>] = useState<any>({
+        status: 0,
+        service: 0,
         latitude: 0.0,
         longitude: 0.0
     });
@@ -48,24 +50,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
     const kecCoord: naver.maps.LatLng = new naver.maps.LatLng(36.1137155, 128.3676005);
 
     const initializeMap: Function = (): void => {
-        const openStreetMapType: naver.maps.ImageMapType = new naver.maps.ImageMapType({
-            name: "OSM",
-            minZoom: 0,
-            maxZoom: defaultZoom,
-            tileSize: new naver.maps.Size(256, 256),
-            projection: naver.maps.EPSG3857,
-            repeatX: true,
-            tileSet: [
-                "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                "https://b.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                "https://c.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            ],
-            provider: [{
-                title: " /OpenStreetMap",
-                link: "http://www.openstreetmap.org/copyright"
-            }]
-        });
-
         const mapOpts: any = {
             center: center,
             mapTypeId: naver.maps.MapTypeId.HYBRID,
@@ -81,7 +65,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
             }
         }
         map = new naver.maps.Map(mapRef.current, mapOpts);
-        map!.mapTypes.set("osm", openStreetMapType);
     }
 
     const initializeRobotMarker: Function = (): void => {
@@ -244,6 +227,8 @@ const MapComponent: React.FC<MapComponentProps> = ({
     useEffect((): void => {
         if (gpsData) {
             setCurrentGps({
+                status: gpsData.status.status,
+                service: gpsData.status.service,
                 latitude: parseFloat(gpsData.latitude.toFixed(7)),
                 longitude: parseFloat(gpsData.longitude.toFixed(7))
             });
@@ -321,6 +306,10 @@ const MapComponent: React.FC<MapComponentProps> = ({
                     <div className={"gps_data_container"}>
                         <h3>GPS</h3>
                         <div className="">
+                            Status : {currentGps.status}
+                            <br></br>
+                            Service : {currentGps.service}
+                            <br></br>
                             경도 : {currentGps.longitude}
                             <br></br>
                             위도 : {currentGps.latitude}
@@ -335,7 +324,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
                     <div className={"route_status_data_container"}>
                         <h3>주행 상태</h3>
                         <div className="">
-                            <div className="route_status_current_route">
+                            <div className="route_status_current_route_container">
                                 {currentRouteStatus?.is_driving ? `${currentRouteStatus?.node_info[0]} -> ${currentRouteStatus?.node_info[1]}` : ""}
                             </div>
                             <div className="">
@@ -347,12 +336,10 @@ const MapComponent: React.FC<MapComponentProps> = ({
                         </div>
                     </div>
                     <div className="route_request_btn_container">
-                        <div className="">
-                            <button className={"route_btn_request route_btn_can_init"} onClick={onInitClick}>CAN 초기화</button>
-                            <button className={"route_btn_request route_btn_emergency_stop"} onClick={onEmergencyStopClick}>비상 정지</button>
-                            <button className={"route_btn_request route_btn_emergency_stop"} onClick={onGoalCancelClick}>주행 취소</button>
-                            <button className={"route_btn_request route_btn_emergency_resume"} onClick={onEmergencyResumeClick}>재개</button>
-                        </div>
+                        <button className={"route_btn_request route_btn_can_init"} onClick={onInitClick}>CAN 초기화</button>
+                        <button className={"route_btn_request route_btn_emergency_stop"} onClick={onEmergencyStopClick}>비상 정지</button>
+                        <button className={"route_btn_request route_btn_emergency_stop"} onClick={onGoalCancelClick}>주행 취소</button>
+                        <button className={"route_btn_request route_btn_emergency_resume"} onClick={onEmergencyResumeClick}>재개</button>
                     </div>
                 </div>
             </div>
