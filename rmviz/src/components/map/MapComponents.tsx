@@ -1,6 +1,5 @@
 import $ from "jquery";
 import React, { useEffect, useRef, useState } from "react";
-import { useDevice } from "../../utils/Utils";
 import "./MapComponents.css";
 
 interface MapComponentProps {
@@ -188,6 +187,8 @@ const MapComponent: React.FC<MapComponentProps> = ({
                 `   <h3>ID : ${pathMarker!.getTitle().split("/")[0]}</h3>`,
                 `   <p>종류 : ${pathMarker!.getTitle().split("/")[1]}</p>`,
                 `   <p>진출 각도 : ${pathMarker!.getTitle().split("/")[2]}</p>`,
+                `   <p>주행 옵션 : ${pathMarker!.getTitle().split("/")[3]}</p>`,
+                `   <p>주행 방향 : ${pathMarker!.getTitle().split("/")[4]}</p>`,
                 `   <p>경도 : ${pathMarker!.getPosition().x}</p>`,
                 `   <p>위도 : ${pathMarker!.getPosition().y}</p>`,
                 '</div>'
@@ -345,8 +346,16 @@ const MapComponent: React.FC<MapComponentProps> = ({
                             </div>
                         </div>
                     </div>
+                    <div className="route_request_btn_container">
+                        <div className="">
+                            <button className={"route_btn_request route_btn_can_init"} onClick={onInitClick}>CAN 초기화</button>
+                            <button className={"route_btn_request route_btn_emergency_stop"} onClick={onEmergencyStopClick}>비상 정지</button>
+                            <button className={"route_btn_request route_btn_emergency_stop"} onClick={onGoalCancelClick}>주행 취소</button>
+                            <button className={"route_btn_request route_btn_emergency_resume"} onClick={onEmergencyResumeClick}>재개</button>
+                        </div>
+                    </div>
                 </div>
-            }
+            </div>
         </div>
     );
 };
