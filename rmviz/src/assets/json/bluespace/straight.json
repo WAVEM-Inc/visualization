@@ -4,12 +4,12 @@
             "start_node": {
                 "node_id": "101",
                 "position": {
-                    "latitude": 37.3059884,
-                    "longitude": 127.2401558
+                    "latitude": 37.30598829986177,
+                    "longitude": 127.24015720091757
                 },
-                "type": "path_node",
-                "kind": "connecting",
-                "heading": 280.0,
+                "type": "workplace_node",
+                "kind": "endpoint",
+                "heading": 339,
                 "direction": "forward",
                 "driving_option": "gps",
                 "detection_range": []

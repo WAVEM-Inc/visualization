@@ -9,7 +9,7 @@
                 },
                 "type": "workplace_node",
                 "kind": "endpoint",
-                "heading": 355.5,
+                "heading": 2.7,
                 "direction": "forward",
                 "driving_option": "odom",
                 "detection_range": []
@@ -22,7 +22,7 @@
                 },
                 "type": "path_node",
                 "kind": "connecting",
-                "heading": 329.8,
+                "heading": 334,
                 "direction": "forward",
                 "driving_option": "gps",
                 "detection_range": []
@@ -37,7 +37,7 @@
                 },
                 "type": "path_node",
                 "kind": "connecting",
-                "heading": 329.8,
+                "heading": 334,
                 "direction": "forward",
                 "driving_option": "gps",
                 "detection_range": []
