@@ -15,7 +15,7 @@ import * as emergencyStopJSON from "../../assets/json/common/emergency_stop.json
 import BlueSpaceRequestComponent from "../../components/bluespace/BlueSpaceRequestComponent";
 import MapComponent from "../../components/map/MapComponents";
 import TopComponents from "../../components/top/TopComponent";
-import { onClickMqttPublish, useDevice } from "../../utils/Utils";
+import { onClickMqttPublish } from "../../utils/Utils";
 import "./BlueSpaceDashBoardPage.css";
 
 export default function BlueSpaceDashBoardPage() {
@@ -137,40 +137,36 @@ export default function BlueSpaceDashBoardPage() {
     }, [routeStatus]);
 
     return (
-        <div className="">
-            {useDevice() &&
-                <div className="dash_board_container">
-                    <div className="top_component_container">
-                        <TopComponents />
-                    </div>
-                    <div className="map_component_container">
-                        <MapComponent
-                            center={blueSpaceCoord}
-                            pathData={pathData}
-                            gpsData={gpsData}
-                            odomEularData={odomEularData}
-                            routeStatus={routeStatus}
-                            onEmergencyStopClick={onEmergencyStopClick}
-                            onEmergencyResumeClick={onEmergencyResumeClick}
-                            onGoalCancelClick={onGoalCancelClick}
-                            onInitClick={onInitClick}
-                        />
-                    </div>
-                    <div className="request_component_container">
-                        <BlueSpaceRequestComponent
-                            on201202Click={on201202Click}
-                            onStraightClick={onStraightClick}
-                            onIntersection1Click={onIntersection1Click}
-                            onIntersection2Click={onIntersection2Click}
-                            onLoadingClick={onLoadingClick}
-                            onLanding1Click={onLanding1Click}
-                            onLanding2Click={onLanding2Click}
-                            onGPSShadow1Click={onGPSShadow1Click}
-                            onGPSShadow2Click={onGPSShadow2Click}
-                        />
-                    </div>
-                </div>
-            }
+        <div className="dash_board_container">
+            <div className="top_component_container">
+                <TopComponents />
+            </div>
+            <div className="map_component_container">
+                <MapComponent
+                    center={blueSpaceCoord}
+                    pathData={pathData}
+                    gpsData={gpsData}
+                    odomEularData={odomEularData}
+                    routeStatus={routeStatus}
+                    onEmergencyStopClick={onEmergencyStopClick}
+                    onEmergencyResumeClick={onEmergencyResumeClick}
+                    onGoalCancelClick={onGoalCancelClick}
+                    onInitClick={onInitClick}
+                />
+            </div>
+            <div className="request_component_container">
+                <BlueSpaceRequestComponent
+                    on201202Click={on201202Click}
+                    onStraightClick={onStraightClick}
+                    onIntersection1Click={onIntersection1Click}
+                    onIntersection2Click={onIntersection2Click}
+                    onLoadingClick={onLoadingClick}
+                    onLanding1Click={onLanding1Click}
+                    onLanding2Click={onLanding2Click}
+                    onGPSShadow1Click={onGPSShadow1Click}
+                    onGPSShadow2Click={onGPSShadow2Click}
+                />
+            </div>
         </div>
     );
 }

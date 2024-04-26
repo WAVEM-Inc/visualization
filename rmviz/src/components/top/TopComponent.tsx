@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import "./TopComponent.css";
 import TopDropDownComponent from './TopDropdownComponent';
+import { Link } from 'react-router-dom';
 
 
 const TopComponents: React.FC = () => {
@@ -16,7 +17,9 @@ const TopComponents: React.FC = () => {
         <div className="top_components">
             <div className="top_logo">
                 <p className="top_logo_title">
-                    RMViZ
+                    <Link className="top_logo_title_link" to={"/bluespace"}>
+                        RMViZ
+                    </Link>
                 </p>
             </div>
             <label className="top_dropdown_toggle_label" onClick={handleClickContainer} style={{ transform: `rotate(${menuIconRotation}deg)`}}>

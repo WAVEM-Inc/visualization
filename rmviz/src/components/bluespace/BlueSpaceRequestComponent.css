@@ -5,16 +5,14 @@
     justify-content: center;
     flex-wrap: wrap;
     align-items: center;
-    width: 1857px;
-    height: 100%;
+    width: 100%;
+    height: calc(100% - 750px);
 }
 
 .bluespace_btn_request {
-    margin-top: 3%;
-    margin-right: 30px;
-    width: 153px;
-    height: 65px;
+    margin-right: 1%;
     border-radius: 50px;
+    width: 15%;
     font-size: 17px;
     background-color: #fff;
     font-weight: bold;
@@ -24,66 +22,50 @@
     background-color: #ccc;
 }
 
-@media screen and (max-width: 1024px) {
-    .bluespace_request_btn_container {
-        width: 1024px;
-        height: 100px;
-        justify-content: space-around;
-    }
+@media screen and (min-width: 800px) and (min-height: 600px) and (max-width: 1023px) and (max-height: 766px) {
     .bluespace_btn_request {
-        margin-right: 5px;
+        margin-top: 1%;
+        font-size: 12px;
+        height: 30px;
+    }
+}
+
+@media screen and (min-width: 1024px) and (min-height: 768px) and (max-width: 1279px) and (max-height: 799px) {
+    .bluespace_btn_request {
+        margin-top: 2%;
+        font-size: 12px;
+        height: 45px;
+    }
+}
+
+@media screen and (min-width: 1280px) and (min-height: 800px) and (max-width: 1439px) and (max-height: 899px) {
+    .bluespace_btn_request {
+        margin-top: 1.5%;
+        font-size: 13px;
+        height: 45px;
+    }
+}
+
+@media screen and (min-width: 1440px) and (min-height: 900px) and (max-width: 1599px) and (max-height: 999px) {
+    .bluespace_btn_request {
+        margin-top: 1.5%;
+        font-size: 13px;
+        height: 50px;
+    }
+}
+
+@media screen and (min-width: 1600px) and (min-height: 900px) and (max-width: 1799px) and (max-height: 999px) {
+    .bluespace_btn_request {
+        margin-top: 1.5%;
+        font-size: 13px;
+        height: 50px;
+    }
+}
+
+@media screen and (min-width: 1799px) and (min-height: 900px) and (max-width: 2559px) and (max-height: 1079px) {
+    .bluespace_btn_request {
+        margin-top: 2.5%;
         width: 153px;
-    }
-}
-
-@media screen and (min-width: 1024px) and (max-width: 1279px) {
-    .bluespace_request_btn_container {
-        width: 1024px;
-        height: 100px;
-        justify-content: space-around;
-    }
-    .bluespace_btn_request {
-        margin-right: 8px;
-        width: 83px;
-        font-size: 8px;
-    }
-}
-
-@media screen and (min-width: 1280px) and (max-width: 1439px) {
-    .bluespace_request_btn_container {
-        width: 1280px;
-        height: 100px;
-        justify-content: space-around;
-    }
-    .bluespace_btn_request {
-        margin-right: 17px;
-        width: 100px;
-        font-size: 10px;
-    }
-}
-
-@media screen and (min-width: 1440px) and (max-width: 1559px) {
-    .bluespace_request_btn_container {
-        width: 1440px;
-        height: 100px;
-        justify-content: space-around;
-    }
-    .bluespace_btn_request {
-        margin-right: 20px;
-        width: 120px;
-        font-size: 13px;
-    }
-}
-
-@media screen and (min-width: 1600px) and (max-width: 1799px) {
-    .bluespace_request_btn_container {
-        width: 1600px;
-        height: 100px;
-        justify-content: space-around;
-    }
-    .bluespace_btn_request {
-        margin-right: 20px;
-        width: 120px;
-        font-size: 13px;
+        height: 65px;
     }
 }

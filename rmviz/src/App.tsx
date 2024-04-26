@@ -3,6 +3,7 @@ import './App.css';
 import BlueSpaceDashBoardPage from './page/bluespace/BlueSpaceDashBoardPage';
 import DashBoardPage from './page/dashboard/DashBoardPage';
 import DataBoardPage from './page/databoard/DataBoardPage';
+import PathEditPage from "./page/pathEdit/PathEditPage";
 
 function App() {
   return (
@@ -16,6 +17,9 @@ function App() {
         </Route>
         <Route exact path={"/data"}>
           <DataBoardPage />
+        </Route>
+        <Route exact path={"/path/edit"}>
+          <PathEditPage />
         </Route>
       </Switch>
     </div>

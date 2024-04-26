@@ -3,7 +3,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 1857px;
+    width: 100%;
 }
 
 .top_logo {
@@ -14,37 +14,14 @@
     font-size: 24px;
 }
 
+.top_logo_title_link {
+    text-decoration: none;
+    color: black;
+}
+
 .top_dropdown_toggle_label {
     cursor: pointer;
     position: absolute;
     font-size: 24px;
     margin-left: 20px;
-}
-
-@media screen and (max-width: 1024px) {
-
-}
-
-@media screen and (min-width: 1024px) and (max-width: 1279px) {
-    .top_components {
-        width: 1024px;
-    }
-}
-
-@media screen and (min-width: 1280px) and (max-width: 1439px) {
-    .top_components {
-        width: 1280px;
-    }
-}
-
-@media screen and (min-width: 1440px) and (max-width: 1599px) {
-    .top_components {
-        width: 1440px;
-    }
-}
-
-@media screen and (min-width: 1600px) and (max-width: 1799px) {
-    .top_components {
-        width: 1600px;
-    }
 }

@@ -27,10 +27,10 @@
                 "driving_option": "gps",
                 "detection_range": [
                     {
-                        "offset": 4.0,
+                        "offset": 2.0,
                         "width_left": 5.0,
-                        "width_right": 0.5,
-                        "height": 4.0,
+                        "width_right": 1.0,
+                        "height": 6.0,
                         "action_code": "driving"
                     }
                 ]
