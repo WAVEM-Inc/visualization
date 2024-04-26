@@ -159,15 +159,19 @@ class RouteProcessor:
             return;
             
     def route_to_pose_notify_status(self, driving_flag: bool, status_code: int) -> None:
-        self.__route_status.is_driving = driving_flag;
-        self.__route_status.node_index = self.__route_to_pose_goal_index;
-        self.__route_status.status_code = status_code;
-        current_goal: RouteToPose.Goal = self.__route_to_pose_goal_list[self.__route_to_pose_goal_index];
-        self.__route_status.node_info = [current_goal.start_node.node_id, current_goal.end_node.node_id];
-            
-        payload: str = json.dumps(obj=self.__route_status.__dict__, indent=4);
-        self.__log.info(f"{MQTT_ROUTE_STATUS_TOPIC} payload : {payload}");
-        self.__mqtt_client.publish(topic=MQTT_ROUTE_STATUS_TOPIC, payload=payload, qos=0);
+        try:
+            self.__route_status.is_driving = driving_flag;
+            self.__route_status.node_index = self.__route_to_pose_goal_index;
+            self.__route_status.status_code = status_code;
+            current_goal: RouteToPose.Goal = self.__route_to_pose_goal_list[self.__route_to_pose_goal_index];
+            self.__route_status.node_info = [current_goal.start_node.node_id, current_goal.end_node.node_id];
+                
+            payload: str = json.dumps(obj=self.__route_status.__dict__, indent=4);
+            self.__log.info(f"{MQTT_ROUTE_STATUS_TOPIC} payload : {payload}");
+            self.__mqtt_client.publish(topic=MQTT_ROUTE_STATUS_TOPIC, payload=payload, qos=0);
+        except IndexError as ide:
+            self.__log.error(f"{MQTT_ROUTE_STATUS_TOPIC} : {ide}");
+            return;
         
 
     def goal_response_callback(self, future: Future) -> None:
