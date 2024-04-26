@@ -1,4 +1,5 @@
 import json;
+import time;
 from rclpy.node import Node;
 from rclpy.impl.rcutils_logger import RcutilsLogger;
 from rclpy.publisher import Publisher;
@@ -32,6 +33,7 @@ class ObstacleProcessor:
         self.__log: RcutilsLogger = self.__node.get_logger();
         self.__mqtt_client: Client = mqtt_client;
         self.__lidar_signal_flag: bool = False;
+        self.count: int = 0;        
     
         obstacle_detect_subscription_cb_group: MutuallyExclusiveCallbackGroup = MutuallyExclusiveCallbackGroup();
         self.__obstacle_detect_subscription: Subscription = self.__node.create_subscription(
@@ -105,17 +107,25 @@ class ObstacleProcessor:
         if lidar_signal_cb.signal_type == "START":
             self.__lidar_signal_flag = True;
         elif lidar_signal_cb.signal_type == "STOP":
+            self.count = 0;
             self.__lidar_signal_flag = False;
         else:
             self.__lidar_signal_flag = False;
 
         payload: str = ros_message_to_json(log=self.__log, ros_message=lidar_signal_cb);
         self.__mqtt_client.publish(topic=MQTT_LIDAR_SIGNAL_RESPONSE_TOPIC, payload=payload, qos=0);
-        
+    
     def detected_timer_cb(self) -> None:
-        if self.__lidar_signal_flag is True:          
+        if self.__lidar_signal_flag is True:
             if self.__detected_object != None:
-                self.__detected_object_publisher.publish(msg=self.__detected_object);
+                if self.count == 20:
+                    self.__detected_object_publisher.publish(msg=DetectedObject());
+                    self.__lidar_signal_flag = False;
+                    self.count = 0;
+                else:
+                    self.__detected_object_publisher.publish(msg=self.__detected_object);
+                self.count += 1;
+                self.__log.info(f"{DETECTED_OBJECT_TOPIC_NAME} count : {self.count}");
             else:
                 self.__log.error(f"{DETECTED_OBJECT_TOPIC_NAME} detected_object is None...");
                 return;

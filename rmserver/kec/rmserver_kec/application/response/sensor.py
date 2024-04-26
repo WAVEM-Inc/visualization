@@ -53,6 +53,7 @@ class SensorProcessor:
         self.__odom_eular_payload: str = None;
         
     def ublox_fix_subscription_cb(self, ublox_fix_cb: NavSatFix) -> None:
+        # self.__log.info(f"{UBLOX_FIX_TOPIC_NAME} : {ublox_fix_cb}");
         payload: str = ros_message_to_json(log=self.__log, ros_message=ublox_fix_cb);
         self.__mqtt_client.publish(topic=MQTT_GPS_RESPONSE_TOPIC, payload=payload, qos=0);
     

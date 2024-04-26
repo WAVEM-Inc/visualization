@@ -4,8 +4,8 @@
             "start_node": {
                 "node_id": "201",
                 "position": {
-                    "latitude": 37.3061467,
-                    "longitude": 127.2401776
+                    "latitude": 37.3061464,
+                    "longitude": 127.2401769
                 },
                 "type": "path_node",
                 "kind": "connecting",
@@ -17,8 +17,8 @@
             "end_node": {
                 "node_id": "202",
                 "position": {
-                    "latitude": 37.3061114,
-                    "longitude": 127.2401561
+                    "latitude": 37.3061074,
+                    "longitude": 127.2401493
                 },
                 "type": "path_node",
                 "kind": "waiting",
@@ -31,7 +31,7 @@
                         "width_left": 5.0,
                         "width_right": 1.0,
                         "height": 6.0,
-                        "action_code": "driving"
+                        "action_code": "cooperative"
                     }
                 ]
             }
@@ -40,8 +40,8 @@
             "start_node": {
                 "node_id": "202",
                 "position": {
-                    "latitude": 37.3061114,
-                    "longitude": 127.2401561
+                    "latitude": 37.3061074,
+                    "longitude": 127.2401493
                 },
                 "type": "path_node",
                 "kind": "waiting",
@@ -81,8 +81,8 @@
             "end_node": {
                 "node_id": "204",
                 "position": {
-                    "latitude": 37.3060182,
-                    "longitude": 127.2401997
+                    "latitude": 37.3060163,
+                    "longitude": 127.2401988
                 },
                 "type": "work_node",
                 "kind": "endpoint",
