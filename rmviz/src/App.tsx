@@ -4,6 +4,7 @@ import BlueSpaceDashBoardPage from './page/bluespace/BlueSpaceDashBoardPage';
 import DashBoardPage from './page/dashboard/DashBoardPage';
 import DataBoardPage from './page/databoard/DataBoardPage';
 import PathEditPage from "./page/pathEdit/PathEditPage";
+import TestPage from './page/test/TestPage';
 
 function App() {
   return (
@@ -20,6 +21,9 @@ function App() {
         </Route>
         <Route exact path={"/path/edit"}>
           <PathEditPage />
+        </Route>
+        <Route exact path={"/test"}>
+          <TestPage />
         </Route>
       </Switch>
     </div>

@@ -11,6 +11,7 @@ const root = ReactDOM.createRoot(
 declare global {
   interface Window {
     naver: any;
+    google: typeof google.maps;
   }
 }
 
