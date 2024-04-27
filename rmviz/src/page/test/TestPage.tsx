@@ -144,15 +144,15 @@ const TestPage = () => {
                 return <>에러 발생</>;
             case Status.SUCCESS:
                 return <TestMapComponent
-                center={blueSpaceCoord}
-                pathData={pathData}
-                gpsData={gpsData}
-                odomEularData={odomEularData}
-                routeStatus={routeStatus}
-                onEmergencyStopClick={onEmergencyStopClick}
-                onEmergencyResumeClick={onEmergencyResumeClick}
-                onGoalCancelClick={onGoalCancelClick}
-                onInitClick={onInitClick}
+                    center={blueSpaceCoord}
+                    pathData={pathData}
+                    gpsData={gpsData}
+                    odomEularData={odomEularData}
+                    routeStatus={routeStatus}
+                    onEmergencyStopClick={onEmergencyStopClick}
+                    onEmergencyResumeClick={onEmergencyResumeClick}
+                    onGoalCancelClick={onGoalCancelClick}
+                    onInitClick={onInitClick}
                 />;
             default:
                 return <>에러발생</>;
@@ -168,7 +168,17 @@ const TestPage = () => {
                 <Wrapper apiKey={"AIzaSyDYrrFBbCHPVWBrWm075rlxFJS8eDg-MPw"} render={render} libraries={['marker']} />
             </div>
             <div className="request_component_container">
-
+                <BlueSpaceRequestComponent
+                    on201202Click={on201202Click}
+                    onStraightClick={onStraightClick}
+                    onIntersection1Click={onIntersection1Click}
+                    onIntersection2Click={onIntersection2Click}
+                    onLoadingClick={onLoadingClick}
+                    onLanding1Click={onLanding1Click}
+                    onLanding2Click={onLanding2Click}
+                    onGPSShadow1Click={onGPSShadow1Click}
+                    onGPSShadow2Click={onGPSShadow2Click}
+                />
             </div>
         </div>
     )
