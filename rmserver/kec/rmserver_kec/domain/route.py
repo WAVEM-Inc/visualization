@@ -9,7 +9,9 @@ class RouteStatus:
         0 : 출발
         1 : 경유지 도착
         2 : 경로 주행 완료
-        3 : 주행 취소
+        3 : 주행 서버 미작동
+        4 : 주행 진행 중
+        5 : 주행 취소
         """
         self._status_code: int = 0
         self._node_index: int = 0

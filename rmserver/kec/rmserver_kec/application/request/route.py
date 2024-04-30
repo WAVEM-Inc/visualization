@@ -199,6 +199,7 @@ class RouteProcessor:
                 self.route_to_pose_send_goal();
             else:
                 self.__log.error(f"{mqtt_topic} navigation is already proceeding...");
+                self.route_to_pose_notify_status(driving_flag=False, status_code=4);
                 return;
         except KeyError as ke:
             self.__log.error(f"Invalid JSON Key in MQTT {mqtt_topic} subscription callback: {ke}");
@@ -216,6 +217,11 @@ class RouteProcessor:
             self.__log.error(f"Exception in MQTT {mqtt_topic} subscription callback: {e}");
             return;
         
+    def route_to_pose_flush_goal(self) -> None:
+        self.__route_to_pose_goal_index = 0;
+        self.__route_to_pose_goal_list = [];
+        self.__route_to_pose_goal_list_size = 0;
+        
     def route_to_pose_send_goal(self) -> None:
         try:
             goal: RouteToPose.Goal = self.__route_to_pose_goal_list[self.__route_to_pose_goal_index];
@@ -227,6 +233,9 @@ class RouteProcessor:
                 self.__route_to_pose_send_goal_future.add_done_callback(callback=self.goal_response_callback);
             else:
                 self.__log.error(f"{ROUTE_TO_POSE_ACTION} is not ready...");
+                self.route_to_pose_notify_status(driving_flag=False, status_code=3);
+                self.route_to_pose_flush_goal();
+                return;
         except IndexError as ide:
             self.__log.error(f"{ROUTE_TO_POSE_ACTION} : {ide}");
             return;
@@ -234,10 +243,12 @@ class RouteProcessor:
     def route_to_pose_notify_status(self, driving_flag: bool, status_code: int) -> None:
         try:
             self.__route_status.is_driving = driving_flag;
-            self.__route_status.node_index = self.__route_to_pose_goal_index;
             self.__route_status.status_code = status_code;
-            current_goal: RouteToPose.Goal = self.__route_to_pose_goal_list[self.__route_to_pose_goal_index];
-            self.__route_status.node_info = [current_goal.start_node.node_id, current_goal.end_node.node_id];
+            
+            if self.__route_to_pose_goal_list_size != 0:
+                self.__route_status.node_index = self.__route_to_pose_goal_index;
+                current_goal: RouteToPose.Goal = self.__route_to_pose_goal_list[self.__route_to_pose_goal_index];
+                self.__route_status.node_info = [current_goal.start_node.node_id, current_goal.end_node.node_id];
                 
             payload: str = json.dumps(obj=self.__route_status.__dict__, indent=4);
             self.__log.info(f"{MQTT_ROUTE_STATUS_TOPIC} payload : {payload}");
@@ -245,7 +256,6 @@ class RouteProcessor:
         except IndexError as ide:
             self.__log.error(f"{MQTT_ROUTE_STATUS_TOPIC} : {ide}");
             return;
-        
 
     def goal_response_callback(self, future: Future) -> None:
         self.__route_to_pose_goal_handle: ClientGoalHandle = future.result();
@@ -285,9 +295,7 @@ class RouteProcessor:
             if is_finished:
                 self.route_to_pose_notify_status(driving_flag=False, status_code=2);
                 self.__log.info(f"{ROUTE_TO_POSE_ACTION} navigation finished...");
-                self.__route_to_pose_goal_index = 0;
-                self.__route_to_pose_goal_list = [];
-                self.__route_to_pose_goal_list_size = 0;
+                self.route_to_pose_flush_goal();
             else:
                 self.route_to_pose_notify_status(driving_flag=False, status_code=1);
                 self.__route_to_pose_goal_index = self.__route_to_pose_goal_index + 1;
@@ -304,9 +312,7 @@ class RouteProcessor:
             self.__log.info(f"\n{json.dumps(mqtt_json, indent=4)}");
             
             self.route_to_pose_notify_status(driving_flag=False, status_code=5);
-            self.__route_to_pose_goal_list = [];
-            self.__route_to_pose_goal_index = 0;
-            self.__route_to_pose_goal_list_size = 0;
+            self.route_to_pose_flush_goal();
             
             if self.__route_to_pose_goal_handle != None:
                 self.__log.info(f"{ROUTE_TO_POSE_ACTION} goal_handle : {json.dumps(message_conversion.extract_values(inst=self.__route_to_pose_goal_handle), 4)}");

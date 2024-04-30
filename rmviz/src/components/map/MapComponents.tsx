@@ -115,15 +115,17 @@ const MapComponent: React.FC<MapComponentProps> = ({
     }
 
     const getClickHandler: Function = (seq: number): Function => {
-        console.info(`getClickHandler : ${seq}`);
+        let isOpened: number = 0;
         return function (e: any) {
             const marker: naver.maps.Marker = pathMarkerArray[seq];
             const infoWindow: naver.maps.InfoWindow = pathInfoWindowarray[seq];
 
-            if (infoWindow.getMap()) {
-                infoWindow.close();
-            } else {
+            if (isOpened == 0) {
                 infoWindow.open(map!, marker);
+                isOpened++;
+            } else {
+                infoWindow.close();
+                isOpened = 0;
             }
         }
     }
@@ -268,10 +270,16 @@ const MapComponent: React.FC<MapComponentProps> = ({
                 case 2:
                     status = "주행 완료";
                     break;
+                case 3:
+                    status = "주행 서버 미작동";
+                    break;
+                case 4:
+                    status = "주행 진행 중";
+                    break;
                 case 5:
+                    status = "주행 취소";
                     break;
                 default:
-                    status = "주행 취소";
                     break;
             }
 
