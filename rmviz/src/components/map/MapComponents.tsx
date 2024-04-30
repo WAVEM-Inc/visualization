@@ -101,7 +101,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
         const marker: naver.maps.Marker = new naver.maps.Marker({
             position: new naver.maps.LatLng(node.position.latitude, node.position.longitude),
             map: map,
-            title: `${node.node_id}/${node.kind}/${node.heading}/${node.driving_option}/${node.direction}`,
+            title: `${node.nodeId.split("-")[2]}/${node.kind}/${node.heading}/${node.drivingOption}/${node.direction}`,
             icon: {
                 url: iconUrl,
                 size: new naver.maps.Size(30, 30),
@@ -115,6 +115,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
     }
 
     const getClickHandler: Function = (seq: number): Function => {
+        console.info(`getClickHandler : ${seq}`);
         return function (e: any) {
             const marker: naver.maps.Marker = pathMarkerArray[seq];
             const infoWindow: naver.maps.InfoWindow = pathInfoWindowarray[seq];
@@ -129,29 +130,25 @@ const MapComponent: React.FC<MapComponentProps> = ({
 
     const drawPathMarker: Function = (): void => {
         if (pathData) {
-            const nodeList: Array<any> = pathData.node_list;
+            const nodeList: Array<any> = pathData;
 
             const uniqueNodeIds: Set<string> = new Set<string>();
             for (const node of nodeList) {
-                uniqueNodeIds.add(node.start_node.node_id);
-                uniqueNodeIds.add(node.end_node.node_id);
+                uniqueNodeIds.add(node.nodeId.split("-")[2]);
             }
 
             for (const nodeId of uniqueNodeIds) {
-                const node: any = nodeList.find((node) => node.start_node.node_id === nodeId || node.end_node.node_id === nodeId);
+                const node: any = nodeList.find((node) => node.nodeId.split("-")[2] === nodeId);
                 if (node) {
                     const isFirstNode = nodeList.indexOf(node) === 0;
                     const isLastNode = nodeList.indexOf(node) === nodeList.length - 1;
 
                     if (isFirstNode) {
-                        pathMarkerArray.push(addPathMarker(node.start_node, true, false));
-                        pathMarkerArray.push(addPathMarker(node.end_node, false, false));
+                        pathMarkerArray.push(addPathMarker(node, true, false));
                     } else if (isLastNode) {
-                        pathMarkerArray.push(addPathMarker(node.start_node, false, false));
-                        pathMarkerArray.push(addPathMarker(node.end_node, false, true));
+                        pathMarkerArray.push(addPathMarker(node, false, true));
                     } else {
-                        pathMarkerArray.push(addPathMarker(node.start_node, false, false));
-                        pathMarkerArray.push(addPathMarker(node.end_node, false, false));
+                        pathMarkerArray.push(addPathMarker(node, false, false));
                     }
                 }
             }

@@ -10,13 +10,13 @@ def generate_launch_description() -> LaunchDescription:
     package_name: str = "rmserver_kec";
     package_shared_directory: str = get_package_share_directory(package_name);
 
-    parameter: str = os.path.join(package_shared_directory, "config", "mqtt_config.yaml");
+    parameters: list[str] = [os.path.join(package_shared_directory, "config", "mqtt_config.yaml"), os.path.join(package_shared_directory, "config", "path_config.yaml")]
     converter_node: Node = Node(
         package=package_name,
         executable=package_name,
         name=package_name,
         output="screen",
-        parameters=[parameter]
+        parameters=parameters
     );
 
     ld.add_action(converter_node);

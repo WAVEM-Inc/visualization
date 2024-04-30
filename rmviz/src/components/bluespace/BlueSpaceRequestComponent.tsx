@@ -26,7 +26,6 @@ const BlueSpaceRequestComponent: React.FC<BlueSpaceRequestComponentProps> = ({
     return (
         <div className="">
             <div className={"bluespace_request_btn_container"}>
-                <button className={"bluespace_btn_request"} onClick={on201202Click}>201 to 202</button>
                 <button className={"bluespace_btn_request"} onClick={onStraightClick}>직진 이탈</button>
                 <button className={"bluespace_btn_request"} onClick={onIntersection1Click}>교차로 - 1</button>
                 <button className={"bluespace_btn_request"} onClick={onIntersection2Click}>교차로 - 2</button>

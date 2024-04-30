@@ -2,8 +2,8 @@ import threading;
 from rclpy.node import Node;
 
 from rmserver_kec.application.mqtt import Client;
-from rmserver_kec.application.request.bridge import RequestBridge;
-from rmserver_kec.application.response.bridge import ResponseBridge;
+from rmserver_kec.presentation.request.bridge import RequestBridge;
+from rmserver_kec.presentation.response.bridge import ResponseBridge;
 
 NODE_NAME: str = "rmserver_kec";
 DEFAULT_STRING: str = "";
@@ -40,7 +40,8 @@ class RmServerKEC(Node):
             "user_name": DEFAULT_STRING,
             "password": DEFAULT_STRING,
             "type": DEFAULT_STRING,
-            "path": DEFAULT_STRING
+            "path": DEFAULT_STRING,
+            "current_path_file": DEFAULT_STRING
         };
 
         for key, value in parameters_dict.items():

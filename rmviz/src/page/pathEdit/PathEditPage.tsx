@@ -1,5 +1,5 @@
 import JSONInput from 'react-json-editor-ajrm';
-import * as jso from "../../assets/json/bluespace/201-202.json";
+import * as jso from "../../assets/json/bluespace/1F/201-202.json";
 import TopComponents from '../../components/top/TopComponent';
 import "./PathEditPage.css";
 

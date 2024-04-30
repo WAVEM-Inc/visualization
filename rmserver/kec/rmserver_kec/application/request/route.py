@@ -1,3 +1,4 @@
+import os;
 import json;
 import paho.mqtt.client as paho;
 from rclpy.node import Node;
@@ -14,10 +15,14 @@ from std_msgs.msg import String;
 from can_msgs.msg import Emergency;
 from can_msgs.msg import Init;
 from route_msgs.action import RouteToPose;
+from route_msgs.msg import Position;
+from route_msgs.msg import Node as route_Node;
+from route_msgs.msg import DetectionRange;
 from action_msgs.msg import GoalStatus;
 from typing import Dict;
 from typing import Any;
 from rmserver_kec.application.message.conversion import json_to_ros_message;
+from rmserver_kec.application.message.conversion import ros_message_to_json;
 from rmserver_kec.application.mqtt import Client;
 from rmserver_kec.domain.route import RouteStatus;
 
@@ -35,6 +40,8 @@ class RouteProcessor:
         self.__node: Node = node;
         self.__log: RcutilsLogger = self.__node.get_logger();
         self.__mqtt_client: Client = mqtt_client;
+        self.__current_path_file: str = self.__node.get_parameter("current_path_file").get_parameter_value().string_value;
+        self.__path: Any = {};
         
         self.__route_status: RouteStatus = RouteStatus();
         
@@ -66,6 +73,14 @@ class RouteProcessor:
             qos_profile=qos_profile_system_default,
             callback_group=can_init_publisher_cb_group
         );
+        
+        self.load_path();
+    
+    def load_path(self) -> None:
+        home_directory: str = os.path.expanduser("~");
+        with open(f"{home_directory}/{self.__current_path_file}", "r", encoding="utf-8") as f:
+            self.__path = json.load(f);
+            self.__log.info(f"Map : {json.dumps(self.__path, indent=4, ensure_ascii=False)}");
     
     def can_emergency_publish(self, emergency: Emergency) -> None:
         if emergency.stop is True:
@@ -106,23 +121,81 @@ class RouteProcessor:
             mqtt_topic: str = mqtt_message.topic;
             mqtt_decoded_payload: str = mqtt_message.payload.decode();
             mqtt_json: Any = json.loads(mqtt_message.payload);
-            self.__log.info(f"{mqtt_topic} node : {json.dumps(mqtt_json, indent=4)}");
+            self.__log.info(f"{mqtt_topic}\n{json.dumps(mqtt_json, indent=4, ensure_ascii=False)}");
+            
+            path_array: list[Any] = self.__path["path"];
             
             if self.__route_to_pose_goal_list_size == 0:
-                node_list: list[Any] = mqtt_json["node_list"];
-                self.__route_to_pose_goal_list_size = len(node_list);
-                self.__log.info(f"{mqtt_topic} node_list_size : {self.__route_to_pose_goal_list_size}");
+                path_id: str = mqtt_json["path_id"];
+                path_name: str = mqtt_json["path_name"];
+                self.__log.info(f"path_id : {path_id}, path_name : {path_name}");
                 
-                for node in node_list:
-                    goal: RouteToPose.Goal = json_to_ros_message(log=self.__log, json_payload=json.loads(json.dumps(node)), target_ros_class=RouteToPose.Goal);
-                    self.__log.info(f"{mqtt_topic} cb\n{json.dumps(obj=message_conversion.extract_values(inst=goal), indent=4)}");
-                    self.__route_to_pose_goal_list.append(goal);
+                node_list: list[Any] = [];
+
+                for path in path_array:
+                    if path["id"] == path_id:
+                        node_list = path["nodeList"];
+                        break;
                     
-                    if (len(self.__route_to_pose_goal_list) == self.__route_to_pose_goal_list_size):
+                self.__route_to_pose_goal_list_size = len(node_list);
+                    
+                for i in range(len(node_list) - 1):
+                    goal: RouteToPose.Goal = RouteToPose.Goal();
+                    start_node: route_Node = route_Node();
+                    end_node: route_Node = route_Node();
+                    self.__log.info(f"nodeList[{i}]\n{json.dumps(node_list[i], indent=4)}");
+                    if i == self.__route_to_pose_goal_list_size - 1:
                         self.__log.info(f"{mqtt_topic} converting node to goal finished...");
                         break;
+                    
+                    start_node.node_id = node_list[i]["nodeId"].split("-")[2];
+                    start_node.position = json_to_ros_message(log=self.__log, json_payload=json.loads(json.dumps(node_list[i]["position"])), target_ros_class=Position);
+                    start_node.type = node_list[i]["type"];
+                    start_node.kind = node_list[i]["kind"];
+                    start_node.heading = float(node_list[i]["heading"]);
+                    start_node.direction = node_list[i]["direction"];
+                    start_node.driving_option = node_list[i]["drivingOption"];
+                    
+                    if len(node_list[i]["detectionRange"]) != 0:
+                        for dr in node_list[i]["detectionRange"]:
+                            detection_range: DetectionRange = DetectionRange();
+                            detection_range.offset = dr["offset"];
+                            detection_range.width_left = dr["widthLeft"];
+                            detection_range.width_right = dr["widthRight"];
+                            detection_range.height = dr["height"];
+                            detection_range.action_code = dr["actionCode"];
+                            start_node.detection_range.append(detection_range);
+                    else:
+                        start_node.detection_range = [];                        
+                    
+                    end_node.node_id = node_list[i+1]["nodeId"].split("-")[2];
+                    end_node.position = json_to_ros_message(log=self.__log, json_payload=json.loads(json.dumps(node_list[i+1]["position"])), target_ros_class=Position);
+                    end_node.type = node_list[i+1]["type"];
+                    end_node.kind = node_list[i+1]["kind"];
+                    end_node.heading = float(node_list[i+1]["heading"]);
+                    end_node.direction = node_list[i+1]["direction"];
+                    end_node.driving_option = node_list[i+1]["drivingOption"];
+                    
+                    if len(node_list[i+1]["detectionRange"]) != 0:
+                        for dr in node_list[i+1]["detectionRange"]:
+                            detection_range: DetectionRange = DetectionRange();
+                            detection_range.offset = dr["offset"];
+                            detection_range.width_left = dr["widthLeft"];
+                            detection_range.width_right = dr["widthRight"];
+                            detection_range.height = dr["height"];
+                            detection_range.action_code = dr["actionCode"];
+                            end_node.detection_range.append(detection_range);
+                    else:
+                        end_node.detection_range = [];
+                
+                    goal.start_node = start_node;
+                    goal.end_node = end_node;
+                    self.__route_to_pose_goal_list.append(goal);
 
-                self.__mqtt_client.publish(topic=MQTT_PATH_TOPIC, payload=json.dumps(mqtt_json), qos=0);
+                for [index, goal] in enumerate(self.__route_to_pose_goal_list):
+                    self.__log.info(f"{mqtt_topic} goal[{index}]\n{json.dumps(message_conversion.extract_values(inst=goal), indent=4)}");
+                    
+                self.__mqtt_client.publish(topic=MQTT_PATH_TOPIC, payload=json.dumps(node_list), qos=0);
                 self.route_to_pose_send_goal();
             else:
                 self.__log.error(f"{mqtt_topic} navigation is already proceeding...");
