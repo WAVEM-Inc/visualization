@@ -1,5 +1,6 @@
 import $ from "jquery";
 import React, { useEffect, useRef, useState } from "react";
+import { initializeMap, initializeRobotMarker } from "../../service/MapService";
 import "./MapComponents.css";
 
 interface MapComponentProps {
@@ -29,7 +30,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
     const mapRef: React.MutableRefObject<HTMLDivElement | null> = useRef<HTMLDivElement>(null);
 
     let map: naver.maps.Map | null = null;
-    const [currMarker, setCurrMarker]: [naver.maps.Marker | null, React.Dispatch<React.SetStateAction<naver.maps.Marker | null>>] = useState<naver.maps.Marker | null>(null);
+    const [currRobotMarker, setCurrRobotMarker]: [naver.maps.Marker | null, React.Dispatch<React.SetStateAction<naver.maps.Marker | null>>] = useState<naver.maps.Marker | null>(null);
     const [currentGps, setCurrentGps]: [any, React.Dispatch<any>] = useState<any>({
         status: 0,
         service: 0,
@@ -48,42 +49,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
     const wkValveCoord: naver.maps.LatLng = new naver.maps.LatLng(35.157851, 128.858111);
     const blueSpaceCoord: naver.maps.LatLng = new naver.maps.LatLng(37.305985, 127.2401652);
     const kecCoord: naver.maps.LatLng = new naver.maps.LatLng(36.1137155, 128.3676005);
-
-    const initializeMap: Function = (): void => {
-        const mapOpts: any = {
-            center: center,
-            mapTypeId: naver.maps.MapTypeId.HYBRID,
-            zoom: defaultZoom,
-            zoomControl: true,
-            zoomControlOptions: {
-                style: naver.maps.ZoomControlStyle.SMALL,
-                position: naver.maps.Position.TOP_RIGHT,
-            },
-            mapTypeControl: true,
-            mapTypeControlOptions: {
-                style: naver.maps.MapTypeControlStyle.BUTTON
-            }
-        }
-        map = new naver.maps.Map(mapRef.current, mapOpts);
-    }
-
-    const initializeRobotMarker: Function = (): void => {
-        const initialCurrMarker: naver.maps.Marker = new naver.maps.Marker({
-            position: map!.getCenter(),
-            map: map,
-            title: "RobotCurrentPos",
-            icon: {
-                url: process.env.PUBLIC_URL + "marker_current_position.png",
-                size: new naver.maps.Size(35, 35),
-                scaledSize: new naver.maps.Size(35, 35),
-                origin: new naver.maps.Point(0, 0),
-                anchor: new naver.maps.Point(12, 34)
-            },
-            zIndex: 1000,
-            clickable: false
-        });
-        setCurrMarker(initialCurrMarker);
-    }
 
     const addPathMarker: Function = (node: any, is_start: boolean, is_end: boolean): any => {
         console.info(`addPathMarker node : ${JSON.stringify(node)}`);
@@ -207,18 +172,21 @@ const MapComponent: React.FC<MapComponentProps> = ({
 
     useEffect((): void => {
         if (mapRef.current && naver && !map) {
-            initializeMap();
+            map = initializeMap(mapRef.current, center);
         } else return;
 
-        initializeRobotMarker();
+        if (mapRef.current && naver && map) {
+            const robotMarker: naver.maps.Marker = initializeRobotMarker(map);
+            setCurrRobotMarker(robotMarker);
+        }
 
         if (mapRef.current && naver && map) {
             drawPathMarker();
             drawPathPolyline();
             setDefaultZoom(21);
 
-            if (currMarker) {
-                changeMapCenter(currMarker!.getPosition());
+            if (currRobotMarker) {
+                changeMapCenter(currRobotMarker!.getPosition());
             }
         } else return;
     }, [naver, map, pathData]);
@@ -232,7 +200,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
                 longitude: parseFloat(gpsData.longitude.toFixed(7))
             });
 
-            currMarker!.setPosition(new naver.maps.LatLng(gpsData.latitude, gpsData.longitude));
+            currRobotMarker!.setPosition(new naver.maps.LatLng(gpsData.latitude, gpsData.longitude));
         }
     }, [gpsData]);
 
@@ -296,7 +264,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
     useEffect(() => {
         return () => {
             if (map) {
-                setCurrMarker(null);
+                setCurrRobotMarker(null);
                 map.destroy();
                 map = null;
             }
@@ -330,7 +298,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
                         <h3>주행 상태</h3>
                         <div className="">
                             <div className="route_status_current_route_container">
-                                {currentRouteStatus?.is_driving ? `${currentRouteStatus?.node_info[0]} -> ${currentRouteStatus?.node_info[1]}` : ""}
+                                {"["}{currentRouteStatus?.node_info[0]}{"]"} {"->"} {"["}{currentRouteStatus?.node_info[1]}{"]"}
                             </div>
                             <div className="">
                                 주행 중 : {currentRouteStatus?.driving_flag.toString()}

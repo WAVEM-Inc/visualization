@@ -137,27 +137,30 @@ class RouteProcessor:
                         node_list = path["nodeList"];
                         break;
                     
-                self.__route_to_pose_goal_list_size = len(node_list);
+                self.__route_to_pose_goal_list_size = len(node_list) - 1;
                     
                 for i in range(len(node_list) - 1):
                     goal: RouteToPose.Goal = RouteToPose.Goal();
                     start_node: route_Node = route_Node();
                     end_node: route_Node = route_Node();
-                    self.__log.info(f"nodeList[{i}]\n{json.dumps(node_list[i], indent=4)}");
-                    if i == self.__route_to_pose_goal_list_size - 1:
+                    
+                    if i == self.__route_to_pose_goal_list_size:
                         self.__log.info(f"{mqtt_topic} converting node to goal finished...");
+                        self.__log.info(f"{mqtt_topic} goal list size : {self.__route_to_pose_goal_list_size}...");
                         break;
                     
-                    start_node.node_id = node_list[i]["nodeId"].split("-")[2];
-                    start_node.position = json_to_ros_message(log=self.__log, json_payload=json.loads(json.dumps(node_list[i]["position"])), target_ros_class=Position);
-                    start_node.type = node_list[i]["type"];
-                    start_node.kind = node_list[i]["kind"];
-                    start_node.heading = float(node_list[i]["heading"]);
-                    start_node.direction = node_list[i]["direction"];
-                    start_node.driving_option = node_list[i]["drivingOption"];
+                    _start_node: Any = node_list[i];
                     
-                    if len(node_list[i]["detectionRange"]) != 0:
-                        for dr in node_list[i]["detectionRange"]:
+                    start_node.node_id = _start_node["nodeId"].split("-")[2];
+                    start_node.position = json_to_ros_message(log=self.__log, json_payload=json.loads(json.dumps(_start_node["position"])), target_ros_class=Position);
+                    start_node.type = _start_node["type"];
+                    start_node.kind = _start_node["kind"];
+                    start_node.heading = float(_start_node["heading"]);
+                    start_node.direction = _start_node["direction"];
+                    start_node.driving_option = _start_node["drivingOption"];
+                    
+                    if len(_start_node["detectionRange"]) != 0:
+                        for dr in _start_node["detectionRange"]:
                             detection_range: DetectionRange = DetectionRange();
                             detection_range.offset = dr["offset"];
                             detection_range.width_left = dr["widthLeft"];
@@ -166,18 +169,20 @@ class RouteProcessor:
                             detection_range.action_code = dr["actionCode"];
                             start_node.detection_range.append(detection_range);
                     else:
-                        start_node.detection_range = [];                        
+                        start_node.detection_range = [];
                     
-                    end_node.node_id = node_list[i+1]["nodeId"].split("-")[2];
-                    end_node.position = json_to_ros_message(log=self.__log, json_payload=json.loads(json.dumps(node_list[i+1]["position"])), target_ros_class=Position);
-                    end_node.type = node_list[i+1]["type"];
-                    end_node.kind = node_list[i+1]["kind"];
-                    end_node.heading = float(node_list[i+1]["heading"]);
-                    end_node.direction = node_list[i+1]["direction"];
-                    end_node.driving_option = node_list[i+1]["drivingOption"];
+                    _end_node: Any = node_list[i+1];
                     
-                    if len(node_list[i+1]["detectionRange"]) != 0:
-                        for dr in node_list[i+1]["detectionRange"]:
+                    end_node.node_id = _end_node["nodeId"].split("-")[2];
+                    end_node.position = json_to_ros_message(log=self.__log, json_payload=json.loads(json.dumps(_end_node["position"])), target_ros_class=Position);
+                    end_node.type = _end_node["type"];
+                    end_node.kind = _end_node["kind"];
+                    end_node.heading = float(_end_node["heading"]);
+                    end_node.direction = _end_node["direction"];
+                    end_node.driving_option = _end_node["drivingOption"];
+                    
+                    if len(_end_node["detectionRange"]) != 0:
+                        for dr in _end_node["detectionRange"]:
                             detection_range: DetectionRange = DetectionRange();
                             detection_range.offset = dr["offset"];
                             detection_range.width_left = dr["widthLeft"];

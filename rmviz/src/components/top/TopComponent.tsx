@@ -15,6 +15,10 @@ const TopComponents: React.FC = () => {
 
     return (
         <div className="top_components">
+            <label className="top_dropdown_toggle_label" onClick={handleClickContainer} style={{ transform: `rotate(${menuIconRotation}deg)`}}>
+                ☰
+            </label>
+            {isDropdownView && <TopDropDownComponent />}
             <div className="top_logo">
                 <p className="top_logo_title">
                     <Link className="top_logo_title_link" to={"/bluespace"}>
@@ -22,10 +26,9 @@ const TopComponents: React.FC = () => {
                     </Link>
                 </p>
             </div>
-            <label className="top_dropdown_toggle_label" onClick={handleClickContainer} style={{ transform: `rotate(${menuIconRotation}deg)`}}>
-                ☰
-            </label>
-            {isDropdownView && <TopDropDownComponent />}
+            <div className="top_heartbeat">
+                
+            </div>
         </div>
     )
 }
