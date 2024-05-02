@@ -22,14 +22,15 @@ dependencies {
     implementation(compose.desktop.currentOs)
 
     // Protobuf
-    implementation("com.google.protobuf:protobuf-kotlin:4.26.0")
+    implementation("com.google.protobuf:protobuf-kotlin:4.26.1")
 
     // JOGL
     implementation("org.jogamp.jogl:jogl-all-main:2.3.2")
     implementation("org.joml:joml:1.10.5")
     implementation("org.jogamp.gluegen:gluegen-rt-main:2.3.2")
 
-
+    // Logger
+    implementation("ch.qos.logback:logback-classic:1.2.3")
 
     // File Picker
     implementation("com.darkrockstudios:mpfilepicker:2.1.0")

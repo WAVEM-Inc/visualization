@@ -40,11 +40,6 @@ fun App() {
         val client = UdpClient()
         val cs = CoroutineScope(Dispatchers.Main)
 
-        ConfigDataViewModel.subscribeConnectOption(collector = { option ->
-            println("Connect Info - ipAddr: ${option.ipAddress}, port: ${option.receivePort}")
-            client.connect(option.ipAddress, option.receivePort)
-        })
-
         client.setOnMessageListener(listener = object : UdpClient.OnMessageListener {
             override fun onLocalizationReceive(message: Localization.LocalizationEstimate) {
                 cs.launch {
@@ -75,6 +70,11 @@ fun App() {
                     UdpDataViewModel.updateVehicleSignal(message)
                 }
             }
+        })
+
+        ConfigDataViewModel.subscribeConnectOption(collector = { option ->
+            println("Connect Info - ipAddr: ${option.ipAddress}, port: ${option.receivePort}")
+            client.connect(option.ipAddress, option.receivePort)
         })
     }
 

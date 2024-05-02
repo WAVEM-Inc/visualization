@@ -4,6 +4,7 @@ import apollo.dreamview.PointCloudOuterClass
 import apollo.localization.Localization.LocalizationEstimate
 import apollo.perception.PerceptionObstacleOuterClass.PerceptionObstacles
 import application.type.msg.ProtoMessageType
+import com.google.protobuf.kotlin.toByteString
 import essys_middle.Dashboard.TrafficLight
 import essys_middle.Dashboard.VehicleSignal
 import java.net.DatagramPacket
@@ -16,6 +17,7 @@ class UdpClient {
     var socket = DatagramSocket()
 
     private lateinit var listener: OnMessageListener
+    private var receivingThread: Thread? = null
 
 
 
@@ -28,11 +30,17 @@ class UdpClient {
     }
 
 
-    fun connect(idAddress: String, port: Int) {
+    fun connect(ipAddress: String, port: Int) {
         disconnect()
 
-        socket = DatagramSocket(InetSocketAddress(idAddress, port))
-        receiveData()
+        socket = DatagramSocket(null)
+        socket.reuseAddress = true
+        socket.bind(InetSocketAddress(ipAddress, port))
+
+        receivingThread = Thread {
+            receiveData()
+        }
+        receivingThread?.start()
     }
 
     fun disconnect() {
@@ -41,6 +49,9 @@ class UdpClient {
         }
 
         socket.close()
+
+        receivingThread?.interrupt()
+        receivingThread = null
     }
 
     fun sendData(ipAddress: String, port: Int, payload: ByteArray) {
@@ -49,7 +60,8 @@ class UdpClient {
     }
 
     private fun receiveData() {
-        while (socket.isConnected) {
+        println("start to receive")
+        while (!Thread.currentThread().isInterrupted) {
             try {
                 val receiveBuffer = ByteArray(65535)
                 val receivePacket = DatagramPacket(receiveBuffer, receiveBuffer.size)
@@ -58,20 +70,20 @@ class UdpClient {
 
                 val payload = getPayloadFromArray(receivePacket.data)
 
-                if (::listener.isInitialized) {
-                    when (payload?.first) {
-                        ProtoMessageType.LOCALIZATION -> listener.onLocalizationReceive(LocalizationEstimate.parseFrom(payload.second))
-                        ProtoMessageType.OBSTACLE -> listener.onObstacleReceive(PerceptionObstacles.parseFrom(payload.second))
-                        ProtoMessageType.TRAFFIC_LIGHT -> listener.onTrafficLightReceive(TrafficLight.parseFrom(payload.second))
-                        ProtoMessageType.POINT_CLOUD -> listener.onPointCloudReceive(PointCloudOuterClass.PointCloud.parseFrom(payload.second))
-                        ProtoMessageType.VEHICLE_SIGNAL -> listener.onDashboardReceive(VehicleSignal.parseFrom(payload.second))
-                        null -> println("Received not invalid data.")
-                    }
+                when (payload?.first) {
+                    ProtoMessageType.LOCALIZATION -> listener.onLocalizationReceive(LocalizationEstimate.parseFrom(payload.second))
+                    ProtoMessageType.OBSTACLE -> listener.onObstacleReceive(PerceptionObstacles.parseFrom(payload.second))
+                    ProtoMessageType.TRAFFIC_LIGHT -> listener.onTrafficLightReceive(TrafficLight.parseFrom(payload.second))
+                    ProtoMessageType.POINT_CLOUD -> listener.onPointCloudReceive(PointCloudOuterClass.PointCloud.parseFrom(payload.second))
+                    ProtoMessageType.VEHICLE_SIGNAL -> listener.onDashboardReceive(VehicleSignal.parseFrom(payload.second))
+                    null -> println("Received not invalid data.")
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
+
+        println("end to receive")
     }
 
     private fun getPayloadFromArray(data: ByteArray): Pair<ProtoMessageType, ByteArray>? {
