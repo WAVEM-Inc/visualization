@@ -1,5 +1,5 @@
 import JSONInput from 'react-json-editor-ajrm';
-import * as jso from "../../assets/json/bluespace/1F/201-202.json";
+import * as jso from "../../assets/json/bluespace/first/201-202.json";
 import TopComponents from '../../components/top/TopComponent';
 import "./PathEditPage.css";
 
@@ -9,7 +9,7 @@ const PathEditPage: React.FC = () => {
     return (
         <div className="path_edit_container">
             <div className="top_component_container">
-                <TopComponents />
+                {/* <TopComponents /> */}
             </div>
             <div className="json_edit_conatiner">
                 <JSONInput

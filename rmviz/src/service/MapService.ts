@@ -40,3 +40,22 @@ export const initializeRobotMarker: Function = (map: naver.maps.Map): naver.maps
 
     return robotMarker;
 }
+
+export const initializeRobotFilteredMarker: Function = (map: naver.maps.Map): naver.maps.Marker => {
+    const robotMarker: naver.maps.Marker = new naver.maps.Marker({
+        position: map.getCenter(),
+        map: map,
+        title: "RobotCurrentPos",
+        icon: {
+            url: process.env.PUBLIC_URL + "marker_filtered.png",
+            size: new naver.maps.Size(25, 25),
+            scaledSize: new naver.maps.Size(25, 25),
+            origin: new naver.maps.Point(0, 0),
+            anchor: new naver.maps.Point(12, 34)
+        },
+        zIndex: 1000,
+        clickable: false
+    });
+
+    return robotMarker;
+}

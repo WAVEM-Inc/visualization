@@ -1,11 +1,12 @@
 import $ from "jquery";
 import React, { useEffect, useRef, useState } from "react";
-import { initializeMap, initializeRobotMarker } from "../../service/MapService";
+import { initializeMap, initializeRobotFilteredMarker, initializeRobotMarker } from "../../service/MapService";
 import "./MapComponents.css";
 
 interface MapComponentProps {
     pathData: any;
     gpsData: any;
+    gpsFilteredData: any;
     center: naver.maps.LatLng;
     odomEularData: any;
     routeStatus: any;
@@ -19,6 +20,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
     center,
     pathData,
     gpsData,
+    gpsFilteredData,
     odomEularData,
     routeStatus,
     onEmergencyStopClick,
@@ -31,7 +33,14 @@ const MapComponent: React.FC<MapComponentProps> = ({
 
     let map: naver.maps.Map | null = null;
     const [currRobotMarker, setCurrRobotMarker]: [naver.maps.Marker | null, React.Dispatch<React.SetStateAction<naver.maps.Marker | null>>] = useState<naver.maps.Marker | null>(null);
+    const [currRobotFilteredMarker, setCurrRobotFilteredMarker]: [naver.maps.Marker | null, React.Dispatch<React.SetStateAction<naver.maps.Marker | null>>] = useState<naver.maps.Marker | null>(null);
     const [currentGps, setCurrentGps]: [any, React.Dispatch<any>] = useState<any>({
+        status: 0,
+        service: 0,
+        latitude: 0.0,
+        longitude: 0.0
+    });
+    const [currentGpsFiltered, setCurrentGpsFiltered]: [any, React.Dispatch<any>] = useState<any>({
         status: 0,
         service: 0,
         latitude: 0.0,
@@ -178,6 +187,9 @@ const MapComponent: React.FC<MapComponentProps> = ({
         if (mapRef.current && naver && map) {
             const robotMarker: naver.maps.Marker = initializeRobotMarker(map);
             setCurrRobotMarker(robotMarker);
+
+            const robotFilteredMarker: naver.maps.Marker = initializeRobotFilteredMarker(map);
+            setCurrRobotFilteredMarker(robotFilteredMarker);
         }
 
         if (mapRef.current && naver && map) {
@@ -200,9 +212,26 @@ const MapComponent: React.FC<MapComponentProps> = ({
                 longitude: parseFloat(gpsData.longitude.toFixed(7))
             });
 
-            currRobotMarker!.setPosition(new naver.maps.LatLng(gpsData.latitude, gpsData.longitude));
+            if (currentGps.longitude != 0.0 && currentGps.latitude != 0.0) {
+                currRobotMarker!.setPosition(new naver.maps.LatLng(gpsData.latitude, gpsData.longitude));
+            } else return;
         }
     }, [gpsData]);
+
+    useEffect((): void => {
+        if (gpsFilteredData) {
+            setCurrentGpsFiltered({
+                status: gpsFilteredData.status.status,
+                service: gpsFilteredData.status.service,
+                latitude: parseFloat(gpsFilteredData.latitude.toFixed(7)),
+                longitude: parseFloat(gpsFilteredData.longitude.toFixed(7))
+            });
+
+            if (currentGpsFiltered.longitude != 0.0 && currentGpsFiltered.latitude != 0.0) {
+                currRobotFilteredMarker!.setPosition(new naver.maps.LatLng(gpsFilteredData.latitude, gpsFilteredData.longitude));
+            } else return;
+        }
+    }, [gpsFilteredData]);
 
     useEffect((): void => {
         if (odomEularData) {
@@ -277,26 +306,34 @@ const MapComponent: React.FC<MapComponentProps> = ({
                 <div ref={mapRef} id={"map"} />
                 <div className="data_container">
                     <div className={"gps_data_container"}>
-                        <h3>GPS</h3>
-                        <div className="">
+                        <div className="data_title">
+                            GPS
+                        </div>
+                        <div className="data_data">
                             Status : {currentGps.status}
                             <br></br>
                             Service : {currentGps.service}
                             <br></br>
-                            경도 : {currentGps.longitude}
+                            경위도 : {currentGps.longitude}, {currentGps.latitude}
                             <br></br>
-                            위도 : {currentGps.latitude}
+                            필터링 경위도 : {currentGpsFiltered.longitude}, {currentGpsFiltered.latitude}
+                            <br></br>
+                            오차 : {Math.abs(currentGps.longitude - currentGpsFiltered.longitude).toFixed(7)}, {Math.abs(currentGps.latitude - currentGpsFiltered.latitude).toFixed(7)}
                         </div>
                     </div>
                     <div className={"odom_eular_data_container"}>
-                        <h3>차량 각도</h3>
-                        <div className="">
+                        <div className="data_title">
+                            차량 각도
+                        </div>
+                        <div className="data_data">
                             {currentOdomEular}
                         </div>
                     </div>
                     <div className={"route_status_data_container"}>
-                        <h3>주행 상태</h3>
-                        <div className="">
+                        <div className="data_title">
+                            주행 상태
+                        </div>
+                        <div className="data_data">
                             <div className="route_status_current_route_container">
                                 {"["}{currentRouteStatus?.node_info[0]}{"]"} {"->"} {"["}{currentRouteStatus?.node_info[1]}{"]"}
                             </div>

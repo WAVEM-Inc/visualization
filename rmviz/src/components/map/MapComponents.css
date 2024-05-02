@@ -23,6 +23,16 @@
     border-bottom: 2px solid #ccc;
 }
 
+.data_title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 3%;
+}
+
+.data_data {
+    margin-top: 2%;
+}
+
 .data_container>div>div {
     display: flex;
     flex-direction: column;
@@ -36,11 +46,11 @@
 }
 
 .odom_eular_data_container {
-    height: 10%;
+    height: 9%;
 }
 
 .route_status_data_container {
-    height: 18%;
+    height: 15%;
 }
 
 .route_status_current_route_container {
@@ -50,7 +60,7 @@
 }
 
 .route_request_btn_container {
-    height: calc(100% - 56%);
+    height: calc(100% - 50%);
     display: flex;
     justify-content: space-around;
     align-items: center;

@@ -1,5 +1,4 @@
 import MqttClient from "../api/mqttClient";
-import { useMediaQuery } from "react-responsive";
 
 export const KTP_DEV_ID: string = "KECDSEMITB001";
 
@@ -28,22 +27,4 @@ export const onClickMqttPublish = (mqttClient: MqttClient, topic: string, json: 
     const stringifiedJSON: string = JSON.stringify(filteredJSON);
     console.info(`${topic} publish with : ${stringifiedJSON}`);
     mqttClient!.publish(topic, stringifiedJSON);
-}
-
-export function useDevice() {
-    const isDesktopOrLaptop = useMediaQuery({ minDeviceWidth: 1224 });
-    const isBigScreen = useMediaQuery({ minDeviceWidth: 1824 });
-    const isTabletOrMobile = useMediaQuery({ maxWidth: 1224 });
-    const isTabletOrMobileDevice = useMediaQuery({ maxDeviceWidth: 1224 });
-    const isPortrait = useMediaQuery({ orientation: 'portrait' });
-    const isRetina = useMediaQuery({ minResolution: '2dppx' });
-
-    return {
-        isDesktopOrLaptop,
-        isBigScreen,
-        isTabletOrMobile,
-        isTabletOrMobileDevice,
-        isPortrait,
-        isRetina
-    };
 }

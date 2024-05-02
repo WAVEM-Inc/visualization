@@ -78,9 +78,15 @@ class RouteProcessor:
     
     def load_path(self) -> None:
         home_directory: str = os.path.expanduser("~");
-        with open(f"{home_directory}/{self.__current_path_file}", "r", encoding="utf-8") as f:
-            self.__path = json.load(f);
-            self.__log.info(f"Map : {json.dumps(self.__path, indent=4, ensure_ascii=False)}");
+        map_path: str = f"{home_directory}/{self.__current_path_file}";
+        
+        try:
+            with open(map_path, "r", encoding="utf-8") as f:
+                self.__path = json.load(f);
+                self.__log.info(f"Map Path: {map_path}");
+        except FileNotFoundError as fne:
+            self.__log.error(f"{fne}");
+            return;
     
     def can_emergency_publish(self, emergency: Emergency) -> None:
         if emergency.stop is True:

@@ -109,7 +109,7 @@ export default function DataBoardPage() {
     return (
         <div className="data_board_container">
             <div className="top_component_container">
-                <TopComponents />
+                {/* <TopComponents /> */}
             </div>
             <div className="response_component_container">
                 <ResponseComponent
