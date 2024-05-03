@@ -1,18 +1,17 @@
 import $ from "jquery";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { TopState } from "../../domain/top/TopDomain";
 import "./TopComponent.css";
 import TopDropDownComponent from "./TopDropdownComponent";
 
 interface TopComponentProps {
-    heartBeatData: any;
-    batteryData: any;
+    state: TopState;
 }
 
-const TopComponents: React.FC<TopComponentProps> = ({
-    heartBeatData,
-    batteryData
-}: TopComponentProps) => {
+const TopComponent: React.FC<TopComponentProps> = ({
+    state
+}: TopComponentProps): React.ReactElement<any, any> | null => {
     const [isDropdownView, setDropdownView] = useState(false);
     const [menuIconRotation, setMenuIconRotation] = useState(0);
     const [ping, setPing] = useState<number>(0.0);
@@ -28,22 +27,21 @@ const TopComponents: React.FC<TopComponentProps> = ({
     }
 
     useEffect(() => {
-        if (batteryData) {
-            // console.info(`battery : ${JSON.stringify(battery)}`);
+        if (state.battery) {
             let status: string = "";
 
-            if (batteryData.voltage >= 80) {
+            if (state.battery.voltage >= 80) {
                 status = "green";
-            } else if (batteryData.voltage >= 50) {
+            } else if (state.battery.voltage >= 50) {
                 status = "yellow";
-            } else if (batteryData.voltage >= 20) {
+            } else if (state.battery.voltage >= 20) {
                 status = "orange";
             } else {
                 status = "red";
             }
 
             const btry: any = {
-                battery: batteryData.voltage,
+                battery: state.battery.voltage,
                 status: status
             }
 
@@ -52,12 +50,11 @@ const TopComponents: React.FC<TopComponentProps> = ({
             $(".top_battery_status").css("background-color", `${btry.status}`);
             $(".top_battery_status").css("width", `${battery.battery}%`);
         }
-    }, [batteryData]);
+    }, [state.battery]);
 
     useEffect(() => {
-        if (heartBeatData) {
-            // console.info(`heartBeat : ${JSON.stringify(heartBeatData)}`);
-            setPing(heartBeatData.ping_differ);
+        if (state.heartBeat) {
+            setPing(state.heartBeat.ping_differ);
 
             if (ping) {
                 if (ping === 0.0) {
@@ -73,7 +70,7 @@ const TopComponents: React.FC<TopComponentProps> = ({
         } else {
             setPingStatus("red");
         }
-    }, [heartBeatData]);
+    }, [state.heartBeat]);
 
     return (
         <div className="top_components">
@@ -106,4 +103,4 @@ const TopComponents: React.FC<TopComponentProps> = ({
     )
 }
 
-export default TopComponents;
+export default TopComponent;

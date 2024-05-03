@@ -1,6 +1,5 @@
 import JSONInput from 'react-json-editor-ajrm';
 import * as jso from "../../assets/json/bluespace/first/201-202.json";
-import TopComponents from '../../components/top/TopComponent';
 import "./PathEditPage.css";
 
 const lo_en: any = require("react-json-editor-ajrm/locale/en");

@@ -1,3 +1,3 @@
 /rmserver_kec:
   ros__parameters:
-    current_path_file: "RobotData/maps/kecd_path/KEC_TEST_BLUE_2024030.dat"
+    current_path_file: "RobotData/maps/kecd_path/KEC_TEST_BLUE_20240503.dat"

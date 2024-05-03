@@ -1,15 +1,12 @@
 import $ from "jquery";
 import React, { useEffect, useRef, useState } from "react";
+import { MapState } from "../../domain/map/MapDomain";
 import { initializeMap, initializeRobotFilteredMarker, initializeRobotMarker } from "../../service/MapService";
 import "./MapComponents.css";
 
 interface MapComponentProps {
-    pathData: any;
-    gpsData: any;
-    gpsFilteredData: any;
     center: naver.maps.LatLng;
-    odomEularData: any;
-    routeStatus: any;
+    state: MapState;
     onEmergencyStopClick: () => void;
     onEmergencyResumeClick: () => void;
     onGoalCancelClick: () => void;
@@ -17,17 +14,13 @@ interface MapComponentProps {
 }
 
 const MapComponent: React.FC<MapComponentProps> = ({
+    state,
     center,
-    pathData,
-    gpsData,
-    gpsFilteredData,
-    odomEularData,
-    routeStatus,
     onEmergencyStopClick,
     onEmergencyResumeClick,
     onGoalCancelClick,
     onInitClick
-}: MapComponentProps) => {
+}: MapComponentProps): React.ReactElement<any, any> | null => {
     const { naver }: Window & typeof globalThis = window;
     const mapRef: React.MutableRefObject<HTMLDivElement | null> = useRef<HTMLDivElement>(null);
 
@@ -105,8 +98,8 @@ const MapComponent: React.FC<MapComponentProps> = ({
     }
 
     const drawPathMarker: Function = (): void => {
-        if (pathData) {
-            const nodeList: Array<any> = pathData;
+        if (state.path) {
+            const nodeList: Array<any> = Array.from(state.path);
 
             const uniqueNodeIds: Set<string> = new Set<string>();
             for (const node of nodeList) {
@@ -193,49 +186,56 @@ const MapComponent: React.FC<MapComponentProps> = ({
         }
 
         if (mapRef.current && naver && map) {
-            drawPathMarker();
-            drawPathPolyline();
-            setDefaultZoom(21);
+            if (state.path) {
+                console.info(`state.path : ${JSON.stringify(state.path)}`);
+                drawPathMarker();
+                drawPathPolyline();
+                setDefaultZoom(21);
 
-            if (currRobotMarker) {
-                changeMapCenter(currRobotMarker!.getPosition());
+                if (currRobotMarker) {
+                    changeMapCenter(currRobotMarker!.getPosition());
+                }
             }
         } else return;
-    }, [naver, map, pathData]);
+    }, [naver, map, state.path]);
 
     useEffect((): void => {
-        if (gpsData) {
+        if (state.gps) {
+            const gpsStatus: any | undefined = state.gps.status;
             setCurrentGps({
-                status: gpsData.status.status,
-                service: gpsData.status.service,
-                latitude: parseFloat(gpsData.latitude.toFixed(7)),
-                longitude: parseFloat(gpsData.longitude.toFixed(7))
+                status: gpsStatus?.status,
+                service: gpsStatus?.service,
+                longitude: parseFloat(state.gps.longitude?.toFixed(7)),
+                latitude: parseFloat(state.gps.latitude?.toFixed(7))
             });
-
-            if (currentGps.longitude != 0.0 && currentGps.latitude != 0.0) {
-                currRobotMarker!.setPosition(new naver.maps.LatLng(gpsData.latitude, gpsData.longitude));
-            } else return;
+            if (currRobotMarker) {
+                if (state.gps.longitude != 0.0 && state.gps.latitude != 0.0) {
+                    currRobotMarker!.setPosition(new naver.maps.LatLng(state.gps.latitude, state.gps.longitude));
+                } else return;
+            }
         }
-    }, [gpsData]);
+    }, [state.gps]);
 
     useEffect((): void => {
-        if (gpsFilteredData) {
+        if (state.gpsFiltered) {
+            const gpsFilteredStatus: any | undefined = state.gpsFiltered.status;
             setCurrentGpsFiltered({
-                status: gpsFilteredData.status.status,
-                service: gpsFilteredData.status.service,
-                latitude: parseFloat(gpsFilteredData.latitude.toFixed(7)),
-                longitude: parseFloat(gpsFilteredData.longitude.toFixed(7))
+                status: gpsFilteredStatus?.status,
+                service: gpsFilteredStatus?.service,
+                longitude: parseFloat(state.gpsFiltered.longitude?.toFixed(7)) | 0.0,
+                latitude: parseFloat(state.gpsFiltered.latitude?.toFixed(7)) | 0.0
             });
 
             if (currentGpsFiltered.longitude != 0.0 && currentGpsFiltered.latitude != 0.0) {
-                currRobotFilteredMarker!.setPosition(new naver.maps.LatLng(gpsFilteredData.latitude, gpsFilteredData.longitude));
+                currRobotFilteredMarker!.setPosition(new naver.maps.LatLng(state.gpsFiltered.latitude, state.gpsFiltered.longitude));
             } else return;
         }
-    }, [gpsFilteredData]);
+    }, [state.gpsFiltered]);
 
     useEffect((): void => {
-        if (odomEularData) {
-            setCurrentOdomEular(parseFloat(odomEularData.pose.orientation.y.toFixed(2)));
+        if (state.odomEular) {
+            const poseOrientation: any | undefined = state.odomEular.pose?.orientation;
+            setCurrentOdomEular(parseFloat(poseOrientation?.y.toFixed(2)) | 0.0);
         }
 
         if (currentOdomEular) {
@@ -243,21 +243,21 @@ const MapComponent: React.FC<MapComponentProps> = ({
             $("div[title|='RobotCurrentPos'").css("transform", `rotate(${angle}deg)`);
         }
 
-    }, [odomEularData]);
+    }, [state.odomEular]);
 
     useEffect((): void => {
-        if (routeStatus) {
-            console.info(`currentRouteStatus : ${JSON.stringify(routeStatus)}`);
+        if (state.routeStatus) {
+            console.info(`currentRouteStatus : ${JSON.stringify(state.routeStatus)}`);
 
             let driving_flag: boolean = false;
-            if (routeStatus._is_driving) {
+            if (state.routeStatus._is_driving) {
                 driving_flag = true;
             } else {
                 driving_flag = false;
             }
 
             let status: string = "";
-            switch (routeStatus._status_code) {
+            switch (state.routeStatus._status_code) {
                 case 0:
                     status = "출발";
                     break;
@@ -280,15 +280,19 @@ const MapComponent: React.FC<MapComponentProps> = ({
                     break;
             }
 
-            const currRouteStatus: any = {
-                driving_flag: driving_flag,
-                status: status,
-                node_info: routeStatus._node_info
-            };
+            const node_info: any = state.routeStatus._node_info;
 
-            setCurrentRouteStatus(currRouteStatus);
+            if (node_info) {
+                const currRouteStatus: any = {
+                    driving_flag: driving_flag,
+                    status: status,
+                    node_info: node_info!
+                };
+
+                setCurrentRouteStatus(currRouteStatus);
+            }
         }
-    }, [routeStatus]);
+    }, [state.routeStatus]);
 
     useEffect(() => {
         return () => {

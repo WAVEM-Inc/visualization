@@ -2,7 +2,6 @@ import { IPublishPacket } from "mqtt/*";
 import { useEffect, useState } from "react";
 import MqttClient from "../../api/mqttClient";
 import ResponseComponent from "../../components/response/ResponseComponent";
-import TopComponents from "../../components/top/TopComponent";
 import './DataBoardPage.css';
 
 export default function DataBoardPage() {

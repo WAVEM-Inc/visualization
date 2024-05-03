@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import "./DashBoardPage.css";
+import { useEffect } from "react";
 
 export default function DashBoardPage() {
 
