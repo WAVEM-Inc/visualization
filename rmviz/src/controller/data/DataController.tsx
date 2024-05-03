@@ -39,7 +39,7 @@ const DataController: React.FC = (): React.ReactElement<any, any> | null => {
 
     const handleResponseMQTTCallback = (mqttClient: MqttClient): void => {
         mqttClient.client.on("message", (topic: string, payload: Buffer, packet: IPublishPacket) => {
-            const message: any = JSON.parse(payload.toString())
+            const message: any = JSON.parse(payload.toString());
             if (topic === responsePathTopic) {
                 mapStateDistpatch({ type: SET_PATH, payload: message });
             } else if (topic === resposneGpsTopic) {
@@ -50,7 +50,8 @@ const DataController: React.FC = (): React.ReactElement<any, any> | null => {
                 mapStateDistpatch({ type: SET_ROUTE_STATUS, payload: message });
             } else if (topic === responseOdomEularTopic) {
                 mapStateDistpatch({ type: SET_ODOM_EULAR, payload: message });
-            } else if (topic === responseHeartBeatTopic) {
+            } 
+            else if (topic === responseHeartBeatTopic) {
                 topStateDispatch({ type: SET_HEARTBEAT, payload: message });
             } else if (topic === responseBatteryTopic) {
                 topStateDispatch({ type: SET_BATTERY, payload: message });

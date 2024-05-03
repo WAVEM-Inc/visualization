@@ -14,6 +14,9 @@ def ros_message_to_json(log: RcutilsLogger, ros_message: Any) -> str:
     except message_conversion.NonexistentFieldException as nefe:
         log.error(f"ros_to_json : {nefe}");
         return None;
+    except AttributeError as ate:
+        log.error(f"ros_to_json : {ate}");
+        return None;
 
 def json_to_ros_message(log: RcutilsLogger, json_payload: Any, target_ros_class: Any) -> Any:
     try:

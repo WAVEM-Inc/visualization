@@ -394,8 +394,14 @@ class RouteProcessor:
             return;
         
     def notify_path_subscription_cb(self, path_cb: Path) -> None:
-        payload: str = ros_message_to_json(log=self.__log, ros_message=path_cb.node_list);
-        self.__mqtt_client.publish(topic=MQTT_PATH_TOPIC, payload=payload, qos=0);
+        pass;
+        # node_list: route_Node[] = path_cb.node_list;
+        # payload: list[Any] = [];
+        
+        # for node in node_list:
+            
+        # payload: str = ros_message_to_json(log=self.__log, ros_message=path_cb);
+        # self.__mqtt_client.publish(topic=MQTT_PATH_TOPIC, payload=payload, qos=0);
         
 
 __all__: list[str] = ["RouteProcessor"];

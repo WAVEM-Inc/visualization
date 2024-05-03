@@ -8,8 +8,24 @@ export interface MapState {
 
 export const initialMapState: MapState = {
     path: {},
-    gps: {},
-    gpsFiltered: {},
+    gps: {
+        header: {},
+        status: {
+            status: 0,
+            service: 0
+        },
+        longitude: 0.0,
+        latitude: 0.0
+    },
+    gpsFiltered: {
+        header: {},
+        status: {
+            status: 0,
+            service: 0
+        },
+        longitude: 0.0,
+        latitude: 0.0
+    },
     routeStatus: {},
     odomEular: {}
 };
