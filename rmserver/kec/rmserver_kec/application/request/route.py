@@ -4,6 +4,7 @@ import paho.mqtt.client as paho;
 from rclpy.node import Node;
 from rclpy.impl.rcutils_logger import RcutilsLogger;
 from rclpy.publisher import Publisher;
+from rclpy.subscription import Subscription;
 import rclpy.action as rclpy_action;
 from rclpy.action.client import ClientGoalHandle;
 from rclpy.action.client import ActionClient;
@@ -18,6 +19,7 @@ from route_msgs.action import RouteToPose;
 from route_msgs.msg import Position;
 from route_msgs.msg import Node as route_Node;
 from route_msgs.msg import DetectionRange;
+from route_msgs.msg import Path;
 from action_msgs.msg import GoalStatus;
 from typing import Dict;
 from typing import Any;
@@ -29,9 +31,11 @@ from rmserver_kec.domain.route import RouteStatus;
 MQTT_PATH_TOPIC: str = "/rms/ktp/dummy/response/path";
 MQTT_ROUTE_STATUS_TOPIC: str = "/rms/ktp/dummy/response/route/status";
 
-CAN_EMERGENCY_STOP_TOPIC: str = "/drive/can/emergency";
 ROUTE_TO_POSE_ACTION: str = "/route_to_pose";
 CAN_INIT_TOPIC: str = "/drive/can/init";
+CAN_EMERGENCY_STOP_TOPIC: str = "/drive/can/emergency";
+NOTIFY_PATH_TOPIC: str = "/rms/ktp/task/notify/path";
+
 
 
 class RouteProcessor:
@@ -44,14 +48,6 @@ class RouteProcessor:
         self.__path: Any = {};
         
         self.__route_status: RouteStatus = RouteStatus();
-        
-        can_emergency_stop_cb_group: MutuallyExclusiveCallbackGroup = MutuallyExclusiveCallbackGroup();
-        self.__can_emergency_stop_publisher: Publisher = self.__node.create_publisher(
-            topic=CAN_EMERGENCY_STOP_TOPIC,
-            msg_type=Emergency,
-            qos_profile=qos_profile_system_default,
-            callback_group=can_emergency_stop_cb_group
-        );
         
         self.__route_to_pose_goal_index: int = 0;
         self.__route_to_pose_goal_list: list[RouteToPose.Goal] = [];
@@ -74,6 +70,23 @@ class RouteProcessor:
             callback_group=can_init_publisher_cb_group
         );
         
+        can_emergency_stop_publisher_cb_group: MutuallyExclusiveCallbackGroup = MutuallyExclusiveCallbackGroup();
+        self.__can_emergency_stop_publisher: Publisher = self.__node.create_publisher(
+            topic=CAN_EMERGENCY_STOP_TOPIC,
+            msg_type=Emergency,
+            qos_profile=qos_profile_system_default,
+            callback_group=can_emergency_stop_publisher_cb_group
+        );
+        
+        notify_path_subscription_cb_group: MutuallyExclusiveCallbackGroup = MutuallyExclusiveCallbackGroup();
+        self.__notify_path_subscription: Subscription = self.__node.create_subscription(
+            topic=NOTIFY_PATH_TOPIC,
+            msg_type=Path,
+            qos_profile=qos_profile_system_default,
+            callback_group=notify_path_subscription_cb_group,
+            callback=self.notify_path_subscription_cb
+        );
+        
         self.load_path();
     
     def load_path(self) -> None:
@@ -86,40 +99,6 @@ class RouteProcessor:
                 self.__log.info(f"Map Path: {map_path}");
         except FileNotFoundError as fne:
             self.__log.error(f"{fne}");
-            return;
-    
-    def can_emergency_publish(self, emergency: Emergency) -> None:
-        if emergency.stop is True:
-            self.__log.info(f"{CAN_EMERGENCY_STOP_TOPIC} emergency stop...");
-            self.__can_emergency_stop_publisher.publish(msg=emergency);
-        else:
-            return;
-        
-    def mqtt_can_emergency_cb(self, mqtt_client: paho.Client, mqtt_user_data: Dict, mqtt_message: paho.MQTTMessage) -> None:
-        try:
-            mqtt_topic: str = mqtt_message.topic;
-            mqtt_decoded_payload: str = mqtt_message.payload.decode();
-            mqtt_json: Any = json.loads(mqtt_message.payload);
-
-            emergency: String = message_conversion.populate_instance(msg=mqtt_json, inst=Emergency());
-
-            self.__log.info(f"{mqtt_topic} cb\n{json.dumps(obj=message_conversion.extract_values(inst=emergency), indent=4)}");
-
-            self.can_emergency_publish(emergency=emergency);
-        except KeyError as ke:
-            self.__log.error(f"Invalid JSON Key in MQTT {mqtt_topic} subscription callback: {ke}");
-            return;
-
-        except json.JSONDecodeError as jde:
-            self.__log.error(f"Invalid JSON format in MQTT {mqtt_topic} subscription callback: {jde.msg}");
-            return;
-
-        except message_conversion.NonexistentFieldException as nefe:
-            self.__log.error(f"{mqtt_topic} : {nefe}");
-            return;
-
-        except Exception as e:
-            self.__log.error(f"Exception in MQTT {mqtt_topic} subscription callback: {e}");
             return;
         
     def mqtt_route_to_pose_cb(self, mqtt_client: paho.Client, mqtt_user_data: Dict, mqtt_message: paho.MQTTMessage) -> None:
@@ -379,5 +358,44 @@ class RouteProcessor:
         except Exception as e:
             self.__log.error(f"Exception in MQTT {mqtt_topic} subscription callback: {e}");
             return;
+
+    def can_emergency_publish(self, emergency: Emergency) -> None:
+        if emergency.stop is True:
+            self.__log.info(f"{CAN_EMERGENCY_STOP_TOPIC} emergency stop...");
+            self.__can_emergency_stop_publisher.publish(msg=emergency);
+        else:
+            return;
+        
+    def mqtt_can_emergency_cb(self, mqtt_client: paho.Client, mqtt_user_data: Dict, mqtt_message: paho.MQTTMessage) -> None:
+        try:
+            mqtt_topic: str = mqtt_message.topic;
+            mqtt_decoded_payload: str = mqtt_message.payload.decode();
+            mqtt_json: Any = json.loads(mqtt_message.payload);
+
+            emergency: String = message_conversion.populate_instance(msg=mqtt_json, inst=Emergency());
+
+            self.__log.info(f"{mqtt_topic} cb\n{json.dumps(obj=message_conversion.extract_values(inst=emergency), indent=4)}");
+
+            self.can_emergency_publish(emergency=emergency);
+        except KeyError as ke:
+            self.__log.error(f"Invalid JSON Key in MQTT {mqtt_topic} subscription callback: {ke}");
+            return;
+
+        except json.JSONDecodeError as jde:
+            self.__log.error(f"Invalid JSON format in MQTT {mqtt_topic} subscription callback: {jde.msg}");
+            return;
+
+        except message_conversion.NonexistentFieldException as nefe:
+            self.__log.error(f"{mqtt_topic} : {nefe}");
+            return;
+
+        except Exception as e:
+            self.__log.error(f"Exception in MQTT {mqtt_topic} subscription callback: {e}");
+            return;
+        
+    def notify_path_subscription_cb(self, path_cb: Path) -> None:
+        payload: str = ros_message_to_json(log=self.__log, ros_message=path_cb.node_list);
+        self.__mqtt_client.publish(topic=MQTT_PATH_TOPIC, payload=payload, qos=0);
+        
 
 __all__: list[str] = ["RouteProcessor"];

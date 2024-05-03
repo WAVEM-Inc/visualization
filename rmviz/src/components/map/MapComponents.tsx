@@ -1,7 +1,7 @@
 import $ from "jquery";
 import React, { useEffect, useRef, useState } from "react";
 import { MapState } from "../../domain/map/MapDomain";
-import { initializeMap, initializeRobotFilteredMarker, initializeRobotMarker } from "../../service/MapService";
+import { initializeMap, initializeRobotMarker } from "../../service/MapService";
 import "./MapComponents.css";
 
 interface MapComponentProps {
@@ -180,9 +180,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
         if (mapRef.current && naver && map) {
             const robotMarker: naver.maps.Marker = initializeRobotMarker(map);
             setCurrRobotMarker(robotMarker);
-
-            const robotFilteredMarker: naver.maps.Marker = initializeRobotFilteredMarker(map);
-            setCurrRobotFilteredMarker(robotFilteredMarker);
         }
 
         if (mapRef.current && naver && map) {
@@ -222,13 +219,9 @@ const MapComponent: React.FC<MapComponentProps> = ({
             setCurrentGpsFiltered({
                 status: gpsFilteredStatus?.status,
                 service: gpsFilteredStatus?.service,
-                longitude: parseFloat(state.gpsFiltered.longitude?.toFixed(7)) | 0.0,
-                latitude: parseFloat(state.gpsFiltered.latitude?.toFixed(7)) | 0.0
+                longitude: parseFloat(state.gpsFiltered.longitude?.toFixed(7)),
+                latitude: parseFloat(state.gpsFiltered.latitude?.toFixed(7))
             });
-
-            if (currentGpsFiltered.longitude != 0.0 && currentGpsFiltered.latitude != 0.0) {
-                currRobotFilteredMarker!.setPosition(new naver.maps.LatLng(state.gpsFiltered.latitude, state.gpsFiltered.longitude));
-            } else return;
         }
     }, [state.gpsFiltered]);
 

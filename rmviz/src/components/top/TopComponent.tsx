@@ -56,12 +56,12 @@ const TopComponent: React.FC<TopComponentProps> = ({
         if (state.heartBeat) {
             setPing(state.heartBeat.ping_differ);
 
-            if (ping) {
-                if (ping === 0.0) {
+            if (state.heartBeat.ping_differ) {
+                if (state.heartBeat.ping_differ === 0.0) {
                     setPingStatus("red");
-                } else if (ping <= 300.0) {
+                } else if (state.heartBeat.ping_differ <= 300.0) {
                     setPingStatus("green");
-                } else if (ping >= 300.0) {
+                } else if (state.heartBeat.ping_differ >= 300.0) {
                     setPingStatus("orange");
                 } else {
                     setPingStatus("red");

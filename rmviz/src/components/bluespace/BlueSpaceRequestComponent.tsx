@@ -6,6 +6,9 @@ interface BlueSpaceRequestComponentProps {
     onCallClick: () => void;
     onDeliveryClick: () => void;
     onWaitingClick: () => void;
+    onMissionClick: () => void;
+    onControlMoveToDestClick: () => void;
+    onControlMsCompleteClick: () => void;
 }
 
 const BlueSpaceRequestComponent: React.FC<BlueSpaceRequestComponentProps> = ({
@@ -13,7 +16,10 @@ const BlueSpaceRequestComponent: React.FC<BlueSpaceRequestComponentProps> = ({
     onStraightTestClick,
     onCallClick,
     onDeliveryClick,
-    onWaitingClick
+    onWaitingClick,
+    onMissionClick,
+    onControlMoveToDestClick,
+    onControlMsCompleteClick
 }: BlueSpaceRequestComponentProps) => {
     return (
         <div className="">
@@ -23,6 +29,9 @@ const BlueSpaceRequestComponent: React.FC<BlueSpaceRequestComponentProps> = ({
                 <button className={"bluespace_btn_request"} onClick={onCallClick}>호출</button>
                 <button className={"bluespace_btn_request"} onClick={onDeliveryClick}>배송</button>
                 <button className={"bluespace_btn_request"} onClick={onWaitingClick}>대기</button>
+                <button className={"bluespace_btn_request"} onClick={onMissionClick}>임무 할당</button>
+                <button className={"bluespace_btn_request"} onClick={onControlMoveToDestClick}>상차지 이동 제어</button>
+                <button className={"bluespace_btn_request"} onClick={onControlMsCompleteClick}>복귀 이동 제어</button>
             </div>
         </div>
     );

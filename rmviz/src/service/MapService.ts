@@ -48,10 +48,10 @@ export const initializeRobotFilteredMarker: Function = (map: naver.maps.Map): na
         title: "RobotCurrentPos",
         icon: {
             url: process.env.PUBLIC_URL + "marker_filtered.png",
-            size: new naver.maps.Size(25, 25),
-            scaledSize: new naver.maps.Size(25, 25),
+            size: new naver.maps.Size(30, 30),
+            scaledSize: new naver.maps.Size(30, 30),
             origin: new naver.maps.Point(0, 0),
-            anchor: new naver.maps.Point(12, 34)
+            anchor: new naver.maps.Point(10, 32)
         },
         zIndex: 1000,
         clickable: false

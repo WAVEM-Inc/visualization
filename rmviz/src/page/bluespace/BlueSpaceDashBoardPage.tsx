@@ -7,6 +7,9 @@ import * as straightTestJSON from "../../assets/json/bluespace/secondary/straigh
 import * as waitingJSON from "../../assets/json/bluespace/secondary/waiting.json";
 import * as emergencyResumeJSON from "../../assets/json/common/emergency_resume.json";
 import * as emergencyStopJSON from "../../assets/json/common/emergency_stop.json";
+import * as missionJSON from "../../assets/json/mission.json";
+import * as controlMoveToDestJSON from "../../assets/json/control_movetodest.json";
+import * as controlMsCompleteJSON from "../../assets/json/control_mscomplete.json";
 import BlueSpaceRequestComponent from "../../components/bluespace/BlueSpaceRequestComponent";
 import MapComponent from "../../components/map/MapComponents";
 import TopComponent from "../../components/top/TopComponent";
@@ -32,6 +35,8 @@ const BlueSpaceDashBoardPage: React.FC<BlueSpaceDashBoardPageProps> = ({
     const requestEmergencyTopic: string = `${requestTopicFormat}/can/emergency`;
     const requestGoalCancelTopic: string = `${requestTopicFormat}/goal/cancel`;
     const requestInitTopic: string = `${requestTopicFormat}/can/init`;
+    const requestMissionTopic: string = `${requestTopicFormat}/mission`;
+    const requestControlTopic: string = `${requestTopicFormat}/control`;
 
 
     const onStraightClick = (): void => {
@@ -76,6 +81,18 @@ const BlueSpaceDashBoardPage: React.FC<BlueSpaceDashBoardPageProps> = ({
         });
     }
 
+    const onMissionClick = (): void => {
+        onClickMqttPublish(mqttClient!, requestMissionTopic, missionJSON);
+    }
+
+    const onControlMoveToDestClick = (): void => {
+        onClickMqttPublish(mqttClient!, requestControlTopic, controlMoveToDestJSON);
+    }
+
+    const onControlMsCompleteClick = (): void => {
+        onClickMqttPublish(mqttClient!, requestControlTopic, controlMsCompleteJSON);
+    }
+
     return (
         <div className="dash_board_container">
             <div className="top_component_container">
@@ -100,6 +117,9 @@ const BlueSpaceDashBoardPage: React.FC<BlueSpaceDashBoardPageProps> = ({
                     onCallClick={onCallClick}
                     onDeliveryClick={onDeliveryClick}
                     onWaitingClick={onWaitingClick}
+                    onMissionClick={onMissionClick}
+                    onControlMoveToDestClick={onControlMoveToDestClick}
+                    onControlMsCompleteClick={onControlMsCompleteClick}
                 />
             </div>
         </div>
