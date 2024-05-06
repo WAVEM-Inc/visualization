@@ -1,7 +1,7 @@
 import $ from "jquery";
 import React, { useEffect, useRef, useState } from "react";
 import { MapState } from "../../domain/map/MapDomain";
-import { initializeMap, initializeRobotMarker } from "../../service/MapService";
+import { initializeMap, initializePathInfoWindow, initializeRobotMarker } from "../../service/MapService";
 import "./MapComponents.css";
 
 interface MapComponentProps {
@@ -25,6 +25,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
     const mapRef: React.MutableRefObject<HTMLDivElement | null> = useRef<HTMLDivElement>(null);
 
     let map: naver.maps.Map | null = null;
+    const [pathInfoContainerWindow, setPathInfoContainerWindow] = useState<HTMLDivElement>();
     const [currRobotMarker, setCurrRobotMarker]: [naver.maps.Marker | null, React.Dispatch<React.SetStateAction<naver.maps.Marker | null>>] = useState<naver.maps.Marker | null>(null);
     const [currRobotFilteredMarker, setCurrRobotFilteredMarker]: [naver.maps.Marker | null, React.Dispatch<React.SetStateAction<naver.maps.Marker | null>>] = useState<naver.maps.Marker | null>(null);
     const [currentGps, setCurrentGps]: [any, React.Dispatch<any>] = useState<any>({
@@ -45,12 +46,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
     let pathMarkerArray: Array<naver.maps.Marker> = [];
     let pathInfoWindowarray: Array<naver.maps.InfoWindow> = [];
 
-    const [currentMode, setCurrentMode]: [string, React.Dispatch<React.SetStateAction<string>>] = useState<string>("KEC");
     const [defaultZoom, setDefaultZoom]: [number, React.Dispatch<React.SetStateAction<number>>] = useState<number>(20);
-
-    const wkValveCoord: naver.maps.LatLng = new naver.maps.LatLng(35.157851, 128.858111);
-    const blueSpaceCoord: naver.maps.LatLng = new naver.maps.LatLng(37.305985, 127.2401652);
-    const kecCoord: naver.maps.LatLng = new naver.maps.LatLng(36.1137155, 128.3676005);
 
     const addPathMarker: Function = (node: any, is_start: boolean, is_end: boolean): any => {
         console.info(`addPathMarker node : ${JSON.stringify(node)}`);
@@ -77,6 +73,22 @@ const MapComponent: React.FC<MapComponentProps> = ({
                 anchor: new naver.maps.Point(12, 34)
             }
         });
+
+        if (pathInfoContainerWindow) {
+            const pathInfoDiv: HTMLDivElement = document.createElement("div");
+            pathInfoDiv.className = "path_info";
+
+            const pathInfoIcon: HTMLImageElement = document.createElement("img");
+            pathInfoIcon.src = iconUrl;
+            pathInfoIcon.className = "path_info_icon";
+
+            const pathInfoDetailDiv: HTMLDivElement = document.createElement("div");
+            pathInfoDetailDiv.className = "path_info_detail";
+            
+            pathInfoDiv.appendChild(pathInfoIcon);
+            pathInfoDiv.appendChild(pathInfoDetailDiv);
+            pathInfoContainerWindow.appendChild(pathInfoDiv);
+        }
 
         return marker;
     }
@@ -180,6 +192,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
         if (mapRef.current && naver && map) {
             const robotMarker: naver.maps.Marker = initializeRobotMarker(map);
             setCurrRobotMarker(robotMarker);
+            setPathInfoContainerWindow(initializePathInfoWindow());
         }
 
         if (mapRef.current && naver && map) {
