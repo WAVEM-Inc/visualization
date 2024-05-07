@@ -1,7 +1,7 @@
 import $ from "jquery";
 import React, { useEffect, useRef, useState } from "react";
 import { MapState } from "../../domain/map/MapDomain";
-import { initializeMap, initializePathInfoWindow, initializeRobotMarker } from "../../service/MapService";
+import { initializeMap, initializeRobotMarker } from "../../service/MapService";
 import "./MapComponents.css";
 
 interface MapComponentProps {
@@ -25,7 +25,8 @@ const MapComponent: React.FC<MapComponentProps> = ({
     const mapRef: React.MutableRefObject<HTMLDivElement | null> = useRef<HTMLDivElement>(null);
 
     let map: naver.maps.Map | null = null;
-    const [pathInfoContainerWindow, setPathInfoContainerWindow] = useState<HTMLDivElement>();
+    const [pathInfoContainer, setPathInfoContainer] = useState<HTMLElement | null>(null);
+    const [pathInfoDiv, setPathInfoDiv] = useState<HTMLDivElement | null>(null);
     const [currRobotMarker, setCurrRobotMarker]: [naver.maps.Marker | null, React.Dispatch<React.SetStateAction<naver.maps.Marker | null>>] = useState<naver.maps.Marker | null>(null);
     const [currRobotFilteredMarker, setCurrRobotFilteredMarker]: [naver.maps.Marker | null, React.Dispatch<React.SetStateAction<naver.maps.Marker | null>>] = useState<naver.maps.Marker | null>(null);
     const [currentGps, setCurrentGps]: [any, React.Dispatch<any>] = useState<any>({
@@ -61,10 +62,20 @@ const MapComponent: React.FC<MapComponentProps> = ({
             iconUrl = process.env.PUBLIC_URL + "marker_landmark.png";
         }
 
+        const nodeTitleOpts: any = {
+            id: node.nodeId.split("-")[2],
+            kind: node.kind,
+            heading: node.heading,
+            drivingOption: node.drivingOption,
+            direction: node.direction
+        }
+
+        const nodeTitle: string = `${nodeTitleOpts.id}/${nodeTitleOpts.kind}/${node.heading}/${node.drivingOption}/${node.direction}`;
+
         const marker: naver.maps.Marker = new naver.maps.Marker({
             position: new naver.maps.LatLng(node.position.latitude, node.position.longitude),
             map: map,
-            title: `${node.nodeId.split("-")[2]}/${node.kind}/${node.heading}/${node.drivingOption}/${node.direction}`,
+            title: nodeTitle,
             icon: {
                 url: iconUrl,
                 size: new naver.maps.Size(30, 30),
@@ -73,22 +84,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
                 anchor: new naver.maps.Point(12, 34)
             }
         });
-
-        if (pathInfoContainerWindow) {
-            const pathInfoDiv: HTMLDivElement = document.createElement("div");
-            pathInfoDiv.className = "path_info";
-
-            const pathInfoIcon: HTMLImageElement = document.createElement("img");
-            pathInfoIcon.src = iconUrl;
-            pathInfoIcon.className = "path_info_icon";
-
-            const pathInfoDetailDiv: HTMLDivElement = document.createElement("div");
-            pathInfoDetailDiv.className = "path_info_detail";
-            
-            pathInfoDiv.appendChild(pathInfoIcon);
-            pathInfoDiv.appendChild(pathInfoDetailDiv);
-            pathInfoContainerWindow.appendChild(pathInfoDiv);
-        }
 
         return marker;
     }
@@ -121,8 +116,12 @@ const MapComponent: React.FC<MapComponentProps> = ({
             for (const nodeId of uniqueNodeIds) {
                 const node: any = nodeList.find((node) => node.nodeId.split("-")[2] === nodeId);
                 if (node) {
-                    const isFirstNode = nodeList.indexOf(node) === 0;
-                    const isLastNode = nodeList.indexOf(node) === nodeList.length - 1;
+                    const currentNodeIndex: number = nodeList.indexOf(node);
+                    const nextNode: any = nodeList[currentNodeIndex + 1];
+                    const nextNodeIndex: number = nodeList.indexOf(nextNode);
+
+                    const isFirstNode = currentNodeIndex === 0;
+                    const isLastNode = currentNodeIndex === nodeList.length - 1;
 
                     if (isFirstNode) {
                         pathMarkerArray.push(addPathMarker(node, true, false));
@@ -131,6 +130,96 @@ const MapComponent: React.FC<MapComponentProps> = ({
                     } else {
                         pathMarkerArray.push(addPathMarker(node, false, false));
                     }
+
+                    const pathInfoContainer: HTMLElement | null = document.getElementById("path_info_container");
+
+                    let startNodeIconUrl: string = "";
+                    let endNodeIconUrl: string = "";
+
+                    if (!isLastNode) {
+                        if (isFirstNode) {
+                            startNodeIconUrl = process.env.PUBLIC_URL + "marker_start.png";
+                        } else if (isLastNode) {
+                            startNodeIconUrl = process.env.PUBLIC_URL + "marker_arrive.png";
+                        } else {
+                            startNodeIconUrl = process.env.PUBLIC_URL + "marker_landmark.png";
+                        }
+
+                        if (nextNodeIndex === nodeList.length - 1) {
+                            endNodeIconUrl = process.env.PUBLIC_URL + "marker_arrive.png";
+                        } else {
+                            endNodeIconUrl = process.env.PUBLIC_URL + "marker_landmark.png";
+                        }
+                    } else {
+                        return;
+                    }
+
+                    const startNodeTitleOpts: any = {
+                        id: node.nodeId.split("-")[2],
+                        kind: node.kind,
+                        heading: node.heading,
+                        drivingOption: node.drivingOption,
+                        direction: node.direction
+                    }
+
+                    const endNodeTitleOpts: any = {
+                        id: nextNode.nodeId.split("-")[2],
+                        kind: nextNode.kind,
+                        heading: nextNode.heading,
+                        drivingOption: nextNode.drivingOption,
+                        direction: nextNode.direction
+                    }
+
+                    const pathInfoDiv: HTMLDivElement = document.createElement("div");
+                    pathInfoDiv.className = "path_info";
+
+                    const startNodeDiv: HTMLDivElement = document.createElement("div");
+                    startNodeDiv.className = "path_start_node";
+
+                    const startNodeIcon: HTMLImageElement = document.createElement("img");
+                    startNodeIcon.src = startNodeIconUrl;
+                    startNodeIcon.className = "node_icon start_node_icon";
+
+                    const startNodeInfo: HTMLDivElement = document.createElement("div");
+                    startNodeInfo.className = "node_info start_node_info";
+                    startNodeInfo.textContent = `[ ${startNodeTitleOpts.id} ]`;
+
+                    startNodeDiv.appendChild(startNodeIcon);
+                    startNodeDiv.appendChild(startNodeInfo);
+
+                    const pathDirectionDiv: HTMLDivElement = document.createElement("div");
+                    pathDirectionDiv.className = "path_direction";
+
+                    const pathDirectionIcon: HTMLImageElement = document.createElement("img");
+                    pathDirectionIcon.src = process.env.PUBLIC_URL + "arrow-right.png";
+                    pathDirectionIcon.className = "node_icon";
+
+                    const pathDirectionDivContent: HTMLDivElement = document.createElement("div");
+                    pathDirectionDivContent.className = "path_direction_content";
+                    pathDirectionDivContent.textContent = `${startNodeTitleOpts.drivingOption} - ${startNodeTitleOpts.direction}`;
+
+                    pathDirectionDiv.appendChild(pathDirectionIcon);
+                    pathDirectionDiv.appendChild(pathDirectionDivContent);
+
+                    const endNodeDiv: HTMLDivElement = document.createElement("div");
+                    endNodeDiv.className = "path_end_node";
+
+                    const endNodeIcon: HTMLImageElement = document.createElement("img");
+                    endNodeIcon.src = endNodeIconUrl;
+                    endNodeIcon.className = "node_icon end_node_icon";
+
+                    const endNodeInfo: HTMLDivElement = document.createElement("div");
+                    endNodeInfo.className = "node_info end_node_info";
+                    endNodeInfo.textContent = `[ ${endNodeTitleOpts.id} ]`;
+
+                    endNodeDiv.appendChild(endNodeIcon);
+                    endNodeDiv.appendChild(endNodeInfo);
+
+                    pathInfoDiv.appendChild(startNodeDiv);
+                    pathInfoDiv.appendChild(pathDirectionDiv);
+                    pathInfoDiv.appendChild(endNodeDiv);
+                    setPathInfoDiv(pathInfoDiv);
+                    pathInfoContainer!.appendChild(pathInfoDiv);
                 }
             }
         }
@@ -192,12 +281,21 @@ const MapComponent: React.FC<MapComponentProps> = ({
         if (mapRef.current && naver && map) {
             const robotMarker: naver.maps.Marker = initializeRobotMarker(map);
             setCurrRobotMarker(robotMarker);
-            setPathInfoContainerWindow(initializePathInfoWindow());
         }
 
         if (mapRef.current && naver && map) {
             if (state.path) {
                 console.info(`state.path : ${JSON.stringify(state.path)}`);
+
+                if (pathInfoDiv) {
+                    if (pathInfoContainer) {
+                        while (pathInfoContainer.firstChild) {
+                            pathInfoContainer.removeChild(pathInfoContainer.firstChild);
+                        }
+                    }
+                    setPathInfoDiv(null);
+                }
+
                 drawPathMarker();
                 drawPathPolyline();
                 setDefaultZoom(21);
@@ -301,9 +399,11 @@ const MapComponent: React.FC<MapComponentProps> = ({
     }, [state.routeStatus]);
 
     useEffect(() => {
+        setPathInfoContainer(document.getElementById("path_info_container"));
         return () => {
             if (map) {
                 setCurrRobotMarker(null);
+                setPathInfoDiv(null);
                 map.destroy();
                 map = null;
             }
@@ -314,6 +414,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
         <div className={"map_components"}>
             <div className={"map_container"}>
                 <div ref={mapRef} id={"map"} />
+                <div id="path_info_container" className="path_info_container" />
                 <div className="data_container">
                     <div className={"gps_data_container"}>
                         <div className="data_title">

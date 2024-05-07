@@ -37,7 +37,6 @@ CAN_EMERGENCY_STOP_TOPIC: str = "/drive/can/emergency";
 NOTIFY_PATH_TOPIC: str = "/rms/ktp/task/notify/path";
 
 
-
 class RouteProcessor:
     
     def __init__(self, node: Node, mqtt_client: Client) -> None:

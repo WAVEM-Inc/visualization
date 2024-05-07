@@ -6,36 +6,41 @@
 }
 
 #map {
-    width: 85%;
+    width: 65%;
     height: 100%;
     border-right: 2px solid #ccc;
 }
 
 .path_info_container {
-    position: absolute;
-    z-index: 100;
-    margin: 0px;
-    padding: 0px;
-    pointer-events: none;
-    bottom: 0px;
-    right: 0px;
+    width: 20%;
     height: 100%;
-    width: 17%;
-    background-color: #fff;
+    border-right: 2px solid #ccc;
+    overflow: auto;
 }
 
 .path_info {
     width: 100%;
+    height: 25%;
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     border-bottom: 2px solid #ccc;
 }
 
-.path_info_icon {
-    width: 5%;
-    height: 5%;
+.node_icon {
+    width: 40%;
+    height: 40%;
+}
+
+.node_info {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.path_direction_content {
+    font-size: 15px;
+    font-weight: bold;
 }
 
 .data_container {

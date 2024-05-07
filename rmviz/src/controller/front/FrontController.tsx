@@ -10,9 +10,6 @@ const FrontController: React.FC = (): React.ReactElement<any, any> | null => {
             <Route exact path={"/"}>
                 <DashBoardPage />
             </Route>
-            <Route exact path={"/path/edit"}>
-                <PathEditPage />
-            </Route>
         </Switch>
     );
 }

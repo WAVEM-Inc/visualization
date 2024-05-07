@@ -4,6 +4,7 @@ from rmserver_kec.application.mqtt import Client;
 from rmserver_kec.application.request.task import TaskProcessor;
 from rmserver_kec.application.request.obstacle import ObstacleProcessor;
 from rmserver_kec.application.request.route import RouteProcessor;
+from rmserver_kec.application.request.path import PathProcessor;
 from rmserver_kec.application.connection.heartbeat import HeartBeatProcessor;
 
 MQTT_CONTROL_REQUEST_TOPIC: str = "/rms/ktp/dummy/request/control";
@@ -16,6 +17,7 @@ MQTT_ROUTE_TO_POSE_TOPIC: str = "/rms/ktp/dummy/request/route_to_pose";
 MQTT_ROUTE_TO_POSE_STATUS_TOPIC: str = "/rms/ktp/dummy/response/route_to_pose/status";
 MQTT_GOAL_CANCEL_TOPIC: str = "/rms/ktp/dummy/request/goal/cancel";
 MQTT_CAN_INIT_TOPIC: str = "/rms/ktp/dummy/request/can/init";
+MQTT_PATH_EDIT_REQUEST_TOPIC: str = "/rms/ktp/dummy/request/path/edit";
 MQTT_HEARTBEAT_REQUEST_TOPIC: str = "/rms/ktp/dummy/request/heartbeat";
 
 
@@ -28,6 +30,7 @@ class RequestBridge:
         self.__task_processor: TaskProcessor = TaskProcessor(node=self.__node);
         self.__obstacle_processor: ObstacleProcessor = ObstacleProcessor(node=self.__node);
         self.__route_processor: RouteProcessor = RouteProcessor(node=self.__node, mqtt_client=self.__mqtt_client);
+        self.__path_processor: PathProcessor = PathProcessor(node=self.__node, mqtt_client=self.__mqtt_client);
         self.__heartbeat_processor: HeartBeatProcessor = HeartBeatProcessor(node=self.__node, mqtt_client=self.__mqtt_client);
 
         self.mqtt_subscription_init();
@@ -59,6 +62,9 @@ class RequestBridge:
         
         self.__mqtt_client.subscribe(topic=MQTT_CAN_INIT_TOPIC, qos=0);
         self.__mqtt_client.client.message_callback_add(sub=MQTT_CAN_INIT_TOPIC, callback=self.__route_processor.mqtt_can_init_cb);
+        
+        self.__mqtt_client.subscribe(topic=MQTT_PATH_EDIT_REQUEST_TOPIC, qos=0);
+        self.__mqtt_client.client.message_callback_add(sub=MQTT_PATH_EDIT_REQUEST_TOPIC, callback=self.__path_processor.mqtt_path_edit_request_cb);
         
         self.__mqtt_client.subscribe(topic=MQTT_HEARTBEAT_REQUEST_TOPIC, qos=0);
         self.__mqtt_client.client.message_callback_add(sub=MQTT_HEARTBEAT_REQUEST_TOPIC, callback=self.__heartbeat_processor.mqtt_heart_beat_subscription_cb);

@@ -1,4 +1,3 @@
-import { MapState } from "../domain/map/MapDomain";
 
 export const initializeMap: Function = (mapDiv: string | HTMLElement, center: naver.maps.LatLng): naver.maps.Map | null => {
     const defaultZoom: number = 21;
@@ -8,15 +7,15 @@ export const initializeMap: Function = (mapDiv: string | HTMLElement, center: na
         mapTypeId: naver.maps.MapTypeId.HYBRID,
         zoom: defaultZoom,
         zoomControl: true,
-        // zoomControlOptions: {
-        //     style: naver.maps.ZoomControlStyle.SMALL,
-        //     position: naver.maps.Position.TOP_RIGHT
-        // },
-        // mapTypeControl: true,
-        // mapTypeControlOptions: {
-        //     style: naver.maps.MapTypeControlStyle.BUTTON,
-        //     position: naver.maps.Position.TOP_RIGHT
-        // }
+        zoomControlOptions: {
+            style: naver.maps.ZoomControlStyle.SMALL,
+            position: naver.maps.Position.TOP_RIGHT
+        },
+        mapTypeControl: true,
+        mapTypeControlOptions: {
+            style: naver.maps.MapTypeControlStyle.BUTTON,
+            position: naver.maps.Position.TOP_RIGHT
+        }
     }
 
     const map: naver.maps.Map | null = new naver.maps.Map(mapDiv, mapOpts);
@@ -60,14 +59,4 @@ export const initializeRobotFilteredMarker: Function = (map: naver.maps.Map): na
     });
 
     return robotMarker;
-}
-
-export const initializePathInfoWindow: Function = (): HTMLDivElement => {
-    const pathInfoContainerDiv: HTMLDivElement = document.createElement("div");
-    pathInfoContainerDiv.className = "path_info_container";
-
-    const map: HTMLElement | null = document.getElementById("map");
-    map!.prepend(pathInfoContainerDiv);
-
-    return pathInfoContainerDiv;
 }
