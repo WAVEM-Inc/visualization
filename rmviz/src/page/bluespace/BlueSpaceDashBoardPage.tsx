@@ -38,6 +38,7 @@ const BlueSpaceDashBoardPage: React.FC<BlueSpaceDashBoardPageProps> = ({
     const requestInitTopic: string = `${requestTopicFormat}/can/init`;
     const requestMissionTopic: string = `${requestTopicFormat}/mission`;
     const requestControlTopic: string = `${requestTopicFormat}/control`;
+    const requestTaskTopic: string =`${requestTopicFormat}/task`;
 
 
     const onStraightClick = (): void => {
@@ -83,19 +84,19 @@ const BlueSpaceDashBoardPage: React.FC<BlueSpaceDashBoardPageProps> = ({
     }
 
     const onMissionClick = (): void => {
-        onClickMqttPublish(mqttClient!, requestMissionTopic, missionJSON);
+        onClickMqttPublish(mqttClient!, requestTaskTopic, missionJSON);
     }
 
     const onControlMoveToDestClick = (): void => {
-        onClickMqttPublish(mqttClient!, requestControlTopic, controlMoveToDestJSON);
+        onClickMqttPublish(mqttClient!, requestTaskTopic, controlMoveToDestJSON);
     }
 
     const onControlMsCompleteClick = (): void => {
-        onClickMqttPublish(mqttClient!, requestControlTopic, controlMsCompleteJSON);
+        onClickMqttPublish(mqttClient!, requestTaskTopic, controlMsCompleteJSON);
     }
 
     const onControlGraphSyncClick = (): void => {
-        onClickMqttPublish(mqttClient!, requestControlTopic, controlGrapySyncJSON);
+        onClickMqttPublish(mqttClient!, requestTaskTopic, controlGrapySyncJSON);
     }
 
     return (

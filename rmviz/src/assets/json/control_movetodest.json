@@ -1,6 +1,9 @@
 {
-    "owner": "padmin",
-    "control_id": "",
-    "request_time": "",
-    "control_code": "movetodest"
+    "id": "rbt_control",
+    "data": {
+        "owner": "padmin",
+        "control_id": "",
+        "request_time": "",
+        "control_code": "movetodest"
+    }
 }

@@ -17,6 +17,7 @@ MQTT_ROUTE_TO_POSE_STATUS_TOPIC: str = "/rms/ktp/dummy/response/route_to_pose/st
 MQTT_GOAL_CANCEL_TOPIC: str = "/rms/ktp/dummy/request/goal/cancel";
 MQTT_CAN_INIT_TOPIC: str = "/rms/ktp/dummy/request/can/init";
 MQTT_HEARTBEAT_REQUEST_TOPIC: str = "/rms/ktp/dummy/request/heartbeat";
+MQTT_TASK_REQUEST_TOPIC: str = "/rms/ktp/dummy/request/task";
 
 
 class RequestBridge:
@@ -32,13 +33,7 @@ class RequestBridge:
 
         self.mqtt_subscription_init();
 
-    def mqtt_subscription_init(self) -> None:
-        self.__mqtt_client.subscribe(topic=MQTT_CONTROL_REQUEST_TOPIC, qos=0);
-        self.__mqtt_client.client.message_callback_add(sub=MQTT_CONTROL_REQUEST_TOPIC, callback=self.__task_processor.mqtt_control_request_cb);
-
-        self.__mqtt_client.subscribe(topic=MQTT_MISSION_REQUEST_TOPIC, qos=0);
-        self.__mqtt_client.client.message_callback_add(sub=MQTT_MISSION_REQUEST_TOPIC, callback=self.__task_processor.mqtt_mission_request_cb);
-        
+    def mqtt_subscription_init(self) -> None:      
         self.__mqtt_client.subscribe(topic=MQTT_DETECTED_OBJECT_REQUEST_TOPIC, qos=0);
         self.__mqtt_client.client.message_callback_add(sub=MQTT_DETECTED_OBJECT_REQUEST_TOPIC, callback=self.__obstacle_processor.mqtt_detected_object_cb);
 
@@ -62,6 +57,9 @@ class RequestBridge:
         
         self.__mqtt_client.subscribe(topic=MQTT_HEARTBEAT_REQUEST_TOPIC, qos=0);
         self.__mqtt_client.client.message_callback_add(sub=MQTT_HEARTBEAT_REQUEST_TOPIC, callback=self.__heartbeat_processor.mqtt_heart_beat_subscription_cb);
+        
+        self.__mqtt_client.subscribe(topic=MQTT_TASK_REQUEST_TOPIC, qos=0);
+        self.__mqtt_client.client.message_callback_add(sub=MQTT_TASK_REQUEST_TOPIC, callback=self.__task_processor.mqtt_task_request_cb);
     
 
 __all__: list[str] = ["RequestBridge"];

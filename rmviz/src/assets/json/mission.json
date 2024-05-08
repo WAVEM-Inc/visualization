@@ -1,20 +1,23 @@
 {
-    "owner": "padmin",
-    "request_time": "240404111613547",
-    "task": [
-        {
-            "task_id": "KECDSEMITB0012404041116135470",
-            "task_code": "delivering",
-            "seq": 0,
-            "task_data": {
-                "goal": [
-                    "NO-220-309"
-                ],
-                "map_id": "220",
-                "source": "NO-220-301"
+    "id": "rbt_mission",
+    "data": {
+        "owner": "padmin",
+        "request_time": "240404111613547",
+        "task": [
+            {
+                "task_id": "KECDSEMITB0012404041116135470",
+                "task_code": "delivering",
+                "seq": 0,
+                "task_data": {
+                    "goal": [
+                        "NO-220-309"
+                    ],
+                    "map_id": "220",
+                    "source": "NO-220-301"
+                }
             }
-        }
-    ],
-    "mission_id": "KECDSEMITB001240404111613547",
-    "mission_code": "ktdelivery"
+        ],
+        "mission_id": "KECDSEMITB001240404111613547",
+        "mission_code": "ktdelivery"
+    }
 }
