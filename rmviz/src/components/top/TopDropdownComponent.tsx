@@ -10,12 +10,6 @@ const TopDropDownComponent: React.FC = () => {
                     데이터 보드
                 </Link>
             </li>
-            <li className="top_dropdown_menu">
-                <Link className="top_dropdown_" to={"/path/edit"}>
-                    경로 편집
-                </Link>
-            </li>
-            <li className="top_dropdown_menu">1</li>
         </ul>
     )
 }

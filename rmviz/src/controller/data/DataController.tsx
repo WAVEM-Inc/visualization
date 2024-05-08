@@ -7,7 +7,6 @@ import { SET_BATTERY, SET_HEARTBEAT, initialTopState, topStateReducer } from "..
 import BlueSpaceDashBoardPage from "../../page/bluespace/BlueSpaceDashBoardPage";
 import DataBoardPage from "../../page/databoard/DataBoardPage";
 import { getCurrentTime } from "../../utils/Utils";
-import PathEditPage from "../../page/pathEdit/PathEditPage";
 
 const DataController: React.FC = (): React.ReactElement<any, any> | null => {
     const [topState, topStateDispatch] = useReducer(topStateReducer, initialTopState);
@@ -27,6 +26,7 @@ const DataController: React.FC = (): React.ReactElement<any, any> | null => {
     const responseOdomEularTopic: string = `${responseTopicFormat}/odom/eular`;
     const responseHeartBeatTopic: string = `${responseTopicFormat}/heartbeat`;
     const responseBatteryTopic: string = `${responseTopicFormat}/battery/state`;
+    const pathLookUpResponseTopic: string = "/rms/ktp/dummy/response/path/lookup";
 
     const requiredResponseTopicList: Array<string> = [
         `${responseTopicFormat}/rbt_status`,
@@ -51,8 +51,7 @@ const DataController: React.FC = (): React.ReactElement<any, any> | null => {
                 mapStateDistpatch({ type: SET_ROUTE_STATUS, payload: message });
             } else if (topic === responseOdomEularTopic) {
                 mapStateDistpatch({ type: SET_ODOM_EULAR, payload: message });
-            } 
-            else if (topic === responseHeartBeatTopic) {
+            } else if (topic === responseHeartBeatTopic) {
                 topStateDispatch({ type: SET_HEARTBEAT, payload: message });
             } else if (topic === responseBatteryTopic) {
                 topStateDispatch({ type: SET_BATTERY, payload: message });
@@ -146,12 +145,6 @@ const DataController: React.FC = (): React.ReactElement<any, any> | null => {
                     topState={topState}
                     responseData={responseData}
                 />
-            </Route>
-            <Route exact path={"/path/edit"}>
-                <PathEditPage
-                    topState={topState}
-                    mqttClient={mqttClient!}
-                 />
             </Route>
         </Switch>
     );
