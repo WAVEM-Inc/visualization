@@ -9,6 +9,7 @@ interface BlueSpaceRequestComponentProps {
     onMissionClick: () => void;
     onControlMoveToDestClick: () => void;
     onControlMsCompleteClick: () => void;
+    onControlGraphSyncClick: () => void;
 }
 
 const BlueSpaceRequestComponent: React.FC<BlueSpaceRequestComponentProps> = ({
@@ -19,7 +20,8 @@ const BlueSpaceRequestComponent: React.FC<BlueSpaceRequestComponentProps> = ({
     onWaitingClick,
     onMissionClick,
     onControlMoveToDestClick,
-    onControlMsCompleteClick
+    onControlMsCompleteClick,
+    onControlGraphSyncClick
 }: BlueSpaceRequestComponentProps) => {
     return (
         <div className="">
@@ -32,6 +34,7 @@ const BlueSpaceRequestComponent: React.FC<BlueSpaceRequestComponentProps> = ({
                 <button className={"bluespace_btn_request"} onClick={onMissionClick}>임무 할당</button>
                 <button className={"bluespace_btn_request"} onClick={onControlMoveToDestClick}>상차지 이동 제어</button>
                 <button className={"bluespace_btn_request"} onClick={onControlMsCompleteClick}>복귀 이동 제어</button>
+                <button className={"bluespace_btn_request"} onClick={onControlGraphSyncClick}>그래프 동기화 제어</button>
             </div>
         </div>
     );

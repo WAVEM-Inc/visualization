@@ -32,6 +32,7 @@ MQTT_PATH_TOPIC: str = "/rms/ktp/dummy/response/path";
 MQTT_ROUTE_STATUS_TOPIC: str = "/rms/ktp/dummy/response/route/status";
 
 ROUTE_TO_POSE_ACTION: str = "/route_to_pose";
+TASK_GOAL_CANCEL_TOPIC: str = "/rms/ktp/task/goal/cancel";
 CAN_INIT_TOPIC: str = "/drive/can/init";
 CAN_EMERGENCY_STOP_TOPIC: str = "/drive/can/emergency";
 NOTIFY_PATH_TOPIC: str = "/rms/ktp/task/notify/path";
@@ -59,6 +60,14 @@ class RouteProcessor:
             action_name=ROUTE_TO_POSE_ACTION,
             action_type=RouteToPose,
             callback_group=route_to_pose_action_client_cb_group
+        );
+        
+        task_goal_cancel_publisher_cb_group: MutuallyExclusiveCallbackGroup = MutuallyExclusiveCallbackGroup();
+        self.__task_goal_cancel_publisher: Publisher = self.__node.create_publisher(
+            topic=TASK_GOAL_CANCEL_TOPIC,
+            msg_type=String,
+            callback_group=task_goal_cancel_publisher_cb_group,
+            qos_profile=qos_profile_system_default
         );
         
         can_init_publisher_cb_group: MutuallyExclusiveCallbackGroup = MutuallyExclusiveCallbackGroup();
@@ -247,14 +256,16 @@ class RouteProcessor:
             return;
 
     def goal_response_callback(self, future: Future) -> None:
-        self.__route_to_pose_goal_handle: ClientGoalHandle = future.result();
-        if not self.__route_to_pose_goal_handle.accepted:
+        route_to_pose_goal_handle = future.result();
+        if not route_to_pose_goal_handle.accepted:
             self.__log.info(f"{ROUTE_TO_POSE_ACTION} Goal rejected");
             return;
 
         self.__log.info(f"{ROUTE_TO_POSE_ACTION} Goal accepted");
+        
+        self.__route_to_pose_goal_handle = route_to_pose_goal_handle;
 
-        self.__route_to_pose_action_get_result_future = self.__route_to_pose_goal_handle.get_result_async();
+        self.__route_to_pose_action_get_result_future = route_to_pose_goal_handle.get_result_async();
         self.__route_to_pose_action_get_result_future.add_done_callback(callback=self.route_to_pose_get_result_cb);
 
     def route_to_pose_feedback_cb(self, feedback_msg: RouteToPose.Impl.FeedbackMessage) -> None:
@@ -290,7 +301,14 @@ class RouteProcessor:
                 self.__route_to_pose_goal_index = self.__route_to_pose_goal_index + 1;
                 self.__log.info(f"{ROUTE_TO_POSE_ACTION} It will proceed Next Goal [{self.__route_to_pose_goal_index}]");
                 self.route_to_pose_send_goal();
-                
+    
+    def __route_to_pose_goal_cancel_cb(self, future) -> None:
+        cancel_response = future.result();
+        if len(cancel_response.goals_canceling) > 0:
+            self.__log.info(f"{ROUTE_TO_POSE_ACTION} Goal successfully canceled");
+        else:
+            self.__log.error(f"{ROUTE_TO_POSE_ACTION} Goal failed canceling");
+            
     def mqtt_goal_cancel_cb(self, mqtt_client: paho.Client, mqtt_user_data: Dict, mqtt_message: paho.MQTTMessage) -> None:
         try:
             mqtt_topic: str = mqtt_message.topic;
@@ -302,10 +320,12 @@ class RouteProcessor:
             
             self.route_to_pose_notify_status(driving_flag=False, status_code=5);
             self.route_to_pose_flush_goal();
+            self.__task_goal_cancel_publisher.publish(msg=String());
             
             if self.__route_to_pose_goal_handle != None:
                 self.__log.info(f"{ROUTE_TO_POSE_ACTION} goal_handle : {json.dumps(message_conversion.extract_values(inst=self.__route_to_pose_goal_handle), 4)}");
-                cancel_goal_future: Future = self.__route_to_pose_action_client.cancel_goal_async(self.__route_to_pose_goal_handle);
+                cancel_goal_future: Future = self.__route_to_pose_goal_handle.cancel_goal_async();
+                cancel_goal_future.add_done_callback(self.__route_to_pose_goal_cancel_cb);
             else:
                 self.__log.error(f"{ROUTE_TO_POSE_ACTION} goal_handle is None");
             self.__route_to_pose_goal_handle = None;
@@ -393,14 +413,38 @@ class RouteProcessor:
             return;
         
     def notify_path_subscription_cb(self, path_cb: Path) -> None:
-        pass;
-        # node_list: route_Node[] = path_cb.node_list;
-        # payload: list[Any] = [];
+        self.__log.info(f"{NOTIFY_PATH_TOPIC} cb\n{json.dumps(obj=message_conversion.extract_values(inst=path_cb), indent=4)}");
         
-        # for node in node_list:
+        node_list: list[route_Node] = path_cb.node_list;
+        node_list_size: int = len(node_list);
+        
+        path_json_list: list[Any] = [];
+        
+        for [index, node] in enumerate(node_list):
+            path_json: Any = {};
+            self.__log.info(f"{NOTIFY_PATH_TOPIC} converting [{index} / {node_list_size}]");
+            self.__log.info(f"{NOTIFY_PATH_TOPIC} cb\n{json.dumps(obj=message_conversion.extract_values(inst=node), indent=4)}");
             
-        # payload: str = ros_message_to_json(log=self.__log, ros_message=path_cb);
-        # self.__mqtt_client.publish(topic=MQTT_PATH_TOPIC, payload=payload, qos=0);
+            path_json["nodeId"] = node.node_id;
+            path_json["position"] = json.loads(json.dumps(message_conversion.extract_values(inst=node.position)));
+            path_json["type"] = node.type;
+            path_json["kind"] = node.kind;
+            path_json["heading"] = node.heading;
+            path_json["direction"] = node.direction;
+            path_json["drivingOption"] = node.driving_option;
+            # path_json["detectionRange"] = node.detection_range;
+            
+            path_json_list.append(path_json);
+            
+            if index == node_list_size - 1:
+                self.__log.info(f"{NOTIFY_PATH_TOPIC} path converting finished");
+                break;
+            
+        for path in path_json_list:
+            self.__log.info(f"{NOTIFY_PATH_TOPIC} path_json : {json.dumps(obj=path, indent=4)}");
+            
+        payload: str = json.dumps(obj=path_json_list);
+        self.__mqtt_client.publish(topic=MQTT_PATH_TOPIC, payload=payload, qos=0);
         
 
 __all__: list[str] = ["RouteProcessor"];

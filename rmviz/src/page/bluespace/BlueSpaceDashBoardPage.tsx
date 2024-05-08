@@ -10,6 +10,7 @@ import * as emergencyStopJSON from "../../assets/json/common/emergency_stop.json
 import * as missionJSON from "../../assets/json/mission.json";
 import * as controlMoveToDestJSON from "../../assets/json/control_movetodest.json";
 import * as controlMsCompleteJSON from "../../assets/json/control_mscomplete.json";
+import * as controlGrapySyncJSON from "../../assets/json/control_graphsync.json";
 import BlueSpaceRequestComponent from "../../components/bluespace/BlueSpaceRequestComponent";
 import MapComponent from "../../components/map/MapComponents";
 import TopComponent from "../../components/top/TopComponent";
@@ -93,6 +94,10 @@ const BlueSpaceDashBoardPage: React.FC<BlueSpaceDashBoardPageProps> = ({
         onClickMqttPublish(mqttClient!, requestControlTopic, controlMsCompleteJSON);
     }
 
+    const onControlGraphSyncClick = (): void => {
+        onClickMqttPublish(mqttClient!, requestControlTopic, controlGrapySyncJSON);
+    }
+
     return (
         <div className="dash_board_container">
             <div className="top_component_container">
@@ -120,6 +125,7 @@ const BlueSpaceDashBoardPage: React.FC<BlueSpaceDashBoardPageProps> = ({
                     onMissionClick={onMissionClick}
                     onControlMoveToDestClick={onControlMoveToDestClick}
                     onControlMsCompleteClick={onControlMsCompleteClick}
+                    onControlGraphSyncClick={onControlGraphSyncClick}
                 />
             </div>
         </div>
