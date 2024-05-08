@@ -26,4 +26,5 @@
     white-space: pre-wrap;
     text-align: left;
     font-size: 13px;
+    overflow: auto;
 }
