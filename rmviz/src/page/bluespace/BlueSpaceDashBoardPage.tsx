@@ -3,7 +3,8 @@ import MqttClient from "../../api/mqttClient";
 import * as callJSON from "../../assets/json/bluespace/secondary/call.json";
 import * as deliveryJSON from "../../assets/json/bluespace/secondary/delivery.json";
 import * as straightJSON from "../../assets/json/bluespace/secondary/straight.json";
-import * as straightTestJSON from "../../assets/json/bluespace/secondary/straight_test.json";
+import * as straightTestHorizonJSON from "../../assets/json/bluespace/secondary/straight_horizon_test.json";
+import * as straightTestVerticalJSON from "../../assets/json/bluespace/secondary/straight_vertical_test.json";
 import * as waitingJSON from "../../assets/json/bluespace/secondary/waiting.json";
 import * as emergencyResumeJSON from "../../assets/json/common/emergency_resume.json";
 import * as emergencyStopJSON from "../../assets/json/common/emergency_stop.json";
@@ -39,13 +40,16 @@ const BlueSpaceDashBoardPage: React.FC<BlueSpaceDashBoardPageProps> = ({
     const requestTaskTopic: string =`${requestTopicFormat}/task`;
     const requestPathRenewTopic: string = `${requestTopicFormat}/path/renew`;
 
-
     const onStraightClick = (): void => {
         onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, straightJSON);
     }
 
-    const onStraightTestClick = (): void => {
-        onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, straightTestJSON);
+    const onStraightHorizonTestClick = (): void => {
+        onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, straightTestHorizonJSON);
+    }
+
+    const onStraightVerticalTestClick = (): void => {
+        onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, straightTestVerticalJSON);
     }
 
     const onCallClick = (): void => {
@@ -123,7 +127,8 @@ const BlueSpaceDashBoardPage: React.FC<BlueSpaceDashBoardPageProps> = ({
             <div className="request_component_container">
                 <BlueSpaceRequestComponent
                     onStraightClick={onStraightClick}
-                    onStraightTestClick={onStraightTestClick}
+                    onStraightHorizonTestClick={onStraightHorizonTestClick}
+                    onStraightVerticalTestClick={onStraightVerticalTestClick}
                     onCallClick={onCallClick}
                     onDeliveryClick={onDeliveryClick}
                     onWaitingClick={onWaitingClick}
