@@ -61,10 +61,10 @@ class TaskProcessor:
         );
         
     def __polling_timer_cb(self) -> None:
-        self.__node.get_logger().info(f"Waiting for Polling from KTP"
-                                      f"\n\tcontrol : {get_control_callback_flag()}"
-                                      f"\n\tmission : {get_mission_callback_flag()}"
-                                      f"\n\tdetected_object : {get_detected_object_flag()}");
+        # self.__node.get_logger().info(f"Waiting for Polling from KTP"
+        #                               f"\n\tcontrol : {get_control_callback_flag()}"
+        #                               f"\n\tmission : {get_mission_callback_flag()}"
+        #                               f"\n\tdetected_object : {get_detected_object_flag()}");
         
         if get_control_callback_flag():
             control: Control = message_conversion.populate_instance(msg=get_control(), inst=Control());
