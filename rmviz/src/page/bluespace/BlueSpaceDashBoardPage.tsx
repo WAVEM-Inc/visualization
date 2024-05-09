@@ -36,9 +36,8 @@ const BlueSpaceDashBoardPage: React.FC<BlueSpaceDashBoardPageProps> = ({
     const requestEmergencyTopic: string = `${requestTopicFormat}/can/emergency`;
     const requestGoalCancelTopic: string = `${requestTopicFormat}/goal/cancel`;
     const requestInitTopic: string = `${requestTopicFormat}/can/init`;
-    const requestMissionTopic: string = `${requestTopicFormat}/mission`;
-    const requestControlTopic: string = `${requestTopicFormat}/control`;
     const requestTaskTopic: string =`${requestTopicFormat}/task`;
+    const requestPathRenewTopic: string = `${requestTopicFormat}/path/renew`;
 
 
     const onStraightClick = (): void => {
@@ -61,6 +60,16 @@ const BlueSpaceDashBoardPage: React.FC<BlueSpaceDashBoardPageProps> = ({
         onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, waitingJSON);
     }
 
+    const onCanInitClick = (): void => {
+        onClickMqttPublish(mqttClient!, requestInitTopic, {
+            "can_sign_tran_state": true
+        });
+    }
+
+    const onPathRenewClick = (): void => {
+        onClickMqttPublish(mqttClient!, requestPathRenewTopic, {});
+    }
+
     const onEmergencyStopClick = (): void => {
         onClickMqttPublish(mqttClient!, requestEmergencyTopic, emergencyStopJSON);
     }
@@ -75,12 +84,6 @@ const BlueSpaceDashBoardPage: React.FC<BlueSpaceDashBoardPageProps> = ({
         }); 
         mapState.path = null;
         mapState.routeStatus = null;
-    }
-
-    const onInitClick = (): void => {
-        onClickMqttPublish(mqttClient!, requestInitTopic, {
-            "can_sign_tran_state": true
-        });
     }
 
     const onMissionClick = (): void => {
@@ -110,10 +113,11 @@ const BlueSpaceDashBoardPage: React.FC<BlueSpaceDashBoardPageProps> = ({
                 <MapComponent
                     state={mapState}
                     center={blueSpaceCoord}
+                    onCanInitClick={onCanInitClick}
+                    onPathRenewClick={onPathRenewClick}
                     onEmergencyStopClick={onEmergencyStopClick}
                     onEmergencyResumeClick={onEmergencyResumeClick}
                     onGoalCancelClick={onGoalCancelClick}
-                    onInitClick={onInitClick}
                 />
             </div>
             <div className="request_component_container">

@@ -445,6 +445,30 @@ class RouteProcessor:
             
         payload: str = json.dumps(obj=path_json_list);
         self.__mqtt_client.publish(topic=MQTT_PATH_TOPIC, payload=payload, qos=0);
-        
+    
+    def mqtt_path_renew_cb(self, mqtt_client: paho.Client, mqtt_user_data: Dict, mqtt_message: paho.MQTTMessage) -> None:
+        try:
+            mqtt_topic: str = mqtt_message.topic;
+            mqtt_decoded_payload: str = mqtt_message.payload.decode();
+            mqtt_json: Any = json.loads(mqtt_message.payload);
+
+            self.load_path();
+            self.__log.info(f"{mqtt_topic} path renewed\n{json.dumps(obj=self.__path, indent=4)}");
+            self.__log.info(f"=============================== Path Renewed ===============================");
+        except KeyError as ke:
+            self.__log.error(f"Invalid JSON Key in MQTT {mqtt_topic} subscription callback: {ke}");
+            return;
+
+        except json.JSONDecodeError as jde:
+            self.__log.error(f"Invalid JSON format in MQTT {mqtt_topic} subscription callback: {jde.msg}");
+            return;
+
+        except message_conversion.NonexistentFieldException as nefe:
+            self.__log.error(f"{mqtt_topic} : {nefe}");
+            return;
+
+        except Exception as e:
+            self.__log.error(f"Exception in MQTT {mqtt_topic} subscription callback: {e}");
+            return;
 
 __all__: list[str] = ["RouteProcessor"];

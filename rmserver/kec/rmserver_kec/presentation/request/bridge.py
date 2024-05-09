@@ -18,6 +18,7 @@ MQTT_GOAL_CANCEL_TOPIC: str = "/rms/ktp/dummy/request/goal/cancel";
 MQTT_CAN_INIT_TOPIC: str = "/rms/ktp/dummy/request/can/init";
 MQTT_HEARTBEAT_REQUEST_TOPIC: str = "/rms/ktp/dummy/request/heartbeat";
 MQTT_TASK_REQUEST_TOPIC: str = "/rms/ktp/dummy/request/task";
+MQTT_PATH_RENEW_TOPIC: str = "/rms/ktp/dummy/request/path/renew";
 
 
 class RequestBridge:
@@ -60,6 +61,9 @@ class RequestBridge:
         
         self.__mqtt_client.subscribe(topic=MQTT_TASK_REQUEST_TOPIC, qos=0);
         self.__mqtt_client.client.message_callback_add(sub=MQTT_TASK_REQUEST_TOPIC, callback=self.__task_processor.mqtt_task_request_cb);
+        
+        self.__mqtt_client.subscribe(topic=MQTT_PATH_RENEW_TOPIC, qos=0);
+        self.__mqtt_client.client.message_callback_add(sub=MQTT_PATH_RENEW_TOPIC, callback=self.__route_processor.mqtt_path_renew_cb);
     
 
 __all__: list[str] = ["RequestBridge"];

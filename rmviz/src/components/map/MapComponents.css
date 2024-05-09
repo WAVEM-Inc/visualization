@@ -56,7 +56,7 @@
     justify-content: space-between;
 }
 
-.data_container>div:nth-child(1), .data_container>div:nth-child(2), .data_container>div:nth-child(3) {
+.data_container>div:nth-child(1), .data_container>div:nth-child(2) {
     border-bottom: 2px solid #ccc;
 }
 
@@ -86,10 +86,6 @@
     height: 9%;
 }
 
-.route_status_data_container {
-    height: 15%;
-}
-
 .route_status_current_route_container {
     height: 100%;
     font-size: 20px;
@@ -97,7 +93,7 @@
 }
 
 .route_request_btn_container {
-    height: calc(100% - 50%);
+    height: calc(100% - 32%);
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -107,7 +103,7 @@
 
 .route_btn_request {
     width: 50%;
-    height: 20%;
+    height: 15%;
     border-radius: 50px;
     font-size: 17px;
     font-weight: bold;
@@ -119,6 +115,11 @@
 
 .route_btn_can_init {
     background-color: black;
+    color: white;
+}
+
+.route_btn_path_renew {
+    background-color: blue;
     color: white;
 }
 

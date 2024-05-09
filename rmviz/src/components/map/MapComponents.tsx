@@ -7,19 +7,22 @@ import "./MapComponents.css";
 interface MapComponentProps {
     center: naver.maps.LatLng;
     state: MapState;
+    onCanInitClick: () => void;
+    onPathRenewClick: () => void;
     onEmergencyStopClick: () => void;
     onEmergencyResumeClick: () => void;
     onGoalCancelClick: () => void;
-    onInitClick: () => void;
+    
 }
 
 const MapComponent: React.FC<MapComponentProps> = ({
     state,
     center,
+    onCanInitClick,
+    onPathRenewClick,
     onEmergencyStopClick,
     onEmergencyResumeClick,
-    onGoalCancelClick,
-    onInitClick
+    onGoalCancelClick
 }: MapComponentProps): React.ReactElement<any, any> | null => {
     const { naver }: Window & typeof globalThis = window;
     const mapRef: React.MutableRefObject<HTMLDivElement | null> = useRef<HTMLDivElement>(null);
@@ -440,24 +443,9 @@ const MapComponent: React.FC<MapComponentProps> = ({
                             {currentOdomEular}
                         </div>
                     </div>
-                    <div className={"route_status_data_container"}>
-                        <div className="data_title">
-                            주행 상태
-                        </div>
-                        <div className="data_data">
-                            <div className="route_status_current_route_container">
-                                {"["}{currentRouteStatus?.node_info[0]}{"]"} {"->"} {"["}{currentRouteStatus?.node_info[1]}{"]"}
-                            </div>
-                            <div className="">
-                                주행 중 : {currentRouteStatus?.driving_flag.toString()}
-                            </div>
-                            <div className="">
-                                상태 : {currentRouteStatus?.status}
-                            </div>
-                        </div>
-                    </div>
                     <div className="route_request_btn_container">
-                        <button className={"route_btn_request route_btn_can_init"} onClick={onInitClick}>CAN 초기화</button>
+                        <button className={"route_btn_request route_btn_can_init"} onClick={onCanInitClick}>CAN 초기화</button>
+                        <button className={"route_btn_request route_btn_path_renew"} onClick={onPathRenewClick}>경로 갱신</button>
                         <button className={"route_btn_request route_btn_emergency_stop"} onClick={onEmergencyStopClick}>비상 정지</button>
                         <button className={"route_btn_request route_btn_emergency_stop"} onClick={onGoalCancelClick}>주행 취소</button>
                         <button className={"route_btn_request route_btn_emergency_resume"} onClick={onEmergencyResumeClick}>재개</button>
