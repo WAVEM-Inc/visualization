@@ -2,16 +2,17 @@ import React from "react";
 import MqttClient from "../../api/mqttClient";
 import * as callJSON from "../../assets/json/bluespace/secondary/call.json";
 import * as deliveryJSON from "../../assets/json/bluespace/secondary/delivery.json";
+import * as rotationTestJSON from "../../assets/json/bluespace/secondary/rotation_test.json";
 import * as straightJSON from "../../assets/json/bluespace/secondary/straight.json";
 import * as straightTestHorizonJSON from "../../assets/json/bluespace/secondary/straight_horizon_test.json";
 import * as straightTestVerticalJSON from "../../assets/json/bluespace/secondary/straight_vertical_test.json";
 import * as waitingJSON from "../../assets/json/bluespace/secondary/waiting.json";
 import * as emergencyResumeJSON from "../../assets/json/common/emergency_resume.json";
 import * as emergencyStopJSON from "../../assets/json/common/emergency_stop.json";
-import * as missionJSON from "../../assets/json/mission.json";
+import * as controlGrapySyncJSON from "../../assets/json/control_graphsync.json";
 import * as controlMoveToDestJSON from "../../assets/json/control_movetodest.json";
 import * as controlMsCompleteJSON from "../../assets/json/control_mscomplete.json";
-import * as controlGrapySyncJSON from "../../assets/json/control_graphsync.json";
+import * as missionJSON from "../../assets/json/mission.json";
 import BlueSpaceRequestComponent from "../../components/bluespace/BlueSpaceRequestComponent";
 import MapComponent from "../../components/map/MapComponents";
 import TopComponent from "../../components/top/TopComponent";
@@ -50,6 +51,10 @@ const BlueSpaceDashBoardPage: React.FC<BlueSpaceDashBoardPageProps> = ({
 
     const onStraightVerticalTestClick = (): void => {
         onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, straightTestVerticalJSON);
+    }
+
+    const onRotationTestClick = (): void => {
+        onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, rotationTestJSON);
     }
 
     const onCallClick = (): void => {
@@ -129,6 +134,7 @@ const BlueSpaceDashBoardPage: React.FC<BlueSpaceDashBoardPageProps> = ({
                     onStraightClick={onStraightClick}
                     onStraightHorizonTestClick={onStraightHorizonTestClick}
                     onStraightVerticalTestClick={onStraightVerticalTestClick}
+                    onRotationTestClick={onRotationTestClick}
                     onCallClick={onCallClick}
                     onDeliveryClick={onDeliveryClick}
                     onWaitingClick={onWaitingClick}

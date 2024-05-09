@@ -4,6 +4,7 @@ interface BlueSpaceRequestComponentProps {
     onStraightClick: () => void;
     onStraightHorizonTestClick: () => void;
     onStraightVerticalTestClick: () => void;
+    onRotationTestClick: () => void;
     onCallClick: () => void;
     onDeliveryClick: () => void;
     onWaitingClick: () => void;
@@ -17,6 +18,7 @@ const BlueSpaceRequestComponent: React.FC<BlueSpaceRequestComponentProps> = ({
     onStraightClick,
     onStraightHorizonTestClick,
     onStraightVerticalTestClick,
+    onRotationTestClick,
     onCallClick,
     onDeliveryClick,
     onWaitingClick,
@@ -31,6 +33,7 @@ const BlueSpaceRequestComponent: React.FC<BlueSpaceRequestComponentProps> = ({
                 <button className={"bluespace_btn_request"} onClick={onStraightClick}>직진</button>
                 <button className={"bluespace_btn_request"} onClick={onStraightHorizonTestClick}>직진(가로) 테스트</button>
                 <button className={"bluespace_btn_request"} onClick={onStraightVerticalTestClick}>직진(세로) 테스트</button>
+                <button className={"bluespace_btn_request"} onClick={onRotationTestClick}>회전 테스트</button>
                 <button className={"bluespace_btn_request"} onClick={onCallClick}>호출</button>
                 <button className={"bluespace_btn_request"} onClick={onDeliveryClick}>배송</button>
                 <button className={"bluespace_btn_request"} onClick={onWaitingClick}>대기</button>
