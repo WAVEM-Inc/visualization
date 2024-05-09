@@ -466,7 +466,11 @@ class RouteProcessor:
         except message_conversion.NonexistentFieldException as nefe:
             self.__log.error(f"{mqtt_topic} : {nefe}");
             return;
-
+        
+        except OSError as ose:
+            self.__log.error(f"{mqtt_topic} : {ose}");
+            return;
+        
         except Exception as e:
             self.__log.error(f"Exception in MQTT {mqtt_topic} subscription callback: {e}");
             return;
