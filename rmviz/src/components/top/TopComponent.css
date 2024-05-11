@@ -6,6 +6,13 @@
     width: 100%;
 }
 
+.top_dropdown_toggle_label {
+    cursor: pointer;
+    position: absolute;
+    font-size: 24px;
+    margin-left: 1%;
+}
+
 .top_logo {
     margin: 0 auto;
 }
@@ -17,13 +24,6 @@
 .top_logo_title_link {
     text-decoration: none;
     color: black;
-}
-
-.top_dropdown_toggle_label {
-    cursor: pointer;
-    position: absolute;
-    font-size: 24px;
-    margin-left: 20px;
 }
 
 .top_battery {

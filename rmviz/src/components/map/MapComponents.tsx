@@ -7,12 +7,11 @@ import "./MapComponents.css";
 interface MapComponentProps {
     center: naver.maps.LatLng;
     state: MapState;
-    onCanInitClick: () => void;
-    onPathRenewClick: () => void;
-    onEmergencyStopClick: () => void;
-    onEmergencyResumeClick: () => void;
-    onGoalCancelClick: () => void;
-    
+    onCanInitClick?: () => void;
+    onPathRenewClick?: () => void;
+    onEmergencyStopClick?: () => void;
+    onEmergencyResumeClick?: () => void;
+    onGoalCancelClick?: () => void;
 }
 
 const MapComponent: React.FC<MapComponentProps> = ({
@@ -28,6 +27,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
     const mapRef: React.MutableRefObject<HTMLDivElement | null> = useRef<HTMLDivElement>(null);
 
     let map: naver.maps.Map | null = null;
+    const [isCommandRouteSwitchOn, setIsCommandRouteSwitchOn] = useState<boolean>(true);
     const [pathInfoContainer, setPathInfoContainer] = useState<HTMLElement | null>(null);
     const [pathInfoDiv, setPathInfoDiv] = useState<HTMLDivElement | null>(null);
     const [currRobotMarker, setCurrRobotMarker]: [naver.maps.Marker | null, React.Dispatch<React.SetStateAction<naver.maps.Marker | null>>] = useState<naver.maps.Marker | null>(null);
@@ -52,17 +52,41 @@ const MapComponent: React.FC<MapComponentProps> = ({
 
     const [defaultZoom, setDefaultZoom]: [number, React.Dispatch<React.SetStateAction<number>>] = useState<number>(20);
 
+    const onCommandRouteSwtichClick: Function = (): void => {
+        setIsCommandRouteSwitchOn(prevState => !prevState);
+    }
+
+    const addCommandRouteSwitchControl: Function = (): void => {
+        const commandRouteSwitchControlDiv: string = [
+            `<div class="top_command_route_switch_container">`,
+            `<div class="command_route_switch_button"></div>`,
+            `<div class="command_route_switch_circle"></div>`,
+            `</div>`
+        ].join('');
+
+        naver.maps.Event.once(map, "init", function () {
+            const c: naver.maps.CustomControl = new naver.maps.CustomControl(commandRouteSwitchControlDiv, {
+                position: naver.maps.Position.TOP_LEFT
+            });
+            c.setMap(map);
+
+            naver.maps.Event.addDOMListener(c.getElement(), 'click', function() {
+                onCommandRouteSwtichClick();
+            });
+        });
+    }
+
     const addPathMarker: Function = (node: any, is_start: boolean, is_end: boolean): any => {
         console.info(`addPathMarker node : ${JSON.stringify(node)}`);
 
         let iconUrl: string = "";
 
         if (is_start && !is_end) {
-            iconUrl = process.env.PUBLIC_URL + "marker_start.png";
+            iconUrl = process.env.PUBLIC_URL + "../marker_start.png";
         } else if (!is_start && is_end) {
-            iconUrl = process.env.PUBLIC_URL + "marker_arrive.png";
+            iconUrl = process.env.PUBLIC_URL + "../marker_arrive.png";
         } else {
-            iconUrl = process.env.PUBLIC_URL + "marker_landmark.png";
+            iconUrl = process.env.PUBLIC_URL + "../marker_landmark.png";
         }
 
         const nodeTitleOpts: any = {
@@ -141,17 +165,17 @@ const MapComponent: React.FC<MapComponentProps> = ({
 
                     if (!isLastNode) {
                         if (isFirstNode) {
-                            startNodeIconUrl = process.env.PUBLIC_URL + "marker_start.png";
+                            startNodeIconUrl = process.env.PUBLIC_URL + "../marker_start.png";
                         } else if (isLastNode) {
-                            startNodeIconUrl = process.env.PUBLIC_URL + "marker_arrive.png";
+                            startNodeIconUrl = process.env.PUBLIC_URL + "../marker_arrive.png";
                         } else {
-                            startNodeIconUrl = process.env.PUBLIC_URL + "marker_landmark.png";
+                            startNodeIconUrl = process.env.PUBLIC_URL + "../marker_landmark.png";
                         }
 
                         if (nextNodeIndex === nodeList.length - 1) {
-                            endNodeIconUrl = process.env.PUBLIC_URL + "marker_arrive.png";
+                            endNodeIconUrl = process.env.PUBLIC_URL + "../marker_arrive.png";
                         } else {
-                            endNodeIconUrl = process.env.PUBLIC_URL + "marker_landmark.png";
+                            endNodeIconUrl = process.env.PUBLIC_URL + "../marker_landmark.png";
                         }
                     } else {
                         return;
@@ -194,7 +218,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
                     pathDirectionDiv.className = "path_direction";
 
                     const pathDirectionIcon: HTMLImageElement = document.createElement("img");
-                    pathDirectionIcon.src = process.env.PUBLIC_URL + "arrow-right.png";
+                    pathDirectionIcon.src = process.env.PUBLIC_URL + "../arrow-right.png";
                     pathDirectionIcon.className = "node_icon";
 
                     const pathDirectionDivContent: HTMLDivElement = document.createElement("div");
@@ -284,6 +308,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
         if (mapRef.current && naver && map) {
             const robotMarker: naver.maps.Marker = initializeRobotMarker(map);
             setCurrRobotMarker(robotMarker);
+            addCommandRouteSwitchControl();
         }
 
         if (mapRef.current && naver && map) {
@@ -309,6 +334,19 @@ const MapComponent: React.FC<MapComponentProps> = ({
             }
         } else return;
     }, [naver, map, state.path]);
+
+    useEffect(() => {
+        const commandRouteSwitchChecked: string = "command_route_switch_checked";
+        if (isCommandRouteSwitchOn) {
+            $(".command_route_switch_button").removeClass(commandRouteSwitchChecked);
+            $(".command_route_switch_circle").removeClass(commandRouteSwitchChecked);
+            localStorage.setItem("isEnableToCommandRoute?", "true");
+        } else {
+            $(".command_route_switch_button").addClass(commandRouteSwitchChecked);
+            $(".command_route_switch_circle").addClass(commandRouteSwitchChecked);
+            localStorage.setItem("isEnableToCommandRoute?", "false");
+        }
+    }, [isCommandRouteSwitchOn]);
 
     useEffect((): void => {
         if (state.gps) {

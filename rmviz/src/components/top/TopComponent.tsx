@@ -12,8 +12,8 @@ interface TopComponentProps {
 const TopComponent: React.FC<TopComponentProps> = ({
     state
 }: TopComponentProps): React.ReactElement<any, any> | null => {
-    const [isDropdownView, setDropdownView] = useState(false);
-    const [menuIconRotation, setMenuIconRotation] = useState(0);
+    const [isDropdownView, setDropdownView] = useState<boolean>(false);
+    const [menuIconRotation, setMenuIconRotation] = useState<number>(0);
     const [ping, setPing] = useState<number>(0.0);
     const [pingStatus, setPingStatus] = useState<string>("#ccc");
     const [battery, setBattery] = useState<any>({
@@ -21,7 +21,7 @@ const TopComponent: React.FC<TopComponentProps> = ({
         status: "red"
     });
 
-    const handleClickContainer = () => {
+    const handleClickContainer: React.MouseEventHandler<HTMLLabelElement> = (): void => {
         setDropdownView(!isDropdownView);
         setMenuIconRotation((prevRotation) => prevRotation === 0 ? 90 : 0);
     }
@@ -80,14 +80,14 @@ const TopComponent: React.FC<TopComponentProps> = ({
             {isDropdownView && <TopDropDownComponent />}
             <div className="top_logo">
                 <p className="top_logo_title">
-                    <Link className="top_logo_title_link" to={"/bluespace"}>
+                    <Link className="top_logo_title_link" to={"/bluespace/dashboard"}>
                         RMViZ
                     </Link>
                 </p>
             </div>
             <div className="top_battery">
                 <div className="top_battery_status_container">
-                    <div className="top_battery_status"/>
+                    <div className="top_battery_status" />
                     <span className="top_battery_voltage">{battery.battery}%</span>
                 </div>
             </div>

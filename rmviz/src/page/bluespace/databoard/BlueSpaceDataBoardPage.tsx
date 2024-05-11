@@ -1,17 +1,17 @@
 import { IPublishPacket } from "mqtt/*";
 import React, { useEffect, useState } from "react";
-import MqttClient from "../../api/mqttClient";
-import ResponseComponent from "../../components/response/ResponseComponent";
-import TopComponent from "../../components/top/TopComponent";
-import { TopState } from "../../domain/top/TopDomain";
-import './DataBoardPage.css';
+import MqttClient from "../../../api/mqttClient";
+import ResponseComponent from "../../../components/response/ResponseComponent";
+import TopComponent from "../../../components/top/TopComponent";
+import { TopState } from "../../../domain/top/TopDomain";
+import './BlueSpaceDataBoardPage.css';
 
-interface DataBoardPageProps {
+interface BlueSpaceDataBoardPageProps {
     topState: TopState;
     responseData: any;
 }
 
-const DataBoardPage: React.FC<DataBoardPageProps> = ({
+const BlueSpaceDataBoardPage: React.FC<BlueSpaceDataBoardPageProps> = ({
     topState,
     responseData
 }): React.ReactElement<any, any> | null => {
@@ -31,4 +31,4 @@ const DataBoardPage: React.FC<DataBoardPageProps> = ({
     );
 };
 
-export default DataBoardPage
+export default BlueSpaceDataBoardPage

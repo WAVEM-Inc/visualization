@@ -119,8 +119,8 @@ class RouteProcessor:
             path_array: list[Any] = self.__path["path"];
             
             if self.__route_to_pose_goal_list_size == 0:
-                path_id: str = mqtt_json["path_id"];
-                path_name: str = mqtt_json["path_name"];
+                path_id: str = mqtt_json["path"]["path_id"];
+                path_name: str = mqtt_json["path"]["path_name"];
                 self.__log.info(f"path_id : {path_id}, path_name : {path_name}");
                 
                 node_list: list[Any] = [];
@@ -194,7 +194,12 @@ class RouteProcessor:
                     self.__log.info(f"{mqtt_topic} goal[{index}]\n{json.dumps(message_conversion.extract_values(inst=goal), indent=4)}");
                     
                 self.__mqtt_client.publish(topic=MQTT_PATH_TOPIC, payload=json.dumps(node_list), qos=0);
-                self.route_to_pose_send_goal();
+                
+                if mqtt_json["isEnableToCommandRoute"] == "false":
+                    self.__log.error(f"{ROUTE_TO_POSE_ACTION} cannot command route");
+                    return;
+                else:
+                    self.route_to_pose_send_goal();
             else:
                 self.__log.error(f"{mqtt_topic} navigation is already proceeding...");
                 self.route_to_pose_notify_status(driving_flag=False, status_code=4);

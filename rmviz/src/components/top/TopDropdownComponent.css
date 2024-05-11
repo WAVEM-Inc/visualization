@@ -8,18 +8,29 @@
     background-color: white;
     border: 1px solid #ccc;
     z-index: 1;
-}
-
-.top_components ul li {
-    cursor: pointer;
-}
-
-.top_components ul li:hover {
-    background-color: #f0f0f0;
+    width: 20%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .top_dropdown_menu {
-    width: 200px;
-    height: 30px;
+    width: 100%;
+    height: 50%;
     border-bottom: 2px solid #ccc;
+    cursor: pointer;
+}
+
+.top_dropdown_menu:hover {
+    background-color: #f0f0f0;
+}
+
+.top_dropdown_menu_item {
+    margin-top: 3%;
+    font-size: 15px;
+    font-weight: bold;
+    text-decoration: none;
+    color: black;
 }

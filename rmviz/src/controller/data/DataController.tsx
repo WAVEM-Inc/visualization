@@ -4,8 +4,9 @@ import { Route, Switch } from "react-router-dom";
 import MqttClient from "../../api/mqttClient";
 import { SET_GPS, SET_GPS_FILTERED, SET_ODOM_EULAR, SET_PATH, SET_ROUTE_STATUS, initialMapState, mapStateReducer } from "../../domain/map/MapDomain";
 import { SET_BATTERY, SET_HEARTBEAT, initialTopState, topStateReducer } from "../../domain/top/TopDomain";
-import BlueSpaceDashBoardPage from "../../page/bluespace/BlueSpaceDashBoardPage";
-import DataBoardPage from "../../page/databoard/DataBoardPage";
+import BlueSpaceDashBoardPage from "../../page/bluespace/dashBoard/BlueSpaceDashBoardPage";
+import BlueSpaceROSPage from "../../page/bluespace/ros/BlueSpaceROSPage";
+import BlueSpaceDataBoardPage from "../../page/bluespace/databoard/BlueSpaceDataBoardPage";
 import { getCurrentTime } from "../../utils/Utils";
 
 const DataController: React.FC = (): React.ReactElement<any, any> | null => {
@@ -26,7 +27,6 @@ const DataController: React.FC = (): React.ReactElement<any, any> | null => {
     const responseOdomEularTopic: string = `${responseTopicFormat}/odom/eular`;
     const responseHeartBeatTopic: string = `${responseTopicFormat}/heartbeat`;
     const responseBatteryTopic: string = `${responseTopicFormat}/battery/state`;
-    const pathLookUpResponseTopic: string = "/rms/ktp/dummy/response/path/lookup";
 
     const requiredResponseTopicList: Array<string> = [
         `${responseTopicFormat}/rbt_status`,
@@ -133,15 +133,21 @@ const DataController: React.FC = (): React.ReactElement<any, any> | null => {
 
     return (
         <Switch>
-            <Route exact path={"/bluespace"}>
+            <Route exact path={"/bluespace/ros"}>
+                <BlueSpaceROSPage
+                    mqttClient={mqttClient!}
+                    topState={topState}
+                />
+            </Route>
+            <Route exact path={"/bluespace/dashboard"}>
                 <BlueSpaceDashBoardPage
                     mqttClient={mqttClient!}
                     topState={topState}
                     mapState={mapState}
                 />
             </Route>
-            <Route exact path={"/data"}>
-                <DataBoardPage
+            <Route exact path={"/bluespace/data"}>
+                <BlueSpaceDataBoardPage
                     topState={topState}
                     responseData={responseData}
                 />

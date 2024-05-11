@@ -24,12 +24,13 @@ export const initializeMap: Function = (mapDiv: string | HTMLElement, center: na
 }
 
 export const initializeRobotMarker: Function = (map: naver.maps.Map): naver.maps.Marker => {
+    console.info(`PUBLIC_URL : ${process.env.PUBLIC_URL}`);
     const robotMarker: naver.maps.Marker = new naver.maps.Marker({
         position: map.getCenter(),
         map: map,
         title: "RobotCurrentPos",
         icon: {
-            url: process.env.PUBLIC_URL + "marker_current_position.png",
+            url: process.env.PUBLIC_URL + "../marker_current_position.png",
             size: new naver.maps.Size(35, 35),
             scaledSize: new naver.maps.Size(35, 35),
             origin: new naver.maps.Point(0, 0),
@@ -48,7 +49,7 @@ export const initializeRobotFilteredMarker: Function = (map: naver.maps.Map): na
         map: map,
         title: "RobotCurrentPos",
         icon: {
-            url: process.env.PUBLIC_URL + "marker_filtered.png",
+            url: process.env.PUBLIC_URL + "../marker_filtered.png",
             size: new naver.maps.Size(30, 30),
             scaledSize: new naver.maps.Size(30, 30),
             origin: new naver.maps.Point(0, 0),

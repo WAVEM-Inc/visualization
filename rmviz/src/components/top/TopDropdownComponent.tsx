@@ -6,8 +6,13 @@ const TopDropDownComponent: React.FC = () => {
     return (
         <ul>
             <li className="top_dropdown_menu">
-                <Link className="top_dropdown_" to={"/data"}>
+                <Link className="top_dropdown_menu_item" to={"/bluespace/data"}>
                     데이터 보드
+                </Link>
+            </li>
+            <li className="top_dropdown_menu">
+                <Link className="top_dropdown_menu_item" to={"/bluespace/ros"}>
+                    ROS 보드
                 </Link>
             </li>
         </ul>

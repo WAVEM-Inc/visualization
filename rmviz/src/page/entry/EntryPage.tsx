@@ -1,12 +1,11 @@
 import { Link } from "react-router-dom";
-import "./DashBoardPage.css";
-import { useEffect } from "react";
+import "./EntryPage.css";
 
-export default function DashBoardPage() {
+export default function EntryPage(): React.ReactElement<any, any> | null {
 
     return (
         <div className="dash_board_container">
-            <Link to={"/bluespace"}>
+            <Link to={"/bluespace/dashboard"}>
                 용인 블루스페이스
             </Link>
             <Link to={"/kec"}>
