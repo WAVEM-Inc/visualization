@@ -27,7 +27,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
     const mapRef: React.MutableRefObject<HTMLDivElement | null> = useRef<HTMLDivElement>(null);
 
     let map: naver.maps.Map | null = null;
-    const [isCommandRouteSwitchOn, setIsCommandRouteSwitchOn] = useState<boolean>(true);
     const [pathInfoContainer, setPathInfoContainer] = useState<HTMLElement | null>(null);
     const [pathInfoDiv, setPathInfoDiv] = useState<HTMLDivElement | null>(null);
     const [currRobotMarker, setCurrRobotMarker]: [naver.maps.Marker | null, React.Dispatch<React.SetStateAction<naver.maps.Marker | null>>] = useState<naver.maps.Marker | null>(null);
@@ -51,30 +50,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
     let pathInfoWindowarray: Array<naver.maps.InfoWindow> = [];
 
     const [defaultZoom, setDefaultZoom]: [number, React.Dispatch<React.SetStateAction<number>>] = useState<number>(20);
-
-    const onCommandRouteSwtichClick: Function = (): void => {
-        setIsCommandRouteSwitchOn(prevState => !prevState);
-    }
-
-    const addCommandRouteSwitchControl: Function = (): void => {
-        const commandRouteSwitchControlDiv: string = [
-            `<div class="top_command_route_switch_container">`,
-            `<div class="command_route_switch_button"></div>`,
-            `<div class="command_route_switch_circle"></div>`,
-            `</div>`
-        ].join('');
-
-        naver.maps.Event.once(map, "init", function () {
-            const c: naver.maps.CustomControl = new naver.maps.CustomControl(commandRouteSwitchControlDiv, {
-                position: naver.maps.Position.TOP_LEFT
-            });
-            c.setMap(map);
-
-            naver.maps.Event.addDOMListener(c.getElement(), 'click', function() {
-                onCommandRouteSwtichClick();
-            });
-        });
-    }
 
     const addPathMarker: Function = (node: any, is_start: boolean, is_end: boolean): any => {
         console.info(`addPathMarker node : ${JSON.stringify(node)}`);
@@ -308,7 +283,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
         if (mapRef.current && naver && map) {
             const robotMarker: naver.maps.Marker = initializeRobotMarker(map);
             setCurrRobotMarker(robotMarker);
-            addCommandRouteSwitchControl();
         }
 
         if (mapRef.current && naver && map) {
@@ -334,19 +308,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
             }
         } else return;
     }, [naver, map, state.path]);
-
-    useEffect(() => {
-        const commandRouteSwitchChecked: string = "command_route_switch_checked";
-        if (isCommandRouteSwitchOn) {
-            $(".command_route_switch_button").removeClass(commandRouteSwitchChecked);
-            $(".command_route_switch_circle").removeClass(commandRouteSwitchChecked);
-            localStorage.setItem("isEnableToCommandRoute?", "true");
-        } else {
-            $(".command_route_switch_button").addClass(commandRouteSwitchChecked);
-            $(".command_route_switch_circle").addClass(commandRouteSwitchChecked);
-            localStorage.setItem("isEnableToCommandRoute?", "false");
-        }
-    }, [isCommandRouteSwitchOn]);
 
     useEffect((): void => {
         if (state.gps) {
@@ -414,9 +375,11 @@ const MapComponent: React.FC<MapComponentProps> = ({
                     break;
                 case 3:
                     status = "주행 서버 미작동";
+                    alert("주행 서버가 구동 중이지 않습니다.");
                     break;
                 case 4:
                     status = "주행 진행 중";
+                    alert("주행이 이미 진행 중입니다.");
                     break;
                 case 5:
                     status = "주행 취소";

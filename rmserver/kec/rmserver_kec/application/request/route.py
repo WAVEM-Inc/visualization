@@ -118,6 +118,8 @@ class RouteProcessor:
             
             path_array: list[Any] = self.__path["path"];
             
+            self.__log.info(f"{ROUTE_TO_POSE_ACTION} route_to_pose_goal_list_size : {self.__route_to_pose_goal_list_size}");
+            
             if self.__route_to_pose_goal_list_size == 0:
                 path_id: str = mqtt_json["path"]["path_id"];
                 path_name: str = mqtt_json["path"]["path_name"];
@@ -197,6 +199,7 @@ class RouteProcessor:
                 
                 if mqtt_json["isEnableToCommandRoute"] == "false":
                     self.__log.error(f"{ROUTE_TO_POSE_ACTION} cannot command route");
+                    self.route_to_pose_flush_goal();
                     return;
                 else:
                     self.route_to_pose_send_goal();
@@ -222,8 +225,9 @@ class RouteProcessor:
         
     def route_to_pose_flush_goal(self) -> None:
         self.__route_to_pose_goal_index = 0;
-        self.__route_to_pose_goal_list = [];
+        self.__route_to_pose_goal_list.clear();
         self.__route_to_pose_goal_list_size = 0;
+        self.__log.info("============== Goal Flush ==============");
         
     def route_to_pose_send_goal(self) -> None:
         try:

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import MqttClient from "../../../api/mqttClient";
 import * as callJSON from "../../../assets/json/bluespace/secondary/call.json";
 import * as deliveryJSON from "../../../assets/json/bluespace/secondary/delivery.json";
@@ -32,6 +32,7 @@ const BlueSpaceDashBoardPage: React.FC<BlueSpaceDashBoardPageProps> = ({
     topState,
     mapState
 }: BlueSpaceDashBoardPageProps): React.ReactElement<any, any> | null => {
+    const [isEnableToCommandRoute, setIsEnableToCommandRoute] = useState<string | null>(null);
     const blueSpaceCoord: naver.maps.LatLng = new naver.maps.LatLng(37.305985, 127.2401652);
     const requestTopicFormat: string = "/rms/ktp/dummy/request";
     const requestRouteToPoseTopic: string = `${requestTopicFormat}/route_to_pose`;
@@ -41,35 +42,71 @@ const BlueSpaceDashBoardPage: React.FC<BlueSpaceDashBoardPageProps> = ({
     const requestTaskTopic: string =`${requestTopicFormat}/task`;
     const requestPathRenewTopic: string = `${requestTopicFormat}/path/renew`;
 
+    useEffect(() => {
+        setIsEnableToCommandRoute(localStorage.getItem("isEnableToCommandRoute?"));
+    }, [localStorage.getItem("isEnableToCommandRoute?")]);
+
     const onStraightClick = (): void => {
-        onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, {
-            isEnableToCommandRoute: localStorage.getItem("isEnableToCommandRoute?"),
+        const j: any =  {
+            isEnableToCommandRoute: isEnableToCommandRoute,
             path: straightJSON
-        });
+        };
+
+        onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, j);
     }
 
     const onStraightHorizonTestClick = (): void => {
-        onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, straightTestHorizonJSON);
+        const j: any =  {
+            isEnableToCommandRoute: isEnableToCommandRoute,
+            path: straightTestHorizonJSON
+        };
+
+        onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, j);
     }
 
     const onStraightVerticalTestClick = (): void => {
-        onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, straightTestVerticalJSON);
+        const j: any =  {
+            isEnableToCommandRoute: isEnableToCommandRoute,
+            path: straightTestVerticalJSON
+        };
+
+        onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, j);
     }
 
     const onRotationTestClick = (): void => {
-        onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, rotationTestJSON);
+        const j: any =  {
+            isEnableToCommandRoute: isEnableToCommandRoute,
+            path: rotationTestJSON
+        };
+
+        onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, j);
     }
 
     const onCallClick = (): void => {
-        onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, callJSON);
+        const j: any =  {
+            isEnableToCommandRoute: isEnableToCommandRoute,
+            path: callJSON
+        };
+
+        onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, j);
     }
 
     const onDeliveryClick = (): void => {
-        onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, deliveryJSON);
+        const j: any =  {
+            isEnableToCommandRoute: isEnableToCommandRoute,
+            path: deliveryJSON
+        };
+
+        onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, j);
     }
 
     const onWaitingClick = (): void => {
-        onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, waitingJSON);
+        const j: any =  {
+            isEnableToCommandRoute: isEnableToCommandRoute,
+            path: waitingJSON
+        };
+
+        onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, j);
     }
 
     const onCanInitClick = (): void => {
