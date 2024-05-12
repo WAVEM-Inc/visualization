@@ -1,3 +1,4 @@
 /rmserver_kec:
   ros__parameters:
     current_path_file: "RobotData/maps/kecd_path/KEC_TEST_BLUE_20240503.dat"
+    current_urdf_file: "RobotData/urdf/kec_model.urdf"

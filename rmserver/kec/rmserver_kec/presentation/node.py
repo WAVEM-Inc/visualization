@@ -41,7 +41,8 @@ class RmServerKEC(Node):
             "password": DEFAULT_STRING,
             "type": DEFAULT_STRING,
             "path": DEFAULT_STRING,
-            "current_path_file": DEFAULT_STRING
+            "current_path_file": DEFAULT_STRING,
+            "current_urdf_file": DEFAULT_STRING
         };
 
         for key, value in parameters_dict.items():

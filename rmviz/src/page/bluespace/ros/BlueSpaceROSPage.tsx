@@ -1,20 +1,29 @@
-import React from "react";
+import React, { useEffect } from "react";
 import MqttClient from "../../../api/mqttClient";
 import TopComponent from "../../../components/top/TopComponent";
-import { MapState } from "../../../domain/map/MapDomain";
 import { TopState } from "../../../domain/top/TopDomain";
+import { ROSState } from "../../../domain/ros/ROSDomain";
+import ROSComponent from "../../../components/ros/ROSComponent";
 import "./BlueSpaceROSPage.css";
 
 interface BlueSpaceROSPageProps {
     mqttClient: MqttClient;
     topState: TopState;
+    rosState: ROSState;
 }
 
 const BlueSpaceROSPage: React.FC<BlueSpaceROSPageProps> = ({
     mqttClient,
-    topState
+    topState,
+    rosState
 }: BlueSpaceROSPageProps): React.ReactElement<any, any> | null => {
-    const blueSpaceCoord: naver.maps.LatLng = new naver.maps.LatLng(37.305985, 127.2401652);
+
+    useEffect(() => {
+        if (mqttClient) {
+            const mqttURDFRequestTopic: string = "/rms/ktp/dummy/request/urdf";
+            mqttClient.publish(mqttURDFRequestTopic, JSON.stringify({data: ""}));
+        }
+    }, []);
 
     return (
         <div className="path_search_container">
@@ -22,6 +31,11 @@ const BlueSpaceROSPage: React.FC<BlueSpaceROSPageProps> = ({
                 <TopComponent
                     state={topState}
                  />
+            </div>
+            <div className="ros_component_container">
+                <ROSComponent
+                    state={rosState}
+                />
             </div>
         </div>
     )

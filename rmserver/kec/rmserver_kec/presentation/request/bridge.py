@@ -5,6 +5,8 @@ from rmserver_kec.application.request.task import TaskProcessor;
 from rmserver_kec.application.request.obstacle import ObstacleProcessor;
 from rmserver_kec.application.request.route import RouteProcessor;
 from rmserver_kec.application.connection.heartbeat import HeartBeatProcessor;
+from rmserver_kec.application.request.urdf import URDFProcessor;
+
 
 MQTT_CONTROL_REQUEST_TOPIC: str = "/rms/ktp/dummy/request/control";
 MQTT_MISSION_REQUEST_TOPIC: str = "/rms/ktp/dummy/request/mission";
@@ -19,6 +21,7 @@ MQTT_CAN_INIT_TOPIC: str = "/rms/ktp/dummy/request/can/init";
 MQTT_HEARTBEAT_REQUEST_TOPIC: str = "/rms/ktp/dummy/request/heartbeat";
 MQTT_TASK_REQUEST_TOPIC: str = "/rms/ktp/dummy/request/task";
 MQTT_PATH_RENEW_TOPIC: str = "/rms/ktp/dummy/request/path/renew";
+MQTT_URDF_REQUEST_TOPIC: str = "/rms/ktp/dummy/request/urdf";
 
 
 class RequestBridge:
@@ -31,6 +34,7 @@ class RequestBridge:
         self.__obstacle_processor: ObstacleProcessor = ObstacleProcessor(node=self.__node);
         self.__route_processor: RouteProcessor = RouteProcessor(node=self.__node, mqtt_client=self.__mqtt_client);
         self.__heartbeat_processor: HeartBeatProcessor = HeartBeatProcessor(node=self.__node, mqtt_client=self.__mqtt_client);
+        self.__urdf_processor: URDFProcessor = URDFProcessor(node=self.__node, mqtt_client=self.__mqtt_client);
 
         self.mqtt_subscription_init();
 
@@ -64,6 +68,9 @@ class RequestBridge:
         
         self.__mqtt_client.subscribe(topic=MQTT_PATH_RENEW_TOPIC, qos=0);
         self.__mqtt_client.client.message_callback_add(sub=MQTT_PATH_RENEW_TOPIC, callback=self.__route_processor.mqtt_path_renew_cb);
+        
+        self.__mqtt_client.subscribe(topic=MQTT_URDF_REQUEST_TOPIC, qos=0);
+        self.__mqtt_client.client.message_callback_add(sub=MQTT_URDF_REQUEST_TOPIC, callback=self.__urdf_processor.mqtt_urdf_cb);
     
 
 __all__: list[str] = ["RequestBridge"];

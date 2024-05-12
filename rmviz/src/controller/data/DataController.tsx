@@ -5,13 +5,15 @@ import MqttClient from "../../api/mqttClient";
 import { SET_GPS, SET_GPS_FILTERED, SET_ODOM_EULAR, SET_PATH, SET_ROUTE_STATUS, initialMapState, mapStateReducer } from "../../domain/map/MapDomain";
 import { SET_BATTERY, SET_HEARTBEAT, initialTopState, topStateReducer } from "../../domain/top/TopDomain";
 import BlueSpaceDashBoardPage from "../../page/bluespace/dashBoard/BlueSpaceDashBoardPage";
-import BlueSpaceROSPage from "../../page/bluespace/ros/BlueSpaceROSPage";
 import BlueSpaceDataBoardPage from "../../page/bluespace/databoard/BlueSpaceDataBoardPage";
+import BlueSpaceROSPage from "../../page/bluespace/ros/BlueSpaceROSPage";
 import { getCurrentTime } from "../../utils/Utils";
+import { SET_URDF, initalROSState, rosStateReducer } from "../../domain/ros/ROSDomain";
 
 const DataController: React.FC = (): React.ReactElement<any, any> | null => {
     const [topState, topStateDispatch] = useReducer(topStateReducer, initialTopState);
     const [mapState, mapStateDistpatch] = useReducer(mapStateReducer, initialMapState);
+    const [rosState, rosStateDistpatch] = useReducer(rosStateReducer, initalROSState);
     const [responseData, setResponseData] = useState<any>({});
 
     const [mqttClient, setMqttClient] = useState<MqttClient>();
@@ -27,6 +29,7 @@ const DataController: React.FC = (): React.ReactElement<any, any> | null => {
     const responseOdomEularTopic: string = `${responseTopicFormat}/odom/eular`;
     const responseHeartBeatTopic: string = `${responseTopicFormat}/heartbeat`;
     const responseBatteryTopic: string = `${responseTopicFormat}/battery/state`;
+    const responseURDFTopic: string = `${responseTopicFormat}/urdf`;
 
     const requiredResponseTopicList: Array<string> = [
         `${responseTopicFormat}/rbt_status`,
@@ -55,6 +58,8 @@ const DataController: React.FC = (): React.ReactElement<any, any> | null => {
                 topStateDispatch({ type: SET_HEARTBEAT, payload: message });
             } else if (topic === responseBatteryTopic) {
                 topStateDispatch({ type: SET_BATTERY, payload: message });
+            } else if (topic === responseURDFTopic) {
+                rosStateDistpatch({ type: SET_URDF, payload: payload.toString() });
             } else if (topic === requiredResponseTopicList[0]) {
                 const newData: any = JSON.parse(payload.toString());
                 setResponseData((prevData: any) => ({
@@ -119,6 +124,7 @@ const DataController: React.FC = (): React.ReactElement<any, any> | null => {
         _mqttClient.subscribe(responseOdomEularTopic);
         _mqttClient.subscribe(responseHeartBeatTopic);
         _mqttClient.subscribe(responseBatteryTopic);
+        _mqttClient.subscribe(responseURDFTopic);
         handleResponseMQTTCallback(_mqttClient);
         setUpResponseMQTTConnections(_mqttClient);
         setMqttClient(_mqttClient);
@@ -137,6 +143,7 @@ const DataController: React.FC = (): React.ReactElement<any, any> | null => {
                 <BlueSpaceROSPage
                     mqttClient={mqttClient!}
                     topState={topState}
+                    rosState={rosState}
                 />
             </Route>
             <Route exact path={"/bluespace/dashboard"}>
