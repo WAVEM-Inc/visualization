@@ -38,7 +38,8 @@ const BlueSpaceDashBoardPage: React.FC<BlueSpaceDashBoardPageProps> = ({
     const requestRouteToPoseTopic: string = `${requestTopicFormat}/route_to_pose`;
     const requestEmergencyTopic: string = `${requestTopicFormat}/can/emergency`;
     const requestGoalCancelTopic: string = `${requestTopicFormat}/goal/cancel`;
-    const requestInitTopic: string = `${requestTopicFormat}/can/init`;
+    const requestGPSInitTopic: string = `${requestTopicFormat}/gps/init`;
+    const requestCanInitTopic: string = `${requestTopicFormat}/can/init`;
     const requestTaskTopic: string =`${requestTopicFormat}/task`;
     const requestPathRenewTopic: string = `${requestTopicFormat}/path/renew`;
 
@@ -109,8 +110,14 @@ const BlueSpaceDashBoardPage: React.FC<BlueSpaceDashBoardPageProps> = ({
         onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, j);
     }
 
+    const onGPSInitClick = (): void => {
+        onClickMqttPublish(mqttClient!, requestGPSInitTopic, {
+            "can_sign_tran_state": true
+        });
+    }
+
     const onCanInitClick = (): void => {
-        onClickMqttPublish(mqttClient!, requestInitTopic, {
+        onClickMqttPublish(mqttClient!, requestCanInitTopic, {
             "can_sign_tran_state": true
         });
     }
