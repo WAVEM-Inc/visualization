@@ -7,6 +7,7 @@ import "./MapComponents.css";
 interface MapComponentProps {
     center: naver.maps.LatLng;
     state: MapState;
+    onGPSInitClick?: () => void;
     onCanInitClick?: () => void;
     onPathRenewClick?: () => void;
     onEmergencyStopClick?: () => void;
@@ -17,6 +18,7 @@ interface MapComponentProps {
 const MapComponent: React.FC<MapComponentProps> = ({
     state,
     center,
+    onGPSInitClick,
     onCanInitClick,
     onPathRenewClick,
     onEmergencyStopClick,
@@ -445,6 +447,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
                         </div>
                     </div>
                     <div className="route_request_btn_container">
+                    <button className={"route_btn_request route_btn_gps_init"} onClick={onGPSInitClick}>GPS 초기화</button>
                         <button className={"route_btn_request route_btn_can_init"} onClick={onCanInitClick}>CAN 초기화</button>
                         <button className={"route_btn_request route_btn_path_renew"} onClick={onPathRenewClick}>경로 갱신</button>
                         <button className={"route_btn_request route_btn_emergency_stop"} onClick={onEmergencyStopClick}>비상 정지</button>
