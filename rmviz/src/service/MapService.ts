@@ -93,7 +93,7 @@ export const initializeGPSInitMarker: Function = (map: naver.maps.Map): naver.ma
             size: new naver.maps.Size(30, 30),
             scaledSize: new naver.maps.Size(30, 30),
             origin: new naver.maps.Point(0, 0),
-            anchor: new naver.maps.Point(10, 32)
+            anchor: new naver.maps.Point(7, 25)
         }
     });
 
