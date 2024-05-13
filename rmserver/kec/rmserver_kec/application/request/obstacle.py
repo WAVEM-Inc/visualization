@@ -9,13 +9,15 @@ from rosbridge_library.internal import message_conversion;
 from ktp_data_msgs.msg import DetectedObject;
 from std_msgs.msg import String;
 from obstacle_msgs.msg import Status;
+from sensor_msgs.msg import NavSatFix;
 from typing import Dict;
 from typing import Any;
-from rmserver_kec.application.message.conversion import json_to_ros_message;
+
 
 DETECTED_OBJECT_TOPIC: str = "/rms/ktp/itf/detected_object";
 OBSTACLE_EVENT_TOPIC: str = "/drive/obstacle/event";
 DRIVE_OBSTACLE_COOPERATIVE_TOPIC: str = "/drive/obstacle/cooperative";
+GPS_INIT_TOPIC: str = "/sensor/ublox/initial/fix";
 
 
 class ObstacleProcessor:
@@ -46,6 +48,14 @@ class ObstacleProcessor:
             msg_type=String,
             qos_profile=qos_profile_system_default,
             callback_group=drive_obstacle_cooperative_publisher_cb_group
+        );
+        
+        gps_init_publisher_cb_group: MutuallyExclusiveCallbackGroup = MutuallyExclusiveCallbackGroup();
+        self.__gps_init_publisher: Publisher = self.__node.create_publisher(
+            topic=GPS_INIT_TOPIC,
+            msg_type=NavSatFix,
+            qos_profile=qos_profile_system_default,
+            callback_group=gps_init_publisher_cb_group
         );
         
     def mqtt_detected_object_cb(self, mqtt_client: mqtt.Client, mqtt_user_data: Dict, mqtt_message: mqtt.MQTTMessage) -> None:
@@ -137,6 +147,34 @@ class ObstacleProcessor:
 
     def drive_obstacle_cooperative_publish(self, obstacle_cooperative: String) -> None:
         self.__drive_obstacle_cooperative_publisher.publish(msg=obstacle_cooperative);
-        
+    
+    def mqtt_gps_init_cb(self, mqtt_client: mqtt.Client, mqtt_user_data: Dict, mqtt_message: mqtt.MQTTMessage) -> None:
+        try:
+            mqtt_topic: str = mqtt_message.topic;
+            mqtt_decoded_payload: str = mqtt_message.payload.decode();
+            mqtt_json: Any = json.loads(mqtt_message.payload);
+
+            nav_sat_fix: NavSatFix = NavSatFix();
+            nav_sat_fix.longitude = mqtt_json["x"];
+            nav_sat_fix.latitude = mqtt_json["y"];
+            nav_sat_fix.altitude = 100.0;
+            
+            self.__gps_init_publisher.publish(msg=nav_sat_fix);
+        except KeyError as ke:
+            self.__log.error(f"Invalid JSON Key in MQTT {mqtt_topic} subscription callback: {ke}");
+            return;
+
+        except json.JSONDecodeError as jde:
+            self.__log.error(f"Invalid JSON format in MQTT {mqtt_topic} subscription callback: {jde.msg}");
+            return;
+
+        except message_conversion.NonexistentFieldException as nefe:
+            self.__log.error(f"{mqtt_topic} : {nefe}");
+            return;
+
+        except Exception as e:
+            self.__log.error(f"Exception in MQTT {mqtt_topic} subscription callback: {e}");
+            return;
+
 
 __all__: list[str] = ["ObstacleProcessor"];

@@ -1,6 +1,6 @@
 /rmserver_kec:
   ros__parameters:
-    host: "192.168.1.133"
+    host: "192.168.56.1"
     port: 8883
     client_id: "wavem1234"
     client_keep_alive: 60

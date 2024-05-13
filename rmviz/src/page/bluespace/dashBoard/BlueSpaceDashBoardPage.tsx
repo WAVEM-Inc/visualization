@@ -7,8 +7,6 @@ import * as straightJSON from "../../../assets/json/bluespace/secondary/straight
 import * as straightTestHorizonJSON from "../../../assets/json/bluespace/secondary/straight_horizon_test.json";
 import * as straightTestVerticalJSON from "../../../assets/json/bluespace/secondary/straight_vertical_test.json";
 import * as waitingJSON from "../../../assets/json/bluespace/secondary/waiting.json";
-import * as emergencyResumeJSON from "../../../assets/json/common/emergency_resume.json";
-import * as emergencyStopJSON from "../../../assets/json/common/emergency_stop.json";
 import * as controlGrapySyncJSON from "../../../assets/json/control_graphsync.json";
 import * as controlMoveToDestJSON from "../../../assets/json/control_movetodest.json";
 import * as controlMsCompleteJSON from "../../../assets/json/control_mscomplete.json";
@@ -36,12 +34,7 @@ const BlueSpaceDashBoardPage: React.FC<BlueSpaceDashBoardPageProps> = ({
     const blueSpaceCoord: naver.maps.LatLng = new naver.maps.LatLng(37.305985, 127.2401652);
     const requestTopicFormat: string = "/rms/ktp/dummy/request";
     const requestRouteToPoseTopic: string = `${requestTopicFormat}/route_to_pose`;
-    const requestEmergencyTopic: string = `${requestTopicFormat}/can/emergency`;
-    const requestGoalCancelTopic: string = `${requestTopicFormat}/goal/cancel`;
-    const requestGPSInitTopic: string = `${requestTopicFormat}/gps/init`;
-    const requestCanInitTopic: string = `${requestTopicFormat}/can/init`;
     const requestTaskTopic: string =`${requestTopicFormat}/task`;
-    const requestPathRenewTopic: string = `${requestTopicFormat}/path/renew`;
 
     useEffect(() => {
         setIsEnableToCommandRoute(localStorage.getItem("isEnableToCommandRoute?"));
@@ -110,38 +103,6 @@ const BlueSpaceDashBoardPage: React.FC<BlueSpaceDashBoardPageProps> = ({
         onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, j);
     }
 
-    const onGPSInitClick = (): void => {
-        onClickMqttPublish(mqttClient!, requestGPSInitTopic, {
-            "can_sign_tran_state": true
-        });
-    }
-
-    const onCanInitClick = (): void => {
-        onClickMqttPublish(mqttClient!, requestCanInitTopic, {
-            "can_sign_tran_state": true
-        });
-    }
-
-    const onPathRenewClick = (): void => {
-        onClickMqttPublish(mqttClient!, requestPathRenewTopic, {});
-    }
-
-    const onEmergencyStopClick = (): void => {
-        onClickMqttPublish(mqttClient!, requestEmergencyTopic, emergencyStopJSON);
-    }
-
-    const onEmergencyResumeClick = (): void => {
-        onClickMqttPublish(mqttClient!, requestEmergencyTopic, emergencyResumeJSON);
-    }
-
-    const onGoalCancelClick = (): void => {
-        onClickMqttPublish(mqttClient!, requestGoalCancelTopic, {
-            "cancel": true
-        }); 
-        mapState.path = null;
-        mapState.routeStatus = null;
-    }
-
     const onMissionClick = (): void => {
         onClickMqttPublish(mqttClient!, requestTaskTopic, missionJSON);
     }
@@ -167,13 +128,9 @@ const BlueSpaceDashBoardPage: React.FC<BlueSpaceDashBoardPageProps> = ({
             </div>
             <div className="map_component_container">
                 <MapComponent
-                    state={mapState}
+                    mqttClient={mqttClient}
                     center={blueSpaceCoord}
-                    onCanInitClick={onCanInitClick}
-                    onPathRenewClick={onPathRenewClick}
-                    onEmergencyStopClick={onEmergencyStopClick}
-                    onEmergencyResumeClick={onEmergencyResumeClick}
-                    onGoalCancelClick={onGoalCancelClick}
+                    state={mapState}
                 />
             </div>
             <div className="request_component_container">

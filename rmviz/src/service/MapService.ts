@@ -61,3 +61,32 @@ export const initializeRobotFilteredMarker: Function = (map: naver.maps.Map): na
 
     return robotMarker;
 }
+
+export const addGPSInitMarkerControl: Function = (map: naver.maps.Map, initializeGPSInitMarker: naver.maps.Marker): void => {
+    var locationBtnHtml = [
+        '<button>',
+        '<span class="spr_trff spr_ico_mylct">GPS 초기화 마커 추가</span>',
+        "</button>"
+    ].join("");
+
+    naver.maps.Event.once(map, 'init', function () {
+        var customControl = new naver.maps.CustomControl(locationBtnHtml, {
+            position: naver.maps.Position.TOP_LEFT
+        });
+
+        customControl.setMap(map);
+
+        naver.maps.Event.addDOMListener(customControl.getElement(), 'click', function () {
+            initializeGPSInitMarker.setMap(map);
+        });
+    });
+}
+
+export const initializeGPSInitMarker: Function = (map: naver.maps.Map): naver.maps.Marker => {
+    const gpsInitMarker: naver.maps.Marker = new naver.maps.Marker({
+        map: map,
+        position: map.getCenter()
+    });
+
+    return gpsInitMarker;
+}

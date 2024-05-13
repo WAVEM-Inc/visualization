@@ -1,29 +1,23 @@
 import $ from "jquery";
 import React, { useEffect, useRef, useState } from "react";
+import MqttClient from "../../api/mqttClient";
+import * as emergencyResumeJSON from "../../assets/json/common/emergency_resume.json";
+import * as emergencyStopJSON from "../../assets/json/common/emergency_stop.json";
 import { MapState } from "../../domain/map/MapDomain";
-import { initializeMap, initializeRobotMarker } from "../../service/MapService";
+import { addGPSInitMarkerControl, initializeGPSInitMarker, initializeMap, initializeRobotMarker } from "../../service/MapService";
+import { onClickMqttPublish } from "../../utils/Utils";
 import "./MapComponents.css";
 
 interface MapComponentProps {
+    mqttClient: MqttClient;
     center: naver.maps.LatLng;
     state: MapState;
-    onGPSInitClick?: () => void;
-    onCanInitClick?: () => void;
-    onPathRenewClick?: () => void;
-    onEmergencyStopClick?: () => void;
-    onEmergencyResumeClick?: () => void;
-    onGoalCancelClick?: () => void;
 }
 
 const MapComponent: React.FC<MapComponentProps> = ({
-    state,
+    mqttClient,
     center,
-    onGPSInitClick,
-    onCanInitClick,
-    onPathRenewClick,
-    onEmergencyStopClick,
-    onEmergencyResumeClick,
-    onGoalCancelClick
+    state
 }: MapComponentProps): React.ReactElement<any, any> | null => {
     const { naver }: Window & typeof globalThis = window;
     const mapRef: React.MutableRefObject<HTMLDivElement | null> = useRef<HTMLDivElement>(null);
@@ -31,9 +25,9 @@ const MapComponent: React.FC<MapComponentProps> = ({
     let map: naver.maps.Map | null = null;
     const [pathInfoContainer, setPathInfoContainer] = useState<HTMLElement | null>(null);
     const [pathInfoDiv, setPathInfoDiv] = useState<HTMLDivElement | null>(null);
-    const [currRobotMarker, setCurrRobotMarker]: [naver.maps.Marker | null, React.Dispatch<React.SetStateAction<naver.maps.Marker | null>>] = useState<naver.maps.Marker | null>(null);
-    const [currRobotFilteredMarker, setCurrRobotFilteredMarker]: [naver.maps.Marker | null, React.Dispatch<React.SetStateAction<naver.maps.Marker | null>>] = useState<naver.maps.Marker | null>(null);
-    const [currentGps, setCurrentGps]: [any, React.Dispatch<any>] = useState<any>({
+    const [currRobotMarker, setCurrRobotMarker] = useState<naver.maps.Marker | null>(null);
+    const [currGPSInitMarker, setCurrGPSInitMarker] = useState<naver.maps.Marker | null>(null);
+    const [currentGps, setCurrentGps] = useState<any>({
         status: 0,
         service: 0,
         latitude: 0.0,
@@ -52,6 +46,13 @@ const MapComponent: React.FC<MapComponentProps> = ({
     let pathInfoWindowarray: Array<naver.maps.InfoWindow> = [];
 
     const [defaultZoom, setDefaultZoom]: [number, React.Dispatch<React.SetStateAction<number>>] = useState<number>(20);
+
+    const requestTopicFormat: string = "/rms/ktp/dummy/request";
+    const requestEmergencyTopic: string = `${requestTopicFormat}/can/emergency`;
+    const requestGoalCancelTopic: string = `${requestTopicFormat}/goal/cancel`;
+    const requestGPSInitTopic: string = `${requestTopicFormat}/gps/init`;
+    const requestCanInitTopic: string = `${requestTopicFormat}/can/init`;
+    const requestPathRenewTopic: string = `${requestTopicFormat}/path/renew`;
 
     const addPathMarker: Function = (node: any, is_start: boolean, is_end: boolean): any => {
         console.info(`addPathMarker node : ${JSON.stringify(node)}`);
@@ -277,6 +278,42 @@ const MapComponent: React.FC<MapComponentProps> = ({
         map?.setCenter(coord);
     }
 
+    const onGPSInitClick = (): void => {
+        if (currGPSInitMarker?.getMap()) {
+            console.info(`GPS init Marker coord : ${JSON.stringify(currGPSInitMarker?.getPosition())}`);
+            onClickMqttPublish(mqttClient!, requestGPSInitTopic, currGPSInitMarker?.getPosition());
+        } else {
+            alert("GPS 초기화 마커를 배치해주세요.");
+            return;
+        }
+    }
+
+    const onCanInitClick = (): void => {
+        onClickMqttPublish(mqttClient!, requestCanInitTopic, {
+            "can_sign_tran_state": true
+        });
+    }
+
+    const onPathRenewClick = (): void => {
+        onClickMqttPublish(mqttClient!, requestPathRenewTopic, {});
+    }
+
+    const onEmergencyStopClick = (): void => {
+        onClickMqttPublish(mqttClient!, requestEmergencyTopic, emergencyStopJSON);
+    }
+
+    const onEmergencyResumeClick = (): void => {
+        onClickMqttPublish(mqttClient!, requestEmergencyTopic, emergencyResumeJSON);
+    }
+
+    const onGoalCancelClick = (): void => {
+        onClickMqttPublish(mqttClient!, requestGoalCancelTopic, {
+            "cancel": true
+        });
+        state.path = null;
+        state.routeStatus = null;
+    }
+
     useEffect((): void => {
         if (mapRef.current && naver && !map) {
             map = initializeMap(mapRef.current, center);
@@ -285,6 +322,19 @@ const MapComponent: React.FC<MapComponentProps> = ({
         if (mapRef.current && naver && map) {
             const robotMarker: naver.maps.Marker = initializeRobotMarker(map);
             setCurrRobotMarker(robotMarker);
+
+            const gpsInitMarker: naver.maps.Marker = initializeGPSInitMarker(map);
+            gpsInitMarker.setMap(null);
+
+            addGPSInitMarkerControl(map, gpsInitMarker);
+            setCurrGPSInitMarker(gpsInitMarker);
+
+            naver.maps.Event.addListener(map, "click", function (e: any) {
+                if (gpsInitMarker.getMap()) {
+                    const coord: any = e.coord;
+                    gpsInitMarker.setPosition(coord);
+                }
+            });
         }
 
         if (mapRef.current && naver && map) {
@@ -447,7 +497,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
                         </div>
                     </div>
                     <div className="route_request_btn_container">
-                    <button className={"route_btn_request route_btn_gps_init"} onClick={onGPSInitClick}>GPS 초기화</button>
+                        <button className={"route_btn_request route_btn_gps_init"} onClick={onGPSInitClick}>GPS 초기화</button>
                         <button className={"route_btn_request route_btn_can_init"} onClick={onCanInitClick}>CAN 초기화</button>
                         <button className={"route_btn_request route_btn_path_renew"} onClick={onPathRenewClick}>경로 갱신</button>
                         <button className={"route_btn_request route_btn_emergency_stop"} onClick={onEmergencyStopClick}>비상 정지</button>

@@ -22,6 +22,8 @@ MQTT_HEARTBEAT_REQUEST_TOPIC: str = "/rms/ktp/dummy/request/heartbeat";
 MQTT_TASK_REQUEST_TOPIC: str = "/rms/ktp/dummy/request/task";
 MQTT_PATH_RENEW_TOPIC: str = "/rms/ktp/dummy/request/path/renew";
 MQTT_URDF_REQUEST_TOPIC: str = "/rms/ktp/dummy/request/urdf";
+MQTT_GPS_INITIALIZE_TOPIC: str = "/rms/ktp/dummy/request/gps/init";
+
 
 
 class RequestBridge:
@@ -71,6 +73,9 @@ class RequestBridge:
         
         self.__mqtt_client.subscribe(topic=MQTT_URDF_REQUEST_TOPIC, qos=0);
         self.__mqtt_client.client.message_callback_add(sub=MQTT_URDF_REQUEST_TOPIC, callback=self.__urdf_processor.mqtt_urdf_cb);
+        
+        self.__mqtt_client.subscribe(topic=MQTT_GPS_INITIALIZE_TOPIC, qos=0);
+        self.__mqtt_client.client.message_callback_add(sub=MQTT_GPS_INITIALIZE_TOPIC, callback=self.__obstacle_processor.mqtt_gps_init_cb);
     
 
 __all__: list[str] = ["RequestBridge"];
