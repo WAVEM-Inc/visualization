@@ -67,6 +67,10 @@ class TaskProcessor:
         #                               f"\n\tdetected_object : {get_detected_object_flag()}");
         
         if get_control_callback_flag():
+            if "control_data" in get_control():
+                get_control()["control_data"]["is_return"] = get_control()["control_data"].pop("return");
+            else:
+                pass;
             control: Control = message_conversion.populate_instance(msg=get_control(), inst=Control());
             self.__log.info(f"Control cb\n{json.dumps(obj=message_conversion.extract_values(inst=control), indent=4)}");
             self.assign_control_service_request(control=control);

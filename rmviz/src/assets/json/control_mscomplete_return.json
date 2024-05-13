@@ -1,0 +1,12 @@
+{
+    "id": "rbt_control",
+    "data": {
+        "owner": "padmin",
+        "control_id": "",
+        "request_time": "",
+        "control_code": "mscomplete",
+        "control_data": {
+            "return": true
+        }
+    }
+}

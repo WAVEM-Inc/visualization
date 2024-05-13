@@ -9,7 +9,8 @@ import * as straightTestVerticalJSON from "../../../assets/json/bluespace/second
 import * as waitingJSON from "../../../assets/json/bluespace/secondary/waiting.json";
 import * as controlGrapySyncJSON from "../../../assets/json/control_graphsync.json";
 import * as controlMoveToDestJSON from "../../../assets/json/control_movetodest.json";
-import * as controlMsCompleteJSON from "../../../assets/json/control_mscomplete.json";
+import * as controlMsCompleteReturnJSON from "../../../assets/json/control_mscomplete_return.json";
+import * as controlMsCompleteNoReturnJSON from "../../../assets/json/control_mscomplete_no_return.json";
 import * as missionJSON from "../../../assets/json/mission.json";
 import BlueSpaceRequestComponent from "../../../components/bluespace/BlueSpaceRequestComponent";
 import MapComponent from "../../../components/map/MapComponents";
@@ -111,8 +112,12 @@ const BlueSpaceDashBoardPage: React.FC<BlueSpaceDashBoardPageProps> = ({
         onClickMqttPublish(mqttClient!, requestTaskTopic, controlMoveToDestJSON);
     }
 
-    const onControlMsCompleteClick = (): void => {
-        onClickMqttPublish(mqttClient!, requestTaskTopic, controlMsCompleteJSON);
+    const onControlMsCompleteReturnClick = (): void => {
+        onClickMqttPublish(mqttClient!, requestTaskTopic, controlMsCompleteReturnJSON);
+    }
+
+    const onControlMsCompleteNoReturnClick = (): void => {
+        onClickMqttPublish(mqttClient!, requestTaskTopic, controlMsCompleteNoReturnJSON);
     }
 
     const onControlGraphSyncClick = (): void => {
@@ -137,15 +142,13 @@ const BlueSpaceDashBoardPage: React.FC<BlueSpaceDashBoardPageProps> = ({
                 <BlueSpaceRequestComponent
                     onStraightClick={onStraightClick}
                     onStraightHorizonTestClick={onStraightHorizonTestClick}
-                    onStraightVerticalTestClick={onStraightVerticalTestClick}
-                    onRotationTestClick={onRotationTestClick}
                     onCallClick={onCallClick}
                     onDeliveryClick={onDeliveryClick}
                     onWaitingClick={onWaitingClick}
                     onMissionClick={onMissionClick}
                     onControlMoveToDestClick={onControlMoveToDestClick}
-                    onControlMsCompleteClick={onControlMsCompleteClick}
-                    onControlGraphSyncClick={onControlGraphSyncClick}
+                    onControlMsCompleteReturnClick={onControlMsCompleteReturnClick}
+                    onControlMsCompleteNoReturnClick={onControlMsCompleteNoReturnClick}
                 />
             </div>
         </div>
