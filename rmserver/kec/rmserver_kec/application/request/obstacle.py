@@ -17,7 +17,7 @@ from typing import Any;
 DETECTED_OBJECT_TOPIC: str = "/rms/ktp/itf/detected_object";
 OBSTACLE_EVENT_TOPIC: str = "/drive/obstacle/event";
 DRIVE_OBSTACLE_COOPERATIVE_TOPIC: str = "/drive/obstacle/cooperative";
-GPS_INIT_TOPIC: str = "/sensor/ublox/initial/fix";
+GPS_INIT_TOPIC: str = "/sensor/ublox/initialfix";
 
 
 class ObstacleProcessor:
