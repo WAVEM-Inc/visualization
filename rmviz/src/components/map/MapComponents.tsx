@@ -399,6 +399,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
         if (currentOdomEular) {
             const angle: number = 360 - currentOdomEular!;
             $("div[title|='RobotCurrentPos'").css("transform", `rotate(${angle}deg)`);
+            $("div[title|='GPSInitMarker'").css("transform", `rotate(${angle}deg)`);
         }
 
     }, [state.odomEular]);

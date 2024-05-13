@@ -63,14 +63,14 @@ export const initializeRobotFilteredMarker: Function = (map: naver.maps.Map): na
 }
 
 export const addGPSInitMarkerControl: Function = (map: naver.maps.Map, initializeGPSInitMarker: naver.maps.Marker): void => {
-    var locationBtnHtml = [
+    const gpsInitBtnHTML = [
         '<button>',
         '<span class="spr_trff spr_ico_mylct">GPS 초기화 마커 추가</span>',
         "</button>"
     ].join("");
 
     naver.maps.Event.once(map, 'init', function () {
-        var customControl = new naver.maps.CustomControl(locationBtnHtml, {
+        const customControl = new naver.maps.CustomControl(gpsInitBtnHTML, {
             position: naver.maps.Position.TOP_LEFT
         });
 
@@ -85,7 +85,16 @@ export const addGPSInitMarkerControl: Function = (map: naver.maps.Map, initializ
 export const initializeGPSInitMarker: Function = (map: naver.maps.Map): naver.maps.Marker => {
     const gpsInitMarker: naver.maps.Marker = new naver.maps.Marker({
         map: map,
-        position: map.getCenter()
+        position: map.getCenter(),
+        title: "GPSInitMarker",
+        zIndex: 1000,
+        icon: {
+            url: process.env.PUBLIC_URL + "../marker_filtered.png",
+            size: new naver.maps.Size(30, 30),
+            scaledSize: new naver.maps.Size(30, 30),
+            origin: new naver.maps.Point(0, 0),
+            anchor: new naver.maps.Point(10, 32)
+        }
     });
 
     return gpsInitMarker;
