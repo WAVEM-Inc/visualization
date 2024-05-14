@@ -483,10 +483,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
                             Service : {currentGps.service}
                             <br></br>
                             경위도 : {currentGps.longitude}, {currentGps.latitude}
-                            <br></br>
-                            필터링 경위도 : {currentGpsFiltered.longitude}, {currentGpsFiltered.latitude}
-                            <br></br>
-                            오차 : {Math.abs(currentGps.longitude - currentGpsFiltered.longitude).toFixed(7)}, {Math.abs(currentGps.latitude - currentGpsFiltered.latitude).toFixed(7)}
                         </div>
                     </div>
                     <div className={"odom_eular_data_container"}>
