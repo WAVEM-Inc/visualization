@@ -5,32 +5,65 @@
 #include "ros2/nav_sat_fix_subscriber.h"
 #include "utils/GeoPositionUtil.h"
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[])
+{
     QApplication app(argc, argv);
 
     rclcpp::init(argc, argv);
 
     auto node = std::make_shared<NavSatFixSubscriber>();
-    std::thread ros_thread([&]() {
+    std::thread ros_thread([&]()
+    {
         rclcpp::spin(node);
     });
 
     qRegisterMetaType<sensor_msgs::msg::NavSatFix>("sensor_msgs::msg::NavSatFix");
 
-    MainWindow *window = new MainWindow();
+    MainWindow* window = new MainWindow();
     window->resize(800, 600);
     window->show();
 
-    QObject::connect(&app, &QApplication::aboutToQuit, []() {
+    window->setStyleSheet(
+        "QLineEdit {"
+        "font: bold 22px;"
+        " }"
+        ""
+        "QLabel {"
+        "font: bold 22px;"
+        "}"
+        ""
+        "QComboBox {"
+        "font: bold 22px;"
+        "}"
+        ""
+        "QTableView {"
+        "font: bold 22px;"
+        "}"
+        ""
+        "QStandardItemModel {"
+        "font: bold 22px;"
+        "}"
+        "QPushButton {"
+        "font: bold 22px;"
+        "}");
+
+    QPixmap cursor_img = QPixmap("resources/image/cursor.png");
+    cursor_img = cursor_img.scaled(32, 32);
+    QCursor cursor = QCursor(cursor_img);
+    window->setCursor(cursor);
+
+    QObject::connect(&app, &QApplication::aboutToQuit, []()
+    {
         ConfigFileWriter writer;
         writer.saveFile();
-        
+
         rclcpp::shutdown();
     });
 
     int result = app.exec();
 
-    if (ros_thread.joinable()) {
+    if (ros_thread.joinable())
+    {
         ros_thread.join();
     }
 

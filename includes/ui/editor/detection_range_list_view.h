@@ -27,6 +27,8 @@ public:
 
     void updateIndexes();
 
+    void paintEvent(QPaintEvent* event) override;
+
 private:
     QList<DetectionRangeView *> _views_ptr;
 

@@ -8,6 +8,9 @@
 #include <QScrollArea>
 #include <QPushButton>
 #include "ui/editor/node_editor.h"
+
+#include <qpainter.h>
+
 #include "model/file_info_model.h"
 #include "model/node_info_model.h"
 #include "ui/editor/detection_range_view.h"
@@ -124,17 +127,17 @@ void NodeEditor::init() {
         node.heading = _nodeHeading_ptr->text().toInt();
         node.detectionRange = _dtrListView_ptr->getDetectionRanges();
 
-        if (node.heading < 0) {
-            try {
-                Position curPos = node.position;
-                Position nextPos = NodeInfoModel::getInstance().getNextNode().position;
-                double bearing = 360 - getBearingBetweenPoints(curPos.latitude, curPos.longitude, nextPos.latitude,
-                                                               nextPos.longitude);
-                node.heading = bearing;
-            } catch (std::out_of_range &e) {
-                std::cout << e.what() << "\n";
-            }
-        }
+        // if (node.heading < 0) {
+        //     try {
+        //         Position curPos = node.position;
+        //         Position nextPos = NodeInfoModel::getInstance().getNextNode().position;
+        //         double bearing = 360 - getBearingBetweenPoints(curPos.latitude, curPos.longitude, nextPos.latitude,
+        //                                                        nextPos.longitude);
+        //         node.heading = bearing;
+        //     } catch (std::out_of_range &e) {
+        //         std::cout << e.what() << "\n";
+        //     }
+        // }
 
         NodeInfoModel::getInstance().updateCurrentNode(node);
     });
@@ -148,6 +151,18 @@ void NodeEditor::init() {
         sensor_msgs::msg::NavSatFix nsf = ROS2DataModel::getInstance().getNavSatFixData();
         _nodeLat_ptr->setText(QString::number(nsf.latitude, 'f', 7));
         _nodeLng_ptr->setText(QString::number(nsf.longitude, 'f', 7));
+
+        try {
+            Position curPos;
+            curPos.latitude = nsf.latitude;
+            curPos.longitude = nsf.longitude;
+            Position nextPos = NodeInfoModel::getInstance().getNextNode().position;
+            double bearing = 360 - getBearingBetweenPoints(curPos.latitude, curPos.longitude, nextPos.latitude,
+                                                           nextPos.longitude);
+            _nodeHeading_ptr->setText(QString::number(int(bearing)));
+        } catch (std::out_of_range &e) {
+            std::cout << e.what() << "\n";
+        }
     });
 
     connect(_mapPoseBtn_ptr, &QPushButton::clicked, this, [this]() {
@@ -255,7 +270,7 @@ void NodeEditor::initRouteInfoWidget() {
     QGridLayout *layout = new QGridLayout(m_route_info_ptr);
 
     QLabel *title = new QLabel("경로 정보");
-    title->setStyleSheet("QLabel { font-size: 14pt; }");
+    title->setStyleSheet("QLabel { font-size: 26pt; }");
     layout->addWidget(title, 0, 0);
 
     QLabel *pathIdLb = new QLabel("경로 ID");
@@ -277,7 +292,7 @@ void NodeEditor::initNodeInfoWidget() {
     QGridLayout *layout = new QGridLayout(m_node_info_ptr);
 
     QLabel *title = new QLabel("노드 정보");
-    title->setStyleSheet("QLabel { font-size: 14pt; }");
+    title->setStyleSheet("QLabel { font-size: 26pt; }");
     layout->addWidget(title, 0, 0);
 
     QLabel *nodeIdLb = new QLabel("노드 ID");
@@ -311,7 +326,7 @@ void NodeEditor::initTaskInfoWidget() {
     QGridLayout *layout = new QGridLayout(m_task_info_ptr);
 
     QLabel *title = new QLabel("작업 정보");
-    title->setStyleSheet("QLabel { font-size: 14pt; }");
+    title->setStyleSheet("QLabel { font-size: 26pt; }");
     layout->addWidget(title, 0, 0);
 
     QLabel *kindLb = new QLabel("작업 구분");
@@ -363,3 +378,9 @@ void NodeEditor::resizeEvent(QResizeEvent *event) {
 //    m_tab_ptr->resize(this->width(), this->height());
 }
 
+void NodeEditor::paintEvent(QPaintEvent *) {
+    QStyleOption opt;
+    opt.init(this);
+    QPainter p(this);
+    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+}

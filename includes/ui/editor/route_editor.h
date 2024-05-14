@@ -26,6 +26,8 @@ public:
 
     void resizeEvent(QResizeEvent *event) override;
 
+    void paintEvent(QPaintEvent* event) override;
+
 private:
     QGridLayout *m_layout_ptr;
     QComboBox *m_routeComboBox_ptr;

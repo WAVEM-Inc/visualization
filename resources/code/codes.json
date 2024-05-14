@@ -83,8 +83,8 @@
         "description": "주행 정지"
       },
       {
-        "code": "skip",
-        "name": "무시",
+        "code": "cooperative",
+        "name": "협동주행",
         "description": "계속 진행"
       }
     ]
