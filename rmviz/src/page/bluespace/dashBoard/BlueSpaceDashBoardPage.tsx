@@ -9,9 +9,10 @@ import * as straightTestVerticalJSON from "../../../assets/json/bluespace/second
 import * as waitingJSON from "../../../assets/json/bluespace/secondary/waiting.json";
 import * as controlGrapySyncJSON from "../../../assets/json/control_graphsync.json";
 import * as controlMoveToDestJSON from "../../../assets/json/control_movetodest.json";
-import * as controlMsCompleteReturnJSON from "../../../assets/json/control_mscomplete_return.json";
 import * as controlMsCompleteNoReturnJSON from "../../../assets/json/control_mscomplete_no_return.json";
-import * as missionJSON from "../../../assets/json/mission.json";
+import * as controlMsCompleteReturnJSON from "../../../assets/json/control_mscomplete_return.json";
+import * as deliveringMissionJSON from "../../../assets/json/mission_delivering.json";
+import * as retunringMissionJSON from "../../../assets/json/mission_returning.json";
 import BlueSpaceRequestComponent from "../../../components/bluespace/BlueSpaceRequestComponent";
 import MapComponent from "../../../components/map/MapComponents";
 import TopComponent from "../../../components/top/TopComponent";
@@ -104,8 +105,12 @@ const BlueSpaceDashBoardPage: React.FC<BlueSpaceDashBoardPageProps> = ({
         onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, j);
     }
 
-    const onMissionClick = (): void => {
-        onClickMqttPublish(mqttClient!, requestTaskTopic, missionJSON);
+    const onDeliveringMissionClick = (): void => {
+        onClickMqttPublish(mqttClient!, requestTaskTopic, deliveringMissionJSON);
+    }
+
+    const onReturningMissionClick = (): void => {
+        onClickMqttPublish(mqttClient!, requestTaskTopic, retunringMissionJSON);
     }
 
     const onControlMoveToDestClick = (): void => {
@@ -145,7 +150,8 @@ const BlueSpaceDashBoardPage: React.FC<BlueSpaceDashBoardPageProps> = ({
                     onCallClick={onCallClick}
                     onDeliveryClick={onDeliveryClick}
                     onWaitingClick={onWaitingClick}
-                    onMissionClick={onMissionClick}
+                    onDeliveringMissionClick={onDeliveringMissionClick}
+                    onReturningMissionClick={onReturningMissionClick}
                     onControlMoveToDestClick={onControlMoveToDestClick}
                     onControlMsCompleteReturnClick={onControlMsCompleteReturnClick}
                     onControlMsCompleteNoReturnClick={onControlMsCompleteNoReturnClick}
