@@ -13,6 +13,7 @@
     margin-right: 1%;
     border-radius: 50px;
     width: 15%;
+    height: 15%;
     font-size: 17px;
     background-color: #fff;
     font-weight: bold;
@@ -71,10 +72,26 @@
     }
 }
 
-@media screen and (min-width: 1799px) and (min-height: 900px) and (max-width: 2559px) and (max-height: 1079px) {
+@media screen and (min-width: 1799px) and (min-height: 900px) and (max-width: 1849px) and (max-height: 1079px) {
     .bluespace_btn_request {
         margin-top: 1.5%;
-        width: 190px;
+        width: 15%;
+        height: 65px;
+    }
+}
+
+@media screen and (min-width: 1849px) and (min-height: 900px) and (max-width: 1919px) and (max-height: 1079px) {
+    .bluespace_btn_request {
+        margin-top: 2.5%;
+        width: 10%;
+        height: 65px;
+    }
+}
+
+@media screen and (min-width: 1920px) and (min-height: 900px) and (max-width: 2559px) and (max-height: 1079px) {
+    .bluespace_btn_request {
+        margin-top: 1.5%;
+        width: 10%;
         height: 65px;
     }
 }

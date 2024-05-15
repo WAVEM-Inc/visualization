@@ -1,22 +1,22 @@
+import { Wrapper } from "@googlemaps/react-wrapper";
 import React, { useEffect, useState } from "react";
 import MqttClient from "../../../api/mqttClient";
+import * as controlMoveToDestJSON from "../../../assets/json/control_movetodest.json";
+import * as controlMsCompleteNoReturnJSON from "../../../assets/json/control_mscomplete_no_return.json";
+import * as controlMsCompleteReturnJSON from "../../../assets/json/control_mscomplete_return.json";
 import * as callJSON from "../../../assets/json/kec/secondary/call.json";
 import * as deliveryJSON from "../../../assets/json/kec/secondary/delivery.json";
 import * as straightJSON from "../../../assets/json/kec/secondary/straight.json";
 import * as waitingJSON from "../../../assets/json/kec/secondary/waiting.json";
-import * as controlMoveToDestJSON from "../../../assets/json/control_movetodest.json";
-import * as controlMsCompleteNoReturnJSON from "../../../assets/json/control_mscomplete_no_return.json";
-import * as controlMsCompleteReturnJSON from "../../../assets/json/control_mscomplete_return.json";
 import * as deliveringMissionJSON from "../../../assets/json/mission_delivering.json";
 import * as retunringMissionJSON from "../../../assets/json/mission_returning.json";
 import KECRequestComponent from "../../../components/kec/request/RequestComponent";
+import GoogleMapComponent from "../../../components/map/GoogleMapComponent";
 import TopComponent from "../../../components/top/TopComponent";
 import { MapState } from "../../../domain/map/MapDomain";
 import { TopState } from "../../../domain/top/TopDomain";
 import { onClickMqttPublish } from "../../../utils/Utils";
 import "./KECDashBoardPage.css";
-import { Wrapper } from "@googlemaps/react-wrapper";
-import GoogleMapComponent from "../../../components/map/GoogleMapComponent";
 
 interface KECDashBoardPageProps {
     mqttClient: MqttClient;
@@ -30,7 +30,6 @@ const KECDashBoardPage: React.FC<KECDashBoardPageProps> = ({
     mapState
 }: KECDashBoardPageProps): React.ReactElement<any, any> | null => {
     const [isEnableToCommandRoute, setIsEnableToCommandRoute] = useState<string | null>(null);
-    const kecCoord: naver.maps.LatLng = new naver.maps.LatLng(36.1137155, 128.3676005);
     const requestTopicFormat: string = "/rms/ktp/dummy/request";
     const requestRouteToPoseTopic: string = `${requestTopicFormat}/route_to_pose`;
     const requestTaskTopic: string = `${requestTopicFormat}/task`;
