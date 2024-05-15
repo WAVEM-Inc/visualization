@@ -38,6 +38,10 @@ export default class MqttClient {
         });
     };
 
+    public isConnected(): boolean {
+        return this.client.connected;
+    }
+
     public publish(topic: string, message: string): void {
         try {
             this.client!.publish(topic, message);

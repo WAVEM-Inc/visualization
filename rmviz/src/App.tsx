@@ -1,3 +1,4 @@
+import { Status, Wrapper } from '@googlemaps/react-wrapper';
 import './App.css';
 import DataController from './controller/data/DataController';
 import FrontController from './controller/front/FrontController';

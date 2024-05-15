@@ -1,10 +1,7 @@
-import "./BlueSpaceRequestComponent.css";
+import "./RequestComponent.css";
 
-interface BlueSpaceRequestComponentProps {
+interface KECRequestComponentProps {
     onStraightClick: () => void;
-    onStraightHorizonTestClick?: () => void;
-    onStraightVerticalTestClick?: () => void;
-    onRotationTestClick?: () => void;
     onCallClick: () => void;
     onDeliveryClick: () => void;
     onWaitingClick: () => void;
@@ -13,14 +10,10 @@ interface BlueSpaceRequestComponentProps {
     onControlMoveToDestClick: () => void;
     onControlMsCompleteReturnClick: () => void;
     onControlMsCompleteNoReturnClick: () => void;
-    onControlGraphSyncClick?: () => void;
 }
 
-const BlueSpaceRequestComponent: React.FC<BlueSpaceRequestComponentProps> = ({
+const KECRequestComponent: React.FC<KECRequestComponentProps> = ({
     onStraightClick,
-    onStraightHorizonTestClick,
-    onStraightVerticalTestClick,
-    onRotationTestClick,
     onCallClick,
     onDeliveryClick,
     onWaitingClick,
@@ -28,9 +21,8 @@ const BlueSpaceRequestComponent: React.FC<BlueSpaceRequestComponentProps> = ({
     onReturningMissionClick,
     onControlMoveToDestClick,
     onControlMsCompleteReturnClick,
-    onControlMsCompleteNoReturnClick,
-    onControlGraphSyncClick
-}: BlueSpaceRequestComponentProps) => {
+    onControlMsCompleteNoReturnClick
+}: KECRequestComponentProps) => {
     return (
         <div className="">
             <div className={"bluespace_request_btn_container"}>
@@ -48,4 +40,4 @@ const BlueSpaceRequestComponent: React.FC<BlueSpaceRequestComponentProps> = ({
     );
 };
 
-export default BlueSpaceRequestComponent;
+export default KECRequestComponent;

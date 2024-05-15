@@ -1,49 +1,46 @@
 import React, { useEffect, useState } from "react";
 import MqttClient from "../../../api/mqttClient";
-import * as callJSON from "../../../assets/json/bluespace/secondary/call.json";
-import * as deliveryJSON from "../../../assets/json/bluespace/secondary/delivery.json";
-import * as rotationTestJSON from "../../../assets/json/bluespace/secondary/rotation_test.json";
-import * as straightJSON from "../../../assets/json/bluespace/secondary/straight.json";
-import * as straightTestHorizonJSON from "../../../assets/json/bluespace/secondary/straight_horizon_test.json";
-import * as straightTestVerticalJSON from "../../../assets/json/bluespace/secondary/straight_vertical_test.json";
-import * as waitingJSON from "../../../assets/json/bluespace/secondary/waiting.json";
-import * as controlGrapySyncJSON from "../../../assets/json/control_graphsync.json";
+import * as callJSON from "../../../assets/json/kec/secondary/call.json";
+import * as deliveryJSON from "../../../assets/json/kec/secondary/delivery.json";
+import * as straightJSON from "../../../assets/json/kec/secondary/straight.json";
+import * as waitingJSON from "../../../assets/json/kec/secondary/waiting.json";
 import * as controlMoveToDestJSON from "../../../assets/json/control_movetodest.json";
 import * as controlMsCompleteNoReturnJSON from "../../../assets/json/control_mscomplete_no_return.json";
 import * as controlMsCompleteReturnJSON from "../../../assets/json/control_mscomplete_return.json";
 import * as deliveringMissionJSON from "../../../assets/json/mission_delivering.json";
 import * as retunringMissionJSON from "../../../assets/json/mission_returning.json";
-import BlueSpaceRequestComponent from "../../../components/bluespace/BlueSpaceRequestComponent";
-import MapComponent from "../../../components/map/MapComponents";
+import KECRequestComponent from "../../../components/kec/request/RequestComponent";
 import TopComponent from "../../../components/top/TopComponent";
 import { MapState } from "../../../domain/map/MapDomain";
 import { TopState } from "../../../domain/top/TopDomain";
 import { onClickMqttPublish } from "../../../utils/Utils";
-import "./BlueSpaceDashBoardPage.css";
+import "./KECDashBoardPage.css";
+import { Wrapper } from "@googlemaps/react-wrapper";
+import GoogleMapComponent from "../../../components/map/GoogleMapComponent";
 
-interface BlueSpaceDashBoardPageProps {
+interface KECDashBoardPageProps {
     mqttClient: MqttClient;
     topState: TopState;
     mapState: MapState;
 }
 
-const BlueSpaceDashBoardPage: React.FC<BlueSpaceDashBoardPageProps> = ({
+const KECDashBoardPage: React.FC<KECDashBoardPageProps> = ({
     mqttClient,
     topState,
     mapState
-}: BlueSpaceDashBoardPageProps): React.ReactElement<any, any> | null => {
+}: KECDashBoardPageProps): React.ReactElement<any, any> | null => {
     const [isEnableToCommandRoute, setIsEnableToCommandRoute] = useState<string | null>(null);
-    const blueSpaceCoord: naver.maps.LatLng = new naver.maps.LatLng(37.305985, 127.2401652);
+    const kecCoord: naver.maps.LatLng = new naver.maps.LatLng(36.1137155, 128.3676005);
     const requestTopicFormat: string = "/rms/ktp/dummy/request";
     const requestRouteToPoseTopic: string = `${requestTopicFormat}/route_to_pose`;
-    const requestTaskTopic: string =`${requestTopicFormat}/task`;
+    const requestTaskTopic: string = `${requestTopicFormat}/task`;
 
     useEffect(() => {
         setIsEnableToCommandRoute(localStorage.getItem("isEnableToCommandRoute?"));
     }, [localStorage.getItem("isEnableToCommandRoute?")]);
 
     const onStraightClick = (): void => {
-        const j: any =  {
+        const j: any = {
             isEnableToCommandRoute: isEnableToCommandRoute,
             path: straightJSON
         };
@@ -51,35 +48,8 @@ const BlueSpaceDashBoardPage: React.FC<BlueSpaceDashBoardPageProps> = ({
         onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, j);
     }
 
-    const onStraightHorizonTestClick = (): void => {
-        const j: any =  {
-            isEnableToCommandRoute: isEnableToCommandRoute,
-            path: straightTestHorizonJSON
-        };
-
-        onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, j);
-    }
-
-    const onStraightVerticalTestClick = (): void => {
-        const j: any =  {
-            isEnableToCommandRoute: isEnableToCommandRoute,
-            path: straightTestVerticalJSON
-        };
-
-        onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, j);
-    }
-
-    const onRotationTestClick = (): void => {
-        const j: any =  {
-            isEnableToCommandRoute: isEnableToCommandRoute,
-            path: rotationTestJSON
-        };
-
-        onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, j);
-    }
-
     const onCallClick = (): void => {
-        const j: any =  {
+        const j: any = {
             isEnableToCommandRoute: isEnableToCommandRoute,
             path: callJSON
         };
@@ -88,7 +58,7 @@ const BlueSpaceDashBoardPage: React.FC<BlueSpaceDashBoardPageProps> = ({
     }
 
     const onDeliveryClick = (): void => {
-        const j: any =  {
+        const j: any = {
             isEnableToCommandRoute: isEnableToCommandRoute,
             path: deliveryJSON
         };
@@ -97,7 +67,7 @@ const BlueSpaceDashBoardPage: React.FC<BlueSpaceDashBoardPageProps> = ({
     }
 
     const onWaitingClick = (): void => {
-        const j: any =  {
+        const j: any = {
             isEnableToCommandRoute: isEnableToCommandRoute,
             path: waitingJSON
         };
@@ -125,28 +95,24 @@ const BlueSpaceDashBoardPage: React.FC<BlueSpaceDashBoardPageProps> = ({
         onClickMqttPublish(mqttClient!, requestTaskTopic, controlMsCompleteNoReturnJSON);
     }
 
-    const onControlGraphSyncClick = (): void => {
-        onClickMqttPublish(mqttClient!, requestTaskTopic, controlGrapySyncJSON);
-    }
-
     return (
         <div className="dash_board_container">
             <div className="top_component_container">
                 <TopComponent
                     state={topState}
-                 />
-            </div>
-            <div className="map_component_container">
-                <MapComponent
-                    mqttClient={mqttClient}
-                    center={blueSpaceCoord}
-                    state={mapState}
                 />
             </div>
+            <div className="map_component_container">
+                <Wrapper apiKey={`${process.env.GOOGLE_MAP_API_KEY}`}>
+                    <GoogleMapComponent
+                        mqttClient={mqttClient!}
+                        state={mapState}
+                    />
+                </Wrapper>
+            </div>
             <div className="request_component_container">
-                <BlueSpaceRequestComponent
+                <KECRequestComponent
                     onStraightClick={onStraightClick}
-                    onStraightHorizonTestClick={onStraightHorizonTestClick}
                     onCallClick={onCallClick}
                     onDeliveryClick={onDeliveryClick}
                     onWaitingClick={onWaitingClick}
@@ -161,4 +127,4 @@ const BlueSpaceDashBoardPage: React.FC<BlueSpaceDashBoardPageProps> = ({
     );
 }
 
-export default BlueSpaceDashBoardPage;
+export default KECDashBoardPage;

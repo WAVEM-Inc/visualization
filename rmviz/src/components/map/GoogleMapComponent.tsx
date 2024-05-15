@@ -1,51 +1,37 @@
-import $ from "jquery";
-import React, { useEffect, useRef, useState } from "react";
+import { faLocationArrow } from "@fortawesome/free-solid-svg-icons";
+import React, { useEffect, useState } from "react";
 import MqttClient from "../../api/mqttClient";
 import * as emergencyResumeJSON from "../../assets/json/common/emergency_resume.json";
 import * as emergencyStopJSON from "../../assets/json/common/emergency_stop.json";
 import { MapState } from "../../domain/map/MapDomain";
-import { addGPSInitMarkerControl, initializeGPSInitMarker, initializeMap, initializeRobotMarker } from "../../service/MapService";
 import { onClickMqttPublish } from "../../utils/Utils";
-import "./MapComponents.css";
+import "./GoogleMapComponent.css";
 
-interface MapComponentProps {
+interface GoogleMapComponentProps {
     mqttClient: MqttClient;
-    center: naver.maps.LatLng;
     state: MapState;
 }
 
-const MapComponent: React.FC<MapComponentProps> = ({
+const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
     mqttClient,
-    center,
     state
-}: MapComponentProps): React.ReactElement<any, any> | null => {
-    const { naver }: Window & typeof globalThis = window;
-    const mapRef: React.MutableRefObject<HTMLDivElement | null> = useRef<HTMLDivElement>(null);
-
-    let map: naver.maps.Map | null = null;
+}: GoogleMapComponentProps) => {
+    const [googleMap, setGoogleMap] = useState<google.maps.Map>();
     const [pathInfoContainer, setPathInfoContainer] = useState<HTMLElement | null>(null);
     const [pathInfoDiv, setPathInfoDiv] = useState<HTMLDivElement | null>(null);
-    const [currRobotMarker, setCurrRobotMarker] = useState<naver.maps.Marker | null>(null);
-    const [currGPSInitMarker, setCurrGPSInitMarker] = useState<naver.maps.Marker | null>(null);
+    let pathMarkerArray: Array<google.maps.Marker> = [];
+    let pathInfoWindowarray: Array<google.maps.InfoWindow> = [];
+
+    const kecCoord: google.maps.LatLng = new google.maps.LatLng(36.11434, 128.3690);
+    const [currRobotMarker, setCurrRobotMarker] = useState<google.maps.Marker | null>(null);
+    const [currGPSInitMarker, setCurrGPSInitMarker] = useState<google.maps.Marker | null>(null);
     const [currentGps, setCurrentGps] = useState<any>({
         status: 0,
         service: 0,
         latitude: 0.0,
         longitude: 0.0
     });
-    const [currentGpsFiltered, setCurrentGpsFiltered]: [any, React.Dispatch<any>] = useState<any>({
-        status: 0,
-        service: 0,
-        latitude: 0.0,
-        longitude: 0.0
-    });
-    const [currentOdomEular, setCurrentOdomEular]: [number | undefined, React.Dispatch<React.SetStateAction<number | undefined>>] = useState<number>();
-    const [currentRouteStatus, setCurrentRouteStatus]: [any, React.Dispatch<any>] = useState<any | null>(null);
-
-    let pathMarkerArray: Array<naver.maps.Marker> = [];
-    let pathInfoWindowarray: Array<naver.maps.InfoWindow> = [];
-
-    const [defaultZoom, setDefaultZoom]: [number, React.Dispatch<React.SetStateAction<number>>] = useState<number>(20);
+    const [currentOdomEular, setCurrentOdomEular] = useState<number>();
 
     const requestTopicFormat: string = "/rms/ktp/dummy/request";
     const requestEmergencyTopic: string = `${requestTopicFormat}/can/emergency`;
@@ -77,36 +63,20 @@ const MapComponent: React.FC<MapComponentProps> = ({
 
         const nodeTitle: string = `${nodeTitleOpts.id}/${nodeTitleOpts.kind}/${node.heading}/${node.drivingOption}/${node.direction}`;
 
-        const marker: naver.maps.Marker = new naver.maps.Marker({
-            position: new naver.maps.LatLng(node.position.latitude, node.position.longitude),
-            map: map,
+        const marker: google.maps.Marker = new google.maps.Marker({
+            position: new google.maps.LatLng(node.position.latitude, node.position.longitude),
+            map: googleMap,
             title: nodeTitle,
             icon: {
                 url: iconUrl,
-                size: new naver.maps.Size(30, 30),
-                scaledSize: new naver.maps.Size(30, 30),
-                origin: new naver.maps.Point(0, 0),
-                anchor: new naver.maps.Point(12, 34)
+                size: new google.maps.Size(30, 30),
+                scaledSize: new google.maps.Size(30, 30),
+                origin: new google.maps.Point(0, 0),
+                anchor: new google.maps.Point(12, 34)
             }
         });
 
         return marker;
-    }
-
-    const getClickHandler: Function = (seq: number): Function => {
-        let isOpened: number = 0;
-        return function (e: any) {
-            const marker: naver.maps.Marker = pathMarkerArray[seq];
-            const infoWindow: naver.maps.InfoWindow = pathInfoWindowarray[seq];
-
-            if (isOpened == 0) {
-                infoWindow.open(map!, marker);
-                isOpened++;
-            } else {
-                infoWindow.close();
-                isOpened = 0;
-            }
-        }
     }
 
     const drawPathMarker: Function = (): void => {
@@ -230,52 +200,65 @@ const MapComponent: React.FC<MapComponentProps> = ({
         }
     }
 
+    const getClickHandler: Function = (seq: number): Function => {
+        let isOpened: number = 0;
+        return function (e: any) {
+            const marker: google.maps.Marker = pathMarkerArray[seq];
+            const infoWindow: google.maps.InfoWindow = pathInfoWindowarray[seq];
+
+            if (isOpened == 0) {
+                infoWindow.open(googleMap!, marker);
+                isOpened++;
+            } else {
+                infoWindow.close();
+                isOpened = 0;
+            }
+        }
+    }
+
+    const changeMapCenter = (coord: google.maps.LatLng): void => {
+        googleMap?.setCenter(coord);
+    }
+
     const drawPathPolyline: Function = (): void => {
         for (var i = 0, ii = pathMarkerArray.length; i < ii; i++) {
-            naver.maps.Event.addListener(pathMarkerArray[i], "click", getClickHandler(i));
+            google.maps.event.addListener(pathMarkerArray[i], "click", getClickHandler(i));
         }
 
         let path: Array<any> = [];
         for (const pathMarker of pathMarkerArray) {
             const contentString: string = [
-                '<div class="iw_inner">',
-                `   <h3>ID : ${pathMarker!.getTitle().split("/")[0]}</h3>`,
-                `   <p>종류 : ${pathMarker!.getTitle().split("/")[1]}</p>`,
-                `   <p>진출 각도 : ${pathMarker!.getTitle().split("/")[2]}</p>`,
-                `   <p>주행 옵션 : ${pathMarker!.getTitle().split("/")[3]}</p>`,
-                `   <p>주행 방향 : ${pathMarker!.getTitle().split("/")[4]}</p>`,
-                `   <p>경도 : ${pathMarker!.getPosition().x}</p>`,
-                `   <p>위도 : ${pathMarker!.getPosition().y}</p>`,
+                '<div class="node_info_window">',
+                `   <h3>ID : ${pathMarker!.getTitle()!.split("/")[0]}</h3>`,
+                `   <p>종류 : ${pathMarker!.getTitle()!.split("/")[1]}</p>`,
+                `   <p>진출 각도 : ${pathMarker!.getTitle()!.split("/")[2]}</p>`,
+                `   <p>주행 옵션 : ${pathMarker!.getTitle()!.split("/")[3]}</p>`,
+                `   <p>주행 방향 : ${pathMarker!.getTitle()!.split("/")[4]}</p>`,
+                `   <p>경도 : ${pathMarker!.getPosition()!.lng()}</p>`,
+                `   <p>위도 : ${pathMarker!.getPosition()!.lat()}</p>`,
                 '</div>'
             ].join('');
 
-            const infoWindow: naver.maps.InfoWindow = new naver.maps.InfoWindow({
+            const infoWindow: google.maps.InfoWindow = new google.maps.InfoWindow({
                 content: contentString
             });
 
             pathInfoWindowarray.push(infoWindow);
 
             for (var i = 0, ii = pathMarkerArray.length; i < ii; i++) {
-                naver.maps.Event.addListener(pathMarkerArray[i], "click", getClickHandler(i));
+                google.maps.event.addListener(pathMarkerArray[i], "click", getClickHandler(i));
             }
             path.push(pathMarker.getPosition());
         }
 
-        const polyline: naver.maps.Polyline = new naver.maps.Polyline({
-            map: map,
+        const polyline: google.maps.Polyline = new google.maps.Polyline({
+            map: googleMap,
             path: path,
             clickable: true,
-            strokeColor: "white",
-            strokeStyle: "line",
-            strokeLineCap: "round",
-            strokeLineJoin: "round",
+            strokeColor: "red",
             strokeOpacity: 1.0,
             strokeWeight: 5.0
         });
-    }
-
-    const changeMapCenter = (coord: naver.maps.Coord): void => {
-        map?.setCenter(coord);
     }
 
     const onGPSInitClick = (): void => {
@@ -315,29 +298,53 @@ const MapComponent: React.FC<MapComponentProps> = ({
     }
 
     useEffect((): void => {
-        if (mapRef.current && naver && !map) {
-            map = initializeMap(mapRef.current, center);
-        } else return;
-
-        if (mapRef.current && naver && map) {
-            const robotMarker: naver.maps.Marker = initializeRobotMarker(map);
-            setCurrRobotMarker(robotMarker);
-
-            const gpsInitMarker: naver.maps.Marker = initializeGPSInitMarker(map);
-            gpsInitMarker.setMap(null);
-
-            addGPSInitMarkerControl(map, gpsInitMarker);
-            setCurrGPSInitMarker(gpsInitMarker);
-
-            naver.maps.Event.addListener(map, "click", function (e: any) {
-                if (gpsInitMarker.getMap()) {
-                    const coord: any = e.coord;
-                    gpsInitMarker.setPosition(coord);
-                }
+        if (state.gps) {
+            const gpsStatus: any | undefined = state.gps.status;
+            setCurrentGps({
+                status: gpsStatus?.status,
+                service: gpsStatus?.service,
+                longitude: parseFloat(state.gps.longitude?.toFixed(7)),
+                latitude: parseFloat(state.gps.latitude?.toFixed(7))
             });
+
+            if (currRobotMarker) {
+                if (state.gps.longitude != 0.0 && state.gps.latitude != 0.0) {
+                    currRobotMarker!.setPosition(new google.maps.LatLng(state.gps.latitude, state.gps.longitude));
+                } else return;
+            }
+        }
+    }, [state.gps]);
+
+    useEffect((): void => {
+        if (state.odomEular) {
+            const poseOrientation: any | undefined = state.odomEular.pose?.orientation;
+            setCurrentOdomEular(parseFloat(poseOrientation?.y.toFixed(2)) | 0.0);
         }
 
-        if (mapRef.current && naver && map) {
+        if (currentOdomEular) {
+            const angle: number = 360 - currentOdomEular;
+
+            if (currRobotMarker) {
+                const iconOpts: any = {
+                    path: faLocationArrow.icon[4] as string,
+                    fillColor: "#0000ff",
+                    fillOpacity: 1,
+                    anchor: new google.maps.Point(
+                        faLocationArrow.icon[0] / 2,
+                        faLocationArrow.icon[1]
+                    ),
+                    strokeWeight: 2,
+                    strokeColor: "black",
+                    scale: 0.065,
+                    rotation: -45.0 + angle
+                }
+                currRobotMarker.setIcon(iconOpts);
+            }
+        }
+    }, [state.odomEular]);
+
+    useEffect((): void => {
+        if (googleMap) {
             if (state.path) {
                 console.info(`state.path : ${JSON.stringify(state.path)}`);
 
@@ -352,125 +359,78 @@ const MapComponent: React.FC<MapComponentProps> = ({
 
                 drawPathMarker();
                 drawPathPolyline();
-                setDefaultZoom(21);
 
                 if (currRobotMarker) {
-                    changeMapCenter(currRobotMarker!.getPosition());
+                    changeMapCenter(currRobotMarker!.getPosition()!);
                 }
             }
         } else return;
-    }, [naver, map, state.path]);
+    }, [state.path]);
 
-    useEffect((): void => {
-        if (state.gps) {
-            const gpsStatus: any | undefined = state.gps.status;
-            setCurrentGps({
-                status: gpsStatus?.status,
-                service: gpsStatus?.service,
-                longitude: parseFloat(state.gps.longitude?.toFixed(7)),
-                latitude: parseFloat(state.gps.latitude?.toFixed(7))
+    useEffect(() => {
+        if (googleMap) {
+            const robotMarker: google.maps.Marker = new google.maps.Marker({
+                position: googleMap.getCenter(),
+                map: googleMap!,
+                title: "RobotCurrentPos",
+                zIndex: 1000,
+                clickable: false,
+                icon: {
+                    path: faLocationArrow.icon[4] as string,
+                    fillColor: "#0000ff",
+                    fillOpacity: 1,
+                    anchor: new google.maps.Point(
+                        faLocationArrow.icon[0] / 2,
+                        faLocationArrow.icon[1]
+                    ),
+                    strokeWeight: 2,
+                    strokeColor: "black",
+                    scale: 0.065,
+                    rotation: -45.0
+                }
             });
-            if (currRobotMarker) {
-                if (state.gps.longitude != 0.0 && state.gps.latitude != 0.0) {
-                    currRobotMarker!.setPosition(new naver.maps.LatLng(state.gps.latitude, state.gps.longitude));
-                } else return;
-            }
+            setCurrRobotMarker(robotMarker);
         }
-    }, [state.gps]);
+    }, [googleMap]);
 
-    useEffect((): void => {
-        if (state.gpsFiltered) {
-            const gpsFilteredStatus: any | undefined = state.gpsFiltered.status;
-            setCurrentGpsFiltered({
-                status: gpsFilteredStatus?.status,
-                service: gpsFilteredStatus?.service,
-                longitude: parseFloat(state.gpsFiltered.longitude?.toFixed(7)),
-                latitude: parseFloat(state.gpsFiltered.latitude?.toFixed(7))
+    useEffect(() => {
+        const mapElement = document.getElementById("map");
+
+        if (mapElement) {
+            const mapInstance = new google.maps.Map(mapElement, {
+                center: kecCoord,
+                zoom: 18,
+                minZoom: 16,
+                maxZoom: 21,
+                restriction: {
+                    latLngBounds: {
+                        north: 39,
+                        south: 32,
+                        east: 132,
+                        west: 124,
+                    },
+                    strictBounds: true
+                },
+                mapTypeControl: true,
+                mapTypeId: google.maps.MapTypeId.SATELLITE
+            });
+
+            setGoogleMap(mapInstance);
+
+            return (() => {
+
             });
         }
-    }, [state.gpsFiltered]);
-
-    useEffect((): void => {
-        if (state.odomEular) {
-            const poseOrientation: any | undefined = state.odomEular.pose?.orientation;
-            setCurrentOdomEular(parseFloat(poseOrientation?.y.toFixed(2)) | 0.0);
-        }
-
-        if (currentOdomEular) {
-            const angle: number = 360 - currentOdomEular!;
-            $("div[title|='RobotCurrentPos'").css("transform", `rotate(${angle}deg)`);
-            $("div[title|='GPSInitMarker'").css("transform", `rotate(${angle}deg)`);
-        }
-
-    }, [state.odomEular]);
-
-    useEffect((): void => {
-        if (state.routeStatus) {
-            console.info(`currentRouteStatus : ${JSON.stringify(state.routeStatus)}`);
-
-            let driving_flag: boolean = false;
-            if (state.routeStatus._is_driving) {
-                driving_flag = true;
-            } else {
-                driving_flag = false;
-            }
-
-            let status: string = "";
-            switch (state.routeStatus._status_code) {
-                case 0:
-                    status = "출발";
-                    break;
-                case 1:
-                    status = "경유지 도착";
-                    break;
-                case 2:
-                    status = "주행 완료";
-                    break;
-                case 3:
-                    status = "주행 서버 미작동";
-                    alert("주행 서버가 구동 중이지 않습니다.");
-                    break;
-                case 4:
-                    status = "주행 진행 중";
-                    alert("주행이 이미 진행 중입니다.");
-                    break;
-                case 5:
-                    status = "주행 취소";
-                    break;
-                default:
-                    break;
-            }
-
-            const node_info: any = state.routeStatus._node_info;
-
-            if (node_info) {
-                const currRouteStatus: any = {
-                    driving_flag: driving_flag,
-                    status: status,
-                    node_info: node_info!
-                };
-
-                setCurrentRouteStatus(currRouteStatus);
-            }
-        }
-    }, [state.routeStatus]);
+    }, []);
 
     useEffect(() => {
         setPathInfoContainer(document.getElementById("path_info_container"));
-        return () => {
-            if (map) {
-                setCurrRobotMarker(null);
-                setPathInfoDiv(null);
-                map.destroy();
-                map = null;
-            }
-        }
     }, []);
 
     return (
         <div className={"map_components"}>
             <div className={"map_container"}>
-                <div ref={mapRef} id={"map"} />
+                <div id="map"></div>
                 <div id="path_info_container" className="path_info_container" />
                 <div className="data_container">
                     <div className={"gps_data_container"}>
@@ -505,6 +465,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
             </div>
         </div>
     );
-};
+}
 
-export default MapComponent;
+export default GoogleMapComponent;

@@ -1,22 +1,22 @@
 import React, { useEffect } from "react";
 import MqttClient from "../../../api/mqttClient";
-import TopComponent from "../../../components/top/TopComponent";
-import { TopState } from "../../../domain/top/TopDomain";
-import { ROSState } from "../../../domain/ros/ROSDomain";
 import ROSComponent from "../../../components/ros/ROSComponent";
-import "./BlueSpaceROSPage.css";
+import TopComponent from "../../../components/top/TopComponent";
+import { ROSState } from "../../../domain/ros/ROSDomain";
+import { TopState } from "../../../domain/top/TopDomain";
+import "./KECROSPage.css";
 
-interface BlueSpaceROSPageProps {
+interface KECROSPageProps {
     mqttClient: MqttClient;
     topState: TopState;
     rosState: ROSState;
 }
 
-const BlueSpaceROSPage: React.FC<BlueSpaceROSPageProps> = ({
+const KECROSPage: React.FC<KECROSPageProps> = ({
     mqttClient,
     topState,
     rosState
-}: BlueSpaceROSPageProps): React.ReactElement<any, any> | null => {
+}: KECROSPageProps): React.ReactElement<any, any> | null => {
 
     useEffect(() => {
         if (mqttClient) {
@@ -41,4 +41,4 @@ const BlueSpaceROSPage: React.FC<BlueSpaceROSPageProps> = ({
     )
 }
 
-export default BlueSpaceROSPage;
+export default KECROSPage;

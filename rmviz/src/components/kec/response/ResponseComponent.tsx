@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import './ResponseComponent.css';
 
 
-interface ResponseComponentProps {
+interface KECResponseComponentProps {
     responseData: any;
 }
 
-const ResponseComponent: React.FC<ResponseComponentProps> = ({ responseData }: ResponseComponentProps) => {
+const KECResponseComponent: React.FC<KECResponseComponentProps> = ({ responseData }: KECResponseComponentProps) => {
     const [rbtStatus, setRbtStatus] = useState<string>("");
     const [serviceStatus, setServiceStatus] = useState<string>("");
     const [errorReport, setErrorReport] = useState<string>("");
@@ -78,4 +78,4 @@ const ResponseComponent: React.FC<ResponseComponentProps> = ({ responseData }: R
     );
 };
 
-export default ResponseComponent;
+export default KECResponseComponent;

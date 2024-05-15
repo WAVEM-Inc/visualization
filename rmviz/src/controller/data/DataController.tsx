@@ -3,12 +3,12 @@ import React, { useEffect, useReducer, useState } from "react";
 import { Route, Switch } from "react-router-dom";
 import MqttClient from "../../api/mqttClient";
 import { SET_GPS, SET_GPS_FILTERED, SET_ODOM_EULAR, SET_PATH, SET_ROUTE_STATUS, initialMapState, mapStateReducer } from "../../domain/map/MapDomain";
-import { SET_BATTERY, SET_HEARTBEAT, initialTopState, topStateReducer } from "../../domain/top/TopDomain";
-import BlueSpaceDashBoardPage from "../../page/bluespace/dashBoard/BlueSpaceDashBoardPage";
-import BlueSpaceDataBoardPage from "../../page/bluespace/databoard/BlueSpaceDataBoardPage";
-import BlueSpaceROSPage from "../../page/bluespace/ros/BlueSpaceROSPage";
-import { getCurrentTime } from "../../utils/Utils";
 import { SET_URDF, initalROSState, rosStateReducer } from "../../domain/ros/ROSDomain";
+import { SET_BATTERY, SET_HEARTBEAT, initialTopState, topStateReducer } from "../../domain/top/TopDomain";
+import KECDashBoardPage from "../../page/kec/dashBoard/KECDashBoardPage";
+import KECDataBoardPage from "../../page/kec/databoard/KECDataBoardPage";
+import KECROSPage from "../../page/kec/ros/KECROSPage";
+import { getCurrentTime } from "../../utils/Utils";
 
 const DataController: React.FC = (): React.ReactElement<any, any> | null => {
     const [topState, topStateDispatch] = useReducer(topStateReducer, initialTopState);
@@ -117,6 +117,7 @@ const DataController: React.FC = (): React.ReactElement<any, any> | null => {
 
     useEffect(() => {
         const _mqttClient: MqttClient = new MqttClient();
+
         _mqttClient.subscribe(responsePathTopic);
         _mqttClient.subscribe(resposneGpsTopic);
         _mqttClient.subscribe(resposneGpsFilteredTopic);
@@ -135,26 +136,34 @@ const DataController: React.FC = (): React.ReactElement<any, any> | null => {
             };
             _mqttClient!.publish(requestHeartBeatTopic, JSON.stringify(heartBeatJSON));
         }, 1300);
+        
+        setTimeout(() => {
+            const isMqttConnected: boolean = _mqttClient.isConnected();
+            if (!isMqttConnected) {
+                alert("MQTT 연결을 확인하세요.");
+            }
+        }, 5000);
     }, []);
+    
 
     return (
         <Switch>
-            <Route exact path={"/bluespace/ros"}>
-                <BlueSpaceROSPage
+            <Route exact path={"/kec/ros"}>
+                <KECROSPage
                     mqttClient={mqttClient!}
                     topState={topState}
                     rosState={rosState}
                 />
             </Route>
-            <Route exact path={"/bluespace/dashboard"}>
-                <BlueSpaceDashBoardPage
+            <Route exact path={"/kec/dashboard"}>
+                <KECDashBoardPage
                     mqttClient={mqttClient!}
                     topState={topState}
                     mapState={mapState}
                 />
             </Route>
-            <Route exact path={"/bluespace/data"}>
-                <BlueSpaceDataBoardPage
+            <Route exact path={"/kec/data"}>
+                <KECDataBoardPage
                     topState={topState}
                     responseData={responseData}
                 />

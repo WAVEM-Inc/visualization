@@ -1,15 +1,15 @@
 import React from "react";
-import ResponseComponent from "../../../components/response/ResponseComponent";
+import KECResponseComponent from "../../../components/kec/response/ResponseComponent";
 import TopComponent from "../../../components/top/TopComponent";
 import { TopState } from "../../../domain/top/TopDomain";
-import './BlueSpaceDataBoardPage.css';
+import './KECDataBoardPage.css';
 
-interface BlueSpaceDataBoardPageProps {
+interface KECDataBoardPageProps {
     topState: TopState;
     responseData: any;
 }
 
-const BlueSpaceDataBoardPage: React.FC<BlueSpaceDataBoardPageProps> = ({
+const KECDataBoardPage: React.FC<KECDataBoardPageProps> = ({
     topState,
     responseData
 }): React.ReactElement<any, any> | null => {
@@ -22,11 +22,11 @@ const BlueSpaceDataBoardPage: React.FC<BlueSpaceDataBoardPageProps> = ({
                 />
             </div>
             <div className="response_component_container">
-                <ResponseComponent
+                <KECResponseComponent
                     responseData={responseData} />
             </div>
         </div>
     );
 };
 
-export default BlueSpaceDataBoardPage
+export default KECDataBoardPage
