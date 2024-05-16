@@ -62,14 +62,14 @@ MapView::MapView(QWidget *parent) :
     connect(&NodeInfoModel::getInstance(), &NodeInfoModel::currentNodeChanged, this, [this](const Node &node) {
         std::cout << node.nodeId << "\n";
         m_webpage_ptr->runJavaScript(QString(
-                "updateSelectedNode(\"%1\");"
-        ).arg(node.nodeId.c_str()));
+                "updateSelectedNode(\"%1\", %2);"
+        ).arg(node.nodeId.c_str()).arg(MapNodeModel::getInstance().getChangeCenterToSelectedNode()));
 
-        if (MapNodeModel::getInstance().getChangeCenterToSelectedNode()) {
-            m_webpage_ptr->runJavaScript(QString(
-                    "changeCenter(%1, %2);"
-            ).arg(node.position.latitude).arg(node.position.longitude));
-        }
+        // if (MapNodeModel::getInstance().getChangeCenterToSelectedNode()) {
+        //     m_webpage_ptr->runJavaScript(QString(
+        //             "changeCenter(%1, %2);"
+        //     ).arg(node.position.latitude).arg(node.position.longitude));
+        // }
     });
 
     connect(&ROS2DataModel::getInstance(), &ROS2DataModel::onNavSatFixChanged, this,
