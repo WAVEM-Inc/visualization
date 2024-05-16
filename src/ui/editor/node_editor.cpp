@@ -27,7 +27,8 @@ NodeEditor::NodeEditor(QWidget* parent) :
     m_node_info_ptr(new QWidget()),
     m_task_info_ptr(new QWidget()),
     _addRangeBtn_ptr(new QPushButton("+")),
-    _dtrListView_ptr(new DetectionRangeListView())
+    _dtrListView_ptr(new DetectionRangeListView()),
+    _calcHeadingBtn_ptr(new QPushButton())
 {
     init();
 }
@@ -407,6 +408,9 @@ void NodeEditor::initTaskInfoWidget()
     _nodeLng_ptr->setValidator(new QDoubleValidator(_nodeLng_ptr));
     layout->addWidget(longitudeLb, 8, 0);
     layout->addWidget(_nodeLng_ptr, 8, 1);
+
+    _calcHeadingBtn_ptr = new QPushButton("진출 방향 계산");
+    layout->addWidget(_calcHeadingBtn_ptr, 9, 0, 1, 2);
 
     m_task_info_ptr->setLayout(layout);
 }
