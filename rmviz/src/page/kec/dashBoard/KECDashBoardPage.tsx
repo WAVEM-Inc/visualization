@@ -13,6 +13,7 @@ import * as delivery05JSON from "../../../assets/json/kec/gumi/delivery_05.json"
 import * as returning03JSON from "../../../assets/json/kec/gumi/returning_03.json";
 import * as returning06JSON from "../../../assets/json/kec/gumi/returning_06.json";
 import "./KECDashBoardPage.css";
+import GoogleMapComponent from "../../../components/map/GoogleMapComponent";
 
 interface KECDashBoardPageProps {
     mqttClient: MqttClient;
