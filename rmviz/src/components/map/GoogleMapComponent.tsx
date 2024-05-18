@@ -173,8 +173,13 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
                     pathDirectionDivContent.className = "path_direction_content";
                     pathDirectionDivContent.textContent = `${startNodeTitleOpts.drivingOption} - ${startNodeTitleOpts.direction}`;
 
+                    const pathHeadingDivContent: HTMLDivElement = document.createElement("div");
+                    pathHeadingDivContent.className = "path_heading_content";
+                    pathHeadingDivContent.textContent = `${startNodeTitleOpts.heading}°`;
+
                     pathDirectionDiv.appendChild(pathDirectionIcon);
                     pathDirectionDiv.appendChild(pathDirectionDivContent);
+                    pathDirectionDiv.appendChild(pathHeadingDivContent);
 
                     const endNodeDiv: HTMLDivElement = document.createElement("div");
                     endNodeDiv.className = "path_end_node";
@@ -255,7 +260,7 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
             map: googleMap,
             path: path,
             clickable: true,
-            strokeColor: "red",
+            strokeColor: "yellow",
             strokeOpacity: 1.0,
             strokeWeight: 5.0
         });
@@ -355,6 +360,12 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
                         }
                     }
                     setPathInfoDiv(null);
+                }
+
+                if (pathMarkerArray.length > 0) {
+                    pathMarkerArray = [];
+                    pathInfoWindowarray = [];
+                    googleMap.unbindAll();
                 }
 
                 drawPathMarker();

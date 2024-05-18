@@ -43,7 +43,7 @@
     font-weight: bold;
 }
 
-.path_direction_content {
+.path_direction_content, .path_heading_content {
     font-size: 15px;
     font-weight: bold;
 }

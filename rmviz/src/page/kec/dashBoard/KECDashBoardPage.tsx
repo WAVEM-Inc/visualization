@@ -2,7 +2,6 @@ import { Status, Wrapper } from "@googlemaps/react-wrapper";
 import React, { useEffect, useState } from "react";
 import MqttClient from "../../../api/mqttClient";
 import KECRequestComponent from "../../../components/kec/request/KECRequestComponent";
-import GoogleMapComponent from "../../../components/map/GoogleMapComponent";
 import TopComponent from "../../../components/top/TopComponent";
 import { MapState } from "../../../domain/map/MapDomain";
 import { TopState } from "../../../domain/top/TopDomain";
