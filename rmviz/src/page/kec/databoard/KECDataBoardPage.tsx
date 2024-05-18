@@ -1,5 +1,5 @@
 import React from "react";
-import KECResponseComponent from "../../../components/kec/response/ResponseComponent";
+import KECResponseComponent from "../../../components/kec/response/KECResponseComponent";
 import TopComponent from "../../../components/top/TopComponent";
 import { TopState } from "../../../domain/top/TopDomain";
 import './KECDataBoardPage.css';

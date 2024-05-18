@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import './ResponseComponent.css';
+import './KECResponseComponent.css';
 
 
 interface KECResponseComponentProps {
