@@ -1,9 +1,9 @@
-import { faLocationArrow } from "@fortawesome/free-solid-svg-icons";
 import React, { useEffect, useState } from "react";
 import MqttClient from "../../api/mqttClient";
 import * as emergencyResumeJSON from "../../assets/json/common/emergency_resume.json";
 import * as emergencyStopJSON from "../../assets/json/common/emergency_stop.json";
 import { MapState } from "../../domain/map/MapDomain";
+import { addPathMarker, addPathPolyline, changeMapCenter, initializeMap, initializeRobotMarker, updateRobotMakerIcon } from "../../service/MapService";
 import { onClickMqttPublish } from "../../utils/Utils";
 import "./GoogleMapComponent.css";
 
@@ -19,6 +19,9 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
     const [googleMap, setGoogleMap] = useState<google.maps.Map>();
     const [pathInfoContainer, setPathInfoContainer] = useState<HTMLElement | null>(null);
     const [pathInfoDiv, setPathInfoDiv] = useState<HTMLDivElement | null>(null);
+    const [spathMarkerArray, setPathMarkerArray] = useState<Array<google.maps.Marker>>([]);
+    const [pathPolyLine, setPathPolyLine] = useState<google.maps.Polyline | null>(null);
+
     let pathMarkerArray: Array<google.maps.Marker> = [];
     let pathInfoWindowarray: Array<google.maps.InfoWindow> = [];
 
@@ -40,45 +43,6 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
     const requestCanInitTopic: string = `${requestTopicFormat}/can/init`;
     const requestPathRenewTopic: string = `${requestTopicFormat}/path/renew`;
 
-    const addPathMarker: Function = (node: any, is_start: boolean, is_end: boolean): any => {
-        console.info(`addPathMarker node : ${JSON.stringify(node)}`);
-
-        let iconUrl: string = "";
-
-        if (is_start && !is_end) {
-            iconUrl = process.env.PUBLIC_URL + "../marker_start.png";
-        } else if (!is_start && is_end) {
-            iconUrl = process.env.PUBLIC_URL + "../marker_arrive.png";
-        } else {
-            iconUrl = process.env.PUBLIC_URL + "../marker_landmark.png";
-        }
-
-        const nodeTitleOpts: any = {
-            id: node.nodeId.split("-")[2],
-            kind: node.kind,
-            heading: node.heading,
-            drivingOption: node.drivingOption,
-            direction: node.direction
-        }
-
-        const nodeTitle: string = `${nodeTitleOpts.id}/${nodeTitleOpts.kind}/${node.heading}/${node.drivingOption}/${node.direction}`;
-
-        const marker: google.maps.Marker = new google.maps.Marker({
-            position: new google.maps.LatLng(node.position.latitude, node.position.longitude),
-            map: googleMap,
-            title: nodeTitle,
-            icon: {
-                url: iconUrl,
-                size: new google.maps.Size(30, 30),
-                scaledSize: new google.maps.Size(30, 30),
-                origin: new google.maps.Point(0, 0),
-                anchor: new google.maps.Point(12, 34)
-            }
-        });
-
-        return marker;
-    }
-
     const drawPathMarker: Function = (): void => {
         if (state.path) {
             const nodeList: Array<any> = Array.from(state.path);
@@ -99,11 +63,11 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
                     const isLastNode = currentNodeIndex === nodeList.length - 1;
 
                     if (isFirstNode) {
-                        pathMarkerArray.push(addPathMarker(node, true, false));
+                        pathMarkerArray.push(addPathMarker(googleMap, node, true, false));
                     } else if (isLastNode) {
-                        pathMarkerArray.push(addPathMarker(node, false, true));
+                        pathMarkerArray.push(addPathMarker(googleMap, node, false, true));
                     } else {
-                        pathMarkerArray.push(addPathMarker(node, false, false));
+                        pathMarkerArray.push(addPathMarker(googleMap, node, false, false));
                     }
 
                     const pathInfoContainer: HTMLElement | null = document.getElementById("path_info_container");
@@ -202,68 +166,28 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
                     pathInfoContainer!.appendChild(pathInfoDiv);
                 }
             }
+            setPathMarkerArray(pathMarkerArray);
         }
     }
 
-    const getClickHandler: Function = (seq: number): Function => {
-        let isOpened: number = 0;
-        return function (e: any) {
-            const marker: google.maps.Marker = pathMarkerArray[seq];
-            const infoWindow: google.maps.InfoWindow = pathInfoWindowarray[seq];
+    const flushPath = (): void => {
+        spathMarkerArray.forEach(marker => marker.setMap(null));
+        pathMarkerArray = [];
+        setPathMarkerArray(pathMarkerArray);
 
-            if (isOpened == 0) {
-                infoWindow.open(googleMap!, marker);
-                isOpened++;
-            } else {
-                infoWindow.close();
-                isOpened = 0;
+        pathInfoWindowarray.forEach(infoWindow => infoWindow.close());
+        pathInfoWindowarray = [];
+
+        if (pathPolyLine) {
+            pathPolyLine.setMap(null);
+            setPathPolyLine(null);
+        }
+
+        if (pathInfoContainer) {
+            while (pathInfoContainer.firstChild) {
+                pathInfoContainer.removeChild(pathInfoContainer.firstChild);
             }
         }
-    }
-
-    const changeMapCenter = (coord: google.maps.LatLng): void => {
-        googleMap?.setCenter(coord);
-    }
-
-    const drawPathPolyline: Function = (): void => {
-        for (var i = 0, ii = pathMarkerArray.length; i < ii; i++) {
-            google.maps.event.addListener(pathMarkerArray[i], "click", getClickHandler(i));
-        }
-
-        let path: Array<any> = [];
-        for (const pathMarker of pathMarkerArray) {
-            const contentString: string = [
-                '<div class="node_info_window">',
-                `   <h3>ID : ${pathMarker!.getTitle()!.split("/")[0]}</h3>`,
-                `   <p>종류 : ${pathMarker!.getTitle()!.split("/")[1]}</p>`,
-                `   <p>진출 각도 : ${pathMarker!.getTitle()!.split("/")[2]}</p>`,
-                `   <p>주행 옵션 : ${pathMarker!.getTitle()!.split("/")[3]}</p>`,
-                `   <p>주행 방향 : ${pathMarker!.getTitle()!.split("/")[4]}</p>`,
-                `   <p>경도 : ${pathMarker!.getPosition()!.lng()}</p>`,
-                `   <p>위도 : ${pathMarker!.getPosition()!.lat()}</p>`,
-                '</div>'
-            ].join('');
-
-            const infoWindow: google.maps.InfoWindow = new google.maps.InfoWindow({
-                content: contentString
-            });
-
-            pathInfoWindowarray.push(infoWindow);
-
-            for (var i = 0, ii = pathMarkerArray.length; i < ii; i++) {
-                google.maps.event.addListener(pathMarkerArray[i], "click", getClickHandler(i));
-            }
-            path.push(pathMarker.getPosition());
-        }
-
-        const polyline: google.maps.Polyline = new google.maps.Polyline({
-            map: googleMap,
-            path: path,
-            clickable: true,
-            strokeColor: "yellow",
-            strokeOpacity: 1.0,
-            strokeWeight: 5.0
-        });
     }
 
     const onGPSInitClick = (): void => {
@@ -300,6 +224,7 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
         });
         state.path = null;
         state.routeStatus = null;
+        flushPath();
     }
 
     useEffect((): void => {
@@ -330,20 +255,7 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
             const angle: number = 360 - currentOdomEular;
 
             if (currRobotMarker) {
-                const iconOpts: any = {
-                    path: faLocationArrow.icon[4] as string,
-                    fillColor: "#0000ff",
-                    fillOpacity: 1,
-                    anchor: new google.maps.Point(
-                        faLocationArrow.icon[0] / 2,
-                        faLocationArrow.icon[1]
-                    ),
-                    strokeWeight: 2,
-                    strokeColor: "black",
-                    scale: 0.065,
-                    rotation: -45.0 + angle
-                }
-                currRobotMarker.setIcon(iconOpts);
+                updateRobotMakerIcon(currRobotMarker, angle);
             }
         }
     }, [state.odomEular]);
@@ -362,80 +274,40 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
                     setPathInfoDiv(null);
                 }
 
-                if (pathMarkerArray.length > 0) {
-                    pathMarkerArray = [];
-                    pathInfoWindowarray = [];
-                    googleMap.unbindAll();
-                }
-
+                flushPath();
                 drawPathMarker();
-                drawPathPolyline();
+                setPathPolyLine(addPathPolyline(googleMap, pathMarkerArray, pathInfoWindowarray));
 
                 if (currRobotMarker) {
-                    changeMapCenter(currRobotMarker!.getPosition()!);
+                    changeMapCenter(googleMap, currRobotMarker!.getPosition()!);
                 }
             }
         } else return;
     }, [state.path]);
 
-    useEffect(() => {
+    useEffect((): void => {
         if (googleMap) {
-            const robotMarker: google.maps.Marker = new google.maps.Marker({
-                position: googleMap.getCenter(),
-                map: googleMap!,
-                title: "RobotCurrentPos",
-                zIndex: 1000,
-                clickable: false,
-                icon: {
-                    path: faLocationArrow.icon[4] as string,
-                    fillColor: "#0000ff",
-                    fillOpacity: 1,
-                    anchor: new google.maps.Point(
-                        faLocationArrow.icon[0] / 2,
-                        faLocationArrow.icon[1]
-                    ),
-                    strokeWeight: 2,
-                    strokeColor: "black",
-                    scale: 0.065,
-                    rotation: -45.0
-                }
-            });
+            const robotMarker: google.maps.Marker = initializeRobotMarker(googleMap);
             setCurrRobotMarker(robotMarker);
         }
     }, [googleMap]);
 
     useEffect(() => {
-        const mapElement = document.getElementById("map");
+        const mapElement: HTMLElement | null = document.getElementById("map");
 
         if (mapElement) {
-            const mapInstance = new google.maps.Map(mapElement, {
-                center: kecCoord,
-                zoom: 18,
-                minZoom: 16,
-                maxZoom: 21,
-                restriction: {
-                    latLngBounds: {
-                        north: 39,
-                        south: 32,
-                        east: 132,
-                        west: 124,
-                    },
-                    strictBounds: true
-                },
-                mapTypeControl: true,
-                mapTypeId: google.maps.MapTypeId.SATELLITE
-            });
+            const mapInstance: google.maps.Map = initializeMap(mapElement, kecCoord);
 
             setGoogleMap(mapInstance);
-
-            return (() => {
-
-            });
+            setPathInfoContainer(document.getElementById("path_info_container"));
         }
-    }, []);
 
-    useEffect(() => {
-        setPathInfoContainer(document.getElementById("path_info_container"));
+        return (() => {
+            if (googleMap) {
+                flushPath();
+                googleMap.unbindAll();
+            }
+        });
     }, []);
 
     return (
