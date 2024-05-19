@@ -165,28 +165,41 @@
 
 @media screen and (min-width: 1024px) and (min-height: 768px) and (max-width: 1279px) and (max-height: 799px) {
     .map_container {
-        height: 520px;
+        height: 600px;
+    }
+    #map {
+        min-height: 600px;
+    }
+    .node_info {
+        font-size: 15px;
+    }
+    .path_direction_content, .path_heading_content {
+        font-size: 13px;
     }
     .data_container {
         font-size: 12px;
     }
     .route_request_btn_container {
-        height: calc(100% - 57%);
+        height: calc(100% - 27%);
     }
     .route_btn_request {
+        width: 65%;
         font-size: 13px;
     }
 }
 
 @media screen and (min-width: 1280px) and (min-height: 800px) and (max-width: 1439px) and (max-height: 899px) {
     .map_container {
-        height: 570px;
+        height: 630px;
+    }
+    #map {
+        min-height: 630px;
     }
     .data_container {
         font-size: 13px;
     }
     .route_request_btn_container {
-        height: calc(100% - 57%);
+        height: calc(100% - 27%);
     }
     .route_btn_request {
         font-size: 13px;
@@ -196,6 +209,9 @@
 @media screen and (min-width: 1500px) and (min-height: 700px) and (max-height: 899px) {
     .map_container {
         height: 550px;
+    }
+    #map {
+        min-height: 550px;
     }
     .data_container {
         font-size: 12px;
@@ -212,6 +228,9 @@
     .map_container {
         height: 650px;
     }
+    #map {
+        min-height: 650px;
+    }
     .data_container {
         font-size: 13px;
     }
@@ -227,6 +246,9 @@
     .map_container {
         height: 650px;
     }
+    #map {
+        min-height: 650px;
+    }
     .data_container {
         font-size: 13px;
     }
@@ -241,5 +263,8 @@
 @media screen and (min-width: 1799px) and (min-height: 1000px) and (max-width: 2559px) and (max-height: 1079px) {
     .map_container {
         height: 750px;
+    }
+    #map {
+        min-height: 750px;
     }
 }
