@@ -3,7 +3,7 @@ import MqttClient from "../../api/mqttClient";
 import * as emergencyResumeJSON from "../../assets/json/common/emergency_resume.json";
 import * as emergencyStopJSON from "../../assets/json/common/emergency_stop.json";
 import { MapState } from "../../domain/map/MapDomain";
-import { addPathMarker, addPathPolyline, changeMapCenter, initializeMap, initializeRobotMarker, updateRobotMakerIcon } from "../../service/MapService";
+import { addDetectionRangePolygon, addPathMarker, addPathPolyline, changeMapCenter, initializeMap, initializeRobotMarker, updateRobotMakerIcon } from "../../service/MapService";
 import { onClickMqttPublish } from "../../utils/Utils";
 import "./GoogleMapComponent.css";
 
@@ -276,6 +276,8 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
 
                 flushPath();
                 drawPathMarker();
+
+                addDetectionRangePolygon(googleMap, Array.from(state.path));
                 setPathPolyLine(addPathPolyline(googleMap, pathMarkerArray, pathInfoWindowarray));
 
                 if (currRobotMarker) {
