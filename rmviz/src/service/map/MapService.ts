@@ -1,4 +1,6 @@
 import { faLocationArrow } from "@fortawesome/free-solid-svg-icons";
+import proj4 from "proj4";
+import { calculateVertices } from "../math/MathService";
 
 export const initializeMap: Function = (mapElement: HTMLElement, center: google.maps.LatLng): google.maps.Map => {
     const mapInstance: google.maps.Map = new google.maps.Map(mapElement, {
@@ -140,7 +142,7 @@ export const addPathPolyline: Function = (
     pathInfoWindowarray: Array<google.maps.InfoWindow>
 ): google.maps.Polyline => {
 
-    for (var i = 0, ii = pathMarkerArray.length; i < ii; i++) {
+    for (let i = 0, ii = pathMarkerArray.length; i < ii; i++) {
         google.maps.event.addListener(
             pathMarkerArray[i],
             "click",
@@ -156,7 +158,7 @@ export const addPathPolyline: Function = (
     let path: Array<any> = [];
     for (const pathMarker of pathMarkerArray) {
         const contentString: string = [
-            '<div class="node_info_window">',
+            "<div class='node_info_window'>",
             `   <h3>ID : ${pathMarker!.getTitle()!.split("/")[0]}</h3>`,
             `   <p>종류 : ${pathMarker!.getTitle()!.split("/")[1]}</p>`,
             `   <p>진출 각도 : ${pathMarker!.getTitle()!.split("/")[2]}</p>`,
@@ -164,8 +166,8 @@ export const addPathPolyline: Function = (
             `   <p>주행 방향 : ${pathMarker!.getTitle()!.split("/")[4]}</p>`,
             `   <p>경도 : ${pathMarker!.getPosition()!.lng()}</p>`,
             `   <p>위도 : ${pathMarker!.getPosition()!.lat()}</p>`,
-            '</div>'
-        ].join('');
+            "</div>"
+        ].join("");
 
         const infoWindow: google.maps.InfoWindow = new google.maps.InfoWindow({
             content: contentString
@@ -173,7 +175,7 @@ export const addPathPolyline: Function = (
 
         pathInfoWindowarray.push(infoWindow);
 
-        for (var i = 0, ii = pathMarkerArray.length; i < ii; i++) {
+        for (let i = 0, ii = pathMarkerArray.length; i < ii; i++) {
             google.maps.event.addListener(
                 pathMarkerArray[i],
                 "click",
@@ -200,81 +202,29 @@ export const addPathPolyline: Function = (
     return polyline;
 }
 
-const EARTH_RADIUS: number = 6378137.0;
-
-function toRadians(degrees: number): number {
-    return degrees * Math.PI / 180;
-}
-
-function toDegrees(radians: number): number {
-    return radians * 180 / Math.PI;
-}
-
-function offsetLatLng(
-    lat: number,
-    lng: number,
-    dx: number,
-    dy: number
-): { lat: number, lng: number } {
-    const dLat = dy / EARTH_RADIUS;
-    const dLng = dx / (EARTH_RADIUS * Math.cos(Math.PI * lat / 180));
-
-    const newLat = lat + toDegrees(dLat);
-    const newLng = lng + toDegrees(dLng);
-
-    return { lat: newLat, lng: newLng };
-}
-
-function calculateVertices(
-    left: number,
-    right: number,
-    centerLat: number,
-    centerLng: number
-): { lat: number, lng: number }[] {
-    const halfLength = right / 4;
-    const halfHeight = left / 2;
-
-    const topLeft = offsetLatLng(centerLat, centerLng, -(left), halfHeight);
-    const topRight = offsetLatLng(centerLat, centerLng, right, halfHeight);
-    const bottomLeft = offsetLatLng(centerLat, centerLng, -(left), -halfHeight);
-    const bottomRight = offsetLatLng(centerLat, centerLng, right, -halfHeight);
-
-    return [topLeft, topRight, bottomLeft, bottomRight];
-}
-
 export const addDetectionRangePolygon: Function = (
     map: google.maps.Map,
     nodeList: Array<any>
-): void => {
+): Array<google.maps.Polygon> => {
+    const detectionRangePolygonArray: Array<google.maps.Polygon> = [];
     const nonEmptyDetectionRanges: any[] = nodeList.filter(node => node.detectionRange.length > 0);
 
     for (const d of nonEmptyDetectionRanges) {
-        const targetCoord: google.maps.LatLng = new google.maps.LatLng(
-            d.position.latitude,
-            d.position.longitude
-        );
-        const vertices: any[] = calculateVertices(
-            d.detectionRange[0].widthLeft,
-            d.detectionRange[0].widthRight,
-            targetCoord.lat(),
-            targetCoord.lng()
-        );
+        console.info(`d : ${JSON.stringify(d)}`);
+        const vertices: any[] = calculateVertices(d);
         vertices.filter(vertice => console.log(`vertice : ${JSON.stringify(vertice)}`));
 
         const polygon: google.maps.Polygon = new google.maps.Polygon({
             map: map,
-            paths: [
-                new google.maps.LatLng(vertices[0].lat, vertices[0].lng),
-                new google.maps.LatLng(vertices[1].lat, vertices[1].lng),
-                new google.maps.LatLng(vertices[3].lat, vertices[3].lng),
-                new google.maps.LatLng(vertices[2].lat, vertices[2].lng)
-            ],
+            paths: vertices,
             strokeColor: "#FF0000",
             strokeOpacity: 0.8,
             strokeWeight: 2,
             fillColor: "#FF0000",
             fillOpacity: 0.35
         });
+        detectionRangePolygonArray.push(polygon);
     }
 
+    return detectionRangePolygonArray;
 }

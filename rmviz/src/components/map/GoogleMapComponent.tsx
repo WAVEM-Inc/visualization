@@ -3,7 +3,7 @@ import MqttClient from "../../api/mqttClient";
 import * as emergencyResumeJSON from "../../assets/json/common/emergency_resume.json";
 import * as emergencyStopJSON from "../../assets/json/common/emergency_stop.json";
 import { MapState } from "../../domain/map/MapDomain";
-import { addDetectionRangePolygon, addPathMarker, addPathPolyline, changeMapCenter, initializeMap, initializeRobotMarker, updateRobotMakerIcon } from "../../service/MapService";
+import { addDetectionRangePolygon, addPathMarker, addPathPolyline, changeMapCenter, initializeMap, initializeRobotMarker, updateRobotMakerIcon } from "../../service/map/MapService";
 import { onClickMqttPublish } from "../../utils/Utils";
 import "./GoogleMapComponent.css";
 
@@ -21,6 +21,7 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
     const [pathInfoDiv, setPathInfoDiv] = useState<HTMLDivElement | null>(null);
     const [spathMarkerArray, setPathMarkerArray] = useState<Array<google.maps.Marker>>([]);
     const [pathPolyLine, setPathPolyLine] = useState<google.maps.Polyline | null>(null);
+    const [detectionRagnePolygon, setDetectionRagnePolygon] = useState<Array<google.maps.Polygon>>([]);
 
     let pathMarkerArray: Array<google.maps.Marker> = [];
     let pathInfoWindowarray: Array<google.maps.InfoWindow> = [];
@@ -183,6 +184,11 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
             setPathPolyLine(null);
         }
 
+        for (const d of detectionRagnePolygon) {
+            d.setMap(null);
+        }
+        setDetectionRagnePolygon([]);
+
         if (pathInfoContainer) {
             while (pathInfoContainer.firstChild) {
                 pathInfoContainer.removeChild(pathInfoContainer.firstChild);
@@ -277,7 +283,7 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
                 flushPath();
                 drawPathMarker();
 
-                addDetectionRangePolygon(googleMap, Array.from(state.path));
+                setDetectionRagnePolygon(addDetectionRangePolygon(googleMap, Array.from(state.path)));
                 setPathPolyLine(addPathPolyline(googleMap, pathMarkerArray, pathInfoWindowarray));
 
                 if (currRobotMarker) {
