@@ -150,7 +150,7 @@ const DataController: React.FC = (): React.ReactElement<any, any> | null => {
         <Switch>
             <Route exact path={"/kec/ros"}>
                 <KECROSPage
-                    mqttClient={mqttClient!}
+                    mqttClient={mqttClient!} 
                     topState={topState}
                     rosState={rosState}
                 />
