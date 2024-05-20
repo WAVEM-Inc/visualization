@@ -1456,6 +1456,66 @@ public object PerceptionObstacleKt {
     public fun hasObjectConfidence(): kotlin.Boolean {
       return _builder.hasObjectConfidence()
     }
+
+    /**
+     * `optional double ttc = 30;`
+     */
+    public var ttc: kotlin.Double
+      @JvmName("getTtc")
+      get() = _builder.getTtc()
+      @JvmName("setTtc")
+      set(value) {
+        _builder.setTtc(value)
+      }
+    /**
+     * `optional double ttc = 30;`
+     */
+    public fun clearTtc() {
+      _builder.clearTtc()
+    }
+    /**
+     * `optional double ttc = 30;`
+     * @return Whether the ttc field is set.
+     */
+    public fun hasTtc(): kotlin.Boolean {
+      return _builder.hasTtc()
+    }
+
+    /**
+     * ```
+     * 1~5
+     * ```
+     *
+     * `optional int32 risk_level = 31;`
+     */
+    public var riskLevel: kotlin.Int
+      @JvmName("getRiskLevel")
+      get() = _builder.getRiskLevel()
+      @JvmName("setRiskLevel")
+      set(value) {
+        _builder.setRiskLevel(value)
+      }
+    /**
+     * ```
+     * 1~5
+     * ```
+     *
+     * `optional int32 risk_level = 31;`
+     */
+    public fun clearRiskLevel() {
+      _builder.clearRiskLevel()
+    }
+    /**
+     * ```
+     * 1~5
+     * ```
+     *
+     * `optional int32 risk_level = 31;`
+     * @return Whether the riskLevel field is set.
+     */
+    public fun hasRiskLevel(): kotlin.Boolean {
+      return _builder.hasRiskLevel()
+    }
   }
 }
 @kotlin.jvm.JvmSynthetic

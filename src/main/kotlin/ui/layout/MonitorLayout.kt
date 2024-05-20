@@ -17,6 +17,11 @@ import ui.component.monitor.MonitorTextField
 import ui.theme.Gray
 import ui.theme.White_100
 import ui.theme.White_200
+import viewmodel.UdpDataViewModel
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 @Preview
 @Composable
@@ -56,12 +61,34 @@ private fun VerticalMonitorLayout(
     val cameraContents = remember { mutableStateListOf<String>() }
 
     LaunchedEffect(true) {
-        for (i in 1..1000) {
-            delay(200)
-            gpsContents.add("${i}. 2023-10-25 14:30:00.0, Lat: 37.7749, Lon: -122.4194")
-            lidarContents.add("${i}. 2023-10-25 14:30:00.0, X: 1.2, Y: 3.4, Z: 5.6")
-            cameraContents.add("${i}. 2023-10-25 14:30:00.0, X: 1.2, Y: 3.4, Z: 5.6")
-        }
+        UdpDataViewModel.subscribeLocalization(collector = { localization ->
+            val current = LocalDateTime.now()
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss")
+            val formatted = current.format(formatter)
+
+            gpsContents.add("${formatted}, Lat: ${localization.pose.position.x}, Lng: ${localization.pose.position.y}")
+        })
+
+        UdpDataViewModel.subscribePointCloud(collector = { points ->
+            val current = LocalDateTime.now()
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss")
+            val formatted = current.format(formatter)
+
+            lidarContents.add("${formatted}, Points Count: ${points.numCount}")
+        })
+
+        UdpDataViewModel.subscribeTrafficLight(collector = { lights ->
+            val current = LocalDateTime.now()
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss")
+            val formatted = current.format(formatter)
+
+            val red = if (lights.red.number == 0) "X" else "O"
+            val yellow = if (lights.yellow.number == 0) "X" else "O"
+            val left = if (lights.left.number == 0) "X" else "O"
+            val green = if (lights.green.number == 0) "X" else "O"
+
+            cameraContents.add("${formatted}, RED: ${red}, YELLOW: ${yellow}, LEFT: ${left}, GREEN: ${green}")
+        })
     }
 
     Box(modifier = modifier) {
@@ -69,26 +96,27 @@ private fun VerticalMonitorLayout(
             MonitorTextField(
                 title = "GPS Data",
                 info = "GPS UTC Time: 1641363045",
-                infoList = listOf("RTK Status: RTK_FIXED", "INS Status: INS_GOOD", "SOL Status: SOL_ GOOD"),
+                infoList = listOf("RTK Status: RTK_FIXED", "INS Status: INS_GOOD", "SOL Status: SOL_GOOD"),
                 contents = gpsContents,
-                modifier = Modifier.fillMaxWidth().heightIn(50.dp, 600.dp).padding(bottom = 30.dp),
+                modifier = Modifier.fillMaxHeight().weight(1f).padding(horizontal = 16.dp)
             )
-
 
             MonitorTextField(
                 title = "LiDAR Data",
                 info = "LiDAR PointCloud: 4000",
-                infoList = listOf("Total: 4000", "Front: 1000", "Left: 1500", "Right: 1500"),
+                infoList = listOf(""),
+//                infoList = listOf("Total: 4000", "Front: 1000", "Left: 1500", "Right: 1500"),
                 contents = lidarContents,
-                modifier = Modifier.fillMaxWidth().heightIn(50.dp, 600.dp).padding(bottom = 30.dp)
+                modifier = Modifier.fillMaxHeight().weight(1f).padding(horizontal = 16.dp)
             )
 
             MonitorTextField(
                 title = "Camera Data",
                 info = "Camera",
-                infoList = listOf("RED: O", "YELLOW: X", "LEFT: O", "GREEN: X"),
+                infoList = listOf(""),
+//                infoList = listOf("RED: O", "YELLOW: X", "LEFT: O", "GREEN: X"),
                 contents = cameraContents,
-                modifier = Modifier.fillMaxWidth().heightIn(50.dp, 600.dp).padding(bottom = 30.dp)
+                modifier = Modifier.fillMaxHeight().weight(1f).padding(horizontal = 16.dp)
             )
         }
 
@@ -120,12 +148,34 @@ private fun HorizontalMonitorLayout(
     val cameraContents = remember { mutableStateListOf<String>() }
 
     LaunchedEffect(true) {
-        for (i in 1..1000) {
-            delay(200)
-            gpsContents.add("${i}. 2023-10-25 14:30:00.0, Lat: 37.7749, Lon: -122.4194")
-            lidarContents.add("${i}. 2023-10-25 14:30:00.0, X: 1.2, Y: 3.4, Z: 5.6")
-            cameraContents.add("${i}. 2023-10-25 14:30:00.0, X: 1.2, Y: 3.4, Z: 5.6")
-        }
+        UdpDataViewModel.subscribeLocalization(collector = { localization ->
+            val current = LocalDateTime.now()
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss")
+            val formatted = current.format(formatter)
+
+            gpsContents.add("${formatted}, Lat: ${localization.pose.position.x}, Lng: ${localization.pose.position.y}")
+        })
+
+        UdpDataViewModel.subscribePointCloud(collector = { points ->
+            val current = LocalDateTime.now()
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss")
+            val formatted = current.format(formatter)
+
+            lidarContents.add("${formatted}, Points Count: ${points.numCount}")
+        })
+
+        UdpDataViewModel.subscribeTrafficLight(collector = { lights ->
+            val current = LocalDateTime.now()
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss")
+            val formatted = current.format(formatter)
+
+            val red = if (lights.red.number == 0) "X" else "O"
+            val yellow = if (lights.yellow.number == 0) "X" else "O"
+            val left = if (lights.left.number == 0) "X" else "O"
+            val green = if (lights.green.number == 0) "X" else "O"
+
+            cameraContents.add("${formatted}, RED: ${red}, YELLOW: ${yellow}, LEFT: ${left}, GREEN: ${green}")
+        })
     }
 
     Box(modifier = modifier) {
@@ -133,7 +183,7 @@ private fun HorizontalMonitorLayout(
             MonitorTextField(
                 title = "GPS Data",
                 info = "GPS UTC Time: 1641363045",
-                infoList = listOf("RTK Status: RTK_FIXED", "INS Status: INS_GOOD", "SOL Status: SOL_ GOOD"),
+                infoList = listOf("RTK Status: RTK_FIXED", "INS Status: INS_GOOD", "SOL Status: SOL_GOOD"),
                 contents = gpsContents,
                 modifier = Modifier.fillMaxHeight().weight(1f).padding(horizontal = 16.dp)
             )
@@ -141,7 +191,8 @@ private fun HorizontalMonitorLayout(
             MonitorTextField(
                 title = "LiDAR Data",
                 info = "LiDAR PointCloud: 4000",
-                infoList = listOf("Total: 4000", "Front: 1000", "Left: 1500", "Right: 1500"),
+                infoList = listOf(""),
+//                infoList = listOf("Total: 4000", "Front: 1000", "Left: 1500", "Right: 1500"),
                 contents = lidarContents,
                 modifier = Modifier.fillMaxHeight().weight(1f).padding(horizontal = 16.dp)
             )
@@ -149,7 +200,8 @@ private fun HorizontalMonitorLayout(
             MonitorTextField(
                 title = "Camera Data",
                 info = "Camera",
-                infoList = listOf("RED: O", "YELLOW: X", "LEFT: O", "GREEN: X"),
+                infoList = listOf(""),
+//                infoList = listOf("RED: O", "YELLOW: X", "LEFT: O", "GREEN: X"),
                 contents = cameraContents,
                 modifier = Modifier.fillMaxHeight().weight(1f).padding(horizontal = 16.dp)
             )

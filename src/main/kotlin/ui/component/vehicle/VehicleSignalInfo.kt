@@ -9,6 +9,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
@@ -45,11 +46,11 @@ fun VehicleSignalInfo(modifier: Modifier = Modifier) {
 private fun VehicleSignalInfoItem1(modifier: Modifier = Modifier) {
     val textModifier = Modifier.padding(vertical = 4.dp)
 
-    var gp = mutableStateOf("NaN")
-    var yr = mutableStateOf("NaN")
-    var vs = mutableStateOf("NaN")
-    var va = mutableStateOf("NaN")
-    var sa = mutableStateOf("NaN")
+    val gp = remember { mutableStateOf("NaN") }
+    val yr = remember { mutableStateOf("NaN") }
+    val vs = remember { mutableStateOf("NaN") }
+    val va = remember { mutableStateOf("NaN") }
+    val sa = remember { mutableStateOf("NaN") }
 
     LaunchedEffect(Unit) {
         UdpDataViewModel.subscribeVehicleSignal(collector = { info ->
@@ -74,11 +75,11 @@ private fun VehicleSignalInfoItem1(modifier: Modifier = Modifier) {
 private fun VehicleSignalInfoItem2(modifier: Modifier = Modifier) {
     val textModifier = Modifier.padding(vertical = 4.dp)
 
-    var srs = mutableStateOf("NaN")
-    var bti = mutableStateOf("NaN")
-    var bto = mutableStateOf("NaN")
-    var ts = mutableStateOf("NaN")
-    var hl = mutableStateOf("NaN")
+    val srs = remember { mutableStateOf("NaN") }
+    val bti = remember { mutableStateOf("NaN") }
+    val bto = remember { mutableStateOf("NaN") }
+    val ts = remember { mutableStateOf("NaN") }
+    val hl = remember { mutableStateOf("NaN") }
 
     LaunchedEffect(Unit) {
         UdpDataViewModel.subscribeVehicleSignal(collector = { info ->
@@ -103,10 +104,10 @@ private fun VehicleSignalInfoItem2(modifier: Modifier = Modifier) {
 private fun VehicleSignalInfoItem3(modifier: Modifier = Modifier) {
     val textModifier = Modifier.padding(vertical = 4.dp)
 
-    var ws = mutableStateOf("NaN")
-    var dl = mutableStateOf("NaN")
-    var dO = mutableStateOf("NaN")
-    var aeb = mutableStateOf("NaN")
+    val ws = remember { mutableStateOf("NaN") }
+    val dl = remember { mutableStateOf("NaN") }
+    val dO = remember { mutableStateOf("NaN") }
+    val aeb = remember { mutableStateOf("NaN") }
 
     LaunchedEffect(Unit) {
         UdpDataViewModel.subscribeVehicleSignal(collector = { info ->

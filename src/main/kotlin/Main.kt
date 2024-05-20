@@ -40,7 +40,7 @@ fun App() {
         val client = UdpClient()
         val cs = CoroutineScope(Dispatchers.Main)
 
-        client.setOnMessageListener(listener = object : UdpClient.OnMessageListener {
+        client.setOnMessageListener(listener = object: UdpClient.OnMessageListener {
             override fun onLocalizationReceive(message: Localization.LocalizationEstimate) {
                 cs.launch {
                     UdpDataViewModel.updateLocalization(message)

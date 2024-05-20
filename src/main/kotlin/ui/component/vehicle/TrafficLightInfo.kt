@@ -9,6 +9,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -29,10 +30,10 @@ import viewmodel.UdpDataViewModel
 @Preview
 @Composable
 fun TrafficLightInfo(modifier: Modifier = Modifier) {
-    var redOn = mutableStateOf(false)
-    var yellowOn = mutableStateOf(false)
-    var arrowOn = mutableStateOf(false)
-    var greenOn = mutableStateOf(false)
+    var redOn = remember { mutableStateOf(false) }
+    var yellowOn = remember { mutableStateOf(false) }
+    var arrowOn = remember { mutableStateOf(false) }
+    var greenOn = remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         UdpDataViewModel.subscribeTrafficLight(collector = { info ->

@@ -6,6 +6,7 @@ data class ObstacleOption(
     var useType: Boolean = true,
     var useHeading: Boolean = true,
     var usePosition: Boolean = true,
+    var useSpeed: Boolean = true,
     var useTtc: Boolean = true,
     var useRisk: Boolean = true
 )

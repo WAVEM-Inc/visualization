@@ -33,7 +33,7 @@ fun ObstacleOptionLayout(
     val option = remember {
         mutableStateMapOf(
             OptionType.DRAW to false, OptionType.ID to false, OptionType.TYPE to false, OptionType.HEADING to false,
-            OptionType.POSITION to false, OptionType.TTC to false, OptionType.RISK to false
+            OptionType.POSITION to false, OptionType.TTC to false, OptionType.RISK to false, OptionType.SPEED to false
         )
     }
 
@@ -46,6 +46,7 @@ fun ObstacleOptionLayout(
         option[OptionType.TYPE] = cache.useType
         option[OptionType.HEADING] = cache.useHeading
         option[OptionType.POSITION] = cache.usePosition
+        option[OptionType.SPEED] = cache.useSpeed
         option[OptionType.TTC] = cache.useTtc
         option[OptionType.RISK] = cache.useRisk
     }
@@ -70,6 +71,7 @@ fun ObstacleOptionLayout(
                     OptionType.TYPE -> ObstacleOptionCache.obstacleOption.useType = b
                     OptionType.HEADING -> ObstacleOptionCache.obstacleOption.useHeading = b
                     OptionType.POSITION -> ObstacleOptionCache.obstacleOption.usePosition = b
+                    OptionType.SPEED -> ObstacleOptionCache.obstacleOption.useSpeed = b
                     OptionType.TTC -> ObstacleOptionCache.obstacleOption.useTtc = b
                     OptionType.RISK -> ObstacleOptionCache.obstacleOption.useRisk = b
                 }
@@ -122,6 +124,9 @@ private fun ObstacleOptionEditor(
             })
             ObstacleOptionItem("Position", data[OptionType.POSITION]!!, onCheckedChange = { b ->
                 onDataChange(OptionType.POSITION, b)
+            })
+            ObstacleOptionItem("Speed", data[OptionType.SPEED]!!, onCheckedChange = { b ->
+                onDataChange(OptionType.SPEED, b)
             })
             ObstacleOptionItem("TTC", data[OptionType.TTC]!!, onCheckedChange = { b ->
                 onDataChange(OptionType.TTC, b)
@@ -203,6 +208,7 @@ internal enum class OptionType {
     TYPE,
     HEADING,
     POSITION,
+    SPEED,
     TTC,
     RISK
 }

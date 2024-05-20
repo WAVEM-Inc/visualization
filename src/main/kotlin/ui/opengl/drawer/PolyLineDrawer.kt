@@ -3,6 +3,8 @@ package ui.opengl.drawer
 import application.type.data.ObjectInfo
 import application.type.option.ObstacleOption
 import com.jogamp.opengl.GL2
+import com.jogamp.opengl.awt.GLJPanel
+import com.jogamp.opengl.glu.GLU
 import com.jogamp.opengl.util.awt.TextRenderer
 import ui.opengl.math.GLColor
 import ui.opengl.math.Polygon
@@ -12,7 +14,9 @@ class PolyLineDrawer(
     val objectsInfo: Map<Int, ObjectInfo>,
     val color: GLColor = GLColor("#00FF3C"),
     val textRenderer: TextRenderer,
-    val obstacleOption: ObstacleOption
+    val obstacleOption: ObstacleOption,
+    val glu: GLU,
+    val parentPanel: GLJPanel
 ): GLDrawer {
     override fun draw(gl: GL2) {
         for (objectData in objects) {
@@ -43,56 +47,92 @@ class PolyLineDrawer(
             var index = 0
 
             if (value != null) {
-                textRenderer.begin3DRendering()
+                textRenderer.beginRendering(parentPanel.width, parentPanel.height)
                 textRenderer.setColor(1f, 1f, 1f, 1f)
 
                 if (obstacleOption.useId) {
-                    renderText("ID: ${value.id}", index, objectData.value)
+                    renderText(gl, "ID: ${value.id}", index, objectData.value)
                     index++
                 }
 
                 if (obstacleOption.useType) {
-                    renderText("Type: ${value.type}", index, objectData.value)
+                    renderText(gl, "Type: ${value.type}", index, objectData.value)
                     index++
                 }
 
                 if (obstacleOption.usePosition) {
-                    renderText("Position", index, objectData.value)
+                    renderText(gl, "Position", index, objectData.value)
                     index++
-                    renderText("    - X: ${value.position.x}", index, objectData.value)
+                    renderText(gl, "    - X: ${value.position.x}", index, objectData.value)
                     index++
-                    renderText("    - Y: ${value.position.y}", index, objectData.value)
+                    renderText(gl, "    - Y: ${value.position.y}", index, objectData.value)
                     index++
-                    renderText("    - Z: ${value.position.z}", index, objectData.value)
+                    renderText(gl, "    - Z: ${value.position.z}", index, objectData.value)
                     index++
                 }
 
+                if (obstacleOption.useSpeed) {
+                    renderText(gl, "Speed: ${value.speed}", index, objectData.value)
+                }
+
                 if (obstacleOption.useHeading) {
-                    renderText("Heading: ${value.heading}", index, objectData.value)
+                    renderText(gl, "Heading: ${value.heading}", index, objectData.value)
                     index++
                 }
 
                 if (obstacleOption.useTtc) {
-                    renderText("TTC: ${value.ttc}", index, objectData.value)
+                    renderText(gl, "TTC: ${value.ttc}", index, objectData.value)
                     index++
                 }
 
                 if (obstacleOption.useRisk) {
-                    renderText("Risk: ${value.risk}", index, objectData.value)
+                    renderText(gl, "Risk: ${value.risk}", index, objectData.value)
                 }
 
-                textRenderer.end3DRendering()
+                textRenderer.endRendering()
             }
         }
     }
 
-    private fun renderText(text: String, index: Int, objectData: Polygon) {
-        textRenderer.draw3D(
-            text,
+    private fun renderText(gl: GL2, text: String, index: Int, objectData: Polygon) {
+        drawTextBillboard(gl, glu, textRenderer, text,
             objectData.position.x.toFloat() + objectData.width.toFloat(),
             objectData.position.y.toFloat() + objectData.height.toFloat() - (textRenderer.font.size * 0.025f * index),
-            objectData.position.z.toFloat()+ objectData.height.toFloat(),
-            0.02f
-        )
+            objectData.position.z.toFloat()+ objectData.height.toFloat()
+            )
+//        textRenderer.draw3D(
+//            text,
+//            objectData.position.x.toFloat() + objectData.width.toFloat(),
+//            objectData.position.y.toFloat() + objectData.height.toFloat() - (textRenderer.font.size * 0.025f * index),
+//            objectData.position.z.toFloat()+ objectData.height.toFloat(),
+//            0.02f
+//        )
+    }
+
+    fun projectToScreen(gl: GL2, glu: GLU, x: Float, y: Float, z: Float): FloatArray? {
+        val modelview = FloatArray(16)
+        val projection = FloatArray(16)
+        val viewport = IntArray(4)
+        val screenPos = FloatArray(3)
+
+        gl.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, modelview, 0)
+        gl.glGetFloatv(GL2.GL_PROJECTION_MATRIX, projection, 0)
+        gl.glGetIntegerv(GL2.GL_VIEWPORT, viewport, 0)
+
+        val result = glu.gluProject(x, y, z, modelview, 0, projection, 0, viewport, 0, screenPos, 0)
+        return if (result) screenPos else null
+    }
+
+    fun drawTextBillboard(gl: GL2, glu: GLU, textRenderer: TextRenderer, text: String, x: Float, y: Float, z: Float) {
+        val screenPos = projectToScreen(gl, glu, x, y, z)
+        if (screenPos != null) {
+            val screenX = screenPos[0]
+            val screenY = screenPos[1] // OpenGL's Y axis is inverted
+
+            textRenderer.beginRendering(parentPanel.width, parentPanel.height)
+            textRenderer.setColor(1f, 1f, 1f, 1f)
+            textRenderer.draw(text, screenX.toInt(), screenY.toInt())
+            textRenderer.endRendering()
+        }
     }
 }

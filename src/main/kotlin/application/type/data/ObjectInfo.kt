@@ -9,5 +9,6 @@ data class ObjectInfo(
     var position: Position = Position(),
     var ttc: String = "",
     var risk: String = "",
+    var speed: Double = 0.0,
     var textDrawPosition: Coordinate3D
 )

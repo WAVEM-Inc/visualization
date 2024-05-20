@@ -4,7 +4,6 @@ import apollo.dreamview.PointCloudOuterClass
 import apollo.localization.Localization.LocalizationEstimate
 import apollo.perception.PerceptionObstacleOuterClass.PerceptionObstacles
 import application.type.msg.ProtoMessageType
-import com.google.protobuf.kotlin.toByteString
 import essys_middle.Dashboard.TrafficLight
 import essys_middle.Dashboard.VehicleSignal
 import java.net.DatagramPacket
@@ -12,6 +11,7 @@ import java.net.DatagramSocket
 import java.net.InetSocketAddress
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
+
 
 class UdpClient {
     var socket = DatagramSocket()

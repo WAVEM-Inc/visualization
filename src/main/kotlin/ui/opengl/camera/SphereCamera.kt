@@ -170,6 +170,10 @@ class SphereCamera (private val gl: GL2, private val glu: GLU = GLU.createGLU(gl
         return mouseMotionListener
     }
 
+    fun getRotationAngles(): Pair<Float, Float> {
+        return Pair(theta.toFloat(), phi.toFloat())
+    }
+
     fun setSize(width: Int, height: Int) {
         perspective.aspect = width.toDouble() / height.toDouble()
         update()

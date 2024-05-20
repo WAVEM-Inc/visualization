@@ -7030,6 +7030,36 @@ public final class PerceptionObstacleOuterClass {
      * @return The objectConfidence.
      */
     double getObjectConfidence();
+
+    /**
+     * <code>optional double ttc = 30;</code>
+     * @return Whether the ttc field is set.
+     */
+    boolean hasTtc();
+    /**
+     * <code>optional double ttc = 30;</code>
+     * @return The ttc.
+     */
+    double getTtc();
+
+    /**
+     * <pre>
+     * 1~5
+     * </pre>
+     *
+     * <code>optional int32 risk_level = 31;</code>
+     * @return Whether the riskLevel field is set.
+     */
+    boolean hasRiskLevel();
+    /**
+     * <pre>
+     * 1~5
+     * </pre>
+     *
+     * <code>optional int32 risk_level = 31;</code>
+     * @return The riskLevel.
+     */
+    int getRiskLevel();
   }
   /**
    * Protobuf type {@code apollo.perception.PerceptionObstacle}
@@ -8655,6 +8685,52 @@ public final class PerceptionObstacleOuterClass {
       return objectConfidence_;
     }
 
+    public static final int TTC_FIELD_NUMBER = 30;
+    private double ttc_ = 0D;
+    /**
+     * <code>optional double ttc = 30;</code>
+     * @return Whether the ttc field is set.
+     */
+    @java.lang.Override
+    public boolean hasTtc() {
+      return ((bitField0_ & 0x00400000) != 0);
+    }
+    /**
+     * <code>optional double ttc = 30;</code>
+     * @return The ttc.
+     */
+    @java.lang.Override
+    public double getTtc() {
+      return ttc_;
+    }
+
+    public static final int RISK_LEVEL_FIELD_NUMBER = 31;
+    private int riskLevel_ = 0;
+    /**
+     * <pre>
+     * 1~5
+     * </pre>
+     *
+     * <code>optional int32 risk_level = 31;</code>
+     * @return Whether the riskLevel field is set.
+     */
+    @java.lang.Override
+    public boolean hasRiskLevel() {
+      return ((bitField0_ & 0x00800000) != 0);
+    }
+    /**
+     * <pre>
+     * 1~5
+     * </pre>
+     *
+     * <code>optional int32 risk_level = 31;</code>
+     * @return The riskLevel.
+     */
+    @java.lang.Override
+    public int getRiskLevel() {
+      return riskLevel_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -8772,6 +8848,12 @@ public final class PerceptionObstacleOuterClass {
       }
       if (((bitField0_ & 0x00200000) != 0)) {
         output.writeDouble(29, objectConfidence_);
+      }
+      if (((bitField0_ & 0x00400000) != 0)) {
+        output.writeDouble(30, ttc_);
+      }
+      if (((bitField0_ & 0x00800000) != 0)) {
+        output.writeInt32(31, riskLevel_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -8926,6 +9008,14 @@ public final class PerceptionObstacleOuterClass {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(29, objectConfidence_);
       }
+      if (((bitField0_ & 0x00400000) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(30, ttc_);
+      }
+      if (((bitField0_ & 0x00800000) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(31, riskLevel_);
+      }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
       return size;
@@ -9070,6 +9160,17 @@ public final class PerceptionObstacleOuterClass {
             != java.lang.Double.doubleToLongBits(
                 other.getObjectConfidence())) return false;
       }
+      if (hasTtc() != other.hasTtc()) return false;
+      if (hasTtc()) {
+        if (java.lang.Double.doubleToLongBits(getTtc())
+            != java.lang.Double.doubleToLongBits(
+                other.getTtc())) return false;
+      }
+      if (hasRiskLevel() != other.hasRiskLevel()) return false;
+      if (hasRiskLevel()) {
+        if (getRiskLevel()
+            != other.getRiskLevel()) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -9205,6 +9306,15 @@ public final class PerceptionObstacleOuterClass {
         hash = (37 * hash) + OBJECT_CONFIDENCE_FIELD_NUMBER;
         hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
             java.lang.Double.doubleToLongBits(getObjectConfidence()));
+      }
+      if (hasTtc()) {
+        hash = (37 * hash) + TTC_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            java.lang.Double.doubleToLongBits(getTtc()));
+      }
+      if (hasRiskLevel()) {
+        hash = (37 * hash) + RISK_LEVEL_FIELD_NUMBER;
+        hash = (53 * hash) + getRiskLevel();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -9432,6 +9542,8 @@ public final class PerceptionObstacleOuterClass {
           v2XInfoBuilder_ = null;
         }
         objectConfidence_ = 0D;
+        ttc_ = 0D;
+        riskLevel_ = 0;
         return this;
       }
 
@@ -9616,6 +9728,14 @@ public final class PerceptionObstacleOuterClass {
         if (((from_bitField0_ & 0x10000000) != 0)) {
           result.objectConfidence_ = objectConfidence_;
           to_bitField0_ |= 0x00200000;
+        }
+        if (((from_bitField0_ & 0x20000000) != 0)) {
+          result.ttc_ = ttc_;
+          to_bitField0_ |= 0x00400000;
+        }
+        if (((from_bitField0_ & 0x40000000) != 0)) {
+          result.riskLevel_ = riskLevel_;
+          to_bitField0_ |= 0x00800000;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -9819,6 +9939,12 @@ public final class PerceptionObstacleOuterClass {
         }
         if (other.hasObjectConfidence()) {
           setObjectConfidence(other.getObjectConfidence());
+        }
+        if (other.hasTtc()) {
+          setTtc(other.getTtc());
+        }
+        if (other.hasRiskLevel()) {
+          setRiskLevel(other.getRiskLevel());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -10107,6 +10233,16 @@ public final class PerceptionObstacleOuterClass {
                 bitField0_ |= 0x10000000;
                 break;
               } // case 233
+              case 241: {
+                ttc_ = input.readDouble();
+                bitField0_ |= 0x20000000;
+                break;
+              } // case 241
+              case 248: {
+                riskLevel_ = input.readInt32();
+                bitField0_ |= 0x40000000;
+                break;
+              } // case 248
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -13488,6 +13624,102 @@ public final class PerceptionObstacleOuterClass {
       public Builder clearObjectConfidence() {
         bitField0_ = (bitField0_ & ~0x10000000);
         objectConfidence_ = 0D;
+        onChanged();
+        return this;
+      }
+
+      private double ttc_ ;
+      /**
+       * <code>optional double ttc = 30;</code>
+       * @return Whether the ttc field is set.
+       */
+      @java.lang.Override
+      public boolean hasTtc() {
+        return ((bitField0_ & 0x20000000) != 0);
+      }
+      /**
+       * <code>optional double ttc = 30;</code>
+       * @return The ttc.
+       */
+      @java.lang.Override
+      public double getTtc() {
+        return ttc_;
+      }
+      /**
+       * <code>optional double ttc = 30;</code>
+       * @param value The ttc to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTtc(double value) {
+
+        ttc_ = value;
+        bitField0_ |= 0x20000000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional double ttc = 30;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearTtc() {
+        bitField0_ = (bitField0_ & ~0x20000000);
+        ttc_ = 0D;
+        onChanged();
+        return this;
+      }
+
+      private int riskLevel_ ;
+      /**
+       * <pre>
+       * 1~5
+       * </pre>
+       *
+       * <code>optional int32 risk_level = 31;</code>
+       * @return Whether the riskLevel field is set.
+       */
+      @java.lang.Override
+      public boolean hasRiskLevel() {
+        return ((bitField0_ & 0x40000000) != 0);
+      }
+      /**
+       * <pre>
+       * 1~5
+       * </pre>
+       *
+       * <code>optional int32 risk_level = 31;</code>
+       * @return The riskLevel.
+       */
+      @java.lang.Override
+      public int getRiskLevel() {
+        return riskLevel_;
+      }
+      /**
+       * <pre>
+       * 1~5
+       * </pre>
+       *
+       * <code>optional int32 risk_level = 31;</code>
+       * @param value The riskLevel to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRiskLevel(int value) {
+
+        riskLevel_ = value;
+        bitField0_ |= 0x40000000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 1~5
+       * </pre>
+       *
+       * <code>optional int32 risk_level = 31;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRiskLevel() {
+        bitField0_ = (bitField0_ & ~0x40000000);
+        riskLevel_ = 0;
         onChanged();
         return this;
       }
@@ -18936,7 +19168,7 @@ public final class PerceptionObstacleOuterClass {
       "ty\030\001 \001(\001\0228\n\020trajectory_point\030\002 \003(\0132\036.apo" +
       "llo.common.TrajectoryPoint\"A\n\014DebugMessa" +
       "ge\0221\n\ntrajectory\030\001 \003(\0132\035.apollo.percepti" +
-      "on.Trajectory\"\304\014\n\022PerceptionObstacle\022\n\n\002" +
+      "on.Trajectory\"\345\014\n\022PerceptionObstacle\022\n\n\002" +
       "id\030\001 \001(\005\022(\n\010position\030\002 \001(\0132\026.apollo.comm" +
       "on.Point3D\022\r\n\005theta\030\003 \001(\001\022(\n\010velocity\030\004 " +
       "\001(\0132\026.apollo.common.Point3D\022\016\n\006length\030\005 " +
@@ -18965,40 +19197,41 @@ public final class PerceptionObstacleOuterClass {
       "erception.PerceptionObstacle.Source:\014HOS" +
       "T_VEHICLE\0223\n\010v2x_info\030\034 \001(\0132!.apollo.per" +
       "ception.V2XInformation\022\031\n\021object_confide" +
-      "nce\030\035 \001(\001\"i\n\004Type\022\013\n\007UNKNOWN\020\000\022\023\n\017UNKNOW" +
-      "N_MOVABLE\020\001\022\025\n\021UNKNOWN_UNMOVABLE\020\002\022\016\n\nPE" +
-      "DESTRIAN\020\003\022\013\n\007BICYCLE\020\004\022\013\n\007VEHICLE\020\005\"R\n\016" +
-      "ConfidenceType\022\026\n\022CONFIDENCE_UNKNOWN\020\000\022\022" +
-      "\n\016CONFIDENCE_CNN\020\001\022\024\n\020CONFIDENCE_RADAR\020\002" +
-      "\"\334\001\n\007SubType\022\016\n\nST_UNKNOWN\020\000\022\026\n\022ST_UNKNO" +
-      "WN_MOVABLE\020\001\022\030\n\024ST_UNKNOWN_UNMOVABLE\020\002\022\n" +
-      "\n\006ST_CAR\020\003\022\n\n\006ST_VAN\020\004\022\014\n\010ST_TRUCK\020\005\022\n\n\006" +
-      "ST_BUS\020\006\022\016\n\nST_CYCLIST\020\007\022\023\n\017ST_MOTORCYCL" +
-      "IST\020\010\022\021\n\rST_TRICYCLIST\020\t\022\021\n\rST_PEDESTRIA" +
-      "N\020\n\022\022\n\016ST_TRAFFICCONE\020\013\"#\n\006Source\022\020\n\014HOS" +
-      "T_VEHICLE\020\000\022\007\n\003V2X\020\001\"\225\002\n\nLaneMarker\0226\n\tl" +
-      "ane_type\030\001 \001(\0162#.apollo.hdmap.LaneBounda" +
-      "ryType.Type\022\017\n\007quality\030\002 \001(\001\022\024\n\014model_de" +
-      "gree\030\003 \001(\005\022\023\n\013c0_position\030\004 \001(\001\022\030\n\020c1_he" +
-      "ading_angle\030\005 \001(\001\022\024\n\014c2_curvature\030\006 \001(\001\022" +
-      "\037\n\027c3_curvature_derivative\030\007 \001(\001\022\022\n\nview" +
-      "_range\030\010 \001(\001\022\027\n\017longitude_start\030\t \001(\001\022\025\n" +
-      "\rlongitude_end\030\n \001(\001\"\375\001\n\013LaneMarkers\0227\n\020" +
-      "left_lane_marker\030\001 \001(\0132\035.apollo.percepti" +
-      "on.LaneMarker\0228\n\021right_lane_marker\030\002 \001(\013" +
-      "2\035.apollo.perception.LaneMarker\022<\n\025next_" +
-      "left_lane_marker\030\003 \003(\0132\035.apollo.percepti" +
-      "on.LaneMarker\022=\n\026next_right_lane_marker\030" +
-      "\004 \003(\0132\035.apollo.perception.LaneMarker\"6\n\010" +
-      "CIPVInfo\022\017\n\007cipv_id\030\001 \001(\005\022\031\n\021potential_c" +
-      "ipv_id\030\002 \003(\005\"\227\002\n\023PerceptionObstacles\022B\n\023" +
-      "perception_obstacle\030\001 \003(\0132%.apollo.perce" +
-      "ption.PerceptionObstacle\022%\n\006header\030\002 \001(\013" +
-      "2\025.apollo.common.Header\0220\n\nerror_code\030\003 " +
-      "\001(\0162\030.apollo.common.ErrorCode:\002OK\0223\n\013lan" +
-      "e_marker\030\004 \001(\0132\036.apollo.perception.LaneM" +
-      "arkers\022.\n\tcipv_info\030\005 \001(\0132\033.apollo.perce" +
-      "ption.CIPVInfo"
+      "nce\030\035 \001(\001\022\013\n\003ttc\030\036 \001(\001\022\022\n\nrisk_level\030\037 \001" +
+      "(\005\"i\n\004Type\022\013\n\007UNKNOWN\020\000\022\023\n\017UNKNOWN_MOVAB" +
+      "LE\020\001\022\025\n\021UNKNOWN_UNMOVABLE\020\002\022\016\n\nPEDESTRIA" +
+      "N\020\003\022\013\n\007BICYCLE\020\004\022\013\n\007VEHICLE\020\005\"R\n\016Confide" +
+      "nceType\022\026\n\022CONFIDENCE_UNKNOWN\020\000\022\022\n\016CONFI" +
+      "DENCE_CNN\020\001\022\024\n\020CONFIDENCE_RADAR\020\002\"\334\001\n\007Su" +
+      "bType\022\016\n\nST_UNKNOWN\020\000\022\026\n\022ST_UNKNOWN_MOVA" +
+      "BLE\020\001\022\030\n\024ST_UNKNOWN_UNMOVABLE\020\002\022\n\n\006ST_CA" +
+      "R\020\003\022\n\n\006ST_VAN\020\004\022\014\n\010ST_TRUCK\020\005\022\n\n\006ST_BUS\020" +
+      "\006\022\016\n\nST_CYCLIST\020\007\022\023\n\017ST_MOTORCYCLIST\020\010\022\021" +
+      "\n\rST_TRICYCLIST\020\t\022\021\n\rST_PEDESTRIAN\020\n\022\022\n\016" +
+      "ST_TRAFFICCONE\020\013\"#\n\006Source\022\020\n\014HOST_VEHIC" +
+      "LE\020\000\022\007\n\003V2X\020\001\"\225\002\n\nLaneMarker\0226\n\tlane_typ" +
+      "e\030\001 \001(\0162#.apollo.hdmap.LaneBoundaryType." +
+      "Type\022\017\n\007quality\030\002 \001(\001\022\024\n\014model_degree\030\003 " +
+      "\001(\005\022\023\n\013c0_position\030\004 \001(\001\022\030\n\020c1_heading_a" +
+      "ngle\030\005 \001(\001\022\024\n\014c2_curvature\030\006 \001(\001\022\037\n\027c3_c" +
+      "urvature_derivative\030\007 \001(\001\022\022\n\nview_range\030" +
+      "\010 \001(\001\022\027\n\017longitude_start\030\t \001(\001\022\025\n\rlongit" +
+      "ude_end\030\n \001(\001\"\375\001\n\013LaneMarkers\0227\n\020left_la" +
+      "ne_marker\030\001 \001(\0132\035.apollo.perception.Lane" +
+      "Marker\0228\n\021right_lane_marker\030\002 \001(\0132\035.apol" +
+      "lo.perception.LaneMarker\022<\n\025next_left_la" +
+      "ne_marker\030\003 \003(\0132\035.apollo.perception.Lane" +
+      "Marker\022=\n\026next_right_lane_marker\030\004 \003(\0132\035" +
+      ".apollo.perception.LaneMarker\"6\n\010CIPVInf" +
+      "o\022\017\n\007cipv_id\030\001 \001(\005\022\031\n\021potential_cipv_id\030" +
+      "\002 \003(\005\"\227\002\n\023PerceptionObstacles\022B\n\023percept" +
+      "ion_obstacle\030\001 \003(\0132%.apollo.perception.P" +
+      "erceptionObstacle\022%\n\006header\030\002 \001(\0132\025.apol" +
+      "lo.common.Header\0220\n\nerror_code\030\003 \001(\0162\030.a" +
+      "pollo.common.ErrorCode:\002OK\0223\n\013lane_marke" +
+      "r\030\004 \001(\0132\036.apollo.perception.LaneMarkers\022" +
+      ".\n\tcipv_info\030\005 \001(\0132\033.apollo.perception.C" +
+      "IPVInfo"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -19050,7 +19283,7 @@ public final class PerceptionObstacleOuterClass {
     internal_static_apollo_perception_PerceptionObstacle_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_apollo_perception_PerceptionObstacle_descriptor,
-        new java.lang.String[] { "Id", "Position", "Theta", "Velocity", "Length", "Width", "Height", "PolygonPoint", "TrackingTime", "Type", "Timestamp", "PointCloud", "Confidence", "ConfidenceType", "Drops", "Acceleration", "AnchorPoint", "Bbox2D", "SubType", "Measurements", "HeightAboveGround", "PositionCovariance", "VelocityCovariance", "AccelerationCovariance", "LightStatus", "Msg", "Source", "V2XInfo", "ObjectConfidence", });
+        new java.lang.String[] { "Id", "Position", "Theta", "Velocity", "Length", "Width", "Height", "PolygonPoint", "TrackingTime", "Type", "Timestamp", "PointCloud", "Confidence", "ConfidenceType", "Drops", "Acceleration", "AnchorPoint", "Bbox2D", "SubType", "Measurements", "HeightAboveGround", "PositionCovariance", "VelocityCovariance", "AccelerationCovariance", "LightStatus", "Msg", "Source", "V2XInfo", "ObjectConfidence", "Ttc", "RiskLevel", });
     internal_static_apollo_perception_LaneMarker_descriptor =
       getDescriptor().getMessageTypes().get(7);
     internal_static_apollo_perception_LaneMarker_fieldAccessorTable = new
