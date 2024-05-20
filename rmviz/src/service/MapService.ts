@@ -120,8 +120,6 @@ const getInfoWindowClickHandler: Function = (
 ): Function => {
     let isOpened: number = 0;
 
-    console.info(`getInfoWindow seq : ${seq}`);
-
     return function (e: any) {
         const marker: google.maps.Marker = pathMarkerArray[seq];
         const infoWindow: google.maps.InfoWindow = pathInfoWindowarray[seq];
@@ -200,4 +198,83 @@ export const addPathPolyline: Function = (
     });
 
     return polyline;
+}
+
+const EARTH_RADIUS: number = 6378137.0;
+
+function toRadians(degrees: number): number {
+    return degrees * Math.PI / 180;
+}
+
+function toDegrees(radians: number): number {
+    return radians * 180 / Math.PI;
+}
+
+function offsetLatLng(
+    lat: number,
+    lng: number,
+    dx: number,
+    dy: number
+): { lat: number, lng: number } {
+    const dLat = dy / EARTH_RADIUS;
+    const dLng = dx / (EARTH_RADIUS * Math.cos(Math.PI * lat / 180));
+
+    const newLat = lat + toDegrees(dLat);
+    const newLng = lng + toDegrees(dLng);
+
+    return { lat: newLat, lng: newLng };
+}
+
+function calculateVertices(
+    left: number,
+    right: number,
+    centerLat: number,
+    centerLng: number
+): { lat: number, lng: number }[] {
+    const halfLength = right / 4;
+    const halfHeight = left / 2;
+
+    const topLeft = offsetLatLng(centerLat, centerLng, -(left), halfHeight);
+    const topRight = offsetLatLng(centerLat, centerLng, right, halfHeight);
+    const bottomLeft = offsetLatLng(centerLat, centerLng, -(left), -halfHeight);
+    const bottomRight = offsetLatLng(centerLat, centerLng, right, -halfHeight);
+
+    return [topLeft, topRight, bottomLeft, bottomRight];
+}
+
+export const addDetectionRangePolygon: Function = (
+    map: google.maps.Map,
+    nodeList: Array<any>
+): void => {
+    const nonEmptyDetectionRanges: any[] = nodeList.filter(node => node.detectionRange.length > 0);
+
+    for (const d of nonEmptyDetectionRanges) {
+        const targetCoord: google.maps.LatLng = new google.maps.LatLng(
+            d.position.latitude,
+            d.position.longitude
+        );
+        const vertices: any[] = calculateVertices(
+            d.detectionRange[0].widthLeft,
+            d.detectionRange[0].widthRight,
+            targetCoord.lat(),
+            targetCoord.lng()
+        );
+        vertices.filter(vertice => console.log(`vertice : ${JSON.stringify(vertice)}`));
+
+        const polygon: google.maps.Polygon = new google.maps.Polygon({
+            map: map,
+            paths: [
+                new google.maps.LatLng(vertices[0].lat, vertices[0].lng),
+                new google.maps.LatLng(vertices[1].lat, vertices[1].lng),
+                new google.maps.LatLng(vertices[3].lat, vertices[3].lng),
+                new google.maps.LatLng(vertices[2].lat, vertices[2].lng)
+            ],
+            strokeColor: "#FF0000",
+            strokeOpacity: 0.8,
+            strokeWeight: 2,
+            fillColor: "#FF0000",
+            fillOpacity: 0.35
+        });
+    }
+
 }
