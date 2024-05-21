@@ -6,6 +6,7 @@ import TopComponent from "../../../components/top/TopComponent";
 import GoogleMapComponent from "../../../components/map/GoogleMapComponent";
 import { MapState } from "../../../domain/map/MapDomain";
 import { Wrapper } from "@googlemaps/react-wrapper";
+import GoogleMapPathComponent from "../../../components/map/GoogleMapPathComponent";
 
 interface KECPathEditPageProps {
     mqttClient: MqttClient;
@@ -27,11 +28,14 @@ const KECPathEditPage: React.FC<KECPathEditPageProps> = ({
             </div>
             <div className="map_component_container">
                 <Wrapper apiKey={`${process.env.GOOGLE_MAP_API_KEY}`}>
-                    <GoogleMapComponent
+                    <GoogleMapPathComponent
                         mqttClient={mqttClient!}
                         state={mapState}
                     />
                 </Wrapper>
+            </div>
+            <div className="path_component_container">
+                
             </div>
         </div>
     );

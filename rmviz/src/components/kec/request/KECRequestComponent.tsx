@@ -9,6 +9,7 @@ interface KECRequestComponentProps {
     onWaiting06Click: () => void;
     onTemp01Click: () => void;
     onTemp02Click: () => void;
+    onTemp03Click: () => void;
 }
 
 const KECRequestComponent: React.FC<KECRequestComponentProps> = ({
@@ -19,7 +20,8 @@ const KECRequestComponent: React.FC<KECRequestComponentProps> = ({
     onDelivery05NCall05Click,
     onWaiting06Click,
     onTemp01Click,
-    onTemp02Click
+    onTemp02Click,
+    onTemp03Click
 }: KECRequestComponentProps) => {
     return (
         <div className="">
@@ -32,6 +34,7 @@ const KECRequestComponent: React.FC<KECRequestComponentProps> = ({
                 <button className={"kec_btn_request"} onClick={onWaiting06Click}>대기 06{"(A → 대기R)"}</button>
                 <button className={"kec_btn_request"} onClick={onTemp01Click}>임시 경로 - 1</button>
                 <button className={"kec_btn_request"} onClick={onTemp02Click}>임시 경로 - 2</button>
+                <button className={"kec_btn_request"} onClick={onTemp03Click}>임시 경로 - 3</button>
             </div>
         </div>
     );

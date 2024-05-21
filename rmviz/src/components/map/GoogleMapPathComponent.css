@@ -1,0 +1,14 @@
+.map_container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    height: 750px;
+    border-bottom: 2px solid #ccc;
+}
+
+#map {
+    width: 65%;
+    min-height: 750px;
+    height: 100%;
+    border-right: 2px solid #ccc;
+}
