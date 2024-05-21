@@ -10,8 +10,8 @@ from rmserver_kec.application.message.conversion import ros_message_to_json;
 
 
 MQTT_DEFAULT_QOS: int = 0;
-MQTT_RBT_STATUS_RESPONSE_TOPIC: str = "/rms/ktp/dummy/response/rbt_status";
-MQTT_SERVICE_STATUS_RESPONSE_TOPIC: str = "/rms/ktp/dummy/response/service_status";
+MQTT_RBT_STATUS_RESPONSE_TOPIC: str = "/rmviz/response/rbt_status";
+MQTT_SERVICE_STATUS_RESPONSE_TOPIC: str = "/rmviz/response/service_status";
 
 RBT_STATUS_TOPIC_NAME: str = "/rms/ktp/data/rbt_status";
 SERVICE_STATUS_TOPIC_NAME: str = "/rms/ktp/data/service_status";

@@ -8,21 +8,21 @@ from rmserver_kec.application.connection.heartbeat import HeartBeatProcessor;
 from rmserver_kec.application.request.urdf import URDFProcessor;
 
 
-MQTT_CONTROL_REQUEST_TOPIC: str = "/rms/ktp/dummy/request/control";
-MQTT_MISSION_REQUEST_TOPIC: str = "/rms/ktp/dummy/request/mission";
-MQTT_DETECTED_OBJECT_REQUEST_TOPIC: str = "/rms/ktp/dummy/request/detected_object";
-MQTT_OBSTACLE_STATUS_TOPIC: str = "/rms/ktp/dummy/request/obstacle/status";
-MQTT_DRIVE_OBSTACLE_COOPERATIVE_TOPIC: str = "/rms/ktp/dummy/request/obstacle/cooperative";
-MQTT_CAN_EMERGENCY_STOP_TOPIC: str = "/rms/ktp/dummy/request/can/emergency";
-MQTT_ROUTE_TO_POSE_TOPIC: str = "/rms/ktp/dummy/request/route_to_pose";
+MQTT_CONTROL_REQUEST_TOPIC: str = "/rmviz/request/control";
+MQTT_MISSION_REQUEST_TOPIC: str = "/rmviz/request/mission";
+MQTT_DETECTED_OBJECT_REQUEST_TOPIC: str = "/rmviz/request/detected_object";
+MQTT_OBSTACLE_STATUS_TOPIC: str = "/rmviz/request/obstacle/status";
+MQTT_DRIVE_OBSTACLE_COOPERATIVE_TOPIC: str = "/rmviz/request/obstacle/cooperative";
+MQTT_CAN_EMERGENCY_STOP_TOPIC: str = "/rmviz/request/can/emergency";
+MQTT_ROUTE_TO_POSE_TOPIC: str = "/rmviz/request/route_to_pose";
 MQTT_ROUTE_TO_POSE_STATUS_TOPIC: str = "/rms/ktp/dummy/response/route_to_pose/status";
-MQTT_GOAL_CANCEL_TOPIC: str = "/rms/ktp/dummy/request/goal/cancel";
-MQTT_CAN_INIT_TOPIC: str = "/rms/ktp/dummy/request/can/init";
-MQTT_HEARTBEAT_REQUEST_TOPIC: str = "/rms/ktp/dummy/request/heartbeat";
-MQTT_TASK_REQUEST_TOPIC: str = "/rms/ktp/dummy/request/task";
-MQTT_PATH_RENEW_TOPIC: str = "/rms/ktp/dummy/request/path/renew";
-MQTT_URDF_REQUEST_TOPIC: str = "/rms/ktp/dummy/request/urdf";
-MQTT_GPS_INITIALIZE_TOPIC: str = "/rms/ktp/dummy/request/gps/init";
+MQTT_GOAL_CANCEL_TOPIC: str = "/rmviz/request/goal/cancel";
+MQTT_CAN_INIT_TOPIC: str = "/rmviz/request/can/init";
+MQTT_HEARTBEAT_REQUEST_TOPIC: str = "/rmviz/request/heartbeat";
+MQTT_TASK_REQUEST_TOPIC: str = "/rmviz/request/task";
+MQTT_PATH_RENEW_TOPIC: str = "/rmviz/request/path/renew";
+MQTT_URDF_REQUEST_TOPIC: str = "/rmviz/request/urdf";
+MQTT_GPS_INITIALIZE_TOPIC: str = "/rmviz/request/gps/init";
 
 
 

@@ -9,7 +9,7 @@ from ktp_data_msgs.msg import GraphList;
 
 
 MQTT_DEFAULT_QOS: int = 0;
-MQTT_GRAPH_LIST_RESPONSE_TOPIC: str = "/rms/ktp/dummy/response/graph_list";
+MQTT_GRAPH_LIST_RESPONSE_TOPIC: str = "/rmviz/response/graph_list";
 
 GRAPH_LIST_TOPIC_NAME: str = "/rms/ktp/data/graph_list";
 

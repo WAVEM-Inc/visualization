@@ -18,8 +18,8 @@ from rmserver_kec.application.message.conversion import ros_message_to_json;
 
 
 MQTT_DEFAULT_QOS: int = 0;
-MQTT_OBSTACLE_DETECT_RESPONSE_TOPIC: str = "/rms/ktp/dummy/response/obstacle_detect";
-MQTT_LIDAR_SIGNAL_RESPONSE_TOPIC: str = "/rms/ktp/dummy/response/lidar_signal";
+MQTT_OBSTACLE_DETECT_RESPONSE_TOPIC: str = "/rmviz/response/obstacle_detect";
+MQTT_LIDAR_SIGNAL_RESPONSE_TOPIC: str = "/rmviz/response/lidar_signal";
 
 OBSTACLE_DETECT_TOPIC_NAME: str = "/rms/ktp/data/obstacle_detect";
 LIDAR_SIGNAL_TOPIC_NAME: str = "/rms/ktp/data/lidar_signal";

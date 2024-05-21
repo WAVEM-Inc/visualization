@@ -2,7 +2,7 @@ import { IPublishPacket } from "mqtt/*";
 import React, { useEffect, useReducer, useState } from "react";
 import { Route, Switch } from "react-router-dom";
 import MqttClient from "../../api/mqttClient";
-import { SET_GPS, SET_GPS_FILTERED, SET_ODOM_EULAR, SET_PATH, SET_ROUTE_STATUS, initialMapState, mapStateReducer } from "../../domain/map/MapDomain";
+import { SET_CMD_VEL, SET_GPS, SET_GPS_FILTERED, SET_ODOM_EULAR, SET_PATH, SET_ROUTE_STATUS, initialMapState, mapStateReducer } from "../../domain/map/MapDomain";
 import { SET_URDF, initalROSState, rosStateReducer } from "../../domain/ros/ROSDomain";
 import { SET_BATTERY, SET_HEARTBEAT, initialTopState, topStateReducer } from "../../domain/top/TopDomain";
 import KECDashBoardPage from "../../page/kec/dashBoard/KECDashBoardPage";
@@ -18,10 +18,10 @@ const DataController: React.FC = (): React.ReactElement<any, any> | null => {
 
     const [mqttClient, setMqttClient] = useState<MqttClient>();
 
-    const requestTopicFormat: string = "/rms/ktp/dummy/request";
+    const requestTopicFormat: string = "/rmviz/request";
     const requestHeartBeatTopic: string = `${requestTopicFormat}/heartbeat`;
 
-    const responseTopicFormat: string = "/rms/ktp/dummy/response";
+    const responseTopicFormat: string = "/rmviz/response";
     const responsePathTopic: string = `${responseTopicFormat}/path`;
     const resposneGpsTopic: string = `${responseTopicFormat}/gps`;
     const resposneGpsFilteredTopic: string = `${responseTopicFormat}/gps/filtered`;
@@ -30,6 +30,7 @@ const DataController: React.FC = (): React.ReactElement<any, any> | null => {
     const responseHeartBeatTopic: string = `${responseTopicFormat}/heartbeat`;
     const responseBatteryTopic: string = `${responseTopicFormat}/battery/state`;
     const responseURDFTopic: string = `${responseTopicFormat}/urdf`;
+    const responseCmdVelTopic: string = `${responseTopicFormat}/cmd_vel`;
 
     const requiredResponseTopicList: Array<string> = [
         `${responseTopicFormat}/rbt_status`,
@@ -54,6 +55,8 @@ const DataController: React.FC = (): React.ReactElement<any, any> | null => {
                 mapStateDistpatch({ type: SET_ROUTE_STATUS, payload: message });
             } else if (topic === responseOdomEularTopic) {
                 mapStateDistpatch({ type: SET_ODOM_EULAR, payload: message });
+            } else if (topic === responseCmdVelTopic) {
+                mapStateDistpatch({ type: SET_CMD_VEL, payload: message });
             } else if (topic === responseHeartBeatTopic) {
                 topStateDispatch({ type: SET_HEARTBEAT, payload: message });
             } else if (topic === responseBatteryTopic) {
@@ -126,6 +129,8 @@ const DataController: React.FC = (): React.ReactElement<any, any> | null => {
         _mqttClient.subscribe(responseHeartBeatTopic);
         _mqttClient.subscribe(responseBatteryTopic);
         _mqttClient.subscribe(responseURDFTopic);
+        _mqttClient.subscribe(responseCmdVelTopic);
+
         handleResponseMQTTCallback(_mqttClient);
         setUpResponseMQTTConnections(_mqttClient);
         setMqttClient(_mqttClient);
