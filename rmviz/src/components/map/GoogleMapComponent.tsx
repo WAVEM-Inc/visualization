@@ -36,6 +36,7 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
         longitude: 0.0
     });
     const [currentOdomEular, setCurrentOdomEular] = useState<number>();
+    const [currentRouteStatus, setCurrentRouteStatus] = useState<any | null>(null);
 
     const requestTopicFormat: string = "/rms/ktp/dummy/request";
     const requestEmergencyTopic: string = `${requestTopicFormat}/can/emergency`;
@@ -292,6 +293,56 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
             }
         } else return;
     }, [state.path]);
+
+    useEffect((): void => {
+        if (state.routeStatus) {
+            console.info(`currentRouteStatus : ${JSON.stringify(state.routeStatus)}`);
+
+            let driving_flag: boolean = false;
+            if (state.routeStatus._is_driving) {
+                driving_flag = true;
+            } else {
+                driving_flag = false;
+            }
+
+            let status: string = "";
+            switch (state.routeStatus._status_code) {
+                case 0:
+                    status = "출발";
+                    break;
+                case 1:
+                    status = "경유지 도착";
+                    break;
+                case 2:
+                    status = "주행 완료";
+                    break;
+                case 3:
+                    status = "주행 서버가 구동되지 않았습니다.";
+                    alert(`${status}`);
+                    break;
+                case 4:
+                    status = "주행 진행 중";
+                    break;
+                case 5:
+                    status = "주행 취소";
+                    break;
+                default:
+                    break;
+            }
+
+            const node_info: any = state.routeStatus._node_info;
+
+            if (node_info) {
+                const currRouteStatus: any = {
+                    driving_flag: driving_flag,
+                    status: status,
+                    node_info: node_info!
+                };
+
+                setCurrentRouteStatus(currRouteStatus);
+            }
+        }
+    }, [state.routeStatus]);
 
     useEffect((): void => {
         if (googleMap) {
