@@ -1,4 +1,4 @@
-import { Status, Wrapper } from "@googlemaps/react-wrapper";
+import { Wrapper } from "@googlemaps/react-wrapper";
 import React, { useEffect, useState } from "react";
 import MqttClient from "../../../api/mqttClient";
 import * as call01JSON from "../../../assets/json/kec/gumi/call_01.json";
@@ -9,6 +9,7 @@ import * as returning03JSON from "../../../assets/json/kec/gumi/returning_03.jso
 import * as returning06JSON from "../../../assets/json/kec/gumi/returning_06.json";
 import * as temp01JSON from "../../../assets/json/kec/gumi/temp_01.json";
 import * as temp02JSON from "../../../assets/json/kec/gumi/temp_02.json";
+import * as temp03JSON from "../../../assets/json/kec/gumi/temp_03.json";
 import KECRequestComponent from "../../../components/kec/request/KECRequestComponent";
 import GoogleMapComponent from "../../../components/map/GoogleMapComponent";
 import TopComponent from "../../../components/top/TopComponent";
@@ -66,12 +67,16 @@ const KECDashBoardPage: React.FC<KECDashBoardPageProps> = ({
         onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, buildPathJSON(returning06JSON));
     }
 
-    const onTemp1Click = (): void => {
+    const onTemp01Click = (): void => {
         onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, buildPathJSON(temp01JSON));
     }
 
-    const onTemp2Click = (): void => {
+    const onTemp02Click = (): void => {
         onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, buildPathJSON(temp02JSON));
+    }
+
+    const onTemp03Click = (): void => {
+        onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, buildPathJSON(temp03JSON));
     }
 
     useEffect(() => {
@@ -101,8 +106,9 @@ const KECDashBoardPage: React.FC<KECDashBoardPageProps> = ({
                     onCall04Click={onCall04Click}
                     onDelivery05NCall05Click={onDelivery05NCall05Click}
                     onWaiting06Click={onWaiting06Click}
-                    onTemp01Click={onTemp1Click}
-                    onTemp02Click={onTemp2Click}
+                    onTemp01Click={onTemp01Click}
+                    onTemp02Click={onTemp02Click}
+                    onTemp03Click={onTemp03Click}
                 />
             </div>
         </div>
