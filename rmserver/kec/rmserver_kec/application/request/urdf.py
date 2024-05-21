@@ -9,7 +9,7 @@ from typing import Any;
 from typing import Dict;
 
 
-MQTT_URDF_RESPONSE_TOPIC: str = "/rms/ktp/dummy/response/urdf";
+MQTT_URDF_RESPONSE_TOPIC: str = "/rmviz/response/urdf";
 
 
 class URDFProcessor:

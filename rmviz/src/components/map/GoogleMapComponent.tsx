@@ -236,18 +236,20 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
 
     useEffect((): void => {
         if (state.gps) {
-            const gpsStatus: any | undefined = state.gps.status;
-            setCurrentGps({
-                status: gpsStatus?.status,
-                service: gpsStatus?.service,
-                longitude: parseFloat(state.gps.longitude?.toFixed(7)),
-                latitude: parseFloat(state.gps.latitude?.toFixed(7))
-            });
+            if (!isNaN(state.gps.latitude) && !isNaN(state.gps.longitude)) {
+                const gpsStatus: any | undefined = state.gps.status;
+                setCurrentGps({
+                    status: gpsStatus?.status,
+                    service: gpsStatus?.service,
+                    longitude: parseFloat(state.gps.longitude?.toFixed(7)),
+                    latitude: parseFloat(state.gps.latitude?.toFixed(7))
+                });
 
-            if (currRobotMarker) {
-                if (state.gps.longitude !== 0.0 && state.gps.latitude !== 0.0) {
-                    currRobotMarker!.setPosition(new google.maps.LatLng(state.gps.latitude, state.gps.longitude));
-                } else return;
+                if (currRobotMarker) {
+                    if (state.gps.longitude !== 0.0 && state.gps.latitude !== 0.0) {
+                        currRobotMarker!.setPosition(new google.maps.LatLng(state.gps.latitude, state.gps.longitude));
+                    } else return;
+                }
             }
         }
     }, [state.gps]);
@@ -343,6 +345,29 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
             }
         }
     }, [state.routeStatus]);
+
+    useEffect((): void => {
+        let count: number = 0;
+
+        if (state.cmdVel) {
+            console.info(`cmdVel : ${JSON.stringify(state.cmdVel)}`);
+
+            if (currentGps) {
+                // if (state.cmdVel.linear.x > 0.0) {
+                //     const circle: google.maps.Circle = new google.maps.Circle({
+                //         map: googleMap,
+                //         center: new google.maps.LatLng(currentGps.latitude, currentGps.longitude),
+                //         strokeColor: "#FF0000",
+                //         strokeOpacity: 0.8,
+                //         strokeWeight: 2,
+                //         fillColor: "#FF0000",
+                //         fillOpacity: 0.35,
+                //         radius: 1
+                //     });
+                // }
+            }
+        }
+    }, [state.cmdVel]);
 
     useEffect((): void => {
         if (googleMap) {

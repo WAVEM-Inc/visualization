@@ -11,8 +11,8 @@ from rmserver_kec.application.message.conversion import ros_message_to_json;
 
 
 MQTT_DEFAULT_QOS: int = 0;
-MQTT_ERROR_REPORT_RESPONSE_TOPIC: str = "/rms/ktp/dummy/response/error_report";
-MQTT_CONTROL_REPORT_RESPONSE_TOPIC: str = "/rms/ktp/dummy/response/control_report";
+MQTT_ERROR_REPORT_RESPONSE_TOPIC: str = "/rmviz/response/error_report";
+MQTT_CONTROL_REPORT_RESPONSE_TOPIC: str = "/rmviz/response/control_report";
 
 ERROR_REPORT_TOPIC_NAME: str = "/rms/ktp/data/error_report";
 CONTROL_REPORT_TOPIC_NAME: str = "/rms/ktp/data/control_report";

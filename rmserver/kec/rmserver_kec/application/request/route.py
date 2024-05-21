@@ -28,8 +28,8 @@ from rmserver_kec.application.message.conversion import ros_message_to_json;
 from rmserver_kec.application.mqtt import Client;
 from rmserver_kec.domain.route import RouteStatus;
 
-MQTT_PATH_TOPIC: str = "/rms/ktp/dummy/response/path";
-MQTT_ROUTE_STATUS_TOPIC: str = "/rms/ktp/dummy/response/route/status";
+MQTT_PATH_TOPIC: str = "/rmviz/response/path";
+MQTT_ROUTE_STATUS_TOPIC: str = "/rmviz/response/route/status";
 
 ROUTE_TO_POSE_ACTION: str = "/route_to_pose";
 TASK_GOAL_CANCEL_TOPIC: str = "/rms/ktp/task/goal/cancel";

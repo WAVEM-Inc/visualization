@@ -7,20 +7,23 @@ from rclpy.timer import Timer;
 from sensor_msgs.msg import NavSatFix;
 from sensor_msgs.msg import BatteryState;
 from geometry_msgs.msg import PoseStamped;
+from geometry_msgs.msg import Twist;
 from rmserver_kec.application.mqtt import Client;
 from rmserver_kec.application.message.conversion import ros_message_to_json;
 from typing import Any;
 
 MQTT_DEFAULT_QOS: int = 0;
-MQTT_GPS_TOPIC: str = "/rms/ktp/dummy/response/gps";
-MQTT_GPS_FILTERED_TOPIC: str = "/rms/ktp/dummy/response/gps/filtered";
-MQTT_ODOM_EULAR_TOPIC: str = "/rms/ktp/dummy/response/odom/eular";
-MQTT_BATTERY_STATE_TOPIC: str = "/rms/ktp/dummy/response/battery/state";
+MQTT_GPS_TOPIC: str = "/rmviz/response/gps";
+MQTT_GPS_FILTERED_TOPIC: str = "/rmviz/response/gps/filtered";
+MQTT_ODOM_EULAR_TOPIC: str = "/rmviz/response/odom/eular";
+MQTT_BATTERY_STATE_TOPIC: str = "/rmviz/response/battery/state";
+MQTT_CMD_VEL_TOPIC: str = "/rmviz/response/cmd_vel";
 
 UBLOX_FIX_TOPIC_NAME: str = "/sensor/ublox/fix";
 GPS_FILTERED_TOPIC_NAME: str = "/gps/filtered";
 ODOM_EULAR_TOPIC_NAME: str = "/drive/odom/eular";
 BATTERY_STATE_TOPIC_NAME: str = "/sensor/battery/state";
+CMD_VEL_TOPIC_NAME: str = "/cmd_vel";
 
 
 class SensorProcessor:
@@ -73,6 +76,15 @@ class SensorProcessor:
             callback=self.battery_state_subscription_cb
         );
         
+        cmd_vel_subscription_cb_group: MutuallyExclusiveCallbackGroup = MutuallyExclusiveCallbackGroup();
+        self.__cmd_vel_subscription: Subscription = self.__node.create_subscription(
+            topic=CMD_VEL_TOPIC_NAME,
+            msg_type=Twist,
+            qos_profile=qos_profile_system_default,
+            callback_group=cmd_vel_subscription_cb_group,
+            callback=self.cmd_vel_subscription_cb
+        );
+        
         self.__odom_eular_payload: str = None;
         
     def ublox_fix_subscription_cb(self, ublox_fix_cb: NavSatFix) -> None:
@@ -96,6 +108,9 @@ class SensorProcessor:
     def battery_state_subscription_cb(self, battery_state_cb: BatteryState) -> None:
         payload: str = ros_message_to_json(log=self.__log, ros_message=battery_state_cb);
         self.__mqtt_client.publish(topic=MQTT_BATTERY_STATE_TOPIC, payload=payload, qos=0);
-        
+    
+    def cmd_vel_subscription_cb(self, cmd_vel_cb: Twist) -> None:
+        payload: str = ros_message_to_json(log=self.__log, ros_message=cmd_vel_cb);
+        self.__mqtt_client.publish(topic=MQTT_CMD_VEL_TOPIC, payload=payload, qos=0);
         
 __all__: list[str] = ["SensorProcessor"];
