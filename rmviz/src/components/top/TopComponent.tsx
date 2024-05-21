@@ -95,7 +95,7 @@ const TopComponent: React.FC<TopComponentProps> = ({
             {isDropdownView && <TopDropDownComponent />}
             <div className="top_logo">
                 <p className="top_logo_title">
-                    <Link className="top_logo_title_link" to={"/bluespace/dashboard"}>
+                    <Link className="top_logo_title_link" to={"/kec/dashboard"}>
                         RMViZ
                     </Link>
                 </p>

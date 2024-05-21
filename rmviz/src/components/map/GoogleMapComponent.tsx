@@ -3,7 +3,7 @@ import MqttClient from "../../api/mqttClient";
 import * as emergencyResumeJSON from "../../assets/json/common/emergency_resume.json";
 import * as emergencyStopJSON from "../../assets/json/common/emergency_stop.json";
 import { MapState } from "../../domain/map/MapDomain";
-import { addDetectionRangePolygon, addPathMarker, addPathPolyline, changeMapCenter, initializeMap, initializeRobotMarker, updateRobotMakerIcon } from "../../service/map/MapService";
+import { addDetectionRangePolygon, addPathMarker, addPathPolyline, changeMapCenter, initializeKECDBorderLine, initializeMap, initializeRobotMarker, updateRobotMakerIcon } from "../../service/map/MapService";
 import { onClickMqttPublish } from "../../utils/Utils";
 import "./GoogleMapComponent.css";
 
@@ -245,7 +245,7 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
             });
 
             if (currRobotMarker) {
-                if (state.gps.longitude != 0.0 && state.gps.latitude != 0.0) {
+                if (state.gps.longitude !== 0.0 && state.gps.latitude !== 0.0) {
                     currRobotMarker!.setPosition(new google.maps.LatLng(state.gps.latitude, state.gps.longitude));
                 } else return;
             }
@@ -348,6 +348,8 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
         if (googleMap) {
             const robotMarker: google.maps.Marker = initializeRobotMarker(googleMap);
             setCurrRobotMarker(robotMarker);
+
+            initializeKECDBorderLine(googleMap);
         }
     }, [googleMap]);
 

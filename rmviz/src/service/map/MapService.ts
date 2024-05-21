@@ -1,5 +1,4 @@
 import { faLocationArrow } from "@fortawesome/free-solid-svg-icons";
-import proj4 from "proj4";
 import { calculateVertices } from "../math/MathService";
 
 export const initializeMap: Function = (mapElement: HTMLElement, center: google.maps.LatLng): google.maps.Map => {
@@ -47,6 +46,20 @@ export const initializeRobotMarker: Function = (map: google.maps.Map): google.ma
     });
 
     return robotMarker;
+}
+
+export const initializeKECDBorderLine: Function = (map: google.maps.Map): void => {
+    const polyline: google.maps.Polyline = new google.maps.Polyline({
+        map: map,
+        path: [
+            new google.maps.LatLng(36.11387, 128.3687),
+            new google.maps.LatLng(36.11372, 128.3687)
+        ],
+        clickable: true,
+        strokeColor: "red",
+        strokeOpacity: 1.0,
+        strokeWeight: 5.0
+    });
 }
 
 export const changeMapCenter: Function = (map: google.maps.Map, coord: google.maps.LatLng): void => {
@@ -126,7 +139,7 @@ const getInfoWindowClickHandler: Function = (
         const marker: google.maps.Marker = pathMarkerArray[seq];
         const infoWindow: google.maps.InfoWindow = pathInfoWindowarray[seq];
 
-        if (isOpened == 0) {
+        if (isOpened === 0) {
             infoWindow.open(map!, marker);
             isOpened++;
         } else {

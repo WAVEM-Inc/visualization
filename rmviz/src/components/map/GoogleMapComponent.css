@@ -135,10 +135,10 @@
     background-color: green;
 }
 
-.iw_inner {
+.node_info_window {
     background-color: #fff;
-    width: 150px;
-    font-size: 15px;
+    width: 125px;
+    font-size: 13px;
 }
 
 @media screen and (min-width: 800px) and (min-height: 600px) and (max-width: 1099px) and (max-height: 799px) {
