@@ -7,9 +7,9 @@ import { SET_URDF, initalROSState, rosStateReducer } from "../../domain/ros/ROSD
 import { SET_BATTERY, SET_HEARTBEAT, initialTopState, topStateReducer } from "../../domain/top/TopDomain";
 import KECDashBoardPage from "../../page/kec/dashBoard/KECDashBoardPage";
 import KECDataBoardPage from "../../page/kec/databoard/KECDataBoardPage";
+import KECPathEditPage from "../../page/kec/path/KECPathEditPage";
 import KECROSPage from "../../page/kec/ros/KECROSPage";
 import { getCurrentTime } from "../../utils/Utils";
-import KECPathEditPage from "../../page/kec/path/KECPathEditPage";
 
 const DataController: React.FC = (): React.ReactElement<any, any> | null => {
     const [topState, topStateDispatch] = useReducer(topStateReducer, initialTopState);
@@ -32,6 +32,7 @@ const DataController: React.FC = (): React.ReactElement<any, any> | null => {
     const responseBatteryTopic: string = `${responseTopicFormat}/battery/state`;
     const responseURDFTopic: string = `${responseTopicFormat}/urdf`;
     const responseCmdVelTopic: string = `${responseTopicFormat}/cmd_vel`;
+    const responsePathFileSelectTopic: string = `${responseTopicFormat}/path/select`;
 
     const requiredResponseTopicList: Array<string> = [
         `${responseTopicFormat}/rbt_status`,
@@ -46,7 +47,7 @@ const DataController: React.FC = (): React.ReactElement<any, any> | null => {
     const handleResponseMQTTCallback = (mqttClient: MqttClient): void => {
         mqttClient.client.on("message", (topic: string, payload: Buffer, packet: IPublishPacket) => {
             const message: any = JSON.parse(payload.toString());
-            if (topic === responsePathTopic) {
+            if (topic === responsePathTopic || topic === responsePathFileSelectTopic) {
                 mapStateDistpatch({ type: SET_PATH, payload: message });
             } else if (topic === resposneGpsTopic) {
                 mapStateDistpatch({ type: SET_GPS, payload: message });
@@ -131,6 +132,7 @@ const DataController: React.FC = (): React.ReactElement<any, any> | null => {
         _mqttClient.subscribe(responseBatteryTopic);
         _mqttClient.subscribe(responseURDFTopic);
         _mqttClient.subscribe(responseCmdVelTopic);
+        _mqttClient.subscribe(responsePathFileSelectTopic);
 
         handleResponseMQTTCallback(_mqttClient);
         setUpResponseMQTTConnections(_mqttClient);

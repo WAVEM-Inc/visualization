@@ -397,7 +397,7 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
     return (
         <div className={"map_components"}>
             <div className={"map_container"}>
-                <div id="map"></div>
+                <div id="map" />
                 <div id="path_info_container" className="path_info_container" />
                 <div className="data_container">
                     <div className={"gps_data_container"}>

@@ -30,6 +30,7 @@ from rmserver_kec.domain.route import RouteStatus;
 
 MQTT_PATH_TOPIC: str = "/rmviz/response/path";
 MQTT_ROUTE_STATUS_TOPIC: str = "/rmviz/response/route/status";
+MQTT_SELECT_PATH_FILE_RESPONSE_TOPIC: str = "/rmviz/response/path/select";
 
 ROUTE_TO_POSE_ACTION: str = "/route_to_pose";
 TASK_GOAL_CANCEL_TOPIC: str = "/rms/ktp/task/goal/cancel";
@@ -464,6 +465,38 @@ class RouteProcessor:
             self.load_path();
             self.__log.info(f"{mqtt_topic} path renewed\n{json.dumps(obj=self.__path, indent=4)}");
             self.__log.info(f"=============================== Path Renewed ===============================");
+        except KeyError as ke:
+            self.__log.error(f"Invalid JSON Key in MQTT {mqtt_topic} subscription callback: {ke}");
+            return;
+
+        except json.JSONDecodeError as jde:
+            self.__log.error(f"Invalid JSON format in MQTT {mqtt_topic} subscription callback: {jde.msg}");
+            return;
+
+        except message_conversion.NonexistentFieldException as nefe:
+            self.__log.error(f"{mqtt_topic} : {nefe}");
+            return;
+        
+        except OSError as ose:
+            self.__log.error(f"{mqtt_topic} : {ose}");
+            return;
+        
+        except Exception as e:
+            self.__log.error(f"Exception in MQTT {mqtt_topic} subscription callback: {e}");
+            return;
+        
+    def mqtt_path_select_cb(self, mqtt_client: paho.Client, mqtt_user_data: Dict, mqtt_message: paho.MQTTMessage) -> None:
+        try:
+            mqtt_topic: str = mqtt_message.topic;
+            mqtt_decoded_payload: str = mqtt_message.payload.decode();
+            mqtt_json: Any = json.loads(mqtt_message.payload);
+            
+            
+            self.load_path();
+            payload: str = json.dumps(obj=self.__path, indent=4);
+            self.__log.info(f"=============================== Path Selected ===============================");
+            self.__log.info(f"{mqtt_topic} path selected\n{payload}");
+            self.__mqtt_client.publish(topic=MQTT_SELECT_PATH_FILE_RESPONSE_TOPIC, payload=payload, qos=0);
         except KeyError as ke:
             self.__log.error(f"Invalid JSON Key in MQTT {mqtt_topic} subscription callback: {ke}");
             return;
