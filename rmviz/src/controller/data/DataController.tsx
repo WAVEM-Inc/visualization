@@ -9,6 +9,7 @@ import KECDashBoardPage from "../../page/kec/dashBoard/KECDashBoardPage";
 import KECDataBoardPage from "../../page/kec/databoard/KECDataBoardPage";
 import KECROSPage from "../../page/kec/ros/KECROSPage";
 import { getCurrentTime } from "../../utils/Utils";
+import KECPathEditPage from "../../page/kec/path/KECPathEditPage";
 
 const DataController: React.FC = (): React.ReactElement<any, any> | null => {
     const [topState, topStateDispatch] = useReducer(topStateReducer, initialTopState);
@@ -141,7 +142,7 @@ const DataController: React.FC = (): React.ReactElement<any, any> | null => {
             };
             _mqttClient!.publish(requestHeartBeatTopic, JSON.stringify(heartBeatJSON));
         }, 1300);
-        
+
         setTimeout(() => {
             const isMqttConnected: boolean = _mqttClient.isConnected();
             if (!isMqttConnected) {
@@ -149,13 +150,13 @@ const DataController: React.FC = (): React.ReactElement<any, any> | null => {
             }
         }, 5000);
     }, []);
-    
+
 
     return (
         <Switch>
             <Route exact path={"/kec/ros"}>
                 <KECROSPage
-                    mqttClient={mqttClient!} 
+                    mqttClient={mqttClient!}
                     topState={topState}
                     rosState={rosState}
                 />
@@ -171,6 +172,13 @@ const DataController: React.FC = (): React.ReactElement<any, any> | null => {
                 <KECDataBoardPage
                     topState={topState}
                     responseData={responseData}
+                />
+            </Route>
+            <Route exact path={"/kec/path"}>
+                <KECPathEditPage
+                    mqttClient={mqttClient!}
+                    topState={topState}
+                    mapState={mapState}
                 />
             </Route>
         </Switch>

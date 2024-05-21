@@ -15,6 +15,11 @@ const TopDropDownComponent: React.FC = () => {
                     ROS 보드
                 </Link>
             </li>
+            <li className="top_dropdown_menu">
+                <Link className="top_dropdown_menu_item" to={"/kec/path"}>
+                    경로 편집
+                </Link>
+            </li>
         </ul>
     )
 }

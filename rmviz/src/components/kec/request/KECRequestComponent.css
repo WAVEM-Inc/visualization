@@ -89,7 +89,9 @@
 @media screen and (min-width: 1799px) and (min-height: 900px) and (max-width: 2559px) and (max-height: 1079px) {
     .kec_btn_request {
         margin-top: 1.5%;
-        width: 15%;
+        width: 11%;
+        font-size: 13px;
+        font-weight: bold;
         height: 65px;
     }
 }

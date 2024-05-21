@@ -347,8 +347,6 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
     }, [state.routeStatus]);
 
     useEffect((): void => {
-        let count: number = 0;
-
         if (state.cmdVel) {
             console.info(`cmdVel : ${JSON.stringify(state.cmdVel)}`);
 

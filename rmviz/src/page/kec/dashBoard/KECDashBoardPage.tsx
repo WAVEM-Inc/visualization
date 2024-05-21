@@ -7,6 +7,8 @@ import * as delivery02JSON from "../../../assets/json/kec/gumi/delivery_02.json"
 import * as delivery05JSON from "../../../assets/json/kec/gumi/delivery_05.json";
 import * as returning03JSON from "../../../assets/json/kec/gumi/returning_03.json";
 import * as returning06JSON from "../../../assets/json/kec/gumi/returning_06.json";
+import * as temp01JSON from "../../../assets/json/kec/gumi/temp_01.json";
+import * as temp02JSON from "../../../assets/json/kec/gumi/temp_02.json";
 import KECRequestComponent from "../../../components/kec/request/KECRequestComponent";
 import GoogleMapComponent from "../../../components/map/GoogleMapComponent";
 import TopComponent from "../../../components/top/TopComponent";
@@ -64,19 +66,12 @@ const KECDashBoardPage: React.FC<KECDashBoardPageProps> = ({
         onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, buildPathJSON(returning06JSON));
     }
 
-    const googleMapRenderCallback = (status: Status) => {
-        switch (status) {
-            case Status.SUCCESS:
-                console.info("Succeeded to Load Google Map");
-                break;
-            case Status.LOADING:
-                break;
-            case Status.FAILURE:
-                console.info("Failed to Load Google Map");
-                break;
-        }
+    const onTemp1Click = (): void => {
+        onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, buildPathJSON(temp01JSON));
+    }
 
-        return <></>;
+    const onTemp2Click = (): void => {
+        onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, buildPathJSON(temp02JSON));
     }
 
     useEffect(() => {
@@ -91,7 +86,7 @@ const KECDashBoardPage: React.FC<KECDashBoardPageProps> = ({
                 />
             </div>
             <div className="map_component_container">
-                <Wrapper apiKey={`${process.env.GOOGLE_MAP_API_KEY}`} render={googleMapRenderCallback}>
+                <Wrapper apiKey={`${process.env.GOOGLE_MAP_API_KEY}`}>
                     <GoogleMapComponent
                         mqttClient={mqttClient!}
                         state={mapState}
@@ -106,6 +101,8 @@ const KECDashBoardPage: React.FC<KECDashBoardPageProps> = ({
                     onCall04Click={onCall04Click}
                     onDelivery05NCall05Click={onDelivery05NCall05Click}
                     onWaiting06Click={onWaiting06Click}
+                    onTemp01Click={onTemp1Click}
+                    onTemp02Click={onTemp2Click}
                 />
             </div>
         </div>
