@@ -15,19 +15,25 @@
     width: 15%;
     height: 15%;
     font-size: 17px;
-    background-color: #fff;
+    background-color: white;
     font-weight: bold;
+    color: black;
+    border: 2px solid black;
 }
 
 .kec_btn_request:hover {
     background-color: #ccc;
 }
 
-@media screen and (min-width: 800px) and (min-height: 600px) and (max-width: 1023px) and (max-height: 766px) {
+@media screen and (min-width: 800px) and (min-height: 600px) and (max-width: 1099px) and (max-height: 799px) {
+    .kec_request_btn_container {
+        margin-left: 1%;
+    }
     .kec_btn_request {
         margin-top: 1%;
-        font-size: 12px;
-        height: 30px;
+        font-size: 11px;
+        height: 50px;
+        width: 15%;
     }
 }
 
