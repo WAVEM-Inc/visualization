@@ -1,5 +1,55 @@
 import proj4 from "proj4";
 
+const EARTH_RADIUS = 6378137;
+
+function toDegrees(radians: number): number {
+    return radians * (180 / Math.PI);
+}
+
+export function calculateOffset(lat: number, lon: number, distance: number, bearing: number): { lat: number, lon: number } {
+    const angularDistance = distance / EARTH_RADIUS;
+    const bearingRad = toRadians(bearing);
+
+    const lat1 = toRadians(lat);
+    const lon1 = toRadians(lon);
+
+    const lat2 = Math.asin(
+        Math.sin(lat1) * Math.cos(angularDistance) +
+        Math.cos(lat1) * Math.sin(angularDistance) * Math.cos(bearingRad)
+    );
+
+    const lon2 = lon1 + Math.atan2(
+        Math.sin(bearingRad) * Math.sin(angularDistance) * Math.cos(lat1),
+        Math.cos(angularDistance) - Math.sin(lat1) * Math.sin(lat2)
+    );
+
+    return {
+        lat: toDegrees(lat2),
+        lon: toDegrees(lon2)
+    };
+}
+
+export function calculateBearing(lat1: number, lon1: number, lat2: number, lon2: number): number {
+    const lat1Rad = toRadians(lat1);
+    const lon1Rad = toRadians(lon1);
+    const lat2Rad = toRadians(lat2);
+    const lon2Rad = toRadians(lon2);
+
+    const dLon = lon2Rad - lon1Rad;
+
+    const y = Math.sin(dLon) * Math.cos(lat2Rad);
+    const x = Math.cos(lat1Rad) * Math.sin(lat2Rad) -
+              Math.sin(lat1Rad) * Math.cos(lat2Rad) * Math.cos(dLon);
+
+    let bearingRad = Math.atan2(y, x);
+    let bearingDeg = toDegrees(bearingRad);
+    
+    // 방위각이 0~360도 사이로 나오도록 보정
+    bearingDeg = (bearingDeg + 360) % 360;
+
+    return bearingDeg;
+}
+
 const toRadians: Function = (degrees: number): number => {
     return degrees * (Math.PI / 180);
 }
