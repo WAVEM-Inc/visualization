@@ -10,6 +10,11 @@ interface KECRequestComponentProps {
     onTemp01Click: () => void;
     onTemp02Click: () => void;
     onTemp03Click: () => void;
+    onDeliveringMissionClick: () => void;
+    onReturningMissionClick: () => void;
+    onControlMoveToDestClick: () => void;
+    onControlMsCompleteReturnClick: () => void;
+    onControlMsCompleteNoReturnClick: () => void;
 }
 
 const KECRequestComponent: React.FC<KECRequestComponentProps> = ({
@@ -21,7 +26,12 @@ const KECRequestComponent: React.FC<KECRequestComponentProps> = ({
     onWaiting06Click,
     onTemp01Click,
     onTemp02Click,
-    onTemp03Click
+    onTemp03Click,
+    onDeliveringMissionClick,
+    onReturningMissionClick,
+    onControlMoveToDestClick,
+    onControlMsCompleteReturnClick,
+    onControlMsCompleteNoReturnClick
 }: KECRequestComponentProps) => {
     return (
         <div className="">
@@ -35,6 +45,11 @@ const KECRequestComponent: React.FC<KECRequestComponentProps> = ({
                 <button className={"kec_btn_request"} onClick={onTemp01Click}>임시 경로 - 1</button>
                 <button className={"kec_btn_request"} onClick={onTemp02Click}>임시 경로 - 2</button>
                 <button className={"kec_btn_request"} onClick={onTemp03Click}>임시 경로 - 3</button>
+                <button className={"kec_btn_request"} onClick={onDeliveringMissionClick}>배송 임무 할당</button>
+                <button className={"kec_btn_request"} onClick={onReturningMissionClick}>복귀 임무 할당</button>
+                <button className={"kec_btn_request"} onClick={onControlMoveToDestClick}>하차지 이동 제어</button>
+                <button className={"kec_btn_request"} onClick={onControlMsCompleteReturnClick}>대기 장소 복귀 제어</button>
+                <button className={"kec_btn_request"} onClick={onControlMsCompleteNoReturnClick}>대기 장소 미복귀 제어</button>
             </div>
         </div>
     );

@@ -4,7 +4,6 @@ import * as emergencyResumeJSON from "../../assets/json/common/emergency_resume.
 import * as emergencyStopJSON from "../../assets/json/common/emergency_stop.json";
 import { MapState } from "../../domain/map/MapDomain";
 import { addDetectionRangePolygon, addPathMarker, addPathPolyline, changeMapCenter, initializeKECDBorderLine, initializeMap, initializeRobotMarker, updateRobotMakerIcon } from "../../service/map/MapService";
-import { calculateOffset } from "../../service/math/MathService";
 import { onClickMqttPublish } from "../../utils/Utils";
 import "./GoogleMapComponent.css";
 
@@ -45,6 +44,7 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
     const requestGPSInitTopic: string = `${requestTopicFormat}/gps/init`;
     const requestCanInitTopic: string = `${requestTopicFormat}/can/init`;
     const requestPathRenewTopic: string = `${requestTopicFormat}/path/renew`;
+    const requestTaskTopic: string =`${requestTopicFormat}/task`;
 
     const drawPathMarker: Function = (): void => {
         if (state.path) {
@@ -378,13 +378,17 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
             // 36.113806562688765, 128.3675346220269
             // 36.11370954463808, 128.3675346220269
 
-            const newCoords = calculateOffset(36.11370954461467, 128.36745956308556, 19.7, 240);
-            console.info(`newCoord : ${JSON.stringify(newCoords)}`);
+            // const newCoords = calculateOffset(36.11370954461467, 128.36745956308556, 19.7, 240);
+            // console.info(`newCoord : ${JSON.stringify(newCoords)}`);
 
-            new google.maps.Marker({
-                map: googleMap,
-                position: new google.maps.LatLng(newCoords.lat, newCoords.lon)
-            });
+            // const angle = calculateBearing(36.1137154, 128.368048, 36.1137132, 128.3677302);
+            // console.info(`angle : ${angle}`);
+            // alert(`angle : ${angle}`);
+
+            // new google.maps.Marker({
+            //     map: googleMap,
+            //     position: new google.maps.LatLng(newCoords.lat, newCoords.lon)
+            // });
         }
     }, [googleMap]);
 

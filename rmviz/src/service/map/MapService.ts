@@ -220,7 +220,7 @@ export const addDetectionRangePolygon: Function = (
     nodeList: Array<any>
 ): Array<google.maps.Polygon> => {
     const detectionRangePolygonArray: Array<google.maps.Polygon> = [];
-    const nonEmptyDetectionRanges: any[] = nodeList.filter(node => node.detectionRange.length > 0);
+    const nonEmptyDetectionRanges: any[] = nodeList.filter(node => Array.from(node.detectionRange).length > 0);
 
     for (const d of nonEmptyDetectionRanges) {
         console.info(`d : ${JSON.stringify(d)}`);

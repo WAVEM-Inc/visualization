@@ -10,6 +10,11 @@ import * as returning06JSON from "../../../assets/json/kec/gumi/returning_06.jso
 import * as temp01JSON from "../../../assets/json/kec/gumi/temp_01.json";
 import * as temp02JSON from "../../../assets/json/kec/gumi/temp_02.json";
 import * as temp03JSON from "../../../assets/json/kec/gumi/temp_03.json";
+import * as controlMoveToDestJSON from "../../../assets/json/control_movetodest.json";
+import * as controlMsCompleteNoReturnJSON from "../../../assets/json/control_mscomplete_no_return.json";
+import * as controlMsCompleteReturnJSON from "../../../assets/json/control_mscomplete_return.json";
+import * as deliveringMissionJSON from "../../../assets/json/mission_delivering.json";
+import * as retunringMissionJSON from "../../../assets/json/mission_returning.json";
 import KECRequestComponent from "../../../components/kec/request/KECRequestComponent";
 import GoogleMapComponent from "../../../components/map/GoogleMapComponent";
 import TopComponent from "../../../components/top/TopComponent";
@@ -79,6 +84,26 @@ const KECDashBoardPage: React.FC<KECDashBoardPageProps> = ({
         onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, buildPathJSON(temp03JSON));
     }
 
+    const onDeliveringMissionClick = (): void => {
+        onClickMqttPublish(mqttClient!, requestTaskTopic, deliveringMissionJSON);
+    }
+
+    const onReturningMissionClick = (): void => {
+        onClickMqttPublish(mqttClient!, requestTaskTopic, retunringMissionJSON);
+    }
+
+    const onControlMoveToDestClick = (): void => {
+        onClickMqttPublish(mqttClient!, requestTaskTopic, controlMoveToDestJSON);
+    }
+
+    const onControlMsCompleteReturnClick = (): void => {
+        onClickMqttPublish(mqttClient!, requestTaskTopic, controlMsCompleteReturnJSON);
+    }
+
+    const onControlMsCompleteNoReturnClick = (): void => {
+        onClickMqttPublish(mqttClient!, requestTaskTopic, controlMsCompleteNoReturnJSON);
+    }
+
     useEffect(() => {
         setIsEnableToCommandRoute(localStorage.getItem("isEnableToCommandRoute?"));
     }, [localStorage.getItem("isEnableToCommandRoute?")]);
@@ -109,6 +134,11 @@ const KECDashBoardPage: React.FC<KECDashBoardPageProps> = ({
                     onTemp01Click={onTemp01Click}
                     onTemp02Click={onTemp02Click}
                     onTemp03Click={onTemp03Click}
+                    onDeliveringMissionClick={onDeliveringMissionClick}
+                    onReturningMissionClick={onReturningMissionClick}
+                    onControlMoveToDestClick={onControlMoveToDestClick}
+                    onControlMsCompleteReturnClick={onControlMsCompleteReturnClick}
+                    onControlMsCompleteNoReturnClick={onControlMsCompleteNoReturnClick}
                 />
             </div>
         </div>
