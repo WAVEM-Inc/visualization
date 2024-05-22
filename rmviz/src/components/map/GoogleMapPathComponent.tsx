@@ -48,7 +48,7 @@ const GoogleMapPathComponent: React.FC<GoogleMapPathComponentProps> = ({
     }, [state.path]);
 
     useEffect(() => {
-        const mapElement: HTMLElement | null = document.getElementById("map");
+        const mapElement: HTMLElement | null = document.getElementById("path_map");
 
         if (mapElement) {
             const mapInstance: google.maps.Map = initializeMap(mapElement, kecCoord);
@@ -67,9 +67,9 @@ const GoogleMapPathComponent: React.FC<GoogleMapPathComponentProps> = ({
     }, []);
 
     return (
-        <div className={"map_components"}>
-            <div className={"map_container"}>
-                <div id="map" />
+        <div className={"path_map_components"}>
+            <div className={"path_map_container"}>
+                <div id="path_map" />
                 <div id="path_info_container" className="path_info_container" />
                 <div className="path_data_container">
                     <div className={"path_select_container"}>

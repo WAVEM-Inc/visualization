@@ -8,7 +8,7 @@ from typing import Dict;
 from typing import Any;
 from rmserver_kec.application.mqtt import Client;
 
-MQTT_HEARTBEAT_RESPONSE_TOPIC: str = "/rms/ktp/dummy/response/heartbeat";
+MQTT_HEARTBEAT_RESPONSE_TOPIC: str = "/rmviz/response/heartbeat";
 
 
 class HeartBeatProcessor:

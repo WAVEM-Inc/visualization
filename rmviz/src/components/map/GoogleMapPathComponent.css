@@ -1,4 +1,4 @@
-/* .map_container {
+.path_map_container {
     display: flex;
     justify-content: space-between;
     width: 100%;
@@ -6,7 +6,7 @@
     border-bottom: 2px solid #ccc;
 }
 
-#map {
+#path_map {
     width: 65%;
     min-height: 100%;
     height: 100%;
@@ -107,4 +107,4 @@
 
 .route_btn_request:hover {
     background-color: #ccc;
-} */
+}
