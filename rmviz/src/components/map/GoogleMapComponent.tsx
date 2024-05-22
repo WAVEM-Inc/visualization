@@ -39,7 +39,7 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
     const [currentOdomEular, setCurrentOdomEular] = useState<number>();
     const [currentRouteStatus, setCurrentRouteStatus] = useState<any | null>(null);
 
-    const requestTopicFormat: string = "/rms/ktp/dummy/request";
+    const requestTopicFormat: string = "/rmviz/request";
     const requestEmergencyTopic: string = `${requestTopicFormat}/can/emergency`;
     const requestGoalCancelTopic: string = `${requestTopicFormat}/goal/cancel`;
     const requestGPSInitTopic: string = `${requestTopicFormat}/gps/init`;
@@ -378,16 +378,16 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
             // 36.113806562688765, 128.3675346220269
             // 36.11370954463808, 128.3675346220269
 
-            const newCoords = calculateOffset(36.11370954463808, 128.3675346220269, 6.75, 270);
-            console.info(`newCoord : ${JSON.stringify(newCoords)}`);
+            // const newCoords = calculateOffset(36.11370954463808, 128.3675346220269, 6.75, 270);
+            // console.info(`newCoord : ${JSON.stringify(newCoords)}`);
 
-            const angle = calculateBearing(36.113806562781576, 128.3673255687172, newCoords.lat, newCoords.lon);
-            console.info(`angle : ${angle}`);
+            // const angle = calculateBearing(36.113806562781576, 128.3673255687172, newCoords.lat, newCoords.lon);
+            // console.info(`angle : ${angle}`);
 
-            new google.maps.Marker({
-                map: googleMap,
-                position: new google.maps.LatLng(newCoords.lat, newCoords.lon)
-            });
+            // new google.maps.Marker({
+            //     map: googleMap,
+            //     position: new google.maps.LatLng(newCoords.lat, newCoords.lon)
+            // });
         }
     }, [googleMap]);
 
