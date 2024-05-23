@@ -13,6 +13,7 @@ import * as temp03JSON from "../../../assets/json/kec/gumi/temp_03.json";
 import * as controlMoveToDestJSON from "../../../assets/json/control_movetodest.json";
 import * as controlMsCompleteNoReturnJSON from "../../../assets/json/control_mscomplete_no_return.json";
 import * as controlMsCompleteReturnJSON from "../../../assets/json/control_mscomplete_return.json";
+import * as controlGrapySyncJSON from "../../../assets/json/control_graphsync.json";
 import * as deliveringMissionJSON from "../../../assets/json/mission_delivering.json";
 import * as retunringMissionJSON from "../../../assets/json/mission_returning.json";
 import KECRequestComponent from "../../../components/kec/request/KECRequestComponent";
@@ -104,6 +105,10 @@ const KECDashBoardPage: React.FC<KECDashBoardPageProps> = ({
         onClickMqttPublish(mqttClient!, requestTaskTopic, controlMsCompleteNoReturnJSON);
     }
 
+    const onControlGraphSyncClick = (): void => {
+        onClickMqttPublish(mqttClient!, requestTaskTopic, controlGrapySyncJSON);
+    }
+
     useEffect(() => {
         setIsEnableToCommandRoute(localStorage.getItem("isEnableToCommandRoute?"));
     }, [localStorage.getItem("isEnableToCommandRoute?")]);
@@ -139,6 +144,7 @@ const KECDashBoardPage: React.FC<KECDashBoardPageProps> = ({
                     onControlMoveToDestClick={onControlMoveToDestClick}
                     onControlMsCompleteReturnClick={onControlMsCompleteReturnClick}
                     onControlMsCompleteNoReturnClick={onControlMsCompleteNoReturnClick}
+                    onControlGraphSyncClick={onControlGraphSyncClick}
                 />
             </div>
         </div>

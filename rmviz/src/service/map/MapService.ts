@@ -97,6 +97,8 @@ export const addPathMarker: Function = (
         iconUrl = process.env.PUBLIC_URL + "../marker_start.png";
     } else if (!is_start && is_end) {
         iconUrl = process.env.PUBLIC_URL + "../marker_arrive.png";
+    } else if (node.kind === "intersection") {
+        iconUrl = process.env.PUBLIC_URL + "../marker_intersection.png";
     } else {
         iconUrl = process.env.PUBLIC_URL + "../marker_landmark.png";
     }

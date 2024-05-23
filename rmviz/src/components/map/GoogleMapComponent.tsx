@@ -62,8 +62,9 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
                     const nextNode: any = nodeList[currentNodeIndex + 1];
                     const nextNodeIndex: number = nodeList.indexOf(nextNode);
 
-                    const isFirstNode = currentNodeIndex === 0;
-                    const isLastNode = currentNodeIndex === nodeList.length - 1;
+                    const isFirstNode: boolean = currentNodeIndex === 0;
+                    const isLastNode: boolean = currentNodeIndex === nodeList.length - 1;
+                    const isIntersectionNode: boolean = node.kind === "intersection";
 
                     if (isFirstNode) {
                         pathMarkerArray.push(addPathMarker(googleMap, node, true, false));
@@ -84,13 +85,21 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
                         } else if (isLastNode) {
                             startNodeIconUrl = process.env.PUBLIC_URL + "../marker_arrive.png";
                         } else {
-                            startNodeIconUrl = process.env.PUBLIC_URL + "../marker_landmark.png";
+                            if (isIntersectionNode) {
+                                startNodeIconUrl = process.env.PUBLIC_URL + "../marker_intersection.png";
+                            } else {
+                                startNodeIconUrl = process.env.PUBLIC_URL + "../marker_landmark.png";
+                            }
                         }
 
                         if (nextNodeIndex === nodeList.length - 1) {
                             endNodeIconUrl = process.env.PUBLIC_URL + "../marker_arrive.png";
                         } else {
-                            endNodeIconUrl = process.env.PUBLIC_URL + "../marker_landmark.png";
+                            if (isIntersectionNode) {
+                                endNodeIconUrl = process.env.PUBLIC_URL + "../marker_intersection.png";
+                            } else {
+                                endNodeIconUrl = process.env.PUBLIC_URL + "../marker_landmark.png";
+                            }
                         }
                     } else {
                         return;

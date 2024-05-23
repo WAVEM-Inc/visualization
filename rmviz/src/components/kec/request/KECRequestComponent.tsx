@@ -15,6 +15,7 @@ interface KECRequestComponentProps {
     onControlMoveToDestClick: () => void;
     onControlMsCompleteReturnClick: () => void;
     onControlMsCompleteNoReturnClick: () => void;
+    onControlGraphSyncClick: () => void;
 }
 
 const KECRequestComponent: React.FC<KECRequestComponentProps> = ({
@@ -31,7 +32,8 @@ const KECRequestComponent: React.FC<KECRequestComponentProps> = ({
     onReturningMissionClick,
     onControlMoveToDestClick,
     onControlMsCompleteReturnClick,
-    onControlMsCompleteNoReturnClick
+    onControlMsCompleteNoReturnClick,
+    onControlGraphSyncClick
 }: KECRequestComponentProps) => {
     return (
         <div className="">
@@ -50,6 +52,7 @@ const KECRequestComponent: React.FC<KECRequestComponentProps> = ({
                 <button className={"kec_btn_request"} onClick={onControlMoveToDestClick}>하차지 이동 제어</button>
                 <button className={"kec_btn_request"} onClick={onControlMsCompleteReturnClick}>대기 장소 복귀 제어</button>
                 <button className={"kec_btn_request"} onClick={onControlMsCompleteNoReturnClick}>대기 장소 미복귀 제어</button>
+                <button className={"kec_btn_request"} onClick={onControlGraphSyncClick}>그래프 제어</button>
             </div>
         </div>
     );
