@@ -67,8 +67,11 @@ class TaskProcessor:
         #                               f"\n\tdetected_object : {get_detected_object_flag()}");
         
         if get_control_callback_flag():
-            if "return" in get_control()["control_data"]:
-                get_control()["control_data"]["is_return"] = get_control()["control_data"].pop("return");
+            if "control_data" in get_control():
+                if "return" in get_control()["control_data"]:
+                    get_control()["control_data"]["is_return"] = get_control()["control_data"].pop("return");
+                else:
+                    pass;
             else:
                 pass;
             control: Control = message_conversion.populate_instance(msg=get_control(), inst=Control());
