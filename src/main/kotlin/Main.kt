@@ -19,9 +19,12 @@ import application.connect.UdpClient
 import application.manager.EvizWindowManager
 import application.type.EvizConfigManager
 import essys_middle.Dashboard
+import essys_middle.Mobileye
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import ui.component.setting.lidar.LidarOption
+import ui.component.setting.obstacle.ObstacleOptionCache
 import ui.component.title.EvizTitleBar
 import ui.layout.MainLayout
 import ui.theme.Navy_100
@@ -36,6 +39,8 @@ fun App() {
     LaunchedEffect(Unit) {
         println(getDefaultCachePath())
         EvizConfigManager
+        LidarOption
+        ObstacleOptionCache
 
         val client = UdpClient()
         val cs = CoroutineScope(Dispatchers.Main)
@@ -68,6 +73,12 @@ fun App() {
             override fun onDashboardReceive(message: Dashboard.VehicleSignal) {
                 cs.launch {
                     UdpDataViewModel.updateVehicleSignal(message)
+                }
+            }
+
+            override fun onMobileyeReceived(message: Mobileye.MobileyeData) {
+                cs.launch {
+                    UdpDataViewModel.updateMobileye(message)
                 }
             }
         })

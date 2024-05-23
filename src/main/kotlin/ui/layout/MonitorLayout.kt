@@ -9,7 +9,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import ui.component.common.EvizVerticalResizableLayout
 import ui.component.monitor.MonitorMode
 import ui.component.monitor.MonitorModeButton
@@ -17,6 +20,7 @@ import ui.component.monitor.MonitorTextField
 import ui.theme.Gray
 import ui.theme.White_100
 import ui.theme.White_200
+import utils.ProjUtil
 import viewmodel.UdpDataViewModel
 import java.time.Instant
 import java.time.LocalDateTime
@@ -60,42 +64,54 @@ private fun VerticalMonitorLayout(
     val lidarContents = remember { mutableStateListOf<String>() }
     val cameraContents = remember { mutableStateListOf<String>() }
 
+    var gpsTime = remember { mutableStateOf(0) }
+
     LaunchedEffect(true) {
-        UdpDataViewModel.subscribeLocalization(collector = { localization ->
-            val current = LocalDateTime.now()
-            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss")
-            val formatted = current.format(formatter)
+        CoroutineScope(Dispatchers.Default).launch {
+            UdpDataViewModel.subscribeLocalization(collector = { localization ->
+                val current = LocalDateTime.now()
+                val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss")
+                val formatted = current.format(formatter)
 
-            gpsContents.add("${formatted}, Lat: ${localization.pose.position.x}, Lng: ${localization.pose.position.y}")
-        })
+                val wgs84 = ProjUtil.utmToWgs84(localization.pose.position.x, localization.pose.position.y)
 
-        UdpDataViewModel.subscribePointCloud(collector = { points ->
-            val current = LocalDateTime.now()
-            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss")
-            val formatted = current.format(formatter)
+                gpsTime.value = localization.measurementTime.toInt()
+                gpsContents.add("${formatted}, Lat: ${wgs84.latitude}, Lng: ${wgs84.longitude}")
+            })
+        }
 
-            lidarContents.add("${formatted}, Points Count: ${points.numCount}")
-        })
+        CoroutineScope(Dispatchers.Default).launch {
+            UdpDataViewModel.subscribePointCloud(collector = { points ->
+                val current = LocalDateTime.now()
+                val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss")
+                val formatted = current.format(formatter)
 
-        UdpDataViewModel.subscribeTrafficLight(collector = { lights ->
-            val current = LocalDateTime.now()
-            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss")
-            val formatted = current.format(formatter)
+                lidarContents.add("${formatted}, Points Count: ${points.numCount}")
+            })
+        }
 
-            val red = if (lights.red.number == 0) "X" else "O"
-            val yellow = if (lights.yellow.number == 0) "X" else "O"
-            val left = if (lights.left.number == 0) "X" else "O"
-            val green = if (lights.green.number == 0) "X" else "O"
+        CoroutineScope(Dispatchers.Default).launch {
+            UdpDataViewModel.subscribeTrafficLight(collector = { lights ->
+                val current = LocalDateTime.now()
+                val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss")
+                val formatted = current.format(formatter)
 
-            cameraContents.add("${formatted}, RED: ${red}, YELLOW: ${yellow}, LEFT: ${left}, GREEN: ${green}")
-        })
+                val red = if (lights.red.number == 0) "X" else "O"
+                val yellow = if (lights.yellow.number == 0) "X" else "O"
+                val left = if (lights.left.number == 0) "X" else "O"
+                val green = if (lights.green.number == 0) "X" else "O"
+
+                cameraContents.add("${formatted}, RED: ${red}, YELLOW: ${yellow}, LEFT: ${left}, GREEN: ${green}")
+                println(lights.toString())
+            })
+        }
     }
 
     Box(modifier = modifier) {
         Column(Modifier.fillMaxSize().verticalScroll(scrollState).padding(16.dp).padding(end = 32.dp)) {
             MonitorTextField(
                 title = "GPS Data",
-                info = "GPS UTC Time: 1641363045",
+                info = "GPS UTC Time: ${gpsTime.value}",
                 infoList = listOf("RTK Status: RTK_FIXED", "INS Status: INS_GOOD", "SOL Status: SOL_GOOD"),
                 contents = gpsContents,
                 modifier = Modifier.fillMaxHeight().weight(1f).padding(horizontal = 16.dp)
@@ -147,42 +163,54 @@ private fun HorizontalMonitorLayout(
     val lidarContents = remember { mutableStateListOf<String>() }
     val cameraContents = remember { mutableStateListOf<String>() }
 
+    var gpsTime = remember { mutableStateOf(0) }
+
     LaunchedEffect(true) {
-        UdpDataViewModel.subscribeLocalization(collector = { localization ->
-            val current = LocalDateTime.now()
-            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss")
-            val formatted = current.format(formatter)
+        CoroutineScope(Dispatchers.Default).launch {
+            UdpDataViewModel.subscribeLocalization(collector = { localization ->
+                val current = LocalDateTime.now()
+                val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss")
+                val formatted = current.format(formatter)
 
-            gpsContents.add("${formatted}, Lat: ${localization.pose.position.x}, Lng: ${localization.pose.position.y}")
-        })
+                val wgs84 = ProjUtil.utmToWgs84(localization.pose.position.x, localization.pose.position.y)
 
-        UdpDataViewModel.subscribePointCloud(collector = { points ->
-            val current = LocalDateTime.now()
-            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss")
-            val formatted = current.format(formatter)
+                gpsTime.value = localization.measurementTime.toInt()
+                gpsContents.add("${formatted}, Lat: ${wgs84.latitude}, Lng: ${wgs84.longitude}")
+            })
+        }
 
-            lidarContents.add("${formatted}, Points Count: ${points.numCount}")
-        })
+        CoroutineScope(Dispatchers.Default).launch {
+            UdpDataViewModel.subscribePointCloud(collector = { points ->
+                val current = LocalDateTime.now()
+                val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss")
+                val formatted = current.format(formatter)
 
-        UdpDataViewModel.subscribeTrafficLight(collector = { lights ->
-            val current = LocalDateTime.now()
-            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss")
-            val formatted = current.format(formatter)
+                lidarContents.add("${formatted}, Points Count: ${points.numCount}")
+            })
+        }
 
-            val red = if (lights.red.number == 0) "X" else "O"
-            val yellow = if (lights.yellow.number == 0) "X" else "O"
-            val left = if (lights.left.number == 0) "X" else "O"
-            val green = if (lights.green.number == 0) "X" else "O"
+        CoroutineScope(Dispatchers.Default).launch {
+            UdpDataViewModel.subscribeTrafficLight(collector = { lights ->
+                val current = LocalDateTime.now()
+                val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss")
+                val formatted = current.format(formatter)
 
-            cameraContents.add("${formatted}, RED: ${red}, YELLOW: ${yellow}, LEFT: ${left}, GREEN: ${green}")
-        })
+                val red = if (lights.red.number == 0) "X" else "O"
+                val yellow = if (lights.yellow.number == 0) "X" else "O"
+                val left = if (lights.left.number == 0) "X" else "O"
+                val green = if (lights.green.number == 0) "X" else "O"
+
+                cameraContents.add("${formatted}, RED: ${red}, YELLOW: ${yellow}, LEFT: ${left}, GREEN: ${green}")
+                println(lights.toString())
+            })
+        }
     }
 
     Box(modifier = modifier) {
         Row(Modifier.fillMaxSize().horizontalScroll(scrollState).padding(16.dp).padding(end = 32.dp)) {
             MonitorTextField(
                 title = "GPS Data",
-                info = "GPS UTC Time: 1641363045",
+                info = "GPS UTC Time: ${gpsTime.value}",
                 infoList = listOf("RTK Status: RTK_FIXED", "INS Status: INS_GOOD", "SOL Status: SOL_GOOD"),
                 contents = gpsContents,
                 modifier = Modifier.fillMaxHeight().weight(1f).padding(horizontal = 16.dp)

@@ -6,6 +6,8 @@ import apollo.perception.PerceptionObstacleOuterClass.PerceptionObstacles
 import application.type.msg.ProtoMessageType
 import essys_middle.Dashboard.TrafficLight
 import essys_middle.Dashboard.VehicleSignal
+import essys_middle.Mobileye
+import essys_middle.Mobileye.MobileyeData
 import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.InetSocketAddress
@@ -27,6 +29,7 @@ class UdpClient {
         fun onTrafficLightReceive(message: TrafficLight)
         fun onPointCloudReceive(message: PointCloudOuterClass.PointCloud)
         fun onDashboardReceive(message: VehicleSignal)
+        fun onMobileyeReceived(message: MobileyeData)
     }
 
 
@@ -76,6 +79,7 @@ class UdpClient {
                     ProtoMessageType.TRAFFIC_LIGHT -> listener.onTrafficLightReceive(TrafficLight.parseFrom(payload.second))
                     ProtoMessageType.POINT_CLOUD -> listener.onPointCloudReceive(PointCloudOuterClass.PointCloud.parseFrom(payload.second))
                     ProtoMessageType.VEHICLE_SIGNAL -> listener.onDashboardReceive(VehicleSignal.parseFrom(payload.second))
+                    ProtoMessageType.MOBIILEYE -> listener.onMobileyeReceived(MobileyeData.parseFrom(payload.second))
                     null -> println("Received not invalid data.")
                 }
             } catch (e: Exception) {

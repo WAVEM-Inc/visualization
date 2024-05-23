@@ -5,7 +5,8 @@ enum class ProtoMessageType(val type: Int) {
     OBSTACLE(2),
     TRAFFIC_LIGHT(3),
     POINT_CLOUD(4),
-    VEHICLE_SIGNAL(5);
+    VEHICLE_SIGNAL(5),
+    MOBIILEYE(6);
 
     companion object {
         @Throws

@@ -14,6 +14,7 @@ import ui.component.title.EvizTitleBar
 import ui.layout.DataRecordLayout
 import ui.layout.DataReplayLayout
 import ui.layout.MapLayout
+import ui.layout.MobileyeLayout
 import ui.theme.Navy_100
 import java.awt.Dimension
 
@@ -49,7 +50,7 @@ fun ApplicationScope.EvizWindow(
 
         when(type) {
             EvizWindowType.DATA_REPLAY -> DataReplayLayout(modifier = Modifier.fillMaxSize().background(Navy_100).padding(16.dp))
-            EvizWindowType.MOBILEYE -> println("Mobileye")
+            EvizWindowType.MOBILEYE -> MobileyeLayout(modifier = Modifier.fillMaxSize().background(Navy_100))
             EvizWindowType.DATA_RECORD -> DataRecordLayout(modifier = Modifier.fillMaxSize().background(Navy_100).padding(16.dp))
             EvizWindowType.MAP -> MapLayout()
         }

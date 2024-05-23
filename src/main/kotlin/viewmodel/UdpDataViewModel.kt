@@ -6,6 +6,7 @@ import apollo.perception.PerceptionObstacleOuterClass
 import apollo.perception.PerceptionObstacleOuterClass.PerceptionObstacles
 import essys_middle.Dashboard.TrafficLight
 import essys_middle.Dashboard.VehicleSignal
+import essys_middle.Mobileye.MobileyeData
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.lastOrNull
@@ -16,6 +17,7 @@ object UdpDataViewModel {
     private val localizationFlow = MutableSharedFlow<LocalizationEstimate>()
     private val vehicleSignalFlow = MutableSharedFlow<VehicleSignal>()
     private val trafficLightFlow = MutableSharedFlow<TrafficLight>()
+    private val mobileyeFlow = MutableSharedFlow<MobileyeData>()
 
     // Point Cloud Data
     suspend fun updatePointCloud(value: PointCloud) {
@@ -80,5 +82,17 @@ object UdpDataViewModel {
 
     suspend fun getTrafficLight(): TrafficLight? {
         return trafficLightFlow.lastOrNull()
+    }
+
+    suspend fun updateMobileye(value: MobileyeData) {
+        mobileyeFlow.emit(value)
+    }
+
+    suspend fun subscribeMobileye(collector: FlowCollector<MobileyeData>) {
+        mobileyeFlow.collect(collector)
+    }
+
+    suspend fun getMobileye(): MobileyeData? {
+        return mobileyeFlow.lastOrNull()
     }
 }

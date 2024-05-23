@@ -17,7 +17,7 @@ class PolyLineDrawer(
     val obstacleOption: ObstacleOption,
     val glu: GLU,
     val parentPanel: GLJPanel
-): GLDrawer {
+) : GLDrawer {
     override fun draw(gl: GL2) {
         for (objectData in objects) {
             gl.glBegin(GL2.GL_LINE_LOOP)
@@ -47,9 +47,6 @@ class PolyLineDrawer(
             var index = 0
 
             if (value != null) {
-                textRenderer.beginRendering(parentPanel.width, parentPanel.height)
-                textRenderer.setColor(1f, 1f, 1f, 1f)
-
                 if (obstacleOption.useId) {
                     renderText(gl, "ID: ${value.id}", index, objectData.value)
                     index++
@@ -73,6 +70,7 @@ class PolyLineDrawer(
 
                 if (obstacleOption.useSpeed) {
                     renderText(gl, "Speed: ${value.speed}", index, objectData.value)
+                    index++
                 }
 
                 if (obstacleOption.useHeading) {
@@ -88,18 +86,19 @@ class PolyLineDrawer(
                 if (obstacleOption.useRisk) {
                     renderText(gl, "Risk: ${value.risk}", index, objectData.value)
                 }
-
-                textRenderer.endRendering()
             }
         }
     }
 
     private fun renderText(gl: GL2, text: String, index: Int, objectData: Polygon) {
-        drawTextBillboard(gl, glu, textRenderer, text,
+        drawTextBillboard(
+            gl, glu, textRenderer, text,
             objectData.position.x.toFloat() + objectData.width.toFloat(),
-            objectData.position.y.toFloat() + objectData.height.toFloat() - (textRenderer.font.size * 0.025f * index),
-            objectData.position.z.toFloat()+ objectData.height.toFloat()
-            )
+            objectData.position.y.toFloat() + objectData.height.toFloat(),
+            objectData.position.z.toFloat() + objectData.height.toFloat(),
+            index
+        )
+//        drawTextBillboard(gl, glu, textRenderer, text)
 //        textRenderer.draw3D(
 //            text,
 //            objectData.position.x.toFloat() + objectData.width.toFloat(),
@@ -123,15 +122,26 @@ class PolyLineDrawer(
         return if (result) screenPos else null
     }
 
-    fun drawTextBillboard(gl: GL2, glu: GLU, textRenderer: TextRenderer, text: String, x: Float, y: Float, z: Float) {
+    fun drawTextBillboard(
+        gl: GL2,
+        glu: GLU,
+        textRenderer: TextRenderer,
+        text: String,
+        x: Float,
+        y: Float,
+        z: Float,
+        index: Int
+    ) {
         val screenPos = projectToScreen(gl, glu, x, y, z)
         if (screenPos != null) {
             val screenX = screenPos[0]
             val screenY = screenPos[1] // OpenGL's Y axis is inverted
 
             textRenderer.beginRendering(parentPanel.width, parentPanel.height)
-            textRenderer.setColor(1f, 1f, 1f, 1f)
-            textRenderer.draw(text, screenX.toInt(), screenY.toInt())
+            textRenderer.draw(
+                text, screenX.toInt(),
+                screenY.toInt() - (textRenderer.font.size * index)
+            )
             textRenderer.endRendering()
         }
     }

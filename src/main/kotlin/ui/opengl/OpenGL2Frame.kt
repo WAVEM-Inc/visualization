@@ -25,6 +25,7 @@ import ui.opengl.drawer.PolyLineDrawer
 import ui.opengl.math.Coordinate3D
 import ui.opengl.math.GLColor
 import ui.opengl.math.Polygon
+import ui.theme.colorTohex
 import ui.theme.hexToColor
 import utils.pointCloudToCoordinate3DList
 import viewmodel.ConfigDataViewModel
@@ -49,13 +50,14 @@ class OpenGL2Frame(val parentPanel: GLJPanel) : GLEventListener {
     private lateinit var textRenderer: TextRenderer
 
     val jobs = ArrayList<Job>()
+    var fontSize = 24
 
     override fun init(drawable: GLAutoDrawable) {
         val gl = drawable.gl.gL2
 
         glu = GLU.createGLU(gl)
         camera = SphereCamera(gl, glu)
-        textRenderer = TextRenderer(Font("SansSerif", Font.PLAIN, 24))
+        textRenderer = TextRenderer(Font("SansSerif", Font.PLAIN, fontSize))
 
         parentPanel.addMouseListener(camera.getMouseListener())
         parentPanel.addMouseWheelListener(camera.getMouseWheelListener())
@@ -73,6 +75,14 @@ class OpenGL2Frame(val parentPanel: GLJPanel) : GLEventListener {
 
         gl.glClearColor(backgroundColor.red, backgroundColor.green, backgroundColor.blue, 1f)
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT or GL2.GL_DEPTH_BUFFER_BIT)
+
+        if (textRenderer.font.size != fontSize) {
+            if (textRenderer != null) {
+                textRenderer.dispose()
+            }
+
+            textRenderer = TextRenderer(Font("SansSerif", Font.PLAIN, fontSize))
+        }
 
         // Draw Grid Lines
         val gridLineDrawer =
@@ -118,6 +128,8 @@ class OpenGL2Frame(val parentPanel: GLJPanel) : GLEventListener {
         zLineDrawer.draw(gl)
 
         //Draw Polygons
+        val color = hexToColor(obstacleOption.textColor)
+        textRenderer.setColor(color.red, color.green, color.blue, color.alpha)
         if (obstacleOption.draw) {
             val polyLineDrawer =
                 PolyLineDrawer(
@@ -243,6 +255,7 @@ class OpenGL2Frame(val parentPanel: GLJPanel) : GLEventListener {
         jobs.add(coroutineScope.launch(context = Dispatchers.Main) {
             ConfigDataViewModel.subscribeObstacleOption { option ->
                 obstacleOption = option
+                fontSize = option.textSize
             }
         })
     }

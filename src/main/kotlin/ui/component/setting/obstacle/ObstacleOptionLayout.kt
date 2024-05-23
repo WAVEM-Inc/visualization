@@ -3,10 +3,7 @@ package ui.component.setting.obstacle
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Checkbox
-import androidx.compose.material.CheckboxDefaults
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,13 +13,9 @@ import application.type.data.NotificationMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import ui.component.common.EvizText
-import ui.component.common.TextWithSwitch
+import ui.component.common.*
 import ui.component.setting.lidar.LidarOption
-import ui.theme.Navy_200
-import ui.theme.Neptune
-import ui.theme.Orange
-import ui.theme.White_100
+import ui.theme.*
 import viewmodel.NotificationViewModel
 
 
@@ -33,9 +26,12 @@ fun ObstacleOptionLayout(
     val option = remember {
         mutableStateMapOf(
             OptionType.DRAW to false, OptionType.ID to false, OptionType.TYPE to false, OptionType.HEADING to false,
-            OptionType.POSITION to false, OptionType.TTC to false, OptionType.RISK to false, OptionType.SPEED to false
+            OptionType.POSITION to false, OptionType.TTC to false, OptionType.RISK to false, OptionType.SPEED to false,
         )
     }
+    var textColor by remember { mutableStateOf(White_100) }
+    var strTextColor by remember { mutableStateOf(colorTohex(White_100)) }
+    var textSize by remember { mutableStateOf(10) }
 
     LaunchedEffect(Unit) {
         ObstacleOptionCache.updateData()
@@ -49,17 +45,84 @@ fun ObstacleOptionLayout(
         option[OptionType.SPEED] = cache.useSpeed
         option[OptionType.TTC] = cache.useTtc
         option[OptionType.RISK] = cache.useRisk
+        strTextColor = cache.textColor
+        textColor = hexToColor(cache.textColor)
+        textSize = cache.textSize
     }
 
     Column(modifier = modifier) {
-        DashboardOption(
-            modifier = Modifier.padding(horizontal = 16.dp).padding(top = 8.dp).fillMaxWidth(),
-            draw = option[OptionType.DRAW]!!,
-            onDrawChange = { b ->
-                option[OptionType.DRAW] = b
-                ObstacleOptionCache.obstacleOption.draw = b
+        Column(modifier = Modifier.padding(horizontal = 16.dp).padding(top = 8.dp).fillMaxWidth()) {
+            EvizText(text = "Dashboard Options", fontSize = 22f, fontWeight = FontWeight.Bold)
+            TextWithSwitch(
+                checked = option[OptionType.DRAW]!!,
+                modifier = Modifier.padding(start = 16.dp),
+                text = "- Drawing in Dashboard",
+                onCheckedChange = { b ->
+                    option[OptionType.DRAW] = b
+                    ObstacleOptionCache.obstacleOption.draw = b
+                }
+            )
+
+            Row(modifier = Modifier.padding(8.dp).padding(end = 32.dp), verticalAlignment = Alignment.CenterVertically) {
+                TextWithHeader(text = "Text Color:", modifier = Modifier.padding(end = 8.dp))
+
+                EditText(
+                    value = strTextColor,
+                    modifier = Modifier.width(150.dp).height(50.dp).padding(end = 8.dp),
+                    colors = TextFieldDefaults.textFieldColors(
+                        focusedIndicatorColor = Neptune,
+                        unfocusedIndicatorColor = White_200,
+                        cursorColor = White_200
+                    ),
+                    onValueChange = { s ->
+                        try {
+                            val color = hexToColor(s)
+                            strTextColor = colorTohex(color)
+                            textColor = color
+                            ObstacleOptionCache.obstacleOption.textColor = strTextColor
+                        } catch (_: Exception) {
+                        }
+                    }
+                )
+
+                ColorPicker(
+                    modifier = Modifier.size(20.dp),
+                    color = textColor,
+                    onColorChange = { color ->
+                        textColor = color
+                        strTextColor = colorTohex(color)
+                        ObstacleOptionCache.obstacleOption.textColor = colorTohex(color)
+                    }
+                )
+
+                TextWithHeader(text = "Text Size:", modifier = Modifier.padding(start = 32.dp))
+                EditText(
+                    modifier = Modifier.width(150.dp).height(50.dp).padding(start = 8.dp),
+                    value = textSize.toString(),
+                    colors = TextFieldDefaults.textFieldColors(
+                        focusedIndicatorColor = Neptune,
+                        unfocusedIndicatorColor = White_200,
+                        cursorColor = White_200
+                    ),
+                    onValueChange = {
+                        try {
+                            val intValue = it.toInt()
+                            textSize = intValue
+                            ObstacleOptionCache.obstacleOption.textSize = intValue
+                        } catch (_: Exception) {
+                        }
+                    }
+                )
             }
-        )
+        }
+//        DashboardOption(
+//            modifier = Modifier.padding(horizontal = 16.dp).padding(top = 8.dp).fillMaxWidth(),
+//            draw = option[OptionType.DRAW]!!,
+//            onDrawChange = { b ->
+//                option[OptionType.DRAW] = b
+//                ObstacleOptionCache.obstacleOption.draw = b
+//            }
+//        )
 
         ObstacleOptionEditor(
             modifier = Modifier.padding(horizontal = 16.dp).padding(top = 40.dp),
