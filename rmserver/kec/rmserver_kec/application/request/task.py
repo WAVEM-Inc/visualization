@@ -13,19 +13,18 @@ from ktp_data_msgs.msg import Mission;
 from ktp_data_msgs.srv import AssignMission;
 from typing import Dict;
 from typing import Any;
-
 from rmserver_kec.domain.task import set_control;
 from rmserver_kec.domain.task import get_control_callback_flag;
 from rmserver_kec.domain.task import set_control_callback_flag;
 from rmserver_kec.domain.task import set_mission;
 from rmserver_kec.domain.task import get_mission_callback_flag;
 from rmserver_kec.domain.task import set_detected_object;
-from rmserver_kec.domain.task import get_detected_object_flag;
 from rmserver_kec.domain.task import set_mission_callback_flag;
 from rmserver_kec.domain.task import get_control;
 from rmserver_kec.domain.task import get_mission;
 from rmserver_kec.domain.task import get_detected_object;
 from rmserver_kec.domain.task import set_detected_object_flag;
+
 
 ASSIGN_CONTROL_SERVICE_NAME: str = "/ktp_data_manager/assign/control";
 ASSIGN_MISSION_SERVICE_NAME: str = "/ktp_data_manager/assign/mission";
