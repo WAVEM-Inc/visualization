@@ -24,6 +24,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ui.component.setting.lidar.LidarOption
+import ui.component.setting.mobileye.MobileyeOptionCache
 import ui.component.setting.obstacle.ObstacleOptionCache
 import ui.component.title.EvizTitleBar
 import ui.layout.MainLayout
@@ -41,6 +42,7 @@ fun App() {
         EvizConfigManager
         LidarOption
         ObstacleOptionCache
+        MobileyeOptionCache
 
         val client = UdpClient()
         val cs = CoroutineScope(Dispatchers.Main)

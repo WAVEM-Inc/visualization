@@ -28,12 +28,14 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import apollo.perception.perceptionObstacle
 import application.type.data.Position
+import application.type.option.MobileyeOption
 import essys_middle.Mobileye.MobileyeData
 import essys_middle.copy
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.jetbrains.skia.Paint
+import viewmodel.ConfigDataViewModel
 import viewmodel.UdpDataViewModel
 import kotlin.math.cos
 import kotlin.math.sin
@@ -45,7 +47,11 @@ fun MobileyeLayout(modifier: Modifier = Modifier.fillMaxSize()) {
     val ldwShape = HexagonShape()
 
     var mobileyeData by remember { mutableStateOf(MobileyeData.getDefaultInstance()) }
+    var drawOption by remember { mutableStateOf(MobileyeOption()) }
     val currentLocale = Position()
+
+    var leftLdwColor by remember { mutableStateOf(Color.Gray) }
+    var rightLdwColor by remember { mutableStateOf(Color.Gray) }
 
     LaunchedEffect(Unit) {
         CoroutineScope(Dispatchers.Default).launch {
@@ -58,6 +64,26 @@ fun MobileyeLayout(modifier: Modifier = Modifier.fillMaxSize()) {
         CoroutineScope(Dispatchers.Default).launch {
             UdpDataViewModel.subscribeMobileye(collector = { data ->
                 mobileyeData = data
+
+                if (drawOption.useLwd) {
+                    rightLdwColor = if (data.rightLdwAvailability.number == 0) {
+                        Color.Red
+                    } else {
+                        Color.Green
+                    }
+
+                    leftLdwColor = if (data.leftLdwAvailability.number == 0) {
+                        Color.Red
+                    } else {
+                        Color.Green
+                    }
+                }
+            })
+        }
+
+        CoroutineScope(Dispatchers.Default).launch {
+            ConfigDataViewModel.subscribeMobileyeOption(collector = { option ->
+                drawOption = option
             })
         }
     }
@@ -125,6 +151,28 @@ fun MobileyeLayout(modifier: Modifier = Modifier.fillMaxSize()) {
 
                         drawCircle(color = Color.Red, center = Offset(x, y), radius = 15f)
 
+                        var text = ""
+                        if (drawOption.useId) {
+                            text += "ID: ${obstacle.id}"
+                        }
+                        if (drawOption.useType) {
+                            text += "\nType: ${obstacle.type}"
+                        }
+                        if (drawOption.useHeading) {
+                            text += "\nHeading: ${obstacle.theta}"
+                        }
+                        if (drawOption.usePosition) {
+                            text += "\nPosition: ${obstacle.position}"
+                        }
+                        if (drawOption.useSpeed) {
+                            text += "\nSpeed: ${obstacle.velocity}"
+                        }
+                        if (drawOption.useTtc) {
+                            text += "\nTTC: ${obstacle.ttc}"
+                        }
+                        if (drawOption.useRisk) {
+                            text += "\nRisk: ${obstacle.riskLevel}"
+                        }
                         x += 20 //adjust x for text x coordinates. add circle radius + 5
                         rotate(180f, pivot = Offset(x, y)) {
                             scale(scaleX = -1f, scaleY = 1f, pivot = Offset(x, y)) {
@@ -143,7 +191,7 @@ fun MobileyeLayout(modifier: Modifier = Modifier.fillMaxSize()) {
 
         Row(modifier = Modifier.wrapContentSize()) {
             Box(
-                modifier = Modifier.background(color = Color.Red, shape = ldwShape).size(50.dp, 50.dp),
+                modifier = Modifier.background(color = leftLdwColor, shape = ldwShape).size(50.dp, 50.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -161,7 +209,7 @@ fun MobileyeLayout(modifier: Modifier = Modifier.fillMaxSize()) {
             )
 
             Box(
-                modifier = Modifier.background(color = Color.Red, shape = ldwShape).size(50.dp, 50.dp),
+                modifier = Modifier.background(color = rightLdwColor, shape = ldwShape).size(50.dp, 50.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Text(

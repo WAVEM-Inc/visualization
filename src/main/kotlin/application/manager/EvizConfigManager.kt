@@ -1,6 +1,7 @@
 package application.type
 
 import application.type.option.ConnectOption
+import application.type.option.MobileyeOption
 import application.type.option.ObstacleOption
 import application.type.option.PointCloudOption
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -18,6 +19,7 @@ object EvizConfigManager {
     val POINT_CLOUD_CONFIG_PATH = "${SEPARATOR}config${SEPARATOR}pcl_option.yaml"
     val OBSTACLE_CONFIG_PATH = "${SEPARATOR}config${SEPARATOR}obstacle_option.yaml"
     val CONNECT_CONFIG_PATH = "${SEPARATOR}config${SEPARATOR}connect_option.yaml"
+    val MOBILEYE_CONFIG_PATH = "${SEPARATOR}config${SEPARATOR}mobileye_option.yaml"
     val MAP_CONFIG_PATH = "${SEPARATOR}config${SEPARATOR}map_option.yaml"
 
     init {
@@ -30,6 +32,9 @@ object EvizConfigManager {
 
             val connectOption: ConnectOption = loadFile(CONNECT_CONFIG_PATH, ConnectOption("127.0.0.1", 40000, 40001));
             ConfigDataViewModel.updateConnectOption(connectOption)
+
+            val mobileyeOption: MobileyeOption = loadFile(MOBILEYE_CONFIG_PATH, MobileyeOption())
+            ConfigDataViewModel.updateMobileyeOption(mobileyeOption)
         }
     }
 

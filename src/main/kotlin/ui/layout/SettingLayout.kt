@@ -10,6 +10,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import ui.component.common.EvizText
 import ui.component.setting.lidar.LidarSettingLayout
+import ui.component.setting.mobileye.MobileyeOptionLayout
 import ui.component.setting.obstacle.ObstacleOptionLayout
 import ui.theme.Gray
 import ui.theme.Navy_100
@@ -35,6 +36,10 @@ fun SettingLayout(modifier: Modifier = Modifier.fillMaxSize()) {
 
             EvizText("Obstacle", fontWeight = FontWeight.Bold, fontSize = 30f)
             ObstacleOptionLayout()
+            Spacer(Modifier.height(50.dp))
+
+            EvizText("Mobileye", fontWeight = FontWeight.Bold, fontSize = 30f)
+            MobileyeOptionLayout()
             Spacer(Modifier.height(50.dp))
         }
 
