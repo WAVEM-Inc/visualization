@@ -1,6 +1,7 @@
+import os;
+import json;
 import socket;
 import paho.mqtt.client as mqtt;
-
 from rclpy.node import Node;
 from rclpy.impl.rcutils_logger import RcutilsLogger;
 from typing import Any;
@@ -11,16 +12,38 @@ class Client:
         self.client: mqtt.Client
         self.__node: Node = node;
         self.__log: RcutilsLogger = self.__node.get_logger();
-
-        self.__host: str = self.__node.get_parameter(name="host").get_parameter_value().string_value;
-        self.__port: int = self.__node.get_parameter(name="port").get_parameter_value().integer_value;
-        self.__client_name: str = self.__node.get_parameter(name="client_id").get_parameter_value().string_value;
-        self.__client_keep_alive: int = self.__node.get_parameter(name="client_keep_alive").get_parameter_value().integer_value;
-        self.__user_name: str = self.__node.get_parameter(name="user_name").get_parameter_value().string_value;
-        self.__password: str = self.__node.get_parameter(name="password").get_parameter_value().string_value;
-        self.__type: str = self.__node.get_parameter(name="type").get_parameter_value().string_value;
-        self.__path: str = self.__node.get_parameter(name="path").get_parameter_value().string_value;
+        self.__current_mqtt_file: str = self.__node.get_parameter(name="current_mqtt_file").get_parameter_value().string_value;
+        
+        mqtt_config: Any = self.load_mqtt_config();
+        
+        if mqtt_config != {}:
+            self.__host: str = mqtt_config["host"];
+            self.__port: int = mqtt_config["port"];
+            self.__client_name: str = mqtt_config["client_name"];
+            self.__client_keep_alive: int = 60;
+            self.__user_name: str = mqtt_config["user_name"];
+            self.__password: str = mqtt_config["password"];
+            self.__type: str = mqtt_config["type"];
+            self.__path: str = mqtt_config["path"];
+        else:
+            self.__log.error("Loading MQTT Config Failed");
+            return;
+        
         self.is_connected: bool = False;
+        
+    def load_mqtt_config(self) -> Any:
+        home_directory: str = os.path.expanduser("~");
+        mqtt_path: str = f"{home_directory}/{self.__current_mqtt_file}";
+        mqtt_config: Any = {};
+        
+        try:
+            with open(mqtt_path, "r", encoding="utf-8") as f:
+                mqtt_config = json.load(f);
+                self.__log.info(f"MQTT Path: {mqtt_path}");
+            return mqtt_config;
+        except FileNotFoundError as fne:
+            self.__log.error(f"{fne}");
+            return {};
 
     def check_broker_opened(self) -> bool:
         try:

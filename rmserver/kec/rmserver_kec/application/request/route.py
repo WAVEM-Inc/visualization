@@ -1,5 +1,6 @@
 import os;
 import json;
+import configparser;
 import paho.mqtt.client as paho;
 from rclpy.node import Node;
 from rclpy.impl.rcutils_logger import RcutilsLogger;
@@ -45,7 +46,7 @@ class RouteProcessor:
         self.__node: Node = node;
         self.__log: RcutilsLogger = self.__node.get_logger();
         self.__mqtt_client: Client = mqtt_client;
-        self.__current_path_file: str = self.__node.get_parameter("current_path_file").get_parameter_value().string_value;
+        self.__current_path_file: str = self.__node.get_parameter("current_map_config_file").get_parameter_value().string_value;
         self.__path: Any = {};
         
         self.__route_status: RouteStatus = RouteStatus();
@@ -96,16 +97,26 @@ class RouteProcessor:
             callback=self.notify_path_subscription_cb
         );
         
-        self.load_path();
+        self.load_map();
     
-    def load_path(self) -> None:
+    def load_map(self) -> None:
         home_directory: str = os.path.expanduser("~");
-        map_path: str = f"{home_directory}/{self.__current_path_file}";
+        map_config_path: str = f"{home_directory}/{self.__current_path_file}";
+        self.__log.info(f"Map Config Path: {map_config_path}");
+        
+        config_parser: configparser.ConfigParser = configparser.ConfigParser();
+        config_parser.read(filenames=map_config_path);
+        
+        map_file_path: str = config_parser["CONFIG"]["file_path"];
+        map_file_name: str = config_parser["CONFIG"]["file_name"];
+        
+        map_file_full_path: str = f"{home_directory}{map_file_path}{map_file_name}";
+        
+        self.__log.info(f"Map Path : {map_file_full_path}");
         
         try:
-            with open(map_path, "r", encoding="utf-8") as f:
+            with open(map_file_full_path, "r", encoding="utf-8") as f:
                 self.__path = json.load(f);
-                self.__log.info(f"Map Path: {map_path}");
         except FileNotFoundError as fne:
             self.__log.error(f"{fne}");
             return;
@@ -462,7 +473,7 @@ class RouteProcessor:
             mqtt_decoded_payload: str = mqtt_message.payload.decode();
             mqtt_json: Any = json.loads(mqtt_message.payload);
 
-            self.load_path();
+            self.load_map();
             self.__log.info(f"{mqtt_topic} path renewed\n{json.dumps(obj=self.__path, indent=4)}");
             self.__log.info(f"=============================== Path Renewed ===============================");
         except KeyError as ke:
@@ -492,7 +503,7 @@ class RouteProcessor:
             mqtt_json: Any = json.loads(mqtt_message.payload);
             
             
-            self.load_path();
+            self.load_map();
             payload: str = json.dumps(obj=self.__path, indent=4);
             self.__log.info(f"=============================== Path Selected ===============================");
             self.__log.info(f"{mqtt_topic} path selected\n{payload}");

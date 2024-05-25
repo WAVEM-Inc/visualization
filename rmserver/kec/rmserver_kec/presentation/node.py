@@ -33,15 +33,8 @@ class RmServerKEC(Node):
 
     def declare_mqtt_parameters(self) -> None:
         parameters_dict: dict = {
-            "host": DEFAULT_STRING,
-            "port": DEFAULT_INT,
-            "client_id": DEFAULT_STRING,
-            "client_keep_alive": DEFAULT_INT,
-            "user_name": DEFAULT_STRING,
-            "password": DEFAULT_STRING,
-            "type": DEFAULT_STRING,
-            "path": DEFAULT_STRING,
-            "current_path_file": DEFAULT_STRING,
+            "current_mqtt_file": DEFAULT_STRING,
+            "current_map_config_file": DEFAULT_STRING,
             "current_urdf_file": DEFAULT_STRING
         };
 
