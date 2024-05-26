@@ -1,110 +1,199 @@
+.path_map_components {
+    width: 100%;
+}
+
 .path_map_container {
     display: flex;
     justify-content: space-between;
     width: 100%;
-    height: 750px;
+    height: 100%;
     border-bottom: 2px solid #ccc;
 }
 
 #path_map {
-    width: 65%;
-    min-height: 100%;
+    width: 70%;
+    min-height: 600px;
     height: 100%;
     border-right: 2px solid #ccc;
 }
 
-.path_data_container {
-    margin: 0 auto;
-    align-items: center;
-    width: 15%;
-    height: 100%;
-    flex-direction: column;
-    justify-content: space-between;
+.node_info_window {
+    background-color: #fff;
+    width: 125px;
+    font-size: 13px;
 }
 
-.path_data_container > div {
-    border-bottom: 2px solid #ccc;
-}
-
-.path_data_container:nth-child(2) {
-    border-bottom: none;
-}
-
-.path_data_container>div>div {
+.path_list_container {
+    width: 30%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    flex-wrap: wrap;
-    align-items: center;
+    overflow: auto;
+    text-align: center;
 }
 
-.path_select_container {
-    height: 10%;
-}
-
-.path_select_container > button {
-    margin-top: 5%;
-    width: 70%;
-    height: 55%;
-    border-radius: 50px;
-    font-size: 17px;
-    font-weight: bold;
-    cursor: pointer;
-    color: black;
-}
-
-.gps_data_container {
-    height: 15%;
-}
-
-.node_request_btn_container {
-    height: calc(100% - 25.5%);
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    flex-direction: column;
-    border-bottom: none;
-}
-
-.node_request_title {
-    align-items: center;
-    width: 100%;
-    height: 5%;
-    margin-top: 2%;
-}
-
-.node_request_title > p {
+.path_list_title {
     font-size: 20px;
     font-weight: bold;
 }
 
-.node_btn_request {
-    width: 70%;
-    height: 15%;
-    border-radius: 50px;
-    font-size: 17px;
-    font-weight: bold;
+.path_list {
+    margin-top: 5%;
+    width: 90%;
+}
+
+.path_list_element {
+    border: 2px solid #ccc;
+    border-bottom: none;
+    list-style: none;
+    width: 90%;
+    height: 13%;
     cursor: pointer;
-    color: black;
-    border: 2px solid black;
+    font-size: 20px;
     display: flex;
-    align-items: center;
     justify-content: center;
-    padding: 15px;
-    background-color: white;
+    align-items: center;
+}
+
+.path_list_element:last-child {
+    border-bottom: 2px solid #ccc;
+}
+
+.path_list_element:hover {
+    background-color: #ccc;
+}
+
+.path_list_element_index {
+    width: 10%;
+    height: 100%;
+    border-right: 2px solid #ccc;
+    color: white;
+    background-color: green;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.path_list_element_name {
+    flex: 1;
+    text-align: center;
+}
+
+.path_list_info_container {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.path_list_info_node {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background: white;
+    width: 90%;
+}
+
+.progress_container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.progress_slider {
+    width: 100%;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.progress_slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 15px;
+    height: 15px;
+    background: #007bff;
+    border-radius: 50%;
     cursor: pointer;
+    margin-top: -5px;
+    z-index: 2;
 }
 
-.node_btn_request:hover {
-    background-color: #ccc;
+.progress_slider::-moz-range-thumb {
+    width: 15px;
+    height: 15px;
+    background: #007bff;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 2;
 }
 
-.node_btn_request > img {
-    width: 35px;
-    height: 35px;
-    margin-right: 4%;
+.progress_slider::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 5px;
+    cursor: pointer;
+    background: #dcdcdc;
+    border-radius: 5px;
 }
 
-.route_btn_request:hover {
-    background-color: #ccc;
+.progress_slider::-moz-range-track {
+    width: 100%;
+    height: 5px;
+    cursor: pointer;
+    background: #dcdcdc;
+    border-radius: 5px;
+}
+
+/* 각 인덱스 위치에 구분선 표시 */
+.progress_slider::before {
+    content: "";
+    position: absolute;
+    top: -5px;
+    width: 2px;
+    height: 15px;
+    background-color: black;
+}
+
+/* 인덱스 위치 조정 */
+.progress_slider::before {
+    left: calc(25% * var(--index)); /* 인덱스에 따라 왼쪽 위치 계산 */
+}
+
+.progress_info {
+    text-align: center;
+}
+
+.circular_progress {
+    position: relative;
+    width: 100px;
+    height: 100px;
+}
+
+.circular_progress_svg {
+    transform: rotate(-90deg);
+    width: 100px;
+    height: 100px;
+}
+
+.circular_bg {
+    fill: none;
+    stroke: #eee;
+    stroke-width: 10;
+}
+
+.circular_fg {
+    fill: none;
+    stroke: #76c7c0;
+    stroke-width: 10;
+    stroke-linecap: round;
+    transition: stroke-dasharray 0.3s ease;
+}
+
+.progress_text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.2em;
+    font-weight: bold;
 }
