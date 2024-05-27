@@ -29,65 +29,12 @@
 }
 
 .top_tools_container {
-    margin-right: 1%;
+    margin-right: 4%;
     display: flex;
     flex-direction: row;
-    width: 15%;
+    width: 7%;
     align-items: center;
     justify-content: space-around;
-}
-
-.top_command_route_switch_container {
-    width: 35%;
-    margin-right: 1%;
-    position: relative;
-    cursor: pointer;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-}
-
-.command_route_switch_title {
-    margin: 0;
-    font-weight: bold;
-    display: inline-block;
-    text-align: center;
-    white-space: nowrap;
-}
-
-.command_route_switch_button_container {
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-}
-
-.command_route_switch_button {
-    width: 50px;
-    height: 24px;
-    border-radius: 30px;
-    background-color: red;
-    border: solid 2px #ccc;
-}
-
-.command_route_switch_checked {
-    background-color: green;
-    transition: 0.3s;
-}
-
-.command_route_switch_circle {
-    position: absolute;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background-color: rgb(255, 254, 255);
-    transition: 0.3s;
-    border: solid 2px #ccc;
-}
-
-.command_route_switch_checked {
-    position: absolute;
-    right: 0;
-    transition: 0.3s;
 }
 
 .top_battery {

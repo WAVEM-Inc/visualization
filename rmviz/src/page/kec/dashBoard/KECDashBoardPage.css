@@ -2,3 +2,8 @@
     width: 100%;
     border-bottom: 2px solid #ccc;
 }
+
+.map_component_container {
+    border-bottom: 2px solid #ccc;
+    height: 100%;
+}

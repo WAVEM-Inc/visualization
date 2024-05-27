@@ -44,6 +44,9 @@ class Client:
         except FileNotFoundError as fne:
             self.__log.error(f"{fne}");
             return {};
+        except AttributeError as ate:
+            self.__log.error(f"{ate}");
+            return {};
 
     def check_broker_opened(self) -> bool:
         try:

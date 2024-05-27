@@ -36,78 +36,6 @@ const KECDashBoardPage: React.FC<KECDashBoardPageProps> = ({
     mapState
 }: KECDashBoardPageProps): React.ReactElement<any, any> | null => {
     const [isEnableToCommandRoute, setIsEnableToCommandRoute] = useState<string | null>(null);
-    const requestTopicFormat: string = "/rmviz/request";
-    const requestRouteToPoseTopic: string = `${requestTopicFormat}/route_to_pose`;
-    const requestTaskTopic: string = `${requestTopicFormat}/task`;
-
-    const buildPathJSON: Function = (path: any): any => {
-        const pathJSON: any = {
-            isEnableToCommandRoute: isEnableToCommandRoute,
-            path: path
-        }
-
-        return pathJSON;
-    }
-
-    const onCall01Click = (): void => {
-        onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, buildPathJSON(call01JSON));
-    }
-
-    const onDelivery02NCall02Click = (): void => {
-        onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, buildPathJSON(delivery02JSON));
-    }
-
-    const onWaiting03Click = (): void => {
-        onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, buildPathJSON(returning03JSON));
-    }
-
-    const onCall04Click = (): void => {
-        onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, buildPathJSON(call04JSON));
-    }
-
-    const onDelivery05NCall05Click = (): void => {
-        onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, buildPathJSON(delivery05JSON));
-    }
-
-    const onWaiting06Click = (): void => {
-        onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, buildPathJSON(returning06JSON));
-    }
-
-    const onTemp01Click = (): void => {
-        onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, buildPathJSON(temp01JSON));
-    }
-
-    const onTemp02Click = (): void => {
-        onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, buildPathJSON(temp02JSON));
-    }
-
-    const onTemp03Click = (): void => {
-        onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, buildPathJSON(temp03JSON));
-    }
-
-    const onDeliveringMissionClick = (): void => {
-        onClickMqttPublish(mqttClient!, requestTaskTopic, deliveringMissionJSON);
-    }
-
-    const onReturningMissionClick = (): void => {
-        onClickMqttPublish(mqttClient!, requestTaskTopic, retunringMissionJSON);
-    }
-
-    const onControlMoveToDestClick = (): void => {
-        onClickMqttPublish(mqttClient!, requestTaskTopic, controlMoveToDestJSON);
-    }
-
-    const onControlMsCompleteReturnClick = (): void => {
-        onClickMqttPublish(mqttClient!, requestTaskTopic, controlMsCompleteReturnJSON);
-    }
-
-    const onControlMsCompleteNoReturnClick = (): void => {
-        onClickMqttPublish(mqttClient!, requestTaskTopic, controlMsCompleteNoReturnJSON);
-    }
-
-    const onControlGraphSyncClick = (): void => {
-        onClickMqttPublish(mqttClient!, requestTaskTopic, controlGrapySyncJSON);
-    }
 
     useEffect(() => {
         setIsEnableToCommandRoute(localStorage.getItem("isEnableToCommandRoute?"));
@@ -127,25 +55,6 @@ const KECDashBoardPage: React.FC<KECDashBoardPageProps> = ({
                         state={mapState}
                     />
                 </Wrapper>
-            </div>
-            <div className="request_component_container">
-                <KECRequestComponent
-                    onCall01Click={onCall01Click}
-                    onDelivery02NCall02Click={onDelivery02NCall02Click}
-                    onWaiting03Click={onWaiting03Click}
-                    onCall04Click={onCall04Click}
-                    onDelivery05NCall05Click={onDelivery05NCall05Click}
-                    onWaiting06Click={onWaiting06Click}
-                    onTemp01Click={onTemp01Click}
-                    onTemp02Click={onTemp02Click}
-                    onTemp03Click={onTemp03Click}
-                    onDeliveringMissionClick={onDeliveringMissionClick}
-                    onReturningMissionClick={onReturningMissionClick}
-                    onControlMoveToDestClick={onControlMoveToDestClick}
-                    onControlMsCompleteReturnClick={onControlMsCompleteReturnClick}
-                    onControlMsCompleteNoReturnClick={onControlMsCompleteNoReturnClick}
-                    onControlGraphSyncClick={onControlGraphSyncClick}
-                />
             </div>
         </div>
     );

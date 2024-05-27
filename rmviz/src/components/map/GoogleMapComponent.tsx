@@ -1,11 +1,13 @@
+import { Wrapper } from "@googlemaps/react-wrapper";
 import React, { useEffect, useState } from "react";
+import ReactModal from "react-modal";
 import MqttClient from "../../api/mqttClient";
-import * as emergencyResumeJSON from "../../assets/json/common/emergency_resume.json";
 import * as emergencyStopJSON from "../../assets/json/common/emergency_stop.json";
 import { MapState } from "../../domain/map/MapDomain";
 import { addDetectionRangePolygon, addPathMarker, addPathPolyline, changeMapCenter, initializeKECDBorderLine, initializeMap, initializeRobotMarker, updateRobotMakerIcon } from "../../service/map/MapService";
 import { onClickMqttPublish } from "../../utils/Utils";
 import "./GoogleMapComponent.css";
+import GoogleMapPathComponent from "./GoogleMapPathComponent";
 
 interface GoogleMapComponentProps {
     mqttClient: MqttClient;
@@ -22,6 +24,7 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
     const [spathMarkerArray, setPathMarkerArray] = useState<Array<google.maps.Marker>>([]);
     const [pathPolyLine, setPathPolyLine] = useState<google.maps.Polyline | null>(null);
     const [detectionRagnePolygon, setDetectionRagnePolygon] = useState<Array<google.maps.Polygon>>([]);
+    const [isPathSelectModalOpen, setIsPathSelectModalOpen] = useState<boolean>(false);
 
     let pathMarkerArray: Array<google.maps.Marker> = [];
     let pathInfoWindowarray: Array<google.maps.InfoWindow> = [];
@@ -37,6 +40,7 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
     });
     const [currentOdomEular, setCurrentOdomEular] = useState<number>();
     const [currentRouteStatus, setCurrentRouteStatus] = useState<any | null>(null);
+    const [isCommandRouteSwitchOn, setIsCommandRouteSwitchOn] = useState<boolean>(false);
 
     const requestTopicFormat: string = "/rmviz/request";
     const requestEmergencyTopic: string = `${requestTopicFormat}/can/emergency`;
@@ -44,7 +48,7 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
     const requestGPSInitTopic: string = `${requestTopicFormat}/gps/init`;
     const requestCanInitTopic: string = `${requestTopicFormat}/can/init`;
     const requestPathRenewTopic: string = `${requestTopicFormat}/path/renew`;
-    const requestTaskTopic: string =`${requestTopicFormat}/task`;
+    const requestTaskTopic: string = `${requestTopicFormat}/task`;
 
     const drawPathMarker: Function = (): void => {
         if (state.path) {
@@ -207,20 +211,17 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
         }
     }
 
-    const onGPSInitClick = (): void => {
-        if (currGPSInitMarker?.getMap()) {
-            console.info(`GPS init Marker coord : ${JSON.stringify(currGPSInitMarker?.getPosition())}`);
-            onClickMqttPublish(mqttClient!, requestGPSInitTopic, currGPSInitMarker?.getPosition());
-        } else {
-            alert("GPS 초기화 마커를 배치해주세요.");
-            return;
-        }
+    const openPathSelectModal = (): void => {
+        setIsPathSelectModalOpen(true);
     }
 
-    const onCanInitClick = (): void => {
-        onClickMqttPublish(mqttClient!, requestCanInitTopic, {
-            "can_sign_tran_state": true
-        });
+    const closePathSelectModal = (): void => {
+        setIsPathSelectModalOpen(false);
+    }
+
+    const onPathSelectClick = (): void => {
+        mqttClient.publish("/rmviz/request/path/select", JSON.stringify({}));
+        openPathSelectModal();
     }
 
     const onPathRenewClick = (): void => {
@@ -231,10 +232,6 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
         onClickMqttPublish(mqttClient!, requestEmergencyTopic, emergencyStopJSON);
     }
 
-    const onEmergencyResumeClick = (): void => {
-        onClickMqttPublish(mqttClient!, requestEmergencyTopic, emergencyResumeJSON);
-    }
-
     const onGoalCancelClick = (): void => {
         onClickMqttPublish(mqttClient!, requestGoalCancelTopic, {
             "cancel": true
@@ -242,6 +239,16 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
         state.path = null;
         state.routeStatus = null;
         flushPath();
+    }
+
+    const onCommandRouteSwtichClick: React.MouseEventHandler<HTMLDivElement> = (): void => {
+        setIsCommandRouteSwitchOn(!isCommandRouteSwitchOn);
+
+        if (isCommandRouteSwitchOn === true) {
+            localStorage.setItem("isEnableToCommandRoute?", "false");
+        } else {
+            localStorage.setItem("isEnableToCommandRoute?", "true");
+        }
     }
 
     useEffect((): void => {
@@ -410,6 +417,7 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
             setGoogleMap(mapInstance);
             setPathInfoContainer(document.getElementById("path_info_container"));
         }
+        localStorage.setItem("isEnableToCommandRoute?", "false");
 
         return (() => {
             if (googleMap) {
@@ -442,18 +450,58 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
                             차량 각도
                         </div>
                         <div className="data_data">
-                            {currentOdomEular}
+                            {currentOdomEular}°
                         </div>
                     </div>
                     <div className="route_request_btn_container">
-                        <button className={"route_btn_request route_btn_gps_init"} onClick={onGPSInitClick}>GPS 초기화</button>
-                        <button className={"route_btn_request route_btn_can_init"} onClick={onCanInitClick}>CAN 초기화</button>
-                        <button className={"route_btn_request route_btn_path_renew"} onClick={onPathRenewClick}>경로 갱신</button>
-                        <button className={"route_btn_request route_btn_emergency_stop"} onClick={onEmergencyStopClick}>비상 정지</button>
-                        <button className={"route_btn_request route_btn_emergency_stop"} onClick={onGoalCancelClick}>주행 취소</button>
-                        <button className={"route_btn_request route_btn_emergency_resume"} onClick={onEmergencyResumeClick}>재개</button>
+                        <button className={"route_btn_request route_btn_path_select"} onClick={onPathSelectClick}>
+                            <img src={process.env.PUBLIC_URL + "../marker_route.png"} />
+                            <p>경로 선택</p>
+                        </button>
+                        <button className={"route_btn_request route_btn_path_renew"} onClick={onPathRenewClick}>
+                            <img src={process.env.PUBLIC_URL + "../marker_refresh.png"} />
+                            <p>경로 갱신</p>
+                        </button>
+                        <button className={"route_btn_request route_btn_path_cancel"} onClick={onGoalCancelClick}>
+                            <img src={process.env.PUBLIC_URL + "../marker_route_cancel.png"} />
+                            <p>경로 취소</p>
+                        </button>
+                        <button className={"route_btn_request route_btn_emergency_stop"} onClick={onEmergencyStopClick}>
+                            <img src={process.env.PUBLIC_URL + "../marker_stop.png"} />
+                            <p>비상 정지</p>
+                        </button>
                     </div>
                 </div>
+                <ReactModal
+                    id="route_path_select_modal"
+                    className={"route_path_select_modal"}
+                    isOpen={isPathSelectModalOpen}
+                    onRequestClose={closePathSelectModal}
+                >
+                    <div className="route_path_select_modal_container">
+                        <div className="route_path_select_title">
+                            <img src={process.env.PUBLIC_URL + "../marker_route.png"} />
+                            <p>경로 선택</p>
+
+                        </div>
+                        <div className="route_switch_container" onClick={onCommandRouteSwtichClick}>
+                            <p className="route_switch_title">{isCommandRouteSwitchOn ? "주행" : "경로"}</p>
+                            <div className="route_switch_button_container">
+                                <div className={`route_switch_button ${isCommandRouteSwitchOn ? "route_switch_checked" : ""}`}></div>
+                                <div className={`route_switch_circle ${isCommandRouteSwitchOn ? "route_switch_checked" : ""}`}></div>
+                            </div>
+                        </div>
+                        <div className="route_path_select_close_btn">
+                            <img src={process.env.PUBLIC_URL + "../btn_close.png"} onClick={() => { closePathSelectModal() }}></img>
+                        </div>
+                        <Wrapper apiKey={`${process.env.GOOGLE_MAP_API_KEY}`}>
+                            <GoogleMapPathComponent
+                                mqttClient={mqttClient!}
+                                state={state}
+                            />
+                        </Wrapper>
+                    </div>
+                </ReactModal>
             </div>
         </div>
     );

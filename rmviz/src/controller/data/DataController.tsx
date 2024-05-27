@@ -7,7 +7,6 @@ import { SET_URDF, initalROSState, rosStateReducer } from "../../domain/ros/ROSD
 import { SET_BATTERY, SET_HEARTBEAT, initialTopState, topStateReducer } from "../../domain/top/TopDomain";
 import KECDashBoardPage from "../../page/kec/dashBoard/KECDashBoardPage";
 import KECDataBoardPage from "../../page/kec/databoard/KECDataBoardPage";
-import KECPathEditPage from "../../page/kec/path/KECPathEditPage";
 import KECROSPage from "../../page/kec/ros/KECROSPage";
 import { getCurrentTime } from "../../utils/Utils";
 
@@ -174,13 +173,6 @@ const DataController: React.FC = (): React.ReactElement<any, any> | null => {
                 <KECDataBoardPage
                     topState={topState}
                     responseData={responseData}
-                />
-            </Route>
-            <Route exact path={"/kec/path"}>
-                <KECPathEditPage
-                    mqttClient={mqttClient!}
-                    topState={topState}
-                    mapState={mapState}
                 />
             </Route>
         </Switch>
