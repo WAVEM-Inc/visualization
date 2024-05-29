@@ -97,6 +97,7 @@ class RouteProcessor:
             callback=self.notify_path_subscription_cb
         );
         
+        self.__map_file_name: str = "";
         self.load_map();
     
     def load_map(self) -> None:
@@ -108,9 +109,9 @@ class RouteProcessor:
         config_parser.read(filenames=map_config_path);
         
         map_file_path: str = config_parser["CONFIG"]["file_path"];
-        map_file_name: str = config_parser["CONFIG"]["file_name"];
+        self.__map_file_name = config_parser["CONFIG"]["file_name"];
         
-        map_file_full_path: str = f"{home_directory}{map_file_path}{map_file_name}";
+        map_file_full_path: str = f"{home_directory}{map_file_path}{self.__map_file_name}";
         
         self.__log.info(f"Map Path : {map_file_full_path}");
         
@@ -204,9 +205,14 @@ class RouteProcessor:
                     goal.end_node = end_node;
                     self.__route_to_pose_goal_list.append(goal);
 
-                for [index, goal] in enumerate(self.__route_to_pose_goal_list):
-                    self.__log.info(f"{mqtt_topic} goal[{index}]\n{json.dumps(message_conversion.extract_values(inst=goal), indent=4)}");
-                    
+                # for [index, goal] in enumerate(self.__route_to_pose_goal_list):
+                #     self.__log.info(f"{mqtt_topic} goal[{index}]\n{json.dumps(message_conversion.extract_values(inst=goal), indent=4)}");
+                
+                # path_json: Any = {
+                #     "current_map_file": self.__map_file_full_path,
+                #     "node_list": node_list
+                # };
+                
                 self.__mqtt_client.publish(topic=MQTT_PATH_TOPIC, payload=json.dumps(node_list), qos=0);
                 
                 if mqtt_json["isEnableToCommandRoute"] == "false":
@@ -461,8 +467,8 @@ class RouteProcessor:
                 self.__log.info(f"{NOTIFY_PATH_TOPIC} path converting finished");
                 break;
             
-        for path in path_json_list:
-            self.__log.info(f"{NOTIFY_PATH_TOPIC} path_json : {json.dumps(obj=path, indent=4)}");
+        # for path in path_json_list:
+        #     self.__log.info(f"{NOTIFY_PATH_TOPIC} path_json : {json.dumps(obj=path, indent=4)}");
             
         payload: str = json.dumps(obj=path_json_list);
         self.__mqtt_client.publish(topic=MQTT_PATH_TOPIC, payload=payload, qos=0);
@@ -502,11 +508,14 @@ class RouteProcessor:
             mqtt_decoded_payload: str = mqtt_message.payload.decode();
             mqtt_json: Any = json.loads(mqtt_message.payload);
             
-            
             self.load_map();
-            payload: str = json.dumps(obj=self.__path, indent=4);
+            path_json: Any = {
+                "current_map_file": self.__map_file_name,
+                "paths": self.__path
+            };
+            payload: str = json.dumps(obj=path_json, indent=4);
             self.__log.info(f"=============================== Path Selected ===============================");
-            self.__log.info(f"{mqtt_topic} path selected\n{payload}");
+            # self.__log.info(f"{mqtt_topic} path selected\n{payload}");
             self.__mqtt_client.publish(topic=MQTT_SELECT_PATH_FILE_RESPONSE_TOPIC, payload=payload, qos=0);
         except KeyError as ke:
             self.__log.error(f"Invalid JSON Key in MQTT {mqtt_topic} subscription callback: {ke}");

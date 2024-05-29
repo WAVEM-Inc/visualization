@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import MqttClient from "../../api/mqttClient";
 import { MapState } from "../../domain/map/MapDomain";
-import { addDetectionRangePolygon, addPathMarker, addPathPolyline, initializeMap } from "../../service/map/MapService";
+import { addDetectionRangePolygon, addPathMarker, addPathPolyline, changeMapCenter, initializeMap } from "../../service/map/MapService";
 import { onClickMqttPublish } from "../../utils/Utils";
 import "./GoogleMapPathComponent.css";
 
@@ -21,6 +21,7 @@ const GoogleMapPathComponent: React.FC<GoogleMapPathComponentProps> = ({
     const [pathPolyLine, setPathPolyLine] = useState<google.maps.Polyline | null>(null);
     const [detectionRagnePolygon, setDetectionRagnePolygon] = useState<Array<google.maps.Polygon>>([]);
     const [progress, setProgress] = useState<number>(0);
+    const [currentMapFile, setCurrentMapFile] = useState<string>("");
 
     const requestTopicFormat: string = "/rmviz/request";
     const requestRouteToPoseTopic: string = `${requestTopicFormat}/route_to_pose`;
@@ -129,8 +130,9 @@ const GoogleMapPathComponent: React.FC<GoogleMapPathComponentProps> = ({
     useEffect(() => {
         if (state.path) {
             console.info(`Path File : ${JSON.stringify(state.path)}`);
-            if (state.path.path) {
-                const pathList: Array<any> = Array.from(state.path.path);
+            if (state.path.paths) {
+                setCurrentMapFile(state.path.current_map_file);
+                const pathList: Array<any> = Array.from(state.path.paths.path);
                 const pathListElement: HTMLElement | null = document.getElementById("path_list");
 
                 if (pathListElement) {
@@ -152,34 +154,6 @@ const GoogleMapPathComponent: React.FC<GoogleMapPathComponentProps> = ({
                         li.onclick = () => commandPathClick(pathJSON);
                         pathListElement.appendChild(li);
                     });
-                    // while (pathListElement.firstChild) {
-                    //     pathListElement.removeChild(pathListElement.firstChild);
-                    // }
-
-                    // for (const [index, path] of pathList.entries()) {
-                    //     console.info(`path : ${JSON.stringify(path)}`);
-                    //     const pathListLi: HTMLLIElement = document.createElement("li");
-                    //     pathListLi.className = "path_list_element";
-
-                    //     const pathListLiIndexDiv: HTMLDivElement = document.createElement("div");
-                    //     pathListLiIndexDiv.className = "path_list_element_index";
-                    //     pathListLiIndexDiv.textContent = `${index + 1}`;
-
-                    //     const pathListLiNameDiv: HTMLDivElement = document.createElement("div");
-                    //     pathListLiNameDiv.className = "path_list_element_name";
-                    //     pathListLiNameDiv.textContent = `${path.name}`;
-
-                    //     pathListLi.appendChild(pathListLiIndexDiv);
-                    //     pathListLi.appendChild(pathListLiNameDiv);
-
-                    // const pathJSON: any = {
-                    //     path_id: path.id,
-                    //     path_name: path.name
-                    // };
-                    //     pathListLi.onclick = () => commandPathClick(pathJSON);
-
-                    //     pathListElement.appendChild(pathListLi);
-                    // }
                 }
             }
 
@@ -217,6 +191,7 @@ const GoogleMapPathComponent: React.FC<GoogleMapPathComponentProps> = ({
     const handleProgressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newProgress: number = Number(e.target.value);
         setProgress(newProgress);
+        changeMapCenter(googleMap, spathMarkerArray[newProgress].getPosition()!);
     }
 
     return (
@@ -224,7 +199,7 @@ const GoogleMapPathComponent: React.FC<GoogleMapPathComponentProps> = ({
             <div className={"path_map_container"}>
                 <div id="path_map" />
                 <div id="path_list_container" className="path_list_container">
-                    <p className="path_list_title">경로 목록</p>
+                    <p className="path_list_title">경로 목록({currentMapFile})</p>
                     <ul id="path_list" className="path_list"></ul>
                 </div>
             </div>
