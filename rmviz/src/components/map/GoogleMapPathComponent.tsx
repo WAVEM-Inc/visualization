@@ -48,6 +48,7 @@ const GoogleMapPathComponent: React.FC<GoogleMapPathComponentProps> = ({
     const commandPathClick = (pathJSON: any): void => {
         const pathJSONBuilt: any = buildPathJSON(pathJSON, true);
         onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, pathJSONBuilt);
+        localStorage.setItem("closePathSelectModal", "true");
     }
 
     const onPathRenewClick = (): void => {
@@ -208,7 +209,13 @@ const GoogleMapPathComponent: React.FC<GoogleMapPathComponentProps> = ({
                         }
                         break;
                     default:
-                        pathProgressMarkerIconImg.src = process.env.PUBLIC_URL + "../marker_landmark.png";
+                        if (index === 0) {
+                            pathProgressMarkerIconImg.src = process.env.PUBLIC_URL + "../marker_start.png";
+                        } else if (index === pathProgressMarkerInfoElements.length - 1) {
+                            pathProgressMarkerIconImg.src = process.env.PUBLIC_URL + "../marker_arrive.png";
+                        } else {
+                            pathProgressMarkerIconImg.src = process.env.PUBLIC_URL + "../marker_landmark.png";
+                        }
                         break;
                 }
 

@@ -241,16 +241,6 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
         flushPath();
     }
 
-    const onCommandRouteSwtichClick: React.MouseEventHandler<HTMLDivElement> = (): void => {
-        setIsCommandRouteSwitchOn(!isCommandRouteSwitchOn);
-
-        if (isCommandRouteSwitchOn === true) {
-            localStorage.setItem("isEnableToCommandRoute?", "false");
-        } else {
-            localStorage.setItem("isEnableToCommandRoute?", "true");
-        }
-    }
-
     useEffect((): void => {
         if (state.gps) {
             if (!isNaN(state.gps.latitude) && !isNaN(state.gps.longitude)) {
@@ -407,6 +397,14 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
             // });
         }
     }, [googleMap]);
+
+    useEffect(() => {
+        const _closePathSelectModal: string | null = localStorage.getItem("closePathSelectModal");
+
+        if (_closePathSelectModal === "true") {
+            closePathSelectModal();
+        }
+    }, [localStorage.getItem("closePathSelectModal")]);
 
     useEffect(() => {
         const mapElement: HTMLElement | null = document.getElementById("map");
