@@ -482,14 +482,6 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
                         <div className="route_path_select_title">
                             <img src={process.env.PUBLIC_URL + "../marker_route.png"} />
                             <p>경로 선택</p>
-
-                        </div>
-                        <div className="route_switch_container" onClick={onCommandRouteSwtichClick}>
-                            <p className="route_switch_title">{isCommandRouteSwitchOn ? "주행" : "경로"}</p>
-                            <div className="route_switch_button_container">
-                                <div className={`route_switch_button ${isCommandRouteSwitchOn ? "route_switch_checked" : ""}`}></div>
-                                <div className={`route_switch_circle ${isCommandRouteSwitchOn ? "route_switch_checked" : ""}`}></div>
-                            </div>
                         </div>
                         <div className="route_path_select_close_btn">
                             <img src={process.env.PUBLIC_URL + "../btn_close.png"} onClick={() => { closePathSelectModal() }}></img>

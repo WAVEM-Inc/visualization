@@ -1,5 +1,9 @@
 .path_map_components {
     width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 
 .path_map_container {
@@ -27,8 +31,9 @@
     width: 30%;
     display: flex;
     flex-direction: column;
-    overflow: auto;
     text-align: center;
+    overflow: hidden;
+    height: 600px;
 }
 
 .path_list_title {
@@ -39,6 +44,7 @@
 .path_list {
     margin-top: 5%;
     width: 90%;
+    overflow: auto;
 }
 
 .path_list_element {
@@ -67,7 +73,7 @@
     height: 100%;
     border-right: 2px solid #ccc;
     color: white;
-    background-color: green;
+    background-color: red;
     font-size: 25px;
     font-weight: bold;
 }
@@ -75,12 +81,20 @@
 .path_list_element_name {
     flex: 1;
     text-align: center;
+    font-weight: bold;
 }
 
-.path_list_info_container {
-    margin-top: 20px;
+.path_util_container {
+    margin-top: 3%;
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.path_controller_cotainer {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
     width: 100%;
 }
@@ -94,106 +108,120 @@
     width: 90%;
 }
 
-.progress_container {
+.path_progress_container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 20px;
+    margin-top: 5%;
+    width: 100%;
+    flex: 1;
 }
 
-.progress_slider {
-    width: 100%;
-    margin-bottom: 10px;
+.path_progress_slider {
+    width: 95%;
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
-.progress_slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 15px;
-    height: 15px;
-    background: #007bff;
-    border-radius: 50%;
-    cursor: pointer;
-    margin-top: -5px;
-    z-index: 2;
-}
-
-.progress_slider::-moz-range-thumb {
-    width: 15px;
-    height: 15px;
-    background: #007bff;
-    border-radius: 50%;
-    cursor: pointer;
-    z-index: 2;
-}
-
-.progress_slider::-webkit-slider-runnable-track {
-    width: 100%;
-    height: 5px;
-    cursor: pointer;
-    background: #dcdcdc;
-    border-radius: 5px;
-}
-
-.progress_slider::-moz-range-track {
-    width: 100%;
-    height: 5px;
-    cursor: pointer;
-    background: #dcdcdc;
-    border-radius: 5px;
-}
-
-/* 각 인덱스 위치에 구분선 표시 */
-.progress_slider::before {
-    content: "";
+.path_progress_cylinder {
     position: absolute;
-    top: -5px;
+    bottom: 0;
     width: 2px;
-    height: 15px;
-    background-color: black;
+    height: 20px;
+    background: #007bff;
+    cursor: pointer;
+    z-index: 2;
 }
 
-/* 인덱스 위치 조정 */
-.progress_slider::before {
-    left: calc(25% * var(--index)); /* 인덱스에 따라 왼쪽 위치 계산 */
+.path_progress_cylinder.active {
+    background: #ff0000;
 }
 
-.progress_info {
+.path_progress_marker_info {
+    position: absolute;
+    bottom: 100%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-size: 12px;
     text-align: center;
 }
 
-.circular_progress {
-    position: relative;
-    width: 100px;
-    height: 100px;
+.path_progress_marker_info > img {
+    width: 35px;
+    height: 35px;
 }
 
-.circular_progress_svg {
-    transform: rotate(-90deg);
-    width: 100px;
-    height: 100px;
-}
-
-.circular_bg {
-    fill: none;
-    stroke: #eee;
-    stroke-width: 10;
-}
-
-.circular_fg {
-    fill: none;
-    stroke: #76c7c0;
-    stroke-width: 10;
-    stroke-linecap: round;
-    transition: stroke-dasharray 0.3s ease;
-}
-
-.progress_text {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 1.2em;
+.path_progress_marker_info > p {
+    font-size: 15px;
     font-weight: bold;
+}
+
+.path_progress_cylinder_bar {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    background: #007bff;
+}
+
+.path_progress_horizontal_bar {
+    position: absolute;
+    height: 2px;
+    background: black;
+    z-index: 1;
+}
+
+.path_progress_slider::before {
+    left: calc(25% * var(--index));
+}
+
+.path_progress_info {
+    text-align: center;
+}
+
+.path_command_btn_container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    align-self: flex-end;
+    width: 20%;
+}
+
+.path_command_btn {
+    width: 100%;
+    border-radius: 50px;
+    font-size: 17px;
+    font-weight: bold;
+    color: white;
+    border: 2px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+}
+
+.path_command_btn:hover {
+    background-color: #ccc;
+}
+
+.path_command_btn > img {
+    width: 35px;
+    height: 35px;
+    margin-right: 5%;
+}
+
+.renew_path_btn {
+    background-color: blue;
+    color: white;
+}
+
+.command_path_btn {
+    background-color: green;
+    color: white;
+    margin-left: 2%;
 }

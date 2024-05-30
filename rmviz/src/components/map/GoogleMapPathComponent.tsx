@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import MqttClient from "../../api/mqttClient";
 import { MapState } from "../../domain/map/MapDomain";
 import { addDetectionRangePolygon, addPathMarker, addPathPolyline, changeMapCenter, initializeMap } from "../../service/map/MapService";
@@ -16,20 +16,22 @@ const GoogleMapPathComponent: React.FC<GoogleMapPathComponentProps> = ({
 }: GoogleMapPathComponentProps) => {
     const [googleMap, setGoogleMap] = useState<google.maps.Map>();
     const kecCoord: google.maps.LatLng = new google.maps.LatLng(36.11434, 128.3690);
-    const [isEnableToCommandRoute, setIsEnableToCommandRoute] = useState<string | null>(null);
     const [spathMarkerArray, setPathMarkerArray] = useState<Array<google.maps.Marker>>([]);
     const [pathPolyLine, setPathPolyLine] = useState<google.maps.Polyline | null>(null);
     const [detectionRagnePolygon, setDetectionRagnePolygon] = useState<Array<google.maps.Polygon>>([]);
     const [progress, setProgress] = useState<number>(0);
     const [currentMapFile, setCurrentMapFile] = useState<string>("");
+    const [paths, setPaths] = useState<Array<any>>([]);
+    const [routeIndex, setRouteIndex] = useState<number>(0);
 
     const requestTopicFormat: string = "/rmviz/request";
     const requestRouteToPoseTopic: string = `${requestTopicFormat}/route_to_pose`;
+    const requestPathRenewTopic: string = `${requestTopicFormat}/path/renew`;
 
     let pathMarkerArray: Array<google.maps.Marker> = [];
     let pathInfoWindowarray: Array<google.maps.InfoWindow> = [];
 
-    const buildPathJSON: Function = (path: any): any => {
+    const buildPathJSON: Function = (path: any, isEnableToCommandRoute: boolean): any => {
         const pathJSON: any = {
             isEnableToCommandRoute: isEnableToCommandRoute,
             path: path
@@ -38,8 +40,18 @@ const GoogleMapPathComponent: React.FC<GoogleMapPathComponentProps> = ({
         return pathJSON;
     }
 
+    const showPathClick = (pathJSON: any): void => {
+        const pathJSONBuilt: any = buildPathJSON(pathJSON, false);
+        onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, pathJSONBuilt);
+    }
+
     const commandPathClick = (pathJSON: any): void => {
-        onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, buildPathJSON(pathJSON));
+        const pathJSONBuilt: any = buildPathJSON(pathJSON, true);
+        onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, pathJSONBuilt);
+    }
+
+    const onPathRenewClick = (): void => {
+        onClickMqttPublish(mqttClient!, requestPathRenewTopic, {});
     }
 
     const drawPathMarker: Function = (): void => {
@@ -124,15 +136,12 @@ const GoogleMapPathComponent: React.FC<GoogleMapPathComponentProps> = ({
     }
 
     useEffect(() => {
-        setIsEnableToCommandRoute(localStorage.getItem("isEnableToCommandRoute?"));
-    }, [localStorage.getItem("isEnableToCommandRoute?")]);
-
-    useEffect(() => {
         if (state.path) {
             console.info(`Path File : ${JSON.stringify(state.path)}`);
             if (state.path.paths) {
                 setCurrentMapFile(state.path.current_map_file);
                 const pathList: Array<any> = Array.from(state.path.paths.path);
+                setPaths(pathList);
                 const pathListElement: HTMLElement | null = document.getElementById("path_list");
 
                 if (pathListElement) {
@@ -147,11 +156,14 @@ const GoogleMapPathComponent: React.FC<GoogleMapPathComponentProps> = ({
                         ].join(``);
 
                         const pathJSON: any = {
-                            path_id: path.id,
-                            path_name: path.name
+                            id: path.id,
+                            name: path.name
                         };
 
-                        li.onclick = () => commandPathClick(pathJSON);
+                        li.onclick = () => {
+                            setRouteIndex(index);
+                            showPathClick(pathJSON);
+                        };
                         pathListElement.appendChild(li);
                     });
                 }
@@ -170,6 +182,42 @@ const GoogleMapPathComponent: React.FC<GoogleMapPathComponentProps> = ({
     }, [state.path]);
 
     useEffect(() => {
+        const pathProgressMarkerInfoElements: NodeListOf<HTMLElement> | null = document.querySelectorAll(".path_progress_marker_info");
+        
+        if (pathProgressMarkerInfoElements && spathMarkerArray) {
+            pathProgressMarkerInfoElements.forEach((markerInfo) => {
+                const imgElements: HTMLCollectionOf<HTMLImageElement> = markerInfo.getElementsByTagName("img");
+                for (let i = 0; i < imgElements.length; i++) {
+                    imgElements[i].remove();
+                }
+            });
+
+            pathProgressMarkerInfoElements.forEach((markerInfo, index) => {
+                const pathProgressMarkerIconImg: HTMLImageElement = document.createElement("img");
+                const markerType = spathMarkerArray[index]?.getTitle()?.split("/")[1];
+
+                switch (markerType) {
+                    case "intersection":
+                        pathProgressMarkerIconImg.src = process.env.PUBLIC_URL + "../marker_intersection.png";
+                        break;
+                    case "endpoint":
+                        if (index === 0) {
+                            pathProgressMarkerIconImg.src = process.env.PUBLIC_URL + "../marker_start.png";
+                        } else {
+                            pathProgressMarkerIconImg.src = process.env.PUBLIC_URL + "../marker_arrive.png";
+                        }
+                        break;
+                    default:
+                        pathProgressMarkerIconImg.src = process.env.PUBLIC_URL + "../marker_landmark.png";
+                        break;
+                }
+
+                markerInfo.appendChild(pathProgressMarkerIconImg);
+            });
+        }
+    }, [spathMarkerArray]);
+
+    useEffect(() => {
         const mapElement: HTMLElement | null = document.getElementById("path_map");
 
         if (mapElement) {
@@ -183,15 +231,16 @@ const GoogleMapPathComponent: React.FC<GoogleMapPathComponentProps> = ({
                 googleMap.unbindAll();
             }
             if (state.path) {
+                setPathMarkerArray([]);
+                pathMarkerArray = [];
                 state.path = null;
             }
         });
     }, []);
 
-    const handleProgressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const newProgress: number = Number(e.target.value);
-        setProgress(newProgress);
-        changeMapCenter(googleMap, spathMarkerArray[newProgress].getPosition()!);
+    const handleProgressChange = (index: number) => {
+        setProgress(index);
+        changeMapCenter(googleMap, spathMarkerArray[index].getPosition()!);
     }
 
     return (
@@ -203,20 +252,48 @@ const GoogleMapPathComponent: React.FC<GoogleMapPathComponentProps> = ({
                     <ul id="path_list" className="path_list"></ul>
                 </div>
             </div>
-            <div className="path_list_info_container">
+            <div className="path_util_container">
                 {spathMarkerArray.length > 0 && (
-                    <div className="progress_container">
-                        <input
-                            type="range"
-                            min="0"
-                            max={spathMarkerArray.length - 1}
-                            value={progress}
-                            onChange={handleProgressChange}
-                            className="progress_slider"
-                        />
-                        <div className="progress_info">
-                            <p>Current Node: {progress + 1}</p>
-                            <p>ID: {spathMarkerArray[progress].getTitle()!.split("/")[0]}</p>
+                    <div className="path_controller_cotainer">
+                        <div className="path_progress_container">
+                            <div className="path_progress_slider">
+                                {spathMarkerArray.map((marker, index) => (
+                                    <React.Fragment key={index}>
+                                        <div
+                                            className={`path_progress_cylinder ${index === progress ? 'active' : ''}`}
+                                            onClick={() => handleProgressChange(index)}
+                                            style={{ left: `${(index / (spathMarkerArray.length - 1)) * 100}%` }}
+                                        >
+                                            <div id="path_progress_marker_info" className="path_progress_marker_info">
+                                                <p>{marker.getTitle()?.split("/")[0]}</p>
+                                            </div>
+                                            <div className="path_progress_cylinder_bar"></div>
+                                        </div>
+                                        {index < spathMarkerArray.length - 1 && (
+                                            <div
+                                                className="path_progress_horizontal_bar"
+                                                style={{
+                                                    left: `${((index) / (spathMarkerArray.length - 1)) * 100}%`,
+                                                    width: `${100 / (spathMarkerArray.length - 1)}%`,
+                                                    bottom: '8px'
+                                                }}
+                                            ></div>
+                                        )}
+                                    </React.Fragment>
+                                ))}
+                            </div>
+                        </div>
+                        <div className="path_command_btn_container">
+                            <button className={"path_command_btn renew_path_btn"} onClick={onPathRenewClick}>
+                                <img src={process.env.PUBLIC_URL + "../marker_refresh.png"} />
+                                <p>경로 갱신</p>
+                            </button>
+                            <button className="path_command_btn command_path_btn" onClick={() => {
+                                commandPathClick(paths[routeIndex]);
+                            }}>
+                                <img src={process.env.PUBLIC_URL + "../go_sign.png"}></img>
+                                <p>주행 명령</p>
+                            </button>
                         </div>
                     </div>
                 )}

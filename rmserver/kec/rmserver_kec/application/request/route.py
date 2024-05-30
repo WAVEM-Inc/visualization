@@ -134,8 +134,8 @@ class RouteProcessor:
             self.__log.info(f"{ROUTE_TO_POSE_ACTION} route_to_pose_goal_list_size : {self.__route_to_pose_goal_list_size}");
             
             if self.__route_to_pose_goal_list_size == 0:
-                path_id: str = mqtt_json["path"]["path_id"];
-                path_name: str = mqtt_json["path"]["path_name"];
+                path_id: str = mqtt_json["path"]["id"];
+                path_name: str = mqtt_json["path"]["name"];
                 self.__log.info(f"path_id : {path_id}, path_name : {path_name}");
                 
                 node_list: list[Any] = [];
@@ -215,7 +215,7 @@ class RouteProcessor:
                 
                 self.__mqtt_client.publish(topic=MQTT_PATH_TOPIC, payload=json.dumps(node_list), qos=0);
                 
-                if mqtt_json["isEnableToCommandRoute"] == "false":
+                if mqtt_json["isEnableToCommandRoute"] == False:
                     self.__log.error(f"{ROUTE_TO_POSE_ACTION} cannot command route");
                     self.route_to_pose_flush_goal();
                     return;
@@ -459,7 +459,19 @@ class RouteProcessor:
             path_json["heading"] = node.heading;
             path_json["direction"] = node.direction;
             path_json["drivingOption"] = node.driving_option;
-            # path_json["detectionRange"] = node.detection_range;
+            
+            detection_range: list[Any] = [];
+            
+            for dr in node.detection_range:
+                detection_range_item: Any = {};
+                detection_range_item["actionCode"] = dr.action_code;
+                detection_range_item["widthLeft"] = dr.width_left;
+                detection_range_item["widthRight"] = dr.width_right;
+                detection_range_item["height"] = dr.height;
+                detection_range_item["offset"] = dr.offset;
+                detection_range.append(detection_range_item);
+            
+            path_json["detectionRange"] = detection_range;
             
             path_json_list.append(path_json);
             
