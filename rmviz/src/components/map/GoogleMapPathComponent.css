@@ -176,6 +176,12 @@
     z-index: 1;
 }
 
+.path_progress_image {
+    width: 30px;
+    height: 30px;
+    z-index: 5;
+}
+
 .path_progress_slider::before {
     left: calc(25% * var(--index));
 }

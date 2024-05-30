@@ -183,7 +183,7 @@ const GoogleMapPathComponent: React.FC<GoogleMapPathComponentProps> = ({
 
     useEffect(() => {
         const pathProgressMarkerInfoElements: NodeListOf<HTMLElement> | null = document.querySelectorAll(".path_progress_marker_info");
-        
+
         if (pathProgressMarkerInfoElements && spathMarkerArray) {
             pathProgressMarkerInfoElements.forEach((markerInfo) => {
                 const imgElements: HTMLCollectionOf<HTMLImageElement> = markerInfo.getElementsByTagName("img");
@@ -269,6 +269,16 @@ const GoogleMapPathComponent: React.FC<GoogleMapPathComponentProps> = ({
                                             </div>
                                             <div className="path_progress_cylinder_bar"></div>
                                         </div>
+                                        {index === progress && (
+                                            <img
+                                                src={process.env.PUBLIC_URL + "../marker_current_position.png"}
+                                                className="path_progress_image"
+                                                style={{
+                                                    left: `${(index / (spathMarkerArray.length - 1)) * 100}%`,
+                                                    transform: 'translateX(-50%) rotate(90deg)',
+                                                }}
+                                            />
+                                        )}
                                         {index < spathMarkerArray.length - 1 && (
                                             <div
                                                 className="path_progress_horizontal_bar"
