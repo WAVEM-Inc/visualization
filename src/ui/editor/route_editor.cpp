@@ -10,6 +10,7 @@
 #include <QMessageBox>
 #include <QMenu>
 #include <QHeaderView>
+#include <qpainter.h>
 
 #include "model/path_info_model.h"
 #include "model/file_info_model.h"
@@ -28,6 +29,18 @@ RouteEditor::RouteEditor(QWidget *parent) :
         _deleteRouteButton_ptr(new QPushButton("X")){
 
     this->setVisible(false);
+    this->setStyleSheet(
+        "QLineEdit {"
+        "font: bold 20px;"
+        " };"
+        ""
+        "QLabel {"
+        "font: bold 20px;"
+        "};"
+        ""
+        "QComboBox {"
+        "font: bold 20px;"
+        "};");
 
     // Initialize UI Options
     m_layout_ptr->setVerticalSpacing(0);
@@ -103,6 +116,14 @@ RouteEditor::RouteEditor(QWidget *parent) :
 
 void RouteEditor::resizeEvent(QResizeEvent *event) {
     QWidget::resizeEvent(event);
+}
+
+void RouteEditor::paintEvent(QPaintEvent* event)
+{
+    QStyleOption opt;
+    opt.init(this);
+    QPainter p(this);
+    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }
 
 void RouteEditor::onAddRouteButtonClicked() {

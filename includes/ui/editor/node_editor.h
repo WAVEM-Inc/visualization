@@ -23,6 +23,7 @@ public:
 
     void resizeEvent(QResizeEvent *event) override;
 
+    void paintEvent(QPaintEvent* event) override;
 
 protected:
     void init();
@@ -59,6 +60,7 @@ private:
 
     QPushButton *_mapPoseBtn_ptr;
     QPushButton *_vehiclePoseBtn_ptr;
+    QPushButton *_calcHeadingBtn_ptr;
     QPushButton *_cancelBtn_ptr;
     QPushButton *_okBtn_ptr;
 

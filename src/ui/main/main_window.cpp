@@ -23,8 +23,8 @@ void MainWindow::resizeEvent(QResizeEvent *event) {
     m_routeEditor_ptr->resize(300, this->height() * 0.7);
     m_routeEditor_ptr->move(0, this->height() - m_routeEditor_ptr->height());
 
-    m_nodeEditor_ptr->resize(400, this->height() - m_menubar_ptr->height());
-    m_nodeEditor_ptr->move(this->width() - 400, m_menubar_ptr->height());
+    m_nodeEditor_ptr->resize(500, this->height() - m_menubar_ptr->height());
+    m_nodeEditor_ptr->move(this->width() - 500, m_menubar_ptr->height());
 }
 
 MainWindow::NodeListener::NodeListener(MainWindow *window) : m_window_ptr(window) {}

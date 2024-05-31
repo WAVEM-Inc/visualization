@@ -5,6 +5,8 @@
 #include <QMessageBox>
 #include "ui/editor/detection_range_list_view.h"
 
+#include <qpainter.h>
+
 DetectionRangeListView::DetectionRangeListView(QWidget *parent) : QWidget(parent) {
     _layout_ptr = new QVBoxLayout();
     setLayout(_layout_ptr);
@@ -74,6 +76,13 @@ void DetectionRangeListView::updateIndexes() {
         // 각 view의 새로운 인덱스 설정
         view->updateIndex(newIndex++);
     }
+}
+
+void DetectionRangeListView::paintEvent(QPaintEvent* event) {
+    QStyleOption opt;
+    opt.init(this);
+    QPainter p(this);
+    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }
 
 DetectionRangeListView::~DetectionRangeListView() = default;
