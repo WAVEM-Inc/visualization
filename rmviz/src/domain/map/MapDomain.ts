@@ -4,6 +4,7 @@ export interface MapState {
     gpsFiltered: any;
     routeStatus: any | null;
     odomEular: any;
+    cmdVel: any;
 }
 
 export const initialMapState: MapState = {
@@ -27,10 +28,14 @@ export const initialMapState: MapState = {
         latitude: 0.0
     },
     routeStatus: {},
-    odomEular: {}
+    odomEular: {},
+    cmdVel: {}
 };
 
 type MapStateAction = {
+    type: string,
+    payload: any
+} | {
     type: string,
     payload: any
 } | {
@@ -52,6 +57,7 @@ export const SET_GPS: string = "SET_GPS";
 export const SET_GPS_FILTERED: string = "SET_GPS_FILTERED";
 export const SET_ROUTE_STATUS: string = "SET_ROUTE_STATUS";
 export const SET_ODOM_EULAR: string = "SET_ODOM_EULAR";
+export const SET_CMD_VEL: string = "SET_CMD_VEL";
 
 export function mapStateReducer(state: MapState, action: MapStateAction): MapState {
     switch (action.type) {
@@ -79,6 +85,11 @@ export function mapStateReducer(state: MapState, action: MapStateAction): MapSta
             return {
                 ...state,
                 odomEular: action.payload
+            };
+        case SET_CMD_VEL:
+            return {
+                ...state,
+                cmdVel: action.payload
             };
         default:
             return state;

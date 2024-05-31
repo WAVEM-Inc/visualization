@@ -2,8 +2,8 @@
     "id": "rbt_control",
     "data": {
         "owner": "padmin",
-        "control_id": "",
-        "request_time": "",
+        "control_id": "cKECDSEMITB001240404100302279",
+        "request_time": "240404100302279",
         "control_code": "mscomplete",
         "control_data": {
             "return": false

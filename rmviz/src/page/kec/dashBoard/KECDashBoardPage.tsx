@@ -1,19 +1,11 @@
-import { Status, Wrapper } from "@googlemaps/react-wrapper";
+import { Wrapper } from "@googlemaps/react-wrapper";
 import React, { useEffect, useState } from "react";
 import MqttClient from "../../../api/mqttClient";
-import KECRequestComponent from "../../../components/kec/request/KECRequestComponent";
+import MapComponent from "../../../components/map/MapComponent";
 import TopComponent from "../../../components/top/TopComponent";
 import { MapState } from "../../../domain/map/MapDomain";
 import { TopState } from "../../../domain/top/TopDomain";
-import { onClickMqttPublish } from "../../../utils/Utils";
-import * as call01JSON from "../../../assets/json/kec/gumi/call_01.json";
-import * as call04JSON from "../../../assets/json/kec/gumi/call_04.json";
-import * as delivery02JSON from "../../../assets/json/kec/gumi/delivery_02.json";
-import * as delivery05JSON from "../../../assets/json/kec/gumi/delivery_05.json";
-import * as returning03JSON from "../../../assets/json/kec/gumi/returning_03.json";
-import * as returning06JSON from "../../../assets/json/kec/gumi/returning_06.json";
 import "./KECDashBoardPage.css";
-import GoogleMapComponent from "../../../components/map/GoogleMapComponent";
 
 interface KECDashBoardPageProps {
     mqttClient: MqttClient;
@@ -27,57 +19,6 @@ const KECDashBoardPage: React.FC<KECDashBoardPageProps> = ({
     mapState
 }: KECDashBoardPageProps): React.ReactElement<any, any> | null => {
     const [isEnableToCommandRoute, setIsEnableToCommandRoute] = useState<string | null>(null);
-    const requestTopicFormat: string = "/rms/ktp/dummy/request";
-    const requestRouteToPoseTopic: string = `${requestTopicFormat}/route_to_pose`;
-    const requestTaskTopic: string = `${requestTopicFormat}/task`;
-
-    const buildPathJSON: Function = (path: any): any => {
-        const pathJSON: any = {
-            isEnableToCommandRoute: isEnableToCommandRoute,
-            path: path
-        }
-
-        return pathJSON;
-    }
-
-    const onCall01Click = (): void => {
-        onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, buildPathJSON(call01JSON));
-    }
-
-    const onDelivery02NCall02Click = (): void => {
-        onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, buildPathJSON(delivery02JSON));
-    }
-
-    const onWaiting03Click = (): void => {
-        onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, buildPathJSON(returning03JSON));
-    }
-
-    const onCall04Click = (): void => {
-        onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, buildPathJSON(call04JSON));
-    }
-
-    const onDelivery05NCall05Click = (): void => {
-        onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, buildPathJSON(delivery05JSON));
-    }
-
-    const onWaiting06Click = (): void => {
-        onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, buildPathJSON(returning06JSON));
-    }
-
-    const googleMapRenderCallback = (status: Status) => {
-        switch (status) {
-            case Status.SUCCESS:
-                console.info("Succeeded to Load Google Map");
-                break;
-            case Status.LOADING:
-                break;
-            case Status.FAILURE:
-                console.info("Failed to Load Google Map");
-                break;
-        }
-
-        return <></>;
-    }
 
     useEffect(() => {
         setIsEnableToCommandRoute(localStorage.getItem("isEnableToCommandRoute?"));
@@ -91,22 +32,12 @@ const KECDashBoardPage: React.FC<KECDashBoardPageProps> = ({
                 />
             </div>
             <div className="map_component_container">
-                <Wrapper apiKey={`${process.env.GOOGLE_MAP_API_KEY}`} render={googleMapRenderCallback}>
-                    <GoogleMapComponent
+                <Wrapper apiKey={`${process.env.GOOGLE_MAP_API_KEY}`}>
+                    <MapComponent
                         mqttClient={mqttClient!}
                         state={mapState}
                     />
                 </Wrapper>
-            </div>
-            <div className="request_component_container">
-                <KECRequestComponent
-                    onCall01Click={onCall01Click}
-                    onDelivery02NCall02Click={onDelivery02NCall02Click}
-                    onWaiting03Click={onWaiting03Click}
-                    onCall04Click={onCall04Click}
-                    onDelivery05NCall05Click={onDelivery05NCall05Click}
-                    onWaiting06Click={onWaiting06Click}
-                />
             </div>
         </div>
     );

@@ -20,6 +20,7 @@
 
 .top_logo_title {
     font-size: 24px;
+    margin-left: 100%;
 }
 
 .top_logo_title_link {
@@ -28,62 +29,12 @@
 }
 
 .top_tools_container {
-    margin-right: 1%;
+    margin-right: 4%;
     display: flex;
     flex-direction: row;
-    width: 15%;
+    width: 7%;
     align-items: center;
     justify-content: space-around;
-}
-
-.top_command_route_switch_container {
-    width: 35%;
-    margin-right: 1%;
-    position: relative;
-    cursor: pointer;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-}
-
-.command_route_switch_title {
-    margin: 0;
-    font-weight: bold;
-}
-
-.command_route_switch_button_container {
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-}
-
-.command_route_switch_button {
-    width: 50px;
-    height: 24px;
-    border-radius: 30px;
-    background-color: red;
-    border: solid 2px #ccc;
-}
-
-.command_route_switch_checked {
-    background-color: green;
-    transition: 0.3s;
-}
-
-.command_route_switch_circle {
-    position: absolute;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background-color: rgb(255, 254, 255);
-    transition: 0.3s;
-    border: solid 2px #ccc;
-}
-
-.command_route_switch_checked {
-    position: absolute;
-    right: 0;
-    transition: 0.3s;
 }
 
 .top_battery {
@@ -143,4 +94,63 @@
     height: 20px;
     font-weight: bold;
     font-size: 15px;
+}
+
+@media screen and (min-width: 800px) and (min-height: 600px) and (max-width: 1023px) and (max-height: 767px) {
+    .top_tools_container {
+        margin-right: 3%;
+        width: 18%;
+    }
+    .top_command_route_switch_container {
+        width: 45%;
+    }
+}
+
+@media screen and (min-width: 1024px) and (min-height: 768px) and (max-width: 1279px) and (max-height: 799px) {
+    .top_tools_container {
+        margin-right: 3%;
+        width: 20%;
+    }
+    .top_command_route_switch_container {
+        width: 45%;
+    }
+    .top_logo_title {
+        font-size: 24px;
+    }
+}
+
+@media screen and (min-width: 1180px) and (min-height: 820px) and (max-width: 1279px) and (max-height: 899px) {
+    .top_tools_container {
+        margin-right: 3%;
+        width: 17%;
+    }
+    .top_command_route_switch_container {
+        width: 45%;
+    }
+}
+
+@media screen and (min-width: 1280px) and (min-height: 800px) and (max-width: 1439px) and (max-height: 899px) {
+    .top_tools_container {
+        margin-right: 3%;
+        width: 16%;
+    }
+    .top_command_route_switch_container {
+        width: 45%;
+    }
+}
+
+@media screen and (min-width: 1500px) and (min-height: 700px) and (max-height: 899px) {
+
+}
+
+@media screen and (min-width: 1440px) and (min-height: 900px) and (max-width: 1599px) and (max-height: 999px) {
+
+}
+
+@media screen and (min-width: 1600px) and (min-height: 900px) and (max-width: 1799px) and (max-height: 999px){
+
+}
+
+@media screen and (min-width: 1799px) and (min-height: 1000px) and (max-width: 2559px) and (max-height: 1079px) {
+
 }
