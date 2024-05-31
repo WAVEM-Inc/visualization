@@ -6,18 +6,18 @@ import * as emergencyStopJSON from "../../assets/json/common/emergency_stop.json
 import { MapState } from "../../domain/map/MapDomain";
 import { addDetectionRangePolygon, addPathMarker, addPathPolyline, changeMapCenter, initializeKECDBorderLine, initializeMap, initializeRobotMarker, updateRobotMakerIcon } from "../../service/map/MapService";
 import { onClickMqttPublish } from "../../utils/Utils";
-import "./GoogleMapComponent.css";
-import GoogleMapPathComponent from "./GoogleMapPathComponent";
+import PathComponent from "../path/PathComponent";
+import "./MapComponent.css";
 
-interface GoogleMapComponentProps {
+interface MapComponentProps {
     mqttClient: MqttClient;
     state: MapState;
 }
 
-const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
+const MapComponent: React.FC<MapComponentProps> = ({
     mqttClient,
     state
-}: GoogleMapComponentProps) => {
+}: MapComponentProps) => {
     const [googleMap, setGoogleMap] = useState<google.maps.Map>();
     const [pathInfoContainer, setPathInfoContainer] = useState<HTMLElement | null>(null);
     const [pathInfoDiv, setPathInfoDiv] = useState<HTMLDivElement | null>(null);
@@ -40,13 +40,10 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
     });
     const [currentOdomEular, setCurrentOdomEular] = useState<number>();
     const [currentRouteStatus, setCurrentRouteStatus] = useState<any | null>(null);
-    const [isCommandRouteSwitchOn, setIsCommandRouteSwitchOn] = useState<boolean>(false);
 
     const requestTopicFormat: string = "/rmviz/request";
     const requestEmergencyTopic: string = `${requestTopicFormat}/can/emergency`;
     const requestGoalCancelTopic: string = `${requestTopicFormat}/goal/cancel`;
-    const requestGPSInitTopic: string = `${requestTopicFormat}/gps/init`;
-    const requestCanInitTopic: string = `${requestTopicFormat}/can/init`;
     const requestPathRenewTopic: string = `${requestTopicFormat}/path/renew`;
     const requestTaskTopic: string = `${requestTopicFormat}/task`;
 
@@ -456,6 +453,10 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
                             <img src={process.env.PUBLIC_URL + "../marker_route.png"} />
                             <p>경로 선택</p>
                         </button>
+                        <button className={"route_btn_request route_btn_mission_select"} onClick={onPathSelectClick}>
+                            <img src={process.env.PUBLIC_URL + "../marker_mission.png"} />
+                            <p>임무 선택</p>
+                        </button>
                         <button className={"route_btn_request route_btn_path_renew"} onClick={onPathRenewClick}>
                             <img src={process.env.PUBLIC_URL + "../marker_refresh.png"} />
                             <p>경로 갱신</p>
@@ -485,7 +486,7 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
                             <img src={process.env.PUBLIC_URL + "../btn_close.png"} onClick={() => { closePathSelectModal() }}></img>
                         </div>
                         <Wrapper apiKey={`${process.env.GOOGLE_MAP_API_KEY}`}>
-                            <GoogleMapPathComponent
+                            <PathComponent
                                 mqttClient={mqttClient!}
                                 state={state}
                             />
@@ -497,4 +498,4 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
     );
 }
 
-export default GoogleMapComponent;
+export default MapComponent;

@@ -3,17 +3,17 @@ import MqttClient from "../../api/mqttClient";
 import { MapState } from "../../domain/map/MapDomain";
 import { addDetectionRangePolygon, addPathMarker, addPathPolyline, changeMapCenter, initializeMap } from "../../service/map/MapService";
 import { onClickMqttPublish } from "../../utils/Utils";
-import "./GoogleMapPathComponent.css";
+import "./PathComponent.css";
 
-interface GoogleMapPathComponentProps {
+interface PathComponentProps {
     mqttClient: MqttClient;
     state: MapState;
 }
 
-const GoogleMapPathComponent: React.FC<GoogleMapPathComponentProps> = ({
+const PathComponent: React.FC<PathComponentProps> = ({
     mqttClient,
     state
-}: GoogleMapPathComponentProps) => {
+}: PathComponentProps) => {
     const [googleMap, setGoogleMap] = useState<google.maps.Map>();
     const kecCoord: google.maps.LatLng = new google.maps.LatLng(36.11434, 128.3690);
     const [spathMarkerArray, setPathMarkerArray] = useState<Array<google.maps.Marker>>([]);
@@ -319,4 +319,4 @@ const GoogleMapPathComponent: React.FC<GoogleMapPathComponentProps> = ({
     );
 }
 
-export default GoogleMapPathComponent;
+export default PathComponent;

@@ -1,5 +1,4 @@
 import mqtt, { IClientOptions } from 'mqtt';
-import * as mqttJSON from "../assets/config/mqtt.json";
 
 export default class MqttClient {
 
@@ -7,19 +6,18 @@ export default class MqttClient {
     connect_opts: IClientOptions;
     client: mqtt.MqttClient;
 
-    constructor() {
-        const mqtt_json: any = JSON.parse(JSON.stringify(mqttJSON));
-        console.info(`MQTT : ${JSON.stringify(mqtt_json)}`);
+    constructor(mqttJSON: any) {
+        console.info(`MQTT : ${JSON.stringify(mqttJSON)}`);
 
         this.connect_opts = {
-            host: mqtt_json.host,
-            port: mqtt_json.port,
-            protocol: mqtt_json.protocol,
-            username: mqtt_json.username,
-            password: mqtt_json.password
+            host: mqttJSON.host,
+            port: mqttJSON.port,
+            protocol: mqttJSON.protocol,
+            username: mqttJSON.user_name,
+            password: mqttJSON.password
         };
 
-        this.broker_url = `${mqtt_json.protocol}://${mqtt_json.host}:${mqtt_json.port}/mqtt`;
+        this.broker_url = `${mqttJSON.protocol}://${mqttJSON.host}:${mqttJSON.port}/mqtt`;
         this.client = mqtt.connect(this.broker_url, this.connect_opts);
         this.onConnect();
     };

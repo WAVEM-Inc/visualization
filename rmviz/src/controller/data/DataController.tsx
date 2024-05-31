@@ -1,3 +1,4 @@
+import axios from "axios";
 import { IPublishPacket } from "mqtt/*";
 import React, { useEffect, useReducer, useState } from "react";
 import { Route, Switch } from "react-router-dom";
@@ -10,12 +11,14 @@ import KECDataBoardPage from "../../page/kec/databoard/KECDataBoardPage";
 import KECROSPage from "../../page/kec/ros/KECROSPage";
 import { getCurrentTime } from "../../utils/Utils";
 
+
 const DataController: React.FC = (): React.ReactElement<any, any> | null => {
     const [topState, topStateDispatch] = useReducer(topStateReducer, initialTopState);
     const [mapState, mapStateDistpatch] = useReducer(mapStateReducer, initialMapState);
     const [rosState, rosStateDistpatch] = useReducer(rosStateReducer, initalROSState);
     const [responseData, setResponseData] = useState<any>({});
 
+    const [mqttData, setMqttData] = useState(null);
     const [mqttClient, setMqttClient] = useState<MqttClient>();
 
     const requestTopicFormat: string = "/rmviz/request";
@@ -120,37 +123,57 @@ const DataController: React.FC = (): React.ReactElement<any, any> | null => {
     }
 
     useEffect(() => {
-        const _mqttClient: MqttClient = new MqttClient();
-
-        _mqttClient.subscribe(responsePathTopic);
-        _mqttClient.subscribe(resposneGpsTopic);
-        _mqttClient.subscribe(resposneGpsFilteredTopic);
-        _mqttClient.subscribe(responseRouteStatusTopic);
-        _mqttClient.subscribe(responseOdomEularTopic);
-        _mqttClient.subscribe(responseHeartBeatTopic);
-        _mqttClient.subscribe(responseBatteryTopic);
-        _mqttClient.subscribe(responseURDFTopic);
-        _mqttClient.subscribe(responseCmdVelTopic);
-        _mqttClient.subscribe(responsePathFileSelectTopic);
-
-        handleResponseMQTTCallback(_mqttClient);
-        setUpResponseMQTTConnections(_mqttClient);
-        setMqttClient(_mqttClient);
-
-        setInterval(() => {
-            const heartBeatJSON: any = {
-                "request_time": getCurrentTime()
-            };
-            _mqttClient!.publish(requestHeartBeatTopic, JSON.stringify(heartBeatJSON));
-        }, 1300);
-
-        setTimeout(() => {
-            const isMqttConnected: boolean = _mqttClient.isConnected();
-            if (!isMqttConnected) {
-                alert("MQTT 연결을 확인하세요.");
+        const fetchMqttData = async () => {
+            try {
+                const response = await axios.get("/v1/api/mqtt/load/config");
+                setMqttData(response.data);
+            } catch (error) {
+                console.error("Error fetching MQTT data", error);
             }
-        }, 5000);
+        };
+
+        fetchMqttData();
     }, []);
+
+    useEffect(() => {
+        if (mqttData) {
+            console.info(`mqttData : ${JSON.stringify(mqttData)}`);
+            const _mqttClient: MqttClient = new MqttClient(mqttData);
+
+            _mqttClient.subscribe(responsePathTopic);
+            _mqttClient.subscribe(resposneGpsTopic);
+            _mqttClient.subscribe(resposneGpsFilteredTopic);
+            _mqttClient.subscribe(responseRouteStatusTopic);
+            _mqttClient.subscribe(responseOdomEularTopic);
+            _mqttClient.subscribe(responseHeartBeatTopic);
+            _mqttClient.subscribe(responseBatteryTopic);
+            _mqttClient.subscribe(responseURDFTopic);
+            _mqttClient.subscribe(responseCmdVelTopic);
+            _mqttClient.subscribe(responsePathFileSelectTopic);
+
+            handleResponseMQTTCallback(_mqttClient);
+            setUpResponseMQTTConnections(_mqttClient);
+            setMqttClient(_mqttClient);
+        }
+    }, [mqttData]);
+
+    useEffect(() => {
+        if (mqttClient) {
+            setInterval(() => {
+                const heartBeatJSON: any = {
+                    "request_time": getCurrentTime()
+                };
+                mqttClient!.publish(requestHeartBeatTopic, JSON.stringify(heartBeatJSON));
+            }, 1300);
+
+            setTimeout(() => {
+                const isMqttConnected: boolean = mqttClient.isConnected();
+                if (!isMqttConnected) {
+                    alert("MQTT 연결을 확인하세요.");
+                }
+            }, 5000);
+        }
+    }, [mqttClient]);
 
 
     return (
