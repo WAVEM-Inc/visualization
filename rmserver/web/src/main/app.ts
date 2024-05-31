@@ -5,9 +5,9 @@ import fs from "fs";
 import http from "http";
 import createHttpError from "http-errors";
 import logger from "morgan";
+import os from "os";
 import path from "path";
 import util from "util";
-import os from "os";
 
 const app: express.Application = express();
 const port: number = 3000;
@@ -18,7 +18,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(cors());
 
-const client_path: string = path.join(__dirname, "../../../../rmviz/build");
+const client_path: string = path.join(__dirname, "../../../rmviz/build");
 console.log(`dirname : ${__dirname}, client_path : ${client_path}`);
 app.use(express.static(client_path));
 

@@ -16,13 +16,18 @@
   - [Clone & Build Project](#3-clone--build-project)
     - [Clone Project](#3-1-clone-project)
     - [Build Project](#3-2-build-project)
-        - [Build Server](#3-2-1-build-server)
-            - [Modify MQTT Broker Host Address(If Necessary)](#3-2-1-1-modify-mqtt-broker-host-adress-if-necessary)
+        - [Modify MQTT Broker's Host Address(If Necessary)](#3-2-1-modify-mqtt-broker-host-adress-if-necessary)
             - [Compile Package](#3-2-1-2-compile-package)
-        - [Build Client](#3-2-2-build-client)
-            - [Modify MQTT Broker Host Address(If Necessary)](#3-2-2-1-modify-mqtt-broker-host-adress-if-necessary)
-            - [Install NPM Dependencies & Compile Package](#3-2-2-2-install-npm-dependencies--compile-package)
-  - [Launch Check](#4-build-check)
+        - [Build ROS Server](#3-2-2-build-ros-server)
+          - [Compile Package](#3-2-2-1-compile-package)
+        - [Build Web Server](#3-2-3-build-web-server)
+          - [Build nodejs Server](#3-2-3-1-build-nodejs-server)
+          - [Build react Client](#3-2-3-2-build-react-client)
+  - [Launch](#4-launch)
+    - [Modify MQTT broker's host adress (If Necessary)](#4-1-1-modify-mqtt-brokers-host-adress-if-necessary)
+    - [Launch mosquitto broker](#4-1-2-launch-mosquitto-broker)
+    - [Launch ROS Server](#4-2-launch-ros-server)
+    - [Launch Web](#4-3-launch-web)
 
 
 ## 1. Environment
@@ -104,75 +109,81 @@ git clone -b KEC/Web/Humble/Develop https://github.com/WAVEM-Inc/visualization.g
 
 ### 3-2. Build Project
 
-### 3-2-1. Build Server
-
-### 3-2-1-1. Modify MQTT broker host adress (If Necessary)
+### 3-2-1. Modify MQTT broker's host adress (If Necessary)
 ```bash
-cd ~/kec_ws/src/service/visualization/rmserver/kec
-vi config/mqtt_config.yaml
-
-/rmserver_kec:
-  ros__parameters:
-    host: ${Your Current PC IP Address}
-    port: 8883
-    client_id: "wavem1234"
-    client_keep_alive: 60
-    user_name: "wavem"
-    password: "1234"
-    type: "websockets"
-    path: "/ws"
-
-# :wq
-```
-
-### 3-2-1-2. Compile Package
-```bash
-cd ~/kec_ws/src/service/visualization/
-colcon build --packages-select rmserver_kec
-```
-
-### 3-2-2. Build Client
-
-### 3-2-2-1. Modify MQTT broker host adress (If Necessary)
-```bash
-cd ~/kec_ws/src/service/visualization/rmviz
-
-vi src/assets/config/mqtt.json
+cd ~/RobotData/mqtt/
+vi mqtt.json
 
 {
-    "host": ${Your Current PC IP Address},
-    "port": 8883,
-    "protocol": "ws"
+  "host": "192.168.56.1",
+  "port": 8883,
+  "protocol": "ws",
+  "type": "websockets",
+  "path": "/ws",
+  "client_name": "wavemrmserver",
+  "password":"22087",
+  "user_name":"wavemrmserver"
 }
 
 # :wq
 ```
 
-### 3-2-2-2. Install npm dependencies & Compile Package
+### 3-2-2. Build ROS Server
+
+### 3-2-2-1. Compile Package
 ```bash
-cd ~/kec_ws/src/service/visualization/rmviz
-npm i
-sudo npm i -g serve
-npm run build
+cd ~/kec_ws/src/service/visualization/
+colcon build --packages-select rmserver_kec
+```
+
+### 3-2-3. Build Web Server
+
+### 3-2-3-1. Build nodejs Server
+```bash
+cd ~/kec_ws/src/service/visualization/rmserver/web/
+npm run server_build
+```
+
+### 3-2-3-2. Build react Client
+```bash
+cd ~/kec_ws/src/service/visualization/rmserver/web/
+npm run client_build
 ```
 
 ## 4. Launch
 
-## 4-1. Launch mosquitto
+## 4-1. Launch mosquitto broker
+
+### 4-1-1. Modify MQTT broker's host adress (If Necessary)
 ```bash
-cd ~/kec_ws/src/service/visualization/
+cd ~/RobotData/mqtt
+vi ./mosquitto.conf
+
+listener 1883 ${your IP address}
+protocol mqtt
+allow_anonymous true
+
+listener 8883 ${your IP address}
+protocol websockets
+allow_anonymous true
+
+# :wq
+```
+### 4-1-2. Launch mosquitto broker
+```bash
+cd ~/RobotData/mqtt/
 sudo chmod +x ./mosquitto.sh
 ./mosquitto.sh
 ```
 
-## 4-2. Launch Server
+## 4-2. Launch ROS Server
 ```bash
-source clion_setup.bash
+source ~/kec_ws/src/total.bash
 ros2 launch rmserver_kec rmserver_kec.launch.py
 ```
 
-## 4-3. Launch Client
+## 4-3. Launch Web
 ```bash
-cd ~/kec_ws/src/service/visualization/rmviz
-serve -s build -l 3000
+cd ~/kec_ws/src/service/visualization/rmserver/web
+npm run launch
 ```
