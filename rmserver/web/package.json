@@ -2,14 +2,15 @@
   "name": "rmvserver_web",
   "version": "1.0.0",
   "description": "",
-  "main": "src/main/index.ts",
+  "main": "src/main/app.ts",
   "scripts": {
     "compile": "npx tsc",
     "start": "node dist/app.js",
     "dev": "nodemon --watch \"*.ts\" --exec \"ts-node\" src/main/app.ts",
-    "server_build": "npx tsc --build .",
+    "server_build": "concurrently \"npx tsc --build .\" \"cd ../ros && colcon build --symlink-install\"",
     "client_build": "cd ../../rmviz && npm run build",
-    "launch": "concurrently \"npm run server_build\" \"npm run client_build\" \"npm run start\""
+    "build": "sudo chmod +x ./script/build.sh && ./script/build.sh",
+    "launch": "sudo chmod +x ./script/launch.sh && ./script/launch.sh"
   },
   "author": "",
   "license": "ISC",

@@ -27,7 +27,7 @@ const mqttFilePath: string = path.join(homeDir, "RobotData/mqtt/mqtt.json");
 
 app.get("/v1/api/mqtt/load/config", async (req: Request, res: Response) => {
     try {
-        const data = await util.promisify(fs.readFile)(mqttFilePath, "utf8");
+        const data: string = await util.promisify(fs.readFile)(mqttFilePath, "utf8");
         console.info(`mqttData : ${data}`);
         res.json(JSON.parse(data));
     } catch (err) {
@@ -54,7 +54,7 @@ app.use(function (err: any, req: Request, res: Response, next: NextFunction) {
 const server = http.createServer(app);
 
 app.listen(port, () => {
-    console.log(`[server]: Server is running at https://localhost:${port}`);
+    console.log(`[server]: Server is running at port <${port}>`);
 });
 
 module.exports = app;
