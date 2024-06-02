@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import MqttClient from "../../api/mqttClient";
 import { MapState } from "../../domain/map/MapDomain";
 import { addDetectionRangePolygon, addPathMarker, addPathPolyline, changeMapCenter, initializeMap } from "../../service/map/MapService";
@@ -16,13 +16,17 @@ const PathComponent: React.FC<PathComponentProps> = ({
 }: PathComponentProps) => {
     const [googleMap, setGoogleMap] = useState<google.maps.Map>();
     const kecCoord: google.maps.LatLng = new google.maps.LatLng(36.11434, 128.3690);
-    const [spathMarkerArray, setPathMarkerArray] = useState<Array<google.maps.Marker>>([]);
+    const [_pathMarkerArray, setPathMarkerArray] = useState<Array<google.maps.Marker>>([]);
     const [pathPolyLine, setPathPolyLine] = useState<google.maps.Polyline | null>(null);
     const [detectionRagnePolygon, setDetectionRagnePolygon] = useState<Array<google.maps.Polygon>>([]);
-    const [progress, setProgress] = useState<number>(0);
+    const [pathProgress, setPathProgress] = useState<number>(0);
     const [currentMapFile, setCurrentMapFile] = useState<string>("");
-    const [paths, setPaths] = useState<Array<any>>([]);
-    const [routeIndex, setRouteIndex] = useState<number>(0);
+    const [pathList, setPathList] = useState<Array<any>>([]);
+    const [pathListIndex, setPathListIndex] = useState<number>(0);
+    const [selectedPathListIndex, setSelectedPathListIndex] = useState<number | null>(null);
+    const [editedPath, setEditedPath] = useState<Array<any>>([]);
+
+    const pathProgressImageRef = useRef<HTMLImageElement | null>(null);
 
     const requestTopicFormat: string = "/rmviz/request";
     const requestRouteToPoseTopic: string = `${requestTopicFormat}/route_to_pose`;
@@ -48,7 +52,6 @@ const PathComponent: React.FC<PathComponentProps> = ({
     const commandPathClick = (pathJSON: any): void => {
         const pathJSONBuilt: any = buildPathJSON(pathJSON, true);
         onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, pathJSONBuilt);
-        localStorage.setItem("closePathSelectModal", "true");
     }
 
     const onPathRenewClick = (): void => {
@@ -118,7 +121,7 @@ const PathComponent: React.FC<PathComponentProps> = ({
     }
 
     const flushPath = (): void => {
-        spathMarkerArray.forEach(marker => marker.setMap(null));
+        _pathMarkerArray.forEach(marker => marker.setMap(null));
         pathMarkerArray = [];
         setPathMarkerArray(pathMarkerArray);
 
@@ -136,13 +139,46 @@ const PathComponent: React.FC<PathComponentProps> = ({
         setDetectionRagnePolygon([]);
     }
 
+    const handleProgressChange = (index: number) => {
+        setPathProgress(index);
+        changeMapCenter(googleMap, _pathMarkerArray[index].getPosition()!);
+    }
+
+    const handleDragStart = (event: React.DragEvent<HTMLImageElement>) => {
+        event.dataTransfer.setDragImage(new Image(), 0, 0);
+    }
+
+    const handleDrag = (event: React.DragEvent<HTMLImageElement>) => {
+        if (event.clientX === 0) return;
+
+        const progressBar: Element | null = document.querySelector(".path_progress_slider");
+        const progressImage: HTMLImageElement | null = pathProgressImageRef.current;
+
+        if (progressBar && progressImage) {
+            const rect: DOMRect = progressBar.getBoundingClientRect();
+            let newLeft: number = event.clientX - rect.left;
+
+            if (newLeft < 0) newLeft = 0;
+            if (newLeft > rect.width) newLeft = rect.width;
+
+            const newIndex: number = Math.round((newLeft / rect.width) * (_pathMarkerArray.length - 1));
+            setPathProgress(newIndex);
+        }
+    }
+
+    const handleDragEnd = () => {
+        if (_pathMarkerArray[pathProgress]) {
+            alert(`${_pathMarkerArray[pathProgress].getTitle()?.split("/")[0]}`);
+            changeMapCenter(googleMap, _pathMarkerArray[pathProgress].getPosition()!);
+        }
+    }
+
     useEffect(() => {
         if (state.path) {
-            console.info(`Path File : ${JSON.stringify(state.path)}`);
             if (state.path.paths) {
                 setCurrentMapFile(state.path.current_map_file);
                 const pathList: Array<any> = Array.from(state.path.paths.path);
-                setPaths(pathList);
+                setPathList(pathList);
                 const pathListElement: HTMLElement | null = document.getElementById("path_list");
 
                 if (pathListElement) {
@@ -162,17 +198,17 @@ const PathComponent: React.FC<PathComponentProps> = ({
                         };
 
                         li.onclick = () => {
-                            setRouteIndex(index);
+                            setPathListIndex(index);
                             showPathClick(pathJSON);
+                            setSelectedPathListIndex(index);
                         };
+
                         pathListElement.appendChild(li);
                     });
                 }
             }
 
             if (state.path) {
-                console.info(`state.path : ${JSON.stringify(state.path)}`);
-
                 flushPath();
                 drawPathMarker();
 
@@ -183,9 +219,23 @@ const PathComponent: React.FC<PathComponentProps> = ({
     }, [state.path]);
 
     useEffect(() => {
+        const pathListElement: HTMLElement | null = document.getElementById("path_list");
+        if (pathListElement && selectedPathListIndex !== null) {
+            Array.from(pathListElement.children).forEach((child, index) => {
+                (child as HTMLElement).style.backgroundColor = index === selectedPathListIndex ? "lightblue" : "";
+            });
+
+            const selectedElement: HTMLElement = pathListElement.children[selectedPathListIndex] as HTMLElement;
+            if (selectedElement) {
+                selectedElement.scrollIntoView({ behavior: "smooth", block: "center" });
+            }
+        }
+    }, [selectedPathListIndex]);
+
+    useEffect(() => {
         const pathProgressMarkerInfoElements: NodeListOf<HTMLElement> | null = document.querySelectorAll(".path_progress_marker_info");
 
-        if (pathProgressMarkerInfoElements && spathMarkerArray) {
+        if (pathProgressMarkerInfoElements && _pathMarkerArray) {
             pathProgressMarkerInfoElements.forEach((markerInfo) => {
                 const imgElements: HTMLCollectionOf<HTMLImageElement> = markerInfo.getElementsByTagName("img");
                 for (let i = 0; i < imgElements.length; i++) {
@@ -195,7 +245,7 @@ const PathComponent: React.FC<PathComponentProps> = ({
 
             pathProgressMarkerInfoElements.forEach((markerInfo, index) => {
                 const pathProgressMarkerIconImg: HTMLImageElement = document.createElement("img");
-                const markerType = spathMarkerArray[index]?.getTitle()?.split("/")[1];
+                const markerType: string | undefined = _pathMarkerArray[index]?.getTitle()?.split("/")[1];
 
                 switch (markerType) {
                     case "intersection":
@@ -204,6 +254,8 @@ const PathComponent: React.FC<PathComponentProps> = ({
                     case "endpoint":
                         if (index === 0) {
                             pathProgressMarkerIconImg.src = process.env.PUBLIC_URL + "../marker_start.png";
+                        } else if (index !== pathProgressMarkerInfoElements.length - 1) {
+                            pathProgressMarkerIconImg.src = process.env.PUBLIC_URL + "../marker_landmark.png";
                         } else {
                             pathProgressMarkerIconImg.src = process.env.PUBLIC_URL + "../marker_arrive.png";
                         }
@@ -221,8 +273,15 @@ const PathComponent: React.FC<PathComponentProps> = ({
 
                 markerInfo.appendChild(pathProgressMarkerIconImg);
             });
+
+            setPathProgress(0);
+            googleMap?.setZoom(20);
+
+            if (_pathMarkerArray[0]) {
+                changeMapCenter(googleMap, _pathMarkerArray[0].getPosition());
+            }
         }
-    }, [spathMarkerArray]);
+    }, [_pathMarkerArray]);
 
     useEffect(() => {
         const mapElement: HTMLElement | null = document.getElementById("path_map");
@@ -238,17 +297,11 @@ const PathComponent: React.FC<PathComponentProps> = ({
                 googleMap.unbindAll();
             }
             if (state.path) {
-                setPathMarkerArray([]);
-                pathMarkerArray = [];
+                flushPath();
                 state.path = null;
             }
         });
     }, []);
-
-    const handleProgressChange = (index: number) => {
-        setProgress(index);
-        changeMapCenter(googleMap, spathMarkerArray[index].getPosition()!);
-    }
 
     return (
         <div className={"path_map_components"}>
@@ -260,38 +313,43 @@ const PathComponent: React.FC<PathComponentProps> = ({
                 </div>
             </div>
             <div className="path_util_container">
-                {spathMarkerArray.length > 0 && (
+                {_pathMarkerArray.length > 0 && (
                     <div className="path_controller_cotainer">
                         <div className="path_progress_container">
                             <div className="path_progress_slider">
-                                {spathMarkerArray.map((marker, index) => (
+                                {_pathMarkerArray.map((marker, index) => (
                                     <React.Fragment key={index}>
                                         <div
-                                            className={`path_progress_cylinder ${index === progress ? 'active' : ''}`}
+                                            className={`path_progress_cylinder ${index === pathProgress ? 'active' : ''}`}
                                             onClick={() => handleProgressChange(index)}
-                                            style={{ left: `${(index / (spathMarkerArray.length - 1)) * 100}%` }}
+                                            style={{ left: `${(index / (_pathMarkerArray.length - 1)) * 100}%` }}
                                         >
                                             <div id="path_progress_marker_info" className="path_progress_marker_info">
                                                 <p>{marker.getTitle()?.split("/")[0]}</p>
                                             </div>
                                             <div className="path_progress_cylinder_bar"></div>
                                         </div>
-                                        {index === progress && (
+                                        {index === pathProgress && (
                                             <img
                                                 src={process.env.PUBLIC_URL + "../marker_current_position.png"}
                                                 className="path_progress_image"
                                                 style={{
-                                                    left: `${(index / (spathMarkerArray.length - 1)) * 100}%`,
-                                                    transform: 'translateX(-50%) rotate(90deg)',
+                                                    left: `${(index / (_pathMarkerArray.length - 1)) * 100}%`,
+                                                    transform: "translateX(-50%) rotate(90deg)",
                                                 }}
+                                                ref={pathProgressImageRef}
+                                                draggable
+                                                onDragStart={handleDragStart}
+                                                onDrag={handleDrag}
+                                                onDragEnd={handleDragEnd}
                                             />
                                         )}
-                                        {index < spathMarkerArray.length - 1 && (
+                                        {index < _pathMarkerArray.length - 1 && (
                                             <div
                                                 className="path_progress_horizontal_bar"
                                                 style={{
-                                                    left: `${((index) / (spathMarkerArray.length - 1)) * 100}%`,
-                                                    width: `${100 / (spathMarkerArray.length - 1)}%`,
+                                                    left: `${((index) / (_pathMarkerArray.length - 1)) * 100}%`,
+                                                    width: `${100 / (_pathMarkerArray.length - 1)}%`,
                                                     bottom: '8px'
                                                 }}
                                             ></div>
@@ -306,7 +364,7 @@ const PathComponent: React.FC<PathComponentProps> = ({
                                 <p>경로 갱신</p>
                             </button>
                             <button className="path_command_btn command_path_btn" onClick={() => {
-                                commandPathClick(paths[routeIndex]);
+                                commandPathClick(pathList[pathListIndex]);
                             }}>
                                 <img src={process.env.PUBLIC_URL + "../go_sign.png"}></img>
                                 <p>주행 명령</p>

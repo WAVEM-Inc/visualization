@@ -130,7 +130,7 @@ vi mqtt.json
 
 ### 3-2-2-1. Install npm dependencies
 ```bash
-cd ~/kec_ws/src/service/rmviz/rmserver/web/
+cd ~/kec_ws/src/service/rmviz/rmserver/http/
 npm i
 
 cd ~/kec_ws/src/service/rmviz/rmviz/
@@ -139,7 +139,7 @@ npm i
 
 ### 3-2-2-2. Build
 ```bash
-cd ~/kec_ws/src/service/rmviz/rmserver/web/
+cd ~/kec_ws/src/service/rmviz/rmserver/http/
 npm run build
 ```
 
@@ -174,7 +174,7 @@ sudo chmod +x ./mosquitto.sh
 # Check ./.bashrc alias
 vi ./.bashrc
 
-alias rmviz="cd ~/kec_ws/src/service/rmviz/rmserver/web && npm run launch"
+alias rmviz="cd ~/kec_ws/src/service/rmviz/rmserver/http && npm run launch"
 
 # Launch
 rmviz
@@ -191,62 +191,63 @@ ${your user name}@${your PC name}:~$ rmviz
 
 [INFO] [launch]: All log files can be found below /home/reidlo/.ros/log/2024-06-01-11-33-32-142801-reidlo-VirtualBox-14491
 [INFO] [launch]: Default logging verbosity is set to INFO
-[INFO] [rmserver_kec-1]: process started with pid [14511]
-dirname : /home/reidlo/kec_ws/src/service/rmviz/rmserver/web/dist, client_path : /home/reidlo/kec_ws/src/service/rmviz/rmviz/build
-[server]: Server is running at port <3000>
-[rmserver_kec-1] [INFO] [1717209212.580991721] [rmserver_kec]: rmserver_kec created
-[rmserver_kec-1] [INFO] [1717209212.581950881] [rmserver_kec]: rmserver_kec Declaring key : [current_mqtt_file], value : []
-[rmserver_kec-1] [INFO] [1717209212.583393931] [rmserver_kec]: rmserver_kec Declaring key : [current_map_config_file], value : []
-[rmserver_kec-1] [INFO] [1717209212.584949060] [rmserver_kec]: rmserver_kec Declaring key : [current_urdf_file], value : []
-[rmserver_kec-1] [INFO] [1717209212.586514493] [rmserver_kec]: MQTT Path: /home/reidlo/RobotData/mqtt/mqtt.json
-[rmserver_kec-1] [INFO] [1717209212.587614086] [rmserver_kec]: MQTT Connect
-[rmserver_kec-1] host : 192.168.56.1
-[rmserver_kec-1] port : 8883
-[rmserver_kec-1] type : websockets
-[rmserver_kec-1] 
-[rmserver_kec-1] [INFO] [1717209212.748278463] [rmserver_kec]: Map Config Path: /home/reidlo/RobotData/maps/kecd_path/config/config.ini
-[rmserver_kec-1] [INFO] [1717209212.748982600] [rmserver_kec]: Map Path : /home/reidlo/RobotData/maps/kecd_path/KEC_ROUTE_20240530_4.dat
-[rmserver_kec-1] [INFO] [1717209212.752249402] [rmserver_kec]: MQTT granted subscription
-[rmserver_kec-1] 	topic : /rmviz/request/detected_object
-[rmserver_kec-1] 	qos : 0
-[rmserver_kec-1] [INFO] [1717209212.753416487] [rmserver_kec]: MQTT Succeeded to Connect
-[rmserver_kec-1] [INFO] [1717209212.755142482] [rmserver_kec]: MQTT granted subscription
-[rmserver_kec-1] 	topic : /rmviz/request/obstacle/status
-[rmserver_kec-1] 	qos : 0
-[rmserver_kec-1] [INFO] [1717209212.757894571] [rmserver_kec]: MQTT granted subscription
-[rmserver_kec-1] 	topic : /rmviz/request/obstacle/cooperative
-[rmserver_kec-1] 	qos : 0
-[rmserver_kec-1] [INFO] [1717209212.760173616] [rmserver_kec]: MQTT granted subscription
-[rmserver_kec-1] 	topic : /rmviz/request/can/emergency
-[rmserver_kec-1] 	qos : 0
-[rmserver_kec-1] [INFO] [1717209212.762000504] [rmserver_kec]: MQTT granted subscription
-[rmserver_kec-1] 	topic : /rmviz/request/route_to_pose
-[rmserver_kec-1] 	qos : 0
-[rmserver_kec-1] [INFO] [1717209212.764982774] [rmserver_kec]: MQTT granted subscription
-[rmserver_kec-1] 	topic : /rmviz/request/goal/cancel
-[rmserver_kec-1] 	qos : 0
-[rmserver_kec-1] [INFO] [1717209212.767568581] [rmserver_kec]: MQTT granted subscription
-[rmserver_kec-1] 	topic : /rmviz/request/can/init
-[rmserver_kec-1] 	qos : 0
-[rmserver_kec-1] [INFO] [1717209212.769811740] [rmserver_kec]: MQTT granted subscription
-[rmserver_kec-1] 	topic : /rmviz/request/heartbeat
-[rmserver_kec-1] 	qos : 0
-[rmserver_kec-1] [INFO] [1717209212.772274004] [rmserver_kec]: MQTT granted subscription
-[rmserver_kec-1] 	topic : /rmviz/request/task
-[rmserver_kec-1] 	qos : 0
-[rmserver_kec-1] [INFO] [1717209212.774253026] [rmserver_kec]: MQTT granted subscription
-[rmserver_kec-1] 	topic : /rmviz/request/path/renew
-[rmserver_kec-1] 	qos : 0
-[rmserver_kec-1] [INFO] [1717209212.776730083] [rmserver_kec]: MQTT granted subscription
-[rmserver_kec-1] 	topic : /rmviz/request/urdf
-[rmserver_kec-1] 	qos : 0
-[rmserver_kec-1] [INFO] [1717209212.779110372] [rmserver_kec]: MQTT granted subscription
-[rmserver_kec-1] 	topic : /rmviz/request/gps/init
-[rmserver_kec-1] 	qos : 0
-[rmserver_kec-1] [INFO] [1717209212.781029708] [rmserver_kec]: MQTT granted subscription
-[rmserver_kec-1] 	topic : /rmviz/request/path/select
-[rmserver_kec-1] 	qos : 0
-[rmserver_kec-1] [INFO] [1717209212.787345563] [rmserver_kec]: package_shared_directory : /home/reidlo/kec_ws/src/service/rmviz/rmserver/ros/install/rmserver_kec/share/rmserver_kec
-[rmserver_kec-1] [INFO] [1717209212.788415946] [rmserver_kec]: DETECTECD JSON PATH : /home/reidlo/kec_ws/src/service/rmviz/rmserver/ros/install/rmserver_kec/share/rmserver_kec/json/detected_object.json
+[INFO] [rmserver_rqtt-1]: process started with pid [14511]
+[rmserver_http] [INFO] dirname : /home/reidlo/kec_ws/src/service/rmviz/rmserver/http/dist, client_path : /home/reidlo/kec_ws/src/service/rmviz/rmviz/build
+[rmserver_http] [INFO] Server is running at port <3000>
+
+[rmserver_rqtt-1] [INFO] [1717209212.580991721] [rmserver_rqtt]: rmserver_rqtt created
+[rmserver_rqtt-1] [INFO] [1717209212.581950881] [rmserver_rqtt]: rmserver_rqtt Declaring key : [current_mqtt_file], value : []
+[rmserver_rqtt-1] [INFO] [1717209212.583393931] [rmserver_rqtt]: rmserver_rqtt Declaring key : [current_map_config_file], value : []
+[rmserver_rqtt-1] [INFO] [1717209212.584949060] [rmserver_rqtt]: rmserver_rqtt Declaring key : [current_urdf_file], value : []
+[rmserver_rqtt-1] [INFO] [1717209212.586514493] [rmserver_rqtt]: MQTT Path: /home/reidlo/RobotData/mqtt/mqtt.json
+[rmserver_rqtt-1] [INFO] [1717209212.587614086] [rmserver_rqtt]: MQTT Connect
+[rmserver_rqtt-1] host : 192.168.56.1
+[rmserver_rqtt-1] port : 8883
+[rmserver_rqtt-1] type : websockets
+[rmserver_rqtt-1] 
+[rmserver_rqtt-1] [INFO] [1717209212.748278463] [rmserver_rqtt]: Map Config Path: /home/reidlo/RobotData/maps/kecd_path/config/config.ini
+[rmserver_rqtt-1] [INFO] [1717209212.748982600] [rmserver_rqtt]: Map Path : /home/reidlo/RobotData/maps/kecd_path/KEC_ROUTE_20240530_4.dat
+[rmserver_rqtt-1] [INFO] [1717209212.752249402] [rmserver_rqtt]: MQTT granted subscription
+[rmserver_rqtt-1] 	topic : /rmviz/request/detected_object
+[rmserver_rqtt-1] 	qos : 0
+[rmserver_rqtt-1] [INFO] [1717209212.753416487] [rmserver_rqtt]: MQTT Succeeded to Connect
+[rmserver_rqtt-1] [INFO] [1717209212.755142482] [rmserver_rqtt]: MQTT granted subscription
+[rmserver_rqtt-1] 	topic : /rmviz/request/obstacle/status
+[rmserver_rqtt-1] 	qos : 0
+[rmserver_rqtt-1] [INFO] [1717209212.757894571] [rmserver_rqtt]: MQTT granted subscription
+[rmserver_rqtt-1] 	topic : /rmviz/request/obstacle/cooperative
+[rmserver_rqtt-1] 	qos : 0
+[rmserver_rqtt-1] [INFO] [1717209212.760173616] [rmserver_rqtt]: MQTT granted subscription
+[rmserver_rqtt-1] 	topic : /rmviz/request/can/emergency
+[rmserver_rqtt-1] 	qos : 0
+[rmserver_rqtt-1] [INFO] [1717209212.762000504] [rmserver_rqtt]: MQTT granted subscription
+[rmserver_rqtt-1] 	topic : /rmviz/request/route_to_pose
+[rmserver_rqtt-1] 	qos : 0
+[rmserver_rqtt-1] [INFO] [1717209212.764982774] [rmserver_rqtt]: MQTT granted subscription
+[rmserver_rqtt-1] 	topic : /rmviz/request/goal/cancel
+[rmserver_rqtt-1] 	qos : 0
+[rmserver_rqtt-1] [INFO] [1717209212.767568581] [rmserver_rqtt]: MQTT granted subscription
+[rmserver_rqtt-1] 	topic : /rmviz/request/can/init
+[rmserver_rqtt-1] 	qos : 0
+[rmserver_rqtt-1] [INFO] [1717209212.769811740] [rmserver_rqtt]: MQTT granted subscription
+[rmserver_rqtt-1] 	topic : /rmviz/request/heartbeat
+[rmserver_rqtt-1] 	qos : 0
+[rmserver_rqtt-1] [INFO] [1717209212.772274004] [rmserver_rqtt]: MQTT granted subscription
+[rmserver_rqtt-1] 	topic : /rmviz/request/task
+[rmserver_rqtt-1] 	qos : 0
+[rmserver_rqtt-1] [INFO] [1717209212.774253026] [rmserver_rqtt]: MQTT granted subscription
+[rmserver_rqtt-1] 	topic : /rmviz/request/path/renew
+[rmserver_rqtt-1] 	qos : 0
+[rmserver_rqtt-1] [INFO] [1717209212.776730083] [rmserver_rqtt]: MQTT granted subscription
+[rmserver_rqtt-1] 	topic : /rmviz/request/urdf
+[rmserver_rqtt-1] 	qos : 0
+[rmserver_rqtt-1] [INFO] [1717209212.779110372] [rmserver_rqtt]: MQTT granted subscription
+[rmserver_rqtt-1] 	topic : /rmviz/request/gps/init
+[rmserver_rqtt-1] 	qos : 0
+[rmserver_rqtt-1] [INFO] [1717209212.781029708] [rmserver_rqtt]: MQTT granted subscription
+[rmserver_rqtt-1] 	topic : /rmviz/request/path/select
+[rmserver_rqtt-1] 	qos : 0
+[rmserver_rqtt-1] [INFO] [1717209212.787345563] [rmserver_rqtt]: package_shared_directory : /home/reidlo/kec_ws/src/service/rmviz/rmserver/ros/install/rmserver_rqtt/share/rmserver_rqtt
+[rmserver_rqtt-1] [INFO] [1717209212.788415946] [rmserver_rqtt]: DETECTECD JSON PATH : /home/reidlo/kec_ws/src/service/rmviz/rmserver/ros/install/rmserver_rqtt/share/rmserver_rqtt/json/detected_object.json
 
 ```

@@ -300,9 +300,32 @@ const MapComponent: React.FC<MapComponentProps> = ({
         } else return;
     }, [state.path]);
 
+    const focusRouteStatus = (node_index: number, status: number): void => {
+        const pathInfoContainer: HTMLElement | null = document.getElementById("path_info_container");
+        if (pathInfoContainer) {
+            const pathInfoElements: HTMLCollectionOf<Element> = pathInfoContainer.getElementsByClassName("path_info");
+            if (pathInfoElements.length > 0) {
+                switch (status) {
+                    case 0:
+                        (pathInfoElements[node_index] as HTMLElement).style.backgroundColor = "lightblue";
+                        (pathInfoElements[node_index] as HTMLElement).scrollIntoView({ behavior: "smooth", block: "center" });
+                        break;
+                    case 1:
+                        (pathInfoElements[node_index] as HTMLElement).style.backgroundColor = "white";
+                }
+            }
+        }
+    }
+
     useEffect((): void => {
         if (state.routeStatus) {
             console.info(`currentRouteStatus : ${JSON.stringify(state.routeStatus)}`);
+
+            if (state.routeStatus._node_index === 0) {
+                closePathSelectModal();
+                googleMap?.setZoom(19);
+                changeMapCenter(googleMap, spathMarkerArray[state.routeStatus._node_index].getPosition());
+            }
 
             let driving_flag: boolean = false;
             if (state.routeStatus._is_driving) {
@@ -310,17 +333,21 @@ const MapComponent: React.FC<MapComponentProps> = ({
             } else {
                 driving_flag = false;
             }
-
+            
             let status: string = "";
             switch (state.routeStatus._status_code) {
                 case 0:
                     status = "출발";
+                    focusRouteStatus(state.routeStatus._node_index, state.routeStatus._status_code);
                     break;
                 case 1:
                     status = "경유지 도착";
+                    focusRouteStatus(state.routeStatus._node_index, state.routeStatus._status_code);
                     break;
                 case 2:
-                    status = "주행 완료";
+                    status = "주행이 완료되었습니다.";
+                    alert(`${status}`);
+                    flushPath();
                     break;
                 case 3:
                     status = "주행 서버가 구동되지 않았습니다.";
@@ -330,7 +357,8 @@ const MapComponent: React.FC<MapComponentProps> = ({
                     status = "주행 진행 중";
                     break;
                 case 5:
-                    status = "주행 취소";
+                    status = "주행이 취소되었습니다.";
+                    alert(`${status}`);
                     break;
                 default:
                     break;
@@ -355,18 +383,20 @@ const MapComponent: React.FC<MapComponentProps> = ({
             console.info(`cmdVel : ${JSON.stringify(state.cmdVel)}`);
 
             if (currentGps) {
-                // if (state.cmdVel.linear.x > 0.0) {
-                //     const circle: google.maps.Circle = new google.maps.Circle({
-                //         map: googleMap,
-                //         center: new google.maps.LatLng(currentGps.latitude, currentGps.longitude),
-                //         strokeColor: "#FF0000",
-                //         strokeOpacity: 0.8,
-                //         strokeWeight: 2,
-                //         fillColor: "#FF0000",
-                //         fillOpacity: 0.35,
-                //         radius: 1
-                //     });
-                // }
+                if (state.cmdVel.linear) {
+                    if (state.cmdVel.linear.x > 0.0) {
+                        const circle: google.maps.Circle = new google.maps.Circle({
+                            map: googleMap,
+                            center: new google.maps.LatLng(currentGps.latitude, currentGps.longitude),
+                            strokeColor: "#FF0000",
+                            strokeOpacity: 0.8,
+                            strokeWeight: 2,
+                            fillColor: "#FF0000",
+                            fillOpacity: 0.35,
+                            radius: 1
+                        });
+                    }
+                }
             }
         }
     }, [state.cmdVel]);
@@ -377,31 +407,8 @@ const MapComponent: React.FC<MapComponentProps> = ({
             setCurrRobotMarker(robotMarker);
 
             initializeKECDBorderLine(googleMap);
-            // 36.1138065627487, 128.3674145275724
-            // 36.113806562688765, 128.3675346220269
-            // 36.11370954463808, 128.3675346220269
-
-            // const newCoords = calculateOffset(36.11370954461467, 128.36745956308556, 19.7, 240);
-            // console.info(`newCoord : ${JSON.stringify(newCoords)}`);
-
-            // const angle = calculateBearing(36.1137154, 128.368048, 36.1137132, 128.3677302);
-            // console.info(`angle : ${angle}`);
-            // alert(`angle : ${angle}`);
-
-            // new google.maps.Marker({
-            //     map: googleMap,
-            //     position: new google.maps.LatLng(newCoords.lat, newCoords.lon)
-            // });
         }
     }, [googleMap]);
-
-    useEffect(() => {
-        const _closePathSelectModal: string | null = localStorage.getItem("closePathSelectModal");
-
-        if (_closePathSelectModal === "true") {
-            closePathSelectModal();
-        }
-    }, [localStorage.getItem("closePathSelectModal")]);
 
     useEffect(() => {
         const mapElement: HTMLElement | null = document.getElementById("map");

@@ -89,8 +89,6 @@ export const addPathMarker: Function = (
     is_start: boolean,
     is_end: boolean
 ): google.maps.Marker => {
-    console.info(`addPathMarker node : ${JSON.stringify(node)}`);
-
     let iconUrl: string = "";
 
     if (is_start && !is_end) {

@@ -73,7 +73,7 @@
     height: 100%;
     border-right: 2px solid #ccc;
     color: white;
-    background-color: red;
+    background-color: #4f33ff;
     font-size: 25px;
     font-weight: bold;
 }
@@ -179,7 +179,10 @@
 .path_progress_image {
     width: 30px;
     height: 30px;
-    z-index: 5;
+    position: absolute;
+    z-index: 10;
+    top: -25px;
+    cursor: pointer;
 }
 
 .path_progress_slider::before {

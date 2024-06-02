@@ -19,7 +19,7 @@ app.use(cookieParser());
 app.use(cors());
 
 const client_path: string = path.join(__dirname, "../../../rmviz/build");
-console.log(`dirname : ${__dirname}, client_path : ${client_path}`);
+console.log(`[rmserver_http] [INFO] dirname : ${__dirname}, client_path : ${client_path}`);
 app.use(express.static(client_path));
 
 const homeDir: string = os.homedir();
@@ -54,7 +54,7 @@ app.use(function (err: any, req: Request, res: Response, next: NextFunction) {
 const server = http.createServer(app);
 
 app.listen(port, () => {
-    console.log(`[server]: Server is running at port <${port}>`);
+    console.log(`[rmserver_http] [INFO] Server is running at port <${port}>`);
 });
 
 module.exports = app;
