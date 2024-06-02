@@ -1,5 +1,0 @@
-/rmserver_kec:
-  ros__parameters:
-    current_mqtt_file: "RobotData/mqtt/mqtt.json"
-    current_map_config_file: "RobotData/maps/kecd_path/config/config.ini"
-    current_urdf_file: "RobotData/urdf/kec_model.urdf"

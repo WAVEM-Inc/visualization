@@ -125,7 +125,7 @@ const DataController: React.FC = (): React.ReactElement<any, any> | null => {
     useEffect(() => {
         const fetchMqttData = async () => {
             try {
-                const response = await axios.get("/v1/api/mqtt/load/config");
+                const response = await axios.get("http://192.168.56.1:3001/v1/api/mqtt/load/config");
                 setMqttData(response.data);
             } catch (error) {
                 console.error("Error fetching MQTT data", error);
