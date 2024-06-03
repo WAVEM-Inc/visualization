@@ -5,6 +5,7 @@
 - Qt5
 - qtwebengine5-deb
 - @googlemaps/markerclusterer
+- can_msgs
 
 ## Install Guid
 ### install qtwebengine5
