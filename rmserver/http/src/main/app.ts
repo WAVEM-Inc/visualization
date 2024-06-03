@@ -10,7 +10,7 @@ import path from "path";
 import util from "util";
 
 const app: express.Application = express();
-const port: number = 3001;
+const port: number = 3000;
 
 app.use(logger("dev"));
 app.use(express.json());
