@@ -7,7 +7,7 @@
     "compile": "npx tsc",
     "start": "node dist/app.js",
     "dev": "nodemon --watch \"*.ts\" --exec \"ts-node\" src/main/app.ts",
-    "server_build": "concurrently \"npx tsc --build .\" \"cd ../ros && colcon build --symlink-install\"",
+    "server_build": "concurrently \"npx tsc --build .\" \"cd ../rqtt && colcon build --symlink-install\"",
     "client_build": "cd ../../rmviz && npm run build",
     "build": "sudo chmod +x ./script/build.sh && ./script/build.sh",
     "launch": "sudo chmod +x ./script/launch.sh && ./script/launch.sh"
