@@ -11,6 +11,10 @@ import KECDataBoardPage from "../../page/kec/databoard/KECDataBoardPage";
 import KECROSPage from "../../page/kec/ros/KECROSPage";
 import { getCurrentTime } from "../../utils/Utils";
 
+if (process.env.REACT_APP_API_BASE_URL) {
+    axios.defaults.baseURL = process.env.REACT_APP_API_BASE_URL;
+    alert(`${axios.defaults.baseURL}`);
+}
 
 const DataController: React.FC = (): React.ReactElement<any, any> | null => {
     const [topState, topStateDispatch] = useReducer(topStateReducer, initialTopState);
@@ -46,7 +50,7 @@ const DataController: React.FC = (): React.ReactElement<any, any> | null => {
         `${responseTopicFormat}/lidar_signal`
     ];
 
-    const handleResponseMQTTCallback = (mqttClient: MqttClient): void => {
+    const handleResponseMQTTCallback: Function = (mqttClient: MqttClient): void => {
         mqttClient.client.on("message", (topic: string, payload: Buffer, packet: IPublishPacket) => {
             const message: any = JSON.parse(payload.toString());
             if (topic === responsePathTopic || topic === responsePathFileSelectTopic) {
@@ -115,24 +119,24 @@ const DataController: React.FC = (): React.ReactElement<any, any> | null => {
         });
     }
 
-    const setUpResponseMQTTConnections = (mqttClient: MqttClient): void => {
+    const setUpResponseMQTTConnections: Function = (mqttClient: MqttClient): void => {
         console.info(`${requiredResponseTopicList}`);
         for (const requiredTopic of requiredResponseTopicList) {
             mqttClient.subscribe(requiredTopic);
         }
     }
 
-    useEffect(() => {
-        const fetchMqttData = async () => {
-            try {
-                const response: AxiosResponse<any, any> = await axios.get("/v1/api/mqtt/load/config");
-                setMqttData(response.data);
-            } catch (error) {
-                console.error("Error fetching MQTT data", error);
-            }
-        };
+    const loadMQTTConfig: Function = async (): Promise<void> => {
+        try {
+            const response: AxiosResponse<any, any> = await axios.get("/v1/api/mqtt/load/config");
+            setMqttData(response.data);
+        } catch (error) {
+            console.error("Error fetching MQTT data", error);
+        }
+    }
 
-        fetchMqttData();
+    useEffect((): void => {
+        loadMQTTConfig();
     }, []);
 
     useEffect(() => {
@@ -174,7 +178,6 @@ const DataController: React.FC = (): React.ReactElement<any, any> | null => {
             }, 5000);
         }
     }, [mqttClient]);
-
 
     return (
         <Switch>

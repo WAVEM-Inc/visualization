@@ -1,5 +1,6 @@
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import dotenv from "dotenv-flow";
 import express, { NextFunction, Request, Response } from "express";
 import fs from "fs";
 import http from "http";
@@ -8,9 +9,14 @@ import logger from "morgan";
 import os from "os";
 import path from "path";
 import util from "util";
+dotenv.config();
 
 const app: express.Application = express();
-const port: number = 3000;
+const port: number = parseInt(process.env.SERVER_BASE_URL || "3000", 10);
+
+if (isNaN(port) || port < 0 || port >= 65536) {
+    throw new RangeError(`Port number is not valid: ${port}`);
+}
 
 app.use(logger("dev"));
 app.use(express.json());
