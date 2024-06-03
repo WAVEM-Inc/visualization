@@ -4,12 +4,14 @@
 
 #include "ui/editor/route_editor.h"
 
+#include <qeventloop.h>
 #include <QGridLayout>
 #include <QInputDialog>
 #include <QStandardItemModel>
 #include <QMessageBox>
 #include <QMenu>
 #include <QHeaderView>
+#include <QTimer>
 #include <qpainter.h>
 
 #include "model/path_info_model.h"
@@ -52,12 +54,17 @@ RouteEditor::RouteEditor(QWidget *parent) :
     m_layout_ptr->addWidget(_nodeListView_ptr, 1, 0, 1, 3);
     m_layout_ptr->addWidget(m_addNodeButton_ptr, 2, 0, 1, 3);
 
+    // QWidget의 크기 정책 설정
+    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+    // QTableView의 크기 정책 설정
+    _nodeListView_ptr->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     _nodeListModel_ptr->setHorizontalHeaderItem(0, new QStandardItem(QString("ID")));
     _nodeListModel_ptr->setHorizontalHeaderItem(1, new QStandardItem(QString("Type")));
 
     _nodeListView_ptr->setModel(_nodeListModel_ptr);
-    _nodeListView_ptr->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    _nodeListView_ptr->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
     _nodeListView_ptr->setDragEnabled(true);
     _nodeListView_ptr->setAcceptDrops(true);
     _nodeListView_ptr->setDragDropOverwriteMode(false);
@@ -222,6 +229,7 @@ void RouteEditor::onCurrentNodeListChanged(const QList<Node> &nodeList) {
     for (int i = 0; i < nodeList.size(); ++i) {
         const Node& node = nodeList[i];
         QString nodeId = QString::fromStdString(node.nodeId);
+        QString nodeName = QString::fromStdString(MapNodeModel::getInstance().getMapNodeById(node.nodeId).nodeName);
 
         // 현재 모델에서 해당 노드 찾기
         bool found = false;
@@ -241,9 +249,12 @@ void RouteEditor::onCurrentNodeListChanged(const QList<Node> &nodeList) {
         // 노드가 모델에 없는 경우 추가
         if (!found) {
             QList<QStandardItem*> newRow;
-            newRow.append(new QStandardItem(nodeId));
+            newRow.append(new QStandardItem(nodeName));
             newRow.append(new QStandardItem(QString::fromStdString(node.type)));
+            newRow.append(new QStandardItem(nodeId));
             _nodeListModel_ptr->insertRow(i, newRow);
         }
     }
+
+    _nodeListView_ptr->setColumnHidden(2, true);
 }

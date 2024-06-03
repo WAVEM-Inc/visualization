@@ -20,7 +20,7 @@ m_nodeEditor_ptr(new NodeEditor(this)) {
 void MainWindow::resizeEvent(QResizeEvent *event) {
     QMainWindow::resizeEvent(event);
 
-    m_routeEditor_ptr->resize(300, this->height() * 0.7);
+    m_routeEditor_ptr->resize(310, this->height() * 0.7);
     m_routeEditor_ptr->move(0, this->height() - m_routeEditor_ptr->height());
 
     m_nodeEditor_ptr->resize(500, this->height() - m_menubar_ptr->height());
