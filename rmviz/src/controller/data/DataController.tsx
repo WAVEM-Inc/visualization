@@ -13,7 +13,6 @@ import { getCurrentTime } from "../../utils/Utils";
 
 if (process.env.REACT_APP_API_BASE_URL) {
     axios.defaults.baseURL = process.env.REACT_APP_API_BASE_URL;
-    alert(`${axios.defaults.baseURL}`);
 }
 
 const DataController: React.FC = (): React.ReactElement<any, any> | null => {
