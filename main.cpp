@@ -49,7 +49,7 @@ int main(int argc, char* argv[])
 
     QPixmap cursor_img = QPixmap("resources/image/cursor.png");
     cursor_img = cursor_img.scaled(32, 32);
-    QCursor cursor = QCursor(cursor_img);
+    QCursor cursor = QCursor(cursor_img, 0, 0);
     window->setCursor(cursor);
 
     QObject::connect(&app, &QApplication::aboutToQuit, []()

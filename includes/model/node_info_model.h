@@ -47,6 +47,8 @@ public:
 
     QMap<std::string, QList<Node>> getAllNodes() const;
 
+    Node getNodeById(const std::string &nodeId) const;
+
 signals:
     void nodesMapChanged(const QMap<std::string, QList<Node>> &nodesMap);
 

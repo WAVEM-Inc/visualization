@@ -109,6 +109,20 @@ QMap<std::string, QList<Node>> NodeInfoModel::getAllNodes() const {
     return _nodesMap;
 }
 
+Node NodeInfoModel::getNodeById(const std::string &nodeId) const {
+    Node result;
+    for (const Node &node: _currentNodeList) {
+        if (node.nodeId == nodeId)
+        {
+            result = node;
+
+            return result;
+        }
+    }
+
+    return result;
+}
+
 std::string NodeInfoModel::getPreNodeId() {
     if (_currentNodeIndex > 0 && _currentNodeIndex <= _currentNodeList.size()) {
         std::cout << "Current Node Index: " << _currentNodeIndex << "\n";

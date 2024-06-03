@@ -201,6 +201,8 @@ void NodeEditor::init()
             Position nextPos = NodeInfoModel::getInstance().getNextNode().position;
             double bearing = 360 - getBearingBetweenPoints(curPos.latitude, curPos.longitude, nextPos.latitude,
                                                            nextPos.longitude);
+
+            bearing = std::fmod(bearing, 360);
             _nodeHeading_ptr->setText(QString::number(int(bearing)));
         }
         catch (std::out_of_range& e)
