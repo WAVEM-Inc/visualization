@@ -19,14 +19,13 @@ ament_package()
 install(FILES 
   package.json
   DESTINATION share/${PROJECT_NAME}/
- )
+)
  
 install(DIRECTORY 
   config
   dist
-  launch
   node_modules
   DESTINATION share/${PROJECT_NAME}/
   OPTIONAL
- )
+)
  

@@ -29,12 +29,12 @@ const DataController: React.FC = (): React.ReactElement<any, any> | null => {
 
     const responseTopicFormat: string = "/rmviz/response";
     const responsePathTopic: string = `${responseTopicFormat}/path`;
-    const resposneGpsTopic: string = `${responseTopicFormat}/gps`;
+    const resposneGpsTopic: string = `/sensor/ublox/fix`;
     const resposneGpsFilteredTopic: string = `${responseTopicFormat}/gps/filtered`;
     const responseRouteStatusTopic: string = `${responseTopicFormat}/route/status`;
-    const responseOdomEularTopic: string = `${responseTopicFormat}/odom/eular`;
+    const responseOdomEularTopic: string = `/drive/odom/eular`;
     const responseHeartBeatTopic: string = `${responseTopicFormat}/heartbeat`;
-    const responseBatteryTopic: string = `${responseTopicFormat}/battery/state`;
+    const responseBatteryTopic: string = `/sensor/battery/state`;
     const responseURDFTopic: string = `${responseTopicFormat}/urdf`;
     const responseCmdVelTopic: string = `${responseTopicFormat}/cmd_vel`;
     const responsePathFileSelectTopic: string = `${responseTopicFormat}/path/select`;

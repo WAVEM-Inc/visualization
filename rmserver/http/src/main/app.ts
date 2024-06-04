@@ -24,9 +24,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(cors());
 
-const client_path: string = path.join(__dirname, "../../../rmviz/build");
-console.log(`[rmserver_http] [INFO] dirname : ${__dirname}, client_path : ${client_path}`);
-app.use(express.static(client_path));
+const rmvizBuildPath: string = path.join(__dirname, "../../../rmviz/build");
+console.log(`[rmserver_http] [INFO] dirname : ${__dirname}, client_path : ${rmvizBuildPath}`);
+app.use(express.static(rmvizBuildPath));
 
 const homeDir: string = os.homedir();
 const mqttFilePath: string = path.join(homeDir, "RobotData/mqtt/mqtt.json");
@@ -42,7 +42,7 @@ app.get("/v1/api/mqtt/load/config", async (req: Request, res: Response) => {
 });
 
 app.get("*", (req: Request, res: Response) => {
-    res.sendFile(path.join(client_path, "index.html"));
+    res.sendFile(path.join(rmvizBuildPath, "index.html"));
 });
 
 app.use(function (req: Request, res: Response, next: NextFunction) {

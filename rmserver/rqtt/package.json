@@ -1,9 +1,9 @@
 {
   "name": "rqtt",
-  "version": "0.0.0",
-  "description": "TODO: Package description",
+  "version": "2.0.0",
+  "description": "ROS-MQTT Server For rmviz",
   "keywords": [],
-  "author": "",
+  "author": "naru5135@wavem.net",
   "license": "TODO: License declaration",
   "scripts": {
     "start": "NODE_ENV=production node dist/main/main.js",
@@ -15,7 +15,10 @@
     "generate-messages": "node_modules/.bin/generate-ros-messages"
   },
   "dependencies": {
+    "fs": "^0.0.1-security",
     "mqtt": "^5.7.0",
+    "os": "^0.1.2",
+    "path": "^0.12.7",
     "rclnodejs": "^0.27.0"
   },
   "devDependencies": {
