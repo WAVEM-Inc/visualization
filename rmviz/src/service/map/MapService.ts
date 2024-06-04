@@ -241,3 +241,22 @@ export const addDetectionRangePolygon: Function = (
 
     return detectionRangePolygonArray;
 }
+
+export const recordNavigatedPathCircle: Function = (
+    map: google.maps.Map,
+    currentGps: any,
+): google.maps.Circle => {
+
+    const circle: google.maps.Circle = new google.maps.Circle({
+        map: map,
+        center: new google.maps.LatLng(currentGps.latitude, currentGps.longitude),
+        strokeColor: "green",
+        strokeOpacity: 0.8,
+        strokeWeight: 0.6,
+        fillColor: "green",
+        fillOpacity: 0.35,
+        radius: 1
+    });
+
+    return circle;
+}

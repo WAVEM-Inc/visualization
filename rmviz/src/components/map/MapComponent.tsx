@@ -4,7 +4,7 @@ import ReactModal from "react-modal";
 import MqttClient from "../../api/mqttClient";
 import * as emergencyStopJSON from "../../assets/json/common/emergency_stop.json";
 import { MapState } from "../../domain/map/MapDomain";
-import { addDetectionRangePolygon, addPathMarker, addPathPolyline, changeMapCenter, initializeKECDBorderLine, initializeMap, initializeRobotMarker, updateRobotMakerIcon } from "../../service/map/MapService";
+import { addDetectionRangePolygon, addPathMarker, addPathPolyline, changeMapCenter, initializeKECDBorderLine, initializeMap, initializeRobotMarker, recordNavigatedPathCircle, updateRobotMakerIcon } from "../../service/map/MapService";
 import { onClickMqttPublish } from "../../utils/Utils";
 import PathComponent from "../path/PathComponent";
 import "./MapComponent.css";
@@ -19,10 +19,12 @@ const MapComponent: React.FC<MapComponentProps> = ({
     state
 }: MapComponentProps) => {
     const [googleMap, setGoogleMap] = useState<google.maps.Map>();
+    const [isDriving, setIsDriving] = useState<boolean>(false);
     const [pathInfoContainer, setPathInfoContainer] = useState<HTMLElement | null>(null);
     const [pathInfoDiv, setPathInfoDiv] = useState<HTMLDivElement | null>(null);
-    const [spathMarkerArray, setPathMarkerArray] = useState<Array<google.maps.Marker>>([]);
+    const [_pathMarkerArray, setPathMarkerArray] = useState<Array<google.maps.Marker>>([]);
     const [pathPolyLine, setPathPolyLine] = useState<google.maps.Polyline | null>(null);
+    const [_pathCircleArray, setPathCircleArray] = useState<Array<google.maps.Circle>>([]);
     const [detectionRagnePolygon, setDetectionRagnePolygon] = useState<Array<google.maps.Polygon>>([]);
     const [isPathSelectModalOpen, setIsPathSelectModalOpen] = useState<boolean>(false);
 
@@ -31,7 +33,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
 
     const kecCoord: google.maps.LatLng = new google.maps.LatLng(36.11434, 128.3690);
     const [currRobotMarker, setCurrRobotMarker] = useState<google.maps.Marker | null>(null);
-    const [currGPSInitMarker, setCurrGPSInitMarker] = useState<google.maps.Marker | null>(null);
     const [currentGps, setCurrentGps] = useState<any>({
         status: 0,
         service: 0,
@@ -184,12 +185,15 @@ const MapComponent: React.FC<MapComponentProps> = ({
     }
 
     const flushPath = (): void => {
-        spathMarkerArray.forEach(marker => marker.setMap(null));
+        _pathMarkerArray.forEach(marker => marker.setMap(null));
         pathMarkerArray = [];
         setPathMarkerArray(pathMarkerArray);
 
         pathInfoWindowarray.forEach(infoWindow => infoWindow.close());
         pathInfoWindowarray = [];
+
+        _pathCircleArray.forEach(circle => circle.setMap(null));
+        setPathCircleArray([]);
 
         if (pathPolyLine) {
             pathPolyLine.setMap(null);
@@ -324,7 +328,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
             if (state.routeStatus._node_index === 0) {
                 closePathSelectModal();
                 googleMap?.setZoom(19);
-                changeMapCenter(googleMap, spathMarkerArray[state.routeStatus._node_index].getPosition());
+                changeMapCenter(googleMap, _pathMarkerArray[state.routeStatus._node_index].getPosition());
             }
 
             let driving_flag: boolean = false;
@@ -333,12 +337,16 @@ const MapComponent: React.FC<MapComponentProps> = ({
             } else {
                 driving_flag = false;
             }
-            
+
             let status: string = "";
             switch (state.routeStatus._status_code) {
                 case 0:
                     status = "출발";
                     focusRouteStatus(state.routeStatus._node_index, state.routeStatus._status_code);
+
+                    if (state.routeStatus._node_index === 0) {
+                        setIsDriving(true);
+                    }
                     break;
                 case 1:
                     status = "경유지 도착";
@@ -347,6 +355,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
                 case 2:
                     status = "주행이 완료되었습니다.";
                     alert(`${status}`);
+                    setIsDriving(false);
                     flushPath();
                     break;
                 case 3:
@@ -380,21 +389,13 @@ const MapComponent: React.FC<MapComponentProps> = ({
 
     useEffect((): void => {
         if (state.cmdVel) {
-            console.info(`cmdVel : ${JSON.stringify(state.cmdVel)}`);
-
             if (currentGps) {
                 if (state.cmdVel.linear) {
                     if (state.cmdVel.linear.x > 0.0) {
-                        const circle: google.maps.Circle = new google.maps.Circle({
-                            map: googleMap,
-                            center: new google.maps.LatLng(currentGps.latitude, currentGps.longitude),
-                            strokeColor: "#FF0000",
-                            strokeOpacity: 0.8,
-                            strokeWeight: 2,
-                            fillColor: "#FF0000",
-                            fillOpacity: 0.35,
-                            radius: 1
-                        });
+                        if (isDriving) {
+                            const recordedPathCircle: google.maps.Circle = recordNavigatedPathCircle(googleMap, currentGps);
+                            _pathCircleArray.push(recordedPathCircle);
+                        }
                     }
                 }
             }
