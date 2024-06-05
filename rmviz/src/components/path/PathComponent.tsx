@@ -31,7 +31,7 @@ const PathComponent: React.FC<PathComponentProps> = ({
 
     const pathProgressImageRef = useRef<HTMLImageElement | null>(null);
 
-    const requestTopicFormat: string = "/rmviz/request";
+    const requestTopicFormat: string = "net/wavem/rms/rqtt/mtr";
     const requestRouteToPoseTopic: string = `${requestTopicFormat}/route_to_pose`;
     const requestPathRenewTopic: string = `${requestTopicFormat}/path/renew`;
 

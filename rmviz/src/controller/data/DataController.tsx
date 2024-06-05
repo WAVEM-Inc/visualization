@@ -24,17 +24,17 @@ const DataController: React.FC = (): React.ReactElement<any, any> | null => {
     const [mqttData, setMqttData] = useState(null);
     const [mqttClient, setMqttClient] = useState<MqttClient>();
 
-    const requestTopicFormat: string = "/rmviz/request";
+    const requestTopicFormat: string = "net/wavem/rms/rqtt/mtr";
     const requestHeartBeatTopic: string = `${requestTopicFormat}/heartbeat`;
 
-    const responseTopicFormat: string = "/rmviz/response";
-    const responsePathTopic: string = `${responseTopicFormat}/path`;
-    const resposneGpsTopic: string = `/sensor/ublox/fix`;
+    const responseTopicFormat: string = "net/wavem/rms/rqtt/rtm";
+    const responsePathTopic: string = `${responseTopicFormat}/route/path`;
+    const resposneGpsTopic: string = `${responseTopicFormat}/sensor/ublox/fix`;
     const resposneGpsFilteredTopic: string = `${responseTopicFormat}/gps/filtered`;
     const responseRouteStatusTopic: string = `${responseTopicFormat}/route/status`;
-    const responseOdomEularTopic: string = `/drive/odom/eular`;
+    const responseOdomEularTopic: string = `${responseTopicFormat}/drive/odom/eular`;
     const responseHeartBeatTopic: string = `${responseTopicFormat}/heartbeat`;
-    const responseBatteryTopic: string = `/sensor/battery/state`;
+    const responseBatteryTopic: string = `${responseTopicFormat}/sensor/battery/state`;
     const responseURDFTopic: string = `${responseTopicFormat}/urdf`;
     const responseCmdVelTopic: string = `${responseTopicFormat}/cmd_vel`;
     const responsePathFileSelectTopic: string = `${responseTopicFormat}/path/select`;
@@ -167,7 +167,7 @@ const DataController: React.FC = (): React.ReactElement<any, any> | null => {
                     "request_time": getCurrentTime()
                 };
                 mqttClient!.publish(requestHeartBeatTopic, JSON.stringify(heartBeatJSON));
-            }, 1300);
+            }, 900);
 
             setTimeout(() => {
                 const isMqttConnected: boolean = mqttClient.isConnected();

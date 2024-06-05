@@ -42,10 +42,11 @@ const MapComponent: React.FC<MapComponentProps> = ({
     const [currentOdomEular, setCurrentOdomEular] = useState<number>();
     const [currentRouteStatus, setCurrentRouteStatus] = useState<any | null>(null);
 
-    const requestTopicFormat: string = "/rmviz/request";
-    const requestEmergencyTopic: string = `${requestTopicFormat}/can/emergency`;
+    const requestTopicFormat: string = "net/wavem/rms/rqtt/mtr";
+    const requestEmergencyTopic: string = `${requestTopicFormat}/drive/can/emergency`;
     const requestGoalCancelTopic: string = `${requestTopicFormat}/goal/cancel`;
     const requestPathRenewTopic: string = `${requestTopicFormat}/path/renew`;
+    const requestPathSelectTopic: string = `${requestTopicFormat}/path/select`;
     const requestTaskTopic: string = `${requestTopicFormat}/task`;
 
     const drawPathMarker: Function = (): void => {
@@ -221,7 +222,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
     }
 
     const onPathSelectClick = (): void => {
-        mqttClient.publish("/rmviz/request/path/select", JSON.stringify({}));
+        mqttClient.publish(requestPathSelectTopic, JSON.stringify({}));
         openPathSelectModal();
     }
 
@@ -325,24 +326,24 @@ const MapComponent: React.FC<MapComponentProps> = ({
         if (state.routeStatus) {
             console.info(`currentRouteStatus : ${JSON.stringify(state.routeStatus)}`);
 
-            if (state.routeStatus._node_index === 0) {
+            if (state.routeStatus.node_index === 0) {
                 closePathSelectModal();
                 googleMap?.setZoom(19);
-                changeMapCenter(googleMap, _pathMarkerArray[state.routeStatus._node_index].getPosition());
+                changeMapCenter(googleMap, _pathMarkerArray[state.routeStatus.node_index].getPosition());
             }
 
             let driving_flag: boolean = false;
-            if (state.routeStatus._is_driving) {
+            if (state.routeStatus.is_driving) {
                 driving_flag = true;
             } else {
                 driving_flag = false;
             }
 
             let status: string = "";
-            switch (state.routeStatus._status_code) {
+            switch (state.routeStatus.status_code) {
                 case 0:
                     status = "출발";
-                    focusRouteStatus(state.routeStatus._node_index, state.routeStatus._status_code);
+                    focusRouteStatus(state.routeStatus.node_index, state.routeStatus.status_code);
 
                     if (state.routeStatus._node_index === 0) {
                         setIsDriving(true);
@@ -350,7 +351,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
                     break;
                 case 1:
                     status = "경유지 도착";
-                    focusRouteStatus(state.routeStatus._node_index, state.routeStatus._status_code);
+                    focusRouteStatus(state.routeStatus.node_index, state.routeStatus.status_code);
                     break;
                 case 2:
                     status = "주행이 완료되었습니다.";
@@ -373,7 +374,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
                     break;
             }
 
-            const node_info: any = state.routeStatus._node_info;
+            const node_info: any = state.routeStatus.node_info;
 
             if (node_info) {
                 const currRouteStatus: any = {

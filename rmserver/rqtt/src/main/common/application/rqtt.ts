@@ -32,14 +32,19 @@ export default class Rqtt {
         const brokerURL: string = `${type}://${this.mqttConnectionInfo.host}:${this.mqttConnectionInfo.port}${this.mqttConnectionInfo.path}`;
         this.client = mqtt.connect(brokerURL);
 
-        return new Promise<mqtt.MqttClient>((resolve, reject) => {
-            this.client?.on("connect", () => {
+        return new Promise<mqtt.MqttClient>((resolve, reject): void => {
+            this.client?.on("connect", (): void => {
                 this.logger.info(`${LOG_MQTT_TAG} Connected to MQTT broker at ${brokerURL}`);
                 resolve(this.client!);
             });
     
-            this.client?.on("error", (error) => {
+            this.client?.on("error", (error): void => {
                 this.logger.error(`${LOG_MQTT_TAG} MQTT connection error: ${error.message}`);
+                reject(null);
+            });
+
+            this.client?.on("disconnect", (): void => {
+                this.logger.warn(`${LOG_MQTT_TAG} MQTT disconnected...`);
                 reject(null);
             });
         });
@@ -70,13 +75,21 @@ export default class Rqtt {
 
     public addSubscriptionCallback(rqttC: mqtt.MqttClient, topic: string, callback: (message: any) => void): void {
         try {
-            rqttC.on("message", (receivedTopic: string, message: Buffer) => {
+            rqttC.on("message", (receivedTopic: string, message: Buffer): void => {
                 if (topic === receivedTopic) {
                     callback(JSON.parse(message.toString()));
                 } else return;
             });
         } catch (error: any) {
             this.logger.error(`${LOG_MQTT_TAG} Error in addSubscriptionCallback method: ${error}`);
+        }
+    }
+
+    public disconnect(): void {
+        try {
+            this.client?.end();
+        } catch (error: any) {
+            this.logger.error(`${LOG_MQTT_TAG} Error in disconnect method: ${error}`);
         }
     }
 }
