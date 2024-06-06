@@ -27,6 +27,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
     const [_pathCircleArray, setPathCircleArray] = useState<Array<google.maps.Circle>>([]);
     const [detectionRagnePolygon, setDetectionRagnePolygon] = useState<Array<google.maps.Polygon>>([]);
     const [isPathSelectModalOpen, setIsPathSelectModalOpen] = useState<boolean>(false);
+    const [isMissionSelectModalOpen, setIsMissionSelectModalOpen] = useState<boolean>(false);
 
     let pathMarkerArray: Array<google.maps.Marker> = [];
     let pathInfoWindowarray: Array<google.maps.InfoWindow> = [];
@@ -221,9 +222,21 @@ const MapComponent: React.FC<MapComponentProps> = ({
         setIsPathSelectModalOpen(false);
     }
 
+    const openMissionSelectModal = (): void => {
+        setIsMissionSelectModalOpen(true);
+    }
+
+    const closeMissionSelectMoal = (): void => {
+        setIsMissionSelectModalOpen(false);
+    }
+
     const onPathSelectClick = (): void => {
         mqttClient.publish(requestPathSelectTopic, JSON.stringify({}));
         openPathSelectModal();
+    }
+
+    const onMissionSelectClick = (): void => {
+        openMissionSelectModal();
     }
 
     const onPathRenewClick = (): void => {
@@ -462,7 +475,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
                             <img src={process.env.PUBLIC_URL + "../marker_route.png"} />
                             <p>경로 선택</p>
                         </button>
-                        <button className={"route_btn_request route_btn_mission_select"} onClick={onPathSelectClick}>
+                        <button className={"route_btn_request route_btn_mission_select"} onClick={onMissionSelectClick}>
                             <img src={process.env.PUBLIC_URL + "../marker_mission.png"} />
                             <p>임무 선택</p>
                         </button>
@@ -500,6 +513,32 @@ const MapComponent: React.FC<MapComponentProps> = ({
                                 state={state}
                             />
                         </Wrapper>
+                    </div>
+                </ReactModal>
+                <ReactModal
+                    id="route_path_select_modal"
+                    className={"route_path_select_modal"}
+                    isOpen={isMissionSelectModalOpen}
+                    onRequestClose={closeMissionSelectMoal}
+                >
+                    <div className="route_path_select_modal_container">
+                        <div className="route_path_select_title">
+                            <img src={process.env.PUBLIC_URL + "../marker_mission.png"} />
+                            <p>임무 선택</p>
+                        </div>
+                        <div className="route_path_select_close_btn">
+                            <img src={process.env.PUBLIC_URL + "../btn_close.png"} onClick={() => { closeMissionSelectMoal() }}></img>
+                        </div>
+                        <div id="task_list_container" className="task_list_container">
+                            <div className="mission_list_container">
+                                <p className="mission_list_title">임무 목록</p>
+                                <ul id="task_list" className="mission_list"></ul>
+                            </div>
+                            <div className="control_list_container">
+                                <p className="control_list_title">제어 목록</p>
+                                <ul id="task_list" className="control_list"></ul>
+                            </div>
+                        </div>
                     </div>
                 </ReactModal>
             </div>

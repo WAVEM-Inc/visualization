@@ -262,6 +262,59 @@
     background-color: #ccc;
 }
 
+.task_list_container {
+    display: flex;
+    justify-content: space-around;
+}
+
+.task_list_container > div > p {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+#task_list {
+    margin-top: 5%;
+    width: 90%;
+    overflow: auto;
+}
+
+#task_list_element {
+    border: 2px solid #ccc;
+    border-bottom: none;
+    list-style: none;
+    width: 90%;
+    height: 13%;
+    cursor: pointer;
+    font-size: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#task_list_element:last-child {
+    border-bottom: 2px solid #ccc;
+}
+
+#task_list_element:hover {
+    background-color: #ccc;
+}
+
+.path_list_element_index {
+    width: 10%;
+    height: 100%;
+    border-right: 2px solid #ccc;
+    color: white;
+    background-color: #4f33ff;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.path_list_element_name {
+    flex: 1;
+    text-align: center;
+    font-weight: bold;
+}
+
 @media screen and (min-width: 800px) and (min-height: 600px) and (max-width: 1023px) and (max-height: 767px) {
     .map_container {
         height: 450px;
