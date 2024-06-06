@@ -1,6 +1,6 @@
 import * as rclnodejs from "rclnodejs";
 import { Client, Node, QoS, ktp_data_msgs } from "rclnodejs";
-import { ASSIGN_CONOTROL_RESOURCE_ID, ASSIGN_CONTROL_SERVICE, ASSIGN_CONTROL_SERVICE_TYPE, ASSIGN_DETECTED_OBJECT_RESOURCE_ID, ASSIGN_MISSION_RESOURCE_ID, ASSIGN_MISSION_SERVICE, ASSIGN_MISSION_SERVICE_TYPE } from "../../domain/task/task.constants";
+import { ASSIGN_CONOTROL_RESOURCE_ID, ASSIGN_CONTROL_SERVICE, ASSIGN_CONTROL_SERVICE_TYPE, ASSIGN_DETECTED_OBJECT_RESOURCE_ID, ASSIGN_MISSION_RESOURCE_ID, ASSIGN_MISSION_SERVICE, ASSIGN_MISSION_SERVICE_TYPE, ASSIGN_TASK_TOPIC } from "../../domain/task/task.constants";
 
 export default class TaskService {
 
@@ -50,7 +50,7 @@ export default class TaskService {
                     break;
             }
         } catch (error: any) {
-
+            this._node.getLogger().error(`${ASSIGN_TASK_TOPIC} : ${error}`)
         }
     }
 

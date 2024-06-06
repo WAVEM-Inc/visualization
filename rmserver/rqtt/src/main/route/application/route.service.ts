@@ -56,7 +56,6 @@ export default class RouteService {
     private bindFunctionContexts(): void {
         this.routeToPoseCallback = this.routeToPoseCallback.bind(this);
         this.canEmergencyStopCallback = this.canEmergencyStopCallback.bind(this);
-        this.pathSelectCallback = this.pathSelectCallback.bind(this);
         this.pathRenewCallback = this.pathRenewCallback.bind(this);
         this.goalCancelCallback = this.goalCancelCallback.bind(this);
         this.loadMap.bind(this);
@@ -310,22 +309,6 @@ export default class RouteService {
                 this._node.getLogger().info(`${ROUTE_TO_POSE_ACTION} It will proceed Next Goal [${this._routeToPoseGoalIndex}]`);
                 this.routeToPoseSendGoal();
             }
-        }
-    }
-
-    public pathSelectCallback(message: any): void {
-        try {
-            this.loadMap();
-
-            const responseJSON: any = {
-                current_map_file: this._pathMapFileName,
-                paths: this._pathMap
-            }
-
-            rtmDataProcessCallback(PATH_SELECT_TOPIC, responseJSON);
-            this._node.getLogger().info("=============================== Path Selected ===============================");
-        } catch (error: any) {
-            this._node.getLogger().error(`${PATH_SELECT_TOPIC} : ${error.message}`);
         }
     }
 

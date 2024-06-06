@@ -1,3 +1,4 @@
+import axios, { AxiosResponse } from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import MqttClient from "../../api/mqttClient";
 import { MapState } from "../../domain/map/MapDomain";
@@ -14,6 +15,7 @@ const PathComponent: React.FC<PathComponentProps> = ({
     mqttClient,
     state
 }: PathComponentProps) => {
+    const [pathResponse, setPathResponse] = useState<any | null>(null);
     const [googleMap, setGoogleMap] = useState<google.maps.Map>();
     const kecCoord: google.maps.LatLng = new google.maps.LatLng(36.11434, 128.3690);
     const [_pathMarkerArray, setPathMarkerArray] = useState<Array<google.maps.Marker>>([]);
@@ -70,7 +72,7 @@ const PathComponent: React.FC<PathComponentProps> = ({
     }
 
     const drawPathMarker: Function = (): void => {
-        if (state.path) {
+        if (state.path || pathResponse) {
             const nodeList: Array<any> = Array.from(state.path);
 
             const uniqueNodeIds: Set<string> = new Set<string>();
@@ -158,10 +160,10 @@ const PathComponent: React.FC<PathComponentProps> = ({
     }
 
     useEffect(() => {
-        if (state.path) {
-            if (state.path.paths) {
-                setCurrentMapFile(state.path.current_map_file);
-                const pathList: Array<any> = Array.from(state.path.paths.path);
+        if (pathResponse) {
+            if (pathResponse.paths) {
+                setCurrentMapFile(pathResponse.current_map_file);
+                const pathList: Array<any> = Array.from(pathResponse.paths.path);
                 setPathList(pathList);
                 const pathListElement: HTMLElement | null = document.getElementById("path_list");
 
@@ -192,15 +194,15 @@ const PathComponent: React.FC<PathComponentProps> = ({
                 }
             }
 
-            if (state.path) {
+            if (pathResponse) {
                 flushPath();
                 drawPathMarker();
 
-                setDetectionRagnePolygon(addDetectionRangePolygon(googleMap, Array.from(state.path)));
+                setDetectionRagnePolygon(addDetectionRangePolygon(googleMap, Array.from(pathResponse)));
                 setPathPolyLine(addPathPolyline(googleMap, pathMarkerArray, pathInfoWindowarray));
             }
         }
-    }, [state.path]);
+    }, [pathResponse]);
 
     useEffect(() => {
         const pathListElement: HTMLElement | null = document.getElementById("path_list");
@@ -317,6 +319,16 @@ const PathComponent: React.FC<PathComponentProps> = ({
         }
     }, [pathGoalIndex]);
 
+    const httpLoadPathRequest: Function = async (): Promise<void> => {
+        try {
+            const response: AxiosResponse<any, any> = await axios.post("/v1/api/path/select");
+            console.info(`Path HTTP : ${JSON.stringify(response)}`);
+            setPathResponse(response.data);
+        } catch (error) {
+            console.error("Error fetching Path data", error);
+        }
+    }
+
     useEffect(() => {
         const mapElement: HTMLElement | null = document.getElementById("path_map");
 
@@ -326,13 +338,15 @@ const PathComponent: React.FC<PathComponentProps> = ({
             setGoogleMap(mapInstance);
         }
 
+        httpLoadPathRequest();
+
         return (() => {
             if (googleMap) {
                 googleMap.unbindAll();
             }
-            if (state.path) {
+            if (pathResponse) {
                 flushPath();
-                state.path = null;
+                setPathResponse(null);
             }
         });
     }, []);

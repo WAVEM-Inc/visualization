@@ -125,9 +125,10 @@ const DataController: React.FC = (): React.ReactElement<any, any> | null => {
         }
     }
 
-    const loadMQTTConfig: Function = async (): Promise<void> => {
+    const httpLoadMQTTConfigRequest: Function = async (): Promise<void> => {
         try {
-            const response: AxiosResponse<any, any> = await axios.get("/v1/api/mqtt/load/config");
+            const response: AxiosResponse<any, any> = await axios.post("/v1/api/mqtt/load/config");
+            console.info(`MQTT : ${JSON.stringify(response)}`);
             setMqttData(response.data);
         } catch (error) {
             console.error("Error fetching MQTT data", error);
@@ -135,7 +136,7 @@ const DataController: React.FC = (): React.ReactElement<any, any> | null => {
     }
 
     useEffect((): void => {
-        loadMQTTConfig();
+        httpLoadMQTTConfigRequest();
     }, []);
 
     useEffect(() => {

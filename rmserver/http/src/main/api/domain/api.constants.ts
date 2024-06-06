@@ -1,0 +1,1 @@
+export const DEFAULT_API_FORMAT: string = "/v1/api";

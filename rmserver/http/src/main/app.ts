@@ -2,13 +2,14 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv-flow";
 import express, { NextFunction, Request, Response } from "express";
-import fs from "fs";
 import http from "http";
 import createHttpError from "http-errors";
 import logger from "morgan";
-import os from "os";
 import path from "path";
-import util from "util";
+import { DEFAULT_API_FORMAT } from "./api/domain/api.constants";
+import APIRouter from "./api/routes/api.routes";
+import PathRouter from "./path/routes/path.routes";
+
 dotenv.config();
 
 const app: express.Application = express();
@@ -23,23 +24,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(cors());
+app.use(`${DEFAULT_API_FORMAT}`, APIRouter);
+app.use(`${DEFAULT_API_FORMAT}/path`, PathRouter);
 
 const rmvizBuildPath: string = path.join(__dirname, "../../../rmviz/build");
 console.log(`[rmserver_http] [INFO] dirname : ${__dirname}, client_path : ${rmvizBuildPath}`);
 app.use(express.static(rmvizBuildPath));
-
-const homeDir: string = os.homedir();
-const mqttFilePath: string = path.join(homeDir, "RobotData/mqtt/mqtt.json");
-
-app.get("/v1/api/mqtt/load/config", async (req: Request, res: Response) => {
-    try {
-        const data: string = await util.promisify(fs.readFile)(mqttFilePath, "utf8");
-        console.info(`mqttData : ${data}`);
-        res.json(JSON.parse(data));
-    } catch (err) {
-        res.status(500).json({ error: "Failed to read mqtt.json file" });
-    }
-});
 
 app.get("*", (req: Request, res: Response) => {
     res.sendFile(path.join(rmvizBuildPath, "index.html"));
@@ -57,10 +47,10 @@ app.use(function (err: any, req: Request, res: Response, next: NextFunction) {
     });
 });
 
-const server = http.createServer(app);
+const server: http.Server = http.createServer(app);
 
-app.listen(port, () => {
-    console.log(`[rmserver_http] [INFO] Server is running at port <${port}>`);
+app.listen(port, (): void => {
+    console.log(`[rmserver_http] [INFO] Server is running on [${port}]`);
 });
 
 module.exports = app;

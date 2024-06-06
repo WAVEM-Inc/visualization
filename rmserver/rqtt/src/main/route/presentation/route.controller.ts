@@ -17,7 +17,6 @@ export default class RouteController {
         this._routeService = new RouteService(node);
 
         this.routeToPose();
-        this.pathSelect();
         this.pathRenew();
         this.goalCancel();
         this.canEmergencyStop();
@@ -27,12 +26,6 @@ export default class RouteController {
         const routeToPoseRqttTopic: string = `${MTR_TOPIC_FORMAT}${ROUTE_TO_POSE_ACTION}`;
         this._rqtt.subscribe(this._rqttC, routeToPoseRqttTopic);
         this._rqtt.addSubscriptionCallback(this._rqttC, routeToPoseRqttTopic, this._routeService.routeToPoseCallback);
-    }
-
-    private pathSelect(): void {
-        const pathSelectRqttTopic: string = `${MTR_TOPIC_FORMAT}${PATH_SELECT_TOPIC}`;
-        this._rqtt.subscribe(this._rqttC, pathSelectRqttTopic);
-        this._rqtt.addSubscriptionCallback(this._rqttC, pathSelectRqttTopic, this._routeService.pathSelectCallback);
     }
 
     private pathRenew(): void {
