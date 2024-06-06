@@ -9,12 +9,12 @@ import ReportController from "../../ktp/presentation/report/report.controller";
 
 export default class RtMController {
 
-    private rqtt: Rqtt;
-    private rqttC: mqtt.MqttClient;
+    private _rqtt: Rqtt;
+    private _rqttC: mqtt.MqttClient;
 
     constructor(rqttC: mqtt.MqttClient, node: Node) {
-        this.rqtt = new Rqtt(node);
-        this.rqttC = rqttC;
+        this._rqtt = new Rqtt(node);
+        this._rqttC = rqttC;
 
         const sensorController: SensorController = new SensorController(node);
         const statusCotroller: StatusController = new StatusController(node);
@@ -22,7 +22,7 @@ export default class RtMController {
 
         setRtmDataProcessCallback(async (topic: string, data: any): Promise<void> => {
             try {
-                this.rqtt.publish(this.rqttC, `${RTM_TOPIC_FORMAT}${topic}`, JSON.stringify(data));
+                this._rqtt.publish(this._rqttC, `${RTM_TOPIC_FORMAT}${topic}`, JSON.stringify(data));
             } catch (error) {
                 console.error("Error publishing message:", error);
                 return;

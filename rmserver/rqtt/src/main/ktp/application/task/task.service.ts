@@ -4,22 +4,22 @@ import { ASSIGN_CONOTROL_RESOURCE_ID, ASSIGN_CONTROL_SERVICE, ASSIGN_CONTROL_SER
 
 export default class TaskService {
 
-    private node: Node;
-    private assignControlClient: Client<"ktp_data_msgs/srv/AssignControl">;
-    private assignMissionClient: Client<"ktp_data_msgs/srv/AssignMission">;
+    private _node: Node;
+    private _assignControlClient: Client<"ktp_data_msgs/srv/AssignControl">;
+    private _assignMissionClient: Client<"ktp_data_msgs/srv/AssignMission">;
 
     constructor(node: Node) {
-        this.node = node;
+        this._node = node;
         this.bindFunctionContexts.bind(this);
         this.bindFunctionContexts();
 
-        this.assignControlClient = this.node.createClient(
+        this._assignControlClient = this._node.createClient(
             ASSIGN_CONTROL_SERVICE_TYPE,
             ASSIGN_CONTROL_SERVICE,
             { qos: QoS.profileServicesDefault }
         );
 
-        this.assignMissionClient = this.node.createClient(
+        this._assignMissionClient = this._node.createClient(
             ASSIGN_MISSION_SERVICE_TYPE,
             ASSIGN_MISSION_SERVICE,
             { qos: QoS.profileServicesDefault }
@@ -31,7 +31,7 @@ export default class TaskService {
     }
 
     public assignTaskCallback(message: any): void {
-        this.node.getLogger().info(`Assign Task message : ${JSON.stringify(message)}`);
+        this._node.getLogger().info(`Assign Task message : ${JSON.stringify(message)}`);
 
         try {
             const resourceId: string = message.id;
@@ -57,50 +57,50 @@ export default class TaskService {
     private assignControlServiceRequest(control: any): void {
         const assignControlRequest: ktp_data_msgs.srv.AssignControl_Request = rclnodejs.createMessageObject("ktp_data_msgs/srv/AssignControl_Request");
         assignControlRequest.control = control;
-        this.node.getLogger().info(`${ASSIGN_CONTROL_SERVICE} control request : ${JSON.stringify(assignControlRequest)}`);
+        this._node.getLogger().info(`${ASSIGN_CONTROL_SERVICE} control request : ${JSON.stringify(assignControlRequest)}`);
 
         try {
-            this.assignControlClient.waitForService(1000)
+            this._assignControlClient.waitForService(1000)
                 .then((result: boolean) => {
                     if (!result) {
-                        this.node.getLogger().error(`${ASSIGN_CONTROL_SERVICE} is not available`);
+                        this._node.getLogger().error(`${ASSIGN_CONTROL_SERVICE} is not available`);
                         return;
                     }
 
-                    this.assignControlClient.sendRequest(assignControlRequest, (response: ktp_data_msgs.srv.AssignControl_Response) => {
-                        this.node.getLogger().info(`${ASSIGN_CONTROL_SERVICE} response : ${JSON.stringify(response)}`);
+                    this._assignControlClient.sendRequest(assignControlRequest, (response: ktp_data_msgs.srv.AssignControl_Response) => {
+                        this._node.getLogger().info(`${ASSIGN_CONTROL_SERVICE} response : ${JSON.stringify(response)}`);
                     })
                 })
                 .catch((error: any) => {
-                    this.node.getLogger().error(`${ASSIGN_CONTROL_SERVICE} : ${error}`);
+                    this._node.getLogger().error(`${ASSIGN_CONTROL_SERVICE} : ${error}`);
                 });
         } catch (error: any) {
-            this.node.getLogger().error(`${ASSIGN_CONTROL_SERVICE} : ${error}`);
+            this._node.getLogger().error(`${ASSIGN_CONTROL_SERVICE} : ${error}`);
         }
     }
 
     private assignMissionServiceReqeust(mission: any): void {
         const assignMissionRequest: ktp_data_msgs.srv.AssignMission_Request = rclnodejs.createMessageObject("ktp_data_msgs/srv/AssignMission_Request");
         assignMissionRequest.mission = mission;
-        this.node.getLogger().info(`${ASSIGN_MISSION_SERVICE} mission request : ${JSON.stringify(mission)}`);
+        this._node.getLogger().info(`${ASSIGN_MISSION_SERVICE} mission request : ${JSON.stringify(mission)}`);
 
         try {
-            this.assignMissionClient.waitForService(1000)
+            this._assignMissionClient.waitForService(1000)
                 .then((result: boolean) => {
                     if (!result) {
-                        this.node.getLogger().error(`${ASSIGN_MISSION_SERVICE} is not available`);
+                        this._node.getLogger().error(`${ASSIGN_MISSION_SERVICE} is not available`);
                         return;
                     }
 
-                    this.assignMissionClient.sendRequest(assignMissionRequest, (response: ktp_data_msgs.srv.AssignMission_Response) => {
-                        this.node.getLogger().info(`${ASSIGN_MISSION_SERVICE} response : ${JSON.stringify(response)}`);
+                    this._assignMissionClient.sendRequest(assignMissionRequest, (response: ktp_data_msgs.srv.AssignMission_Response) => {
+                        this._node.getLogger().info(`${ASSIGN_MISSION_SERVICE} response : ${JSON.stringify(response)}`);
                     });
                 })
                 .catch((error: any) => {
-                    this.node.getLogger().error(`${ASSIGN_MISSION_SERVICE} : ${error}`);
+                    this._node.getLogger().error(`${ASSIGN_MISSION_SERVICE} : ${error}`);
                 });
         } catch (error: any) {
-            this.node.getLogger().error(`${ASSIGN_MISSION_SERVICE} : ${error}`);
+            this._node.getLogger().error(`${ASSIGN_MISSION_SERVICE} : ${error}`);
         }
     }
 }

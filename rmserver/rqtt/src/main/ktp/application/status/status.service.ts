@@ -4,18 +4,18 @@ import { RBT_STATUS_MSG_TYPE, RBT_STATUS_TOPIC, SERVICE_STATUS_MSG_TYPE, SERVICE
 
 export default class StatusService {
 
-    private rbtStatusSubscription: Subscription;
-    private serviceStatusSubscription: Subscription;
+    private _rbtStatusSubscription: Subscription;
+    private _serviceStatusSubscription: Subscription;
 
     constructor(node: Node) {
-        this.rbtStatusSubscription = node.createSubscription(
+        this._rbtStatusSubscription = node.createSubscription(
             RBT_STATUS_MSG_TYPE,
             RBT_STATUS_TOPIC,
             { qos: QoS.profileSystemDefault },
             this.rbtStatusCallback.bind(this)
         );
 
-        this.serviceStatusSubscription = node.createSubscription(
+        this._serviceStatusSubscription = node.createSubscription(
             SERVICE_STATUS_MSG_TYPE,
             SERVICE_STATUS_TOPIC,
             { qos: QoS.profileSystemDefault },
@@ -24,12 +24,12 @@ export default class StatusService {
     }
 
     private rbtStatusCallback(_rbtStatus: any): void {
-        const rbtStatusRqttTopic: string = `/status/${this.rbtStatusSubscription.topic.split("/")[4]}`;
+        const rbtStatusRqttTopic: string = `/status/${this._rbtStatusSubscription.topic.split("/")[4]}`;
         rtmDataProcessCallback(rbtStatusRqttTopic, _rbtStatus);
     }
 
     private serviceStatusCallback(_serviceStatus: any): void {
-        const serviceStatusRqttTopic: string = `/status/${this.serviceStatusSubscription.topic.split("/")[4]}`;
+        const serviceStatusRqttTopic: string = `/status/${this._serviceStatusSubscription.topic.split("/")[4]}`;
         rtmDataProcessCallback(serviceStatusRqttTopic, _serviceStatus);
     }
 }

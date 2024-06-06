@@ -7,21 +7,21 @@ import { HEARTBEAT_TOPIC } from "../domain/heartbeat.constants";
 
 export default class HeartBeatController {
 
-    private rqtt: Rqtt;
-    private rqttC: mqtt.MqttClient;
-    private heartBeatService: HeartBeatService;
+    private _rqtt: Rqtt;
+    private _rqttC: mqtt.MqttClient;
+    private _heartBeatService: HeartBeatService;
 
     constructor(rqttC: mqtt.MqttClient, node: Node) {
-        this.rqtt = new Rqtt(node);
-        this.rqttC = rqttC;
-        this.heartBeatService = new HeartBeatService();
+        this._rqtt = new Rqtt(node);
+        this._rqttC = rqttC;
+        this._heartBeatService = new HeartBeatService();
 
         this.heartBeat();
     }
 
     private heartBeat(): void {
         const heartBeatTopic: string = `${MTR_TOPIC_FORMAT}${HEARTBEAT_TOPIC}`;
-        this.rqtt.subscribe(this.rqttC, heartBeatTopic);
-        this.rqtt.addSubscriptionCallback(this.rqttC, heartBeatTopic, this.heartBeatService.heartBeatCallback);
+        this._rqtt.subscribe(this._rqttC, heartBeatTopic);
+        this._rqtt.addSubscriptionCallback(this._rqttC, heartBeatTopic, this._heartBeatService.heartBeatCallback);
     }
 }

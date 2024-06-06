@@ -6,13 +6,13 @@ import RouteController from "../../route/presentation/route.controller";
 
 export default class MtRController {
 
-    private rqttC: mqtt.MqttClient;
+    private _rqttC: mqtt.MqttClient;
 
     constructor(rqttC: mqtt.MqttClient, node: Node) {
-        this.rqttC = rqttC;
+        this._rqttC = rqttC;
 
-        const routeController: RouteController = new RouteController(this.rqttC, node);
-        const heartBeatController: HeartBeatController = new HeartBeatController(this.rqttC, node);
-        const taskController: TaskController = new TaskController(this.rqttC, node);
+        const routeController: RouteController = new RouteController(this._rqttC, node);
+        const heartBeatController: HeartBeatController = new HeartBeatController(this._rqttC, node);
+        const taskController: TaskController = new TaskController(this._rqttC, node);
     }
 }

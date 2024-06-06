@@ -9,12 +9,12 @@ import * as configFilePathsJSON from "../config/configFilePaths.json";
 const LOG_MQTT_TAG: string = "[MQTT]";
 
 export default class Rqtt {
-    private logger: rclnodejs.Logging;
-    private mqttConnectionInfo: any;
-    private client: mqtt.MqttClient | null | undefined;
+    private _logger: rclnodejs.Logging;
+    private _mqttConnectionInfo: any;
+    private _client: mqtt.MqttClient | null | undefined;
 
     constructor(node: rclnodejs.Node) {
-        this.logger = node.getLogger();
+        this._logger = node.getLogger();
     }
 
     private async loadConfig(): Promise<any> {
@@ -25,26 +25,26 @@ export default class Rqtt {
     }
 
     public async initialize(): Promise<mqtt.MqttClient> {
-        this.mqttConnectionInfo = await this.loadConfig();
-        this.logger.info(`${LOG_MQTT_TAG} connectionInfo: ${JSON.stringify(this.mqttConnectionInfo)}`);
+        this._mqttConnectionInfo = await this.loadConfig();
+        this._logger.info(`${LOG_MQTT_TAG} connectionInfo: ${JSON.stringify(this._mqttConnectionInfo)}`);
 
-        const type: string = this.mqttConnectionInfo.type === "websockets" ? "ws" : "mqtt";
-        const brokerURL: string = `${type}://${this.mqttConnectionInfo.host}:${this.mqttConnectionInfo.port}${this.mqttConnectionInfo.path}`;
-        this.client = mqtt.connect(brokerURL);
+        const type: string = this._mqttConnectionInfo.type === "websockets" ? "ws" : "mqtt";
+        const brokerURL: string = `${type}://${this._mqttConnectionInfo.host}:${this._mqttConnectionInfo.port}${this._mqttConnectionInfo.path}`;
+        this._client = mqtt.connect(brokerURL);
 
         return new Promise<mqtt.MqttClient>((resolve, reject): void => {
-            this.client?.on("connect", (): void => {
-                this.logger.info(`${LOG_MQTT_TAG} Connected to MQTT broker at ${brokerURL}`);
-                resolve(this.client!);
+            this._client?.on("connect", (): void => {
+                this._logger.info(`${LOG_MQTT_TAG} Connected to MQTT broker at ${brokerURL}`);
+                resolve(this._client!);
             });
     
-            this.client?.on("error", (error): void => {
-                this.logger.error(`${LOG_MQTT_TAG} MQTT connection error: ${error.message}`);
+            this._client?.on("error", (error): void => {
+                this._logger.error(`${LOG_MQTT_TAG} MQTT connection error: ${error.message}`);
                 reject(null);
             });
 
-            this.client?.on("disconnect", (): void => {
-                this.logger.warn(`${LOG_MQTT_TAG} MQTT disconnected...`);
+            this._client?.on("disconnect", (): void => {
+                this._logger.warn(`${LOG_MQTT_TAG} MQTT disconnected...`);
                 reject(null);
             });
         });
@@ -54,7 +54,7 @@ export default class Rqtt {
         try {
             rqttC.publish(topic, message);
         } catch (error: any) {
-            this.logger.error(`${LOG_MQTT_TAG} publishing error: ${error}`);
+            this._logger.error(`${LOG_MQTT_TAG} publishing error: ${error}`);
             throw new Error(error);
         }
     }
@@ -63,13 +63,13 @@ export default class Rqtt {
         try {
             rqttC.subscribe(topic, (err, granted) => {
                 if (err) {
-                    this.logger.error(`${LOG_MQTT_TAG} ${topic} subscription error: ${err.message}`);
+                    this._logger.error(`${LOG_MQTT_TAG} ${topic} subscription error: ${err.message}`);
                 } else {
-                    this.logger.info(`${LOG_MQTT_TAG} subscription granted: ${granted?.map(g => g.topic).join(", ")}`);
+                    this._logger.info(`${LOG_MQTT_TAG} subscription granted: ${granted?.map(g => g.topic).join(", ")}`);
                 }
             });
         } catch (error: any) {
-            this.logger.error(`${LOG_MQTT_TAG} Error in subscribe method: ${error}`);
+            this._logger.error(`${LOG_MQTT_TAG} Error in subscribe method: ${error}`);
         }
     }
 
@@ -81,15 +81,15 @@ export default class Rqtt {
                 } else return;
             });
         } catch (error: any) {
-            this.logger.error(`${LOG_MQTT_TAG} Error in addSubscriptionCallback method: ${error}`);
+            this._logger.error(`${LOG_MQTT_TAG} Error in addSubscriptionCallback method: ${error}`);
         }
     }
 
     public disconnect(): void {
         try {
-            this.client?.end();
+            this._client?.end();
         } catch (error: any) {
-            this.logger.error(`${LOG_MQTT_TAG} Error in disconnect method: ${error}`);
+            this._logger.error(`${LOG_MQTT_TAG} Error in disconnect method: ${error}`);
         }
     }
 }

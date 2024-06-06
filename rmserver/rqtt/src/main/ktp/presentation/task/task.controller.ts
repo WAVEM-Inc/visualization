@@ -7,21 +7,21 @@ import { ASSIGN_TASK_TOPIC } from "../../domain/task/task.constants";
 
 export default class TaskController {
 
-    private rqtt: Rqtt;
-    private rqttC: mqtt.MqttClient;
-    private taskService: TaskService;
+    private _rqtt: Rqtt;
+    private _rqttC: mqtt.MqttClient;
+    private _taskService: TaskService;
 
     constructor(rqttC: mqtt.MqttClient, node: Node) {
-        this.rqtt = new Rqtt(node);
-        this.rqttC = rqttC;
-        this.taskService = new TaskService(node);
+        this._rqtt = new Rqtt(node);
+        this._rqttC = rqttC;
+        this._taskService = new TaskService(node);
         
         this.assignTask();
     }
 
     private assignTask(): void {
         const assignTaskRqttTopic: string = `${MTR_TOPIC_FORMAT}${ASSIGN_TASK_TOPIC}`;
-        this.rqtt.subscribe(this.rqttC, assignTaskRqttTopic);
-        this.rqtt.addSubscriptionCallback(this.rqttC, assignTaskRqttTopic, this.taskService.assignTaskCallback);
+        this._rqtt.subscribe(this._rqttC, assignTaskRqttTopic);
+        this._rqtt.addSubscriptionCallback(this._rqttC, assignTaskRqttTopic, this._taskService.assignTaskCallback);
     }
 }

@@ -7,14 +7,14 @@ import { CAN_EMERGENCY_STOP_TOPIC, GOAL_CANCEL_TOPIC, PATH_RENEW_TOPIC, PATH_SEL
 
 export default class RouteController {
 
-    private rqtt: Rqtt;
-    private rqttC: mqtt.MqttClient;
-    private routeService: RouteService;
+    private _rqtt: Rqtt;
+    private _rqttC: mqtt.MqttClient;
+    private _routeService: RouteService;
 
     constructor(rqttC: mqtt.MqttClient, node: Node) {
-        this.rqtt = new Rqtt(node);
-        this.rqttC = rqttC;
-        this.routeService = new RouteService(node);
+        this._rqtt = new Rqtt(node);
+        this._rqttC = rqttC;
+        this._routeService = new RouteService(node);
 
         this.routeToPose();
         this.pathSelect();
@@ -25,31 +25,31 @@ export default class RouteController {
 
     private routeToPose(): void {
         const routeToPoseRqttTopic: string = `${MTR_TOPIC_FORMAT}${ROUTE_TO_POSE_ACTION}`;
-        this.rqtt.subscribe(this.rqttC, routeToPoseRqttTopic);
-        this.rqtt.addSubscriptionCallback(this.rqttC, routeToPoseRqttTopic, this.routeService.routeToPoseCallback);
+        this._rqtt.subscribe(this._rqttC, routeToPoseRqttTopic);
+        this._rqtt.addSubscriptionCallback(this._rqttC, routeToPoseRqttTopic, this._routeService.routeToPoseCallback);
     }
 
     private pathSelect(): void {
         const pathSelectRqttTopic: string = `${MTR_TOPIC_FORMAT}${PATH_SELECT_TOPIC}`;
-        this.rqtt.subscribe(this.rqttC, pathSelectRqttTopic);
-        this.rqtt.addSubscriptionCallback(this.rqttC, pathSelectRqttTopic, this.routeService.pathSelectCallback);
+        this._rqtt.subscribe(this._rqttC, pathSelectRqttTopic);
+        this._rqtt.addSubscriptionCallback(this._rqttC, pathSelectRqttTopic, this._routeService.pathSelectCallback);
     }
 
     private pathRenew(): void {
         const pathRenewRqttTopic: string = `${MTR_TOPIC_FORMAT}${PATH_RENEW_TOPIC}`;
-        this.rqtt.subscribe(this.rqttC, pathRenewRqttTopic);
-        this.rqtt.addSubscriptionCallback(this.rqttC, pathRenewRqttTopic, this.routeService.pathRenewCallback);
+        this._rqtt.subscribe(this._rqttC, pathRenewRqttTopic);
+        this._rqtt.addSubscriptionCallback(this._rqttC, pathRenewRqttTopic, this._routeService.pathRenewCallback);
     }
 
     private goalCancel(): void {
         const goalCancelRqttTopic: string = `${MTR_TOPIC_FORMAT}${GOAL_CANCEL_TOPIC}`;
-        this.rqtt.subscribe(this.rqttC, goalCancelRqttTopic);
-        this.rqtt.addSubscriptionCallback(this.rqttC, goalCancelRqttTopic, this.routeService.goalCancelCallback);
+        this._rqtt.subscribe(this._rqttC, goalCancelRqttTopic);
+        this._rqtt.addSubscriptionCallback(this._rqttC, goalCancelRqttTopic, this._routeService.goalCancelCallback);
     }
 
     private canEmergencyStop(): void {
         const canEmergencyStopRqttTopic: string = `${MTR_TOPIC_FORMAT}${CAN_EMERGENCY_STOP_TOPIC}`;
-        this.rqtt.subscribe(this.rqttC, canEmergencyStopRqttTopic);
-        this.rqtt.addSubscriptionCallback(this.rqttC, canEmergencyStopRqttTopic, this.routeService.canEmergencyStopCallback);
+        this._rqtt.subscribe(this._rqttC, canEmergencyStopRqttTopic);
+        this._rqtt.addSubscriptionCallback(this._rqttC, canEmergencyStopRqttTopic, this._routeService.canEmergencyStopCallback);
     }
 }

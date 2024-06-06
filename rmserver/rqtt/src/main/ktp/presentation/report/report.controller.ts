@@ -3,9 +3,9 @@ import ReportService from "../../application/report/report.service";
 
 export default class ReportController {
 
-    private reportService: ReportService;
+    private _reportService: ReportService;
 
     constructor(node: Node) {
-        this.reportService = new ReportService(node);
+        this._reportService = new ReportService(node);
     }
 }
