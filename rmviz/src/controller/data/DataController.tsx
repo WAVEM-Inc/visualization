@@ -40,10 +40,10 @@ const DataController: React.FC = (): React.ReactElement<any, any> | null => {
     const responsePathFileSelectTopic: string = `${responseTopicFormat}/path/select`;
 
     const requiredResponseTopicList: Array<string> = [
-        `${responseTopicFormat}/rbt_status`,
-        `${responseTopicFormat}/service_status`,
-        `${responseTopicFormat}/error_report`,
-        `${responseTopicFormat}/control_report`,
+        `${responseTopicFormat}/status/rbt_status`,
+        `${responseTopicFormat}/status/service_status`,
+        `${responseTopicFormat}/report/error_report`,
+        `${responseTopicFormat}/report/control_report`,
         `${responseTopicFormat}/graph_list`,
         `${responseTopicFormat}/obstacle_detect`,
         `${responseTopicFormat}/lidar_signal`

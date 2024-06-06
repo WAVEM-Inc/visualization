@@ -9,7 +9,7 @@ export default class RouteController {
 
     private rqtt: Rqtt;
     private rqttC: mqtt.MqttClient;
-    private routeService: RouteService
+    private routeService: RouteService;
 
     constructor(rqttC: mqtt.MqttClient, node: Node) {
         this.rqtt = new Rqtt(node);

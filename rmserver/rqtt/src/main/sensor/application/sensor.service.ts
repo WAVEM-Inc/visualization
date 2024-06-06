@@ -39,19 +39,19 @@ export default class SensorService {
         );
     }
 
-    private ubloxFixCallback(_ubloxFix: any) {
+    private ubloxFixCallback(_ubloxFix: any): void {
         rtmDataProcessCallback(this.ubloxFixSubscription.topic, _ubloxFix);
     }
 
-    private odomEularCallback(_odomEular: any) {
+    private odomEularCallback(_odomEular: any): void {
         rtmDataProcessCallback(this.odomEularSubscription.topic, _odomEular);
     }
 
-    private batteryStateCallback(_batteryState: any) {
+    private batteryStateCallback(_batteryState: any): void {
         rtmDataProcessCallback(this.batteryStateSubscription.topic, _batteryState);
     }
 
-    private cmdVelCallback(_cmdVel: any) {
+    private cmdVelCallback(_cmdVel: any): void {
         rtmDataProcessCallback(this.cmdVelSubscription.topic, _cmdVel);
     }
 }

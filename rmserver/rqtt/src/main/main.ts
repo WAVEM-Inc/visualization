@@ -1,10 +1,8 @@
 import * as rclnodejs from "rclnodejs";
 import Rqtt from "./common/application/rqtt";
-import SensorController from "./sensor/presentation/sensor.controller";
 import mqtt from "mqtt/*";
-import RouteController from "./route/presentation/route.controller";
 import RtMController from "./common/presentation/rtm.controller";
-import HeartBeatController from "./heartbeat/presentation/heartbeat.controller";
+import MtRController from "./common/presentation/mtr.controller";
 
 const NODE_NAME: string = "rmserver_rqtt";
 
@@ -22,9 +20,8 @@ async function initializeNode(): Promise<void> {
   const rqttC: mqtt.MqttClient = await rqtt.initialize();
 
   const rtmController: RtMController = new RtMController(rqttC, node);
-  const sensorController: SensorController = new SensorController(node);
-  const routeController: RouteController = new RouteController(rqttC, node);
-  const heartBeatController: HeartBeatController = new HeartBeatController(rqttC, node);
+  const mtrController: MtRController = new MtRController(rqttC, node);
+
   node.spin();
 }
 

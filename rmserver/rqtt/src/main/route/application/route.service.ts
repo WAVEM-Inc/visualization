@@ -3,10 +3,10 @@ import * as ini from "ini";
 import * as os from "os";
 import * as path from "path";
 import * as rclnodejs from "rclnodejs";
-import { ActionClient, Node, Publisher, QoS, route_msgs, action_msgs } from "rclnodejs";
+import { ActionClient, Node, Publisher, QoS, Subscription, route_msgs, action_msgs } from "rclnodejs";
 import { rtmDataProcessCallback } from "../../common/application/rqtt.callbacks";
 import * as configFilePathsJSON from "../../common/config/configFilePaths.json";
-import { CAN_EMERGENCY_STOP_MSG_TYPE, CAN_EMERGENCY_STOP_TOPIC, GOAL_CANCEL_TOPIC, PATH_RENEW_TOPIC, PATH_SELECT_TOPIC, ROUTE_PATH_TOPIC, ROUTE_STATUS_TOPIC, ROUTE_TO_POSE_ACTION, ROUTE_TO_POSE_ACTION_TYPE } from "../domain/route.constants";
+import { CAN_EMERGENCY_STOP_MSG_TYPE, CAN_EMERGENCY_STOP_TOPIC, GOAL_CANCEL_TOPIC, NOTIFY_PATH_MSG_TYPE, NOTIFY_PATH_TOPIC, PATH_RENEW_TOPIC, PATH_SELECT_TOPIC, ROUTE_PATH_TOPIC, ROUTE_STATUS_TOPIC, ROUTE_TO_POSE_ACTION, ROUTE_TO_POSE_ACTION_TYPE } from "../domain/route.constants";
 
 export default class RouteService {
 
@@ -19,6 +19,7 @@ export default class RouteService {
     private routeToPoseActionClientGoalHandle: rclnodejs.ClientGoalHandle<"route_msgs/action/RouteToPose"> | null;
     private routeToPoseActionClient: ActionClient<"route_msgs/action/RouteToPose">;
     private canEmergencyStopPublisher: Publisher<"can_msgs/msg/Emergency">;
+    private notifyPathSubscription: Subscription;
 
     constructor(node: Node) {
         this.node = node;
@@ -43,6 +44,13 @@ export default class RouteService {
             CAN_EMERGENCY_STOP_TOPIC,
             { qos: QoS.profileSystemDefault }
         );
+
+        this.notifyPathSubscription = this.node.createSubscription(
+            NOTIFY_PATH_MSG_TYPE,
+            NOTIFY_PATH_TOPIC,
+            { qos: QoS.profileSystemDefault },
+            this.notifyPathCallback.bind(this)
+        )
     }
 
     private bindFunctionContexts(): void {
@@ -348,5 +356,45 @@ export default class RouteService {
 
     public canEmergencyStopCallback(message: any): void {
         this.canEmergencyStopPublisher.publish(message);
+    }
+
+    private notifyPathCallback(_notifyPath: any): void {
+        const nodeArray: Array<route_msgs.msg.Node> = _notifyPath.node_list;
+        const nodeArrayLen: number = nodeArray.length;
+
+        const pathJSONArray: Array<any> = [];
+
+        for (const [index, node] of nodeArray.entries()) {
+            let pathJSON: any = {};
+
+            pathJSON.nodeId = node.node_id;
+            pathJSON.position = node.position;
+            pathJSON.type = node.type;
+            pathJSON.kind = node.kind;
+            pathJSON.heading = node.heading;
+            pathJSON.direction = node.direction;
+            pathJSON.drivingOption = node.driving_option;
+
+            const detectionRange: Array<any> = [];
+
+            for (const dr of node.detection_range) {
+                let detecionRangeItem: any = {};
+                detecionRangeItem.actionCode = dr.action_code;
+                detecionRangeItem.widthLeft = dr.width_left;
+                detecionRangeItem.widthRigth = dr.width_right;
+                detecionRangeItem.height = dr.height;
+                detecionRangeItem.offset = dr.offset;
+                detectionRange.push(detecionRangeItem);
+            }
+
+            pathJSON.detectionRange = detectionRange;
+
+            pathJSONArray.push(pathJSON);
+
+            if (index === nodeArrayLen - 1) {
+                break;
+            }
+        }
+        rtmDataProcessCallback(ROUTE_PATH_TOPIC, pathJSONArray);
     }
 }
