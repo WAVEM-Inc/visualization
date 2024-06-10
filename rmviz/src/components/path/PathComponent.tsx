@@ -159,6 +159,16 @@ const PathComponent: React.FC<PathComponentProps> = ({
         changeMapCenter(googleMap, _pathMarkerArray[index].getPosition()!);
     }
 
+    const httpLoadPathRequest: Function = async (): Promise<void> => {
+        try {
+            const response: AxiosResponse<any, any> = await axios.post("/v1/api/path/select");
+            console.info(`Path HTTP : ${JSON.stringify(response)}`);
+            setPathResponse(response.data);
+        } catch (error) {
+            console.error("Error fetching Path data", error);
+        }
+    }
+
     useEffect(() => {
         if (pathResponse) {
             if (pathResponse.paths) {
@@ -194,15 +204,15 @@ const PathComponent: React.FC<PathComponentProps> = ({
                 }
             }
 
-            if (pathResponse) {
+            if (state.path) {
                 flushPath();
                 drawPathMarker();
 
-                setDetectionRagnePolygon(addDetectionRangePolygon(googleMap, Array.from(pathResponse)));
+                setDetectionRagnePolygon(addDetectionRangePolygon(googleMap, Array.from(state.path)));
                 setPathPolyLine(addPathPolyline(googleMap, pathMarkerArray, pathInfoWindowarray));
             }
         }
-    }, [pathResponse]);
+    }, [pathResponse, state.path]);
 
     useEffect(() => {
         const pathListElement: HTMLElement | null = document.getElementById("path_list");
@@ -318,16 +328,6 @@ const PathComponent: React.FC<PathComponentProps> = ({
             }
         }
     }, [pathGoalIndex]);
-
-    const httpLoadPathRequest: Function = async (): Promise<void> => {
-        try {
-            const response: AxiosResponse<any, any> = await axios.post("/v1/api/path/select");
-            console.info(`Path HTTP : ${JSON.stringify(response)}`);
-            setPathResponse(response.data);
-        } catch (error) {
-            console.error("Error fetching Path data", error);
-        }
-    }
 
     useEffect(() => {
         const mapElement: HTMLElement | null = document.getElementById("path_map");
