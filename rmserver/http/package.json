@@ -7,7 +7,7 @@
     "compile": "npx tsc",
     "start": "NODE_ENV=production node dist/app.js",
     "dev": "NODE_ENV=development nodemon --watch \"*.ts\" --exec \"ts-node\" src/main/app.ts",
-    "server_build": "concurrently \"npx tsc --build .\" \"cd ../rqttpy && colcon build --packages-select rmserver_rqtt\"",
+    "server_build": "concurrently \"npx tsc --build .\" \"cd ../rqtt && npm run build\"",
     "client_build": "cd ../../rmviz && npm run build",
     "build": "sudo chmod +x ./script/build.sh && ./script/build.sh",
     "launch": "sudo chmod +x ./script/launch.sh && ./script/launch.sh"

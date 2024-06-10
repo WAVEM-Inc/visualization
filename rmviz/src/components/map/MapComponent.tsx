@@ -7,6 +7,13 @@ import { MapState } from "../../domain/map/MapDomain";
 import { addDetectionRangePolygon, addPathMarker, addPathPolyline, changeMapCenter, initializeKECDBorderLine, initializeMap, initializeRobotMarker, recordNavigatedPathCircle, updateRobotMakerIcon } from "../../service/map/MapService";
 import { onClickMqttPublish } from "../../utils/Utils";
 import PathComponent from "../path/PathComponent";
+import * as missionDeliveryJSON from "../../assets/json/mission_delivering.json";
+import * as missionReturningJSON from "../../assets/json/mission_returning.json";
+import * as controlMoveToDestJSON from "../../assets/json/control_movetodest.json";
+import * as controlMsCompleteReturnJSON from "../../assets/json/control_mscomplete_return.json";
+import * as controlMsCompleteNoReturnJSON from "../../assets/json/control_mscomplete_no_return.json";
+import * as controlMsCancelJSON from "../../assets/json/control_mscancel.json";
+import * as controlGraphSyncJSON from "../../assets/json/control_graphsync.json";
 import "./MapComponent.css";
 
 interface MapComponentProps {
@@ -254,6 +261,10 @@ const MapComponent: React.FC<MapComponentProps> = ({
         state.path = null;
         state.routeStatus = null;
         flushPath();
+    }
+
+    const onTaskClick = (taskJSON: any): void => {
+        onClickMqttPublish(mqttClient!, requestTaskTopic, taskJSON);
     }
 
     useEffect((): void => {
@@ -532,11 +543,20 @@ const MapComponent: React.FC<MapComponentProps> = ({
                         <div id="task_list_container" className="task_list_container">
                             <div className="mission_list_container">
                                 <p className="mission_list_title">임무 목록</p>
-                                <ul id="task_list" className="mission_list"></ul>
+                                <ul id="task_list" className="mission_list">
+                                    <li className={"kec_btn_request"} onClick={() => {onTaskClick(missionDeliveryJSON);}}>배송 임무 할당</li>
+                                    <li className={"kec_btn_request"} onClick={() => {onTaskClick(missionReturningJSON);}}>복귀 임무 할당</li>
+                                </ul>
                             </div>
                             <div className="control_list_container">
                                 <p className="control_list_title">제어 목록</p>
-                                <ul id="task_list" className="control_list"></ul>
+                                <ul id="task_list" className="control_list">
+                                    <li className={"kec_btn_request"} onClick={() => {onTaskClick(controlMoveToDestJSON);}}>하차지 이동 제어</li>
+                                    <li className={"kec_btn_request"} onClick={() => {onTaskClick(controlMsCompleteReturnJSON);}}>대기 장소 복귀 제어</li>
+                                    <li className={"kec_btn_request"} onClick={() => {onTaskClick(controlMsCompleteNoReturnJSON);}}>대기 장소 미복귀 제어</li>
+                                    <li className={"kec_btn_request"} onClick={() => {onTaskClick(controlMsCancelJSON);}}>임무 취소 제어</li>
+                                    <li className={"kec_btn_request"} onClick={() => {onTaskClick(controlMsCancelJSON);}}>그래프 제어</li>
+                                </ul>
                             </div>
                         </div>
                     </div>
