@@ -280,6 +280,10 @@ const MapComponent: React.FC<MapComponentProps> = ({
                 if (currRobotMarker) {
                     if (state.gps.longitude !== 0.0 && state.gps.latitude !== 0.0) {
                         currRobotMarker!.setPosition(new google.maps.LatLng(state.gps.latitude, state.gps.longitude));
+
+                        if (currRobotMarker.getPosition() && isDriving) {
+                            changeMapCenter(googleMap, currRobotMarker.getPosition());
+                        }
                     } else return;
                 }
             }
