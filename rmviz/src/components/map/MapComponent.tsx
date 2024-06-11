@@ -3,17 +3,16 @@ import React, { useEffect, useState } from "react";
 import ReactModal from "react-modal";
 import MqttClient from "../../api/mqttClient";
 import * as emergencyStopJSON from "../../assets/json/common/emergency_stop.json";
+import * as controlMoveToDestJSON from "../../assets/json/control_movetodest.json";
+import * as controlMsCancelJSON from "../../assets/json/control_mscancel.json";
+import * as controlMsCompleteNoReturnJSON from "../../assets/json/control_mscomplete_no_return.json";
+import * as controlMsCompleteReturnJSON from "../../assets/json/control_mscomplete_return.json";
+import * as missionDeliveryJSON from "../../assets/json/mission_delivering.json";
+import * as missionReturningJSON from "../../assets/json/mission_returning.json";
 import { MapState } from "../../domain/map/MapDomain";
 import { addDetectionRangePolygon, addPathMarker, addPathPolyline, changeMapCenter, initializeKECDBorderLine, initializeMap, initializeRobotMarker, recordNavigatedPathCircle, updateRobotMakerIcon } from "../../service/map/MapService";
 import { onClickMqttPublish } from "../../utils/Utils";
 import PathComponent from "../path/PathComponent";
-import * as missionDeliveryJSON from "../../assets/json/mission_delivering.json";
-import * as missionReturningJSON from "../../assets/json/mission_returning.json";
-import * as controlMoveToDestJSON from "../../assets/json/control_movetodest.json";
-import * as controlMsCompleteReturnJSON from "../../assets/json/control_mscomplete_return.json";
-import * as controlMsCompleteNoReturnJSON from "../../assets/json/control_mscomplete_no_return.json";
-import * as controlMsCancelJSON from "../../assets/json/control_mscancel.json";
-import * as controlGraphSyncJSON from "../../assets/json/control_graphsync.json";
 import "./MapComponent.css";
 
 interface MapComponentProps {
@@ -369,7 +368,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
                     status = "출발";
                     focusRouteStatus(state.routeStatus.node_index, state.routeStatus.status_code);
 
-                    if (state.routeStatus._node_index === 0) {
+                    if (state.routeStatus.node_index === 0) {
                         setIsDriving(true);
                     }
                     break;
@@ -414,6 +413,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
 
     useEffect((): void => {
         if (state.cmdVel) {
+            console.info(`cmdVel : ${JSON.stringify(state.cmdVel)}`);
             if (currentGps) {
                 if (state.cmdVel.linear) {
                     if (state.cmdVel.linear.x > 0.0) {
@@ -421,6 +421,8 @@ const MapComponent: React.FC<MapComponentProps> = ({
                             const recordedPathCircle: google.maps.Circle = recordNavigatedPathCircle(googleMap, currentGps);
                             _pathCircleArray.push(recordedPathCircle);
                         }
+                        // const recordedPathCircle: google.maps.Circle = recordNavigatedPathCircle(googleMap, currentGps);
+                        // _pathCircleArray.push(recordedPathCircle);
                     }
                 }
             }
@@ -544,18 +546,18 @@ const MapComponent: React.FC<MapComponentProps> = ({
                             <div className="mission_list_container">
                                 <p className="mission_list_title">임무 목록</p>
                                 <ul id="task_list" className="mission_list">
-                                    <li className={"kec_btn_request"} onClick={() => {onTaskClick(missionDeliveryJSON);}}>배송 임무 할당</li>
-                                    <li className={"kec_btn_request"} onClick={() => {onTaskClick(missionReturningJSON);}}>복귀 임무 할당</li>
+                                    <li id="task_item" className={"mission_item"} onClick={() => { onTaskClick(missionDeliveryJSON); }}>1. 배송 임무 할당</li>
+                                    <li id="task_item" className={"mission_item"} onClick={() => { onTaskClick(missionReturningJSON); }}>2. 복귀 임무 할당</li>
                                 </ul>
                             </div>
                             <div className="control_list_container">
                                 <p className="control_list_title">제어 목록</p>
                                 <ul id="task_list" className="control_list">
-                                    <li className={"kec_btn_request"} onClick={() => {onTaskClick(controlMoveToDestJSON);}}>하차지 이동 제어</li>
-                                    <li className={"kec_btn_request"} onClick={() => {onTaskClick(controlMsCompleteReturnJSON);}}>대기 장소 복귀 제어</li>
-                                    <li className={"kec_btn_request"} onClick={() => {onTaskClick(controlMsCompleteNoReturnJSON);}}>대기 장소 미복귀 제어</li>
-                                    <li className={"kec_btn_request"} onClick={() => {onTaskClick(controlMsCancelJSON);}}>임무 취소 제어</li>
-                                    <li className={"kec_btn_request"} onClick={() => {onTaskClick(controlMsCancelJSON);}}>그래프 제어</li>
+                                    <li id="task_item" className={"control_item"} onClick={() => { onTaskClick(controlMoveToDestJSON); }}>1. 하차지 이동 제어</li>
+                                    <li id="task_item" className={"control_item"} onClick={() => { onTaskClick(controlMsCompleteReturnJSON); }}>2. 대기 장소 복귀 제어</li>
+                                    <li id="task_item" className={"control_item"} onClick={() => { onTaskClick(controlMsCompleteNoReturnJSON); }}>3. 대기 장소 미복귀 제어</li>
+                                    <li id="task_item" className={"control_item"} onClick={() => { onTaskClick(controlMsCancelJSON); }}>4. 임무 취소 제어</li>
+                                    <li id="task_item" className={"control_item"} onClick={() => { onTaskClick(controlMsCancelJSON); }}>5. 그래프 제어</li>
                                 </ul>
                             </div>
                         </div>

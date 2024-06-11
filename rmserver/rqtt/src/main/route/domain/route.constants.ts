@@ -20,3 +20,6 @@ export const CAN_EMERGENCY_STOP_MSG_TYPE: TypeClass<keyof MessagesMap> = "can_ms
 
 export const NOTIFY_PATH_TOPIC: string = "/rms/ktp/task/notify/path";
 export const NOTIFY_PATH_MSG_TYPE: TypeClass<keyof MessagesMap> = "route_msgs/msg/Path";
+
+export const CMD_VEL_TOPIC: string = "/cmd_vel";
+export const CMD_VEL_MSG_TYPE: TypeClass<keyof MessagesMap> = "geometry_msgs/msg/Twist";

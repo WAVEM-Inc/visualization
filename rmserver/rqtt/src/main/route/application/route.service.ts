@@ -50,7 +50,7 @@ export default class RouteService {
             NOTIFY_PATH_TOPIC,
             { qos: QoS.profileSystemDefault },
             this.notifyPathCallback.bind(this)
-        )
+        );
     }
 
     private bindFunctionContexts(): void {
