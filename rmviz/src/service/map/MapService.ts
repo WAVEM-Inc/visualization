@@ -252,7 +252,7 @@ export const recordNavigatedPathCircle: Function = (
         center: new google.maps.LatLng(currentGps.latitude, currentGps.longitude),
         strokeColor: "green",
         strokeOpacity: 0.8,
-        strokeWeight: 0.6,
+        strokeWeight: 0.4,
         fillColor: "green",
         fillOpacity: 0.35,
         radius: 1

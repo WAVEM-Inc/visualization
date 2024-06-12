@@ -26,7 +26,7 @@ const PathComponent: React.FC<PathComponentProps> = ({
     const [pathList, setPathList] = useState<Array<any>>([]);
     const [pathListIndex, setPathListIndex] = useState<number>(0);
     const [selectedPathListIndex, setSelectedPathListIndex] = useState<number | null>(null);
-    const [editedPath, setEditedPath] = useState<Array<any>>([]);
+    const [editedPath, setEditedPath] = useState<any>({});
     const [pathSource, setPathSource] = useState<any>({});
     const [pathGoal, setPathGoal] = useState<any>({});
     const [pathGoalIndex, setPathGoalIndex] = useState<number>(0);
@@ -64,11 +64,41 @@ const PathComponent: React.FC<PathComponentProps> = ({
     }
 
     const changePathSource: React.MouseEventHandler<HTMLButtonElement> = (): void => {
-        setPathProgress(pathProgress + 1);
+        console.info(`pL : ${JSON.stringify(pathList[pathListIndex])}`);
+        const nodeList: Array<any> = pathList[pathListIndex].nodeList
+        // 출발지 변경 시 경로 업데이트
+        if (pathProgress < nodeList.length - 1) {
+            setPathProgress(pathProgress + 1);
+            const updatedPathList: any = nodeList.filter((it, idx) => idx > pathProgress);
+
+            for (const p of updatedPathList) {
+                console.log(`p : ${JSON.stringify(p)}`);
+            }
+
+            const pathJSON: any = {
+                id: pathList[pathListIndex].id,
+                name: pathList[pathListIndex].name,
+                nodeList: updatedPathList
+            };
+            setEditedPath(pathJSON);
+        } else {
+            alert("출발지와 도착지가 동일하거나 출발지가 도착지를 넘어섭니다.");
+        }
     }
 
     const changePathGoal: React.MouseEventHandler<HTMLButtonElement> = (): void => {
-        setPathGoalIndex(pathGoalIndex - 1);
+        if (pathListIndex > 0) {
+            setPathListIndex(pathListIndex - 1);
+            const updatedPathList = pathList.slice();
+            updatedPathList.push(updatedPathList.splice(pathListIndex, 1)[0]);
+            const pathJSON = {
+                id: updatedPathList[updatedPathList.length - 1].id,
+                name: updatedPathList[updatedPathList.length - 1].name
+            };
+            setEditedPath(pathJSON);
+        } else {
+            alert("출발지와 도착지가 동일하거나 도착지가 출발지보다 앞에 위치합니다.");
+        }
     }
 
     const drawPathMarker: Function = (): void => {
@@ -215,18 +245,22 @@ const PathComponent: React.FC<PathComponentProps> = ({
     }, [pathResponse, state.path]);
 
     useEffect(() => {
-        const pathListElement: HTMLElement | null = document.getElementById("path_list");
-        if (pathListElement && selectedPathListIndex !== null) {
-            Array.from(pathListElement.children).forEach((child, index) => {
-                (child as HTMLElement).style.backgroundColor = index === selectedPathListIndex ? "lightblue" : "";
-            });
+        if (pathListIndex) {
+            setEditedPath(pathList[pathListIndex]);
+        }
+    }, [pathListIndex]);
 
-            const selectedElement: HTMLElement = pathListElement.children[selectedPathListIndex] as HTMLElement;
-            if (selectedElement) {
-                selectedElement.scrollIntoView({ behavior: "smooth", block: "center" });
+    useEffect(() => {
+        if (selectedPathListIndex !== null) {
+            const pathListElement = document.getElementById("path_list");
+            if (pathListElement) {
+                Array.from(pathListElement.children).forEach((child, index) => {
+                    (child as HTMLElement).style.backgroundColor = index === selectedPathListIndex ? "lightblue" : "";
+                });
             }
         }
-    }, [selectedPathListIndex]);
+    }, [pathList, selectedPathListIndex]);
+
 
     useEffect(() => {
         const pathProgressMarkerInfoElements: NodeListOf<HTMLElement> | null = document.querySelectorAll(".path_progress_marker_info");
@@ -347,6 +381,7 @@ const PathComponent: React.FC<PathComponentProps> = ({
             if (pathResponse) {
                 flushPath();
                 setPathResponse(null);
+                setSelectedPathListIndex(null);
             }
         });
     }, []);
@@ -405,7 +440,9 @@ const PathComponent: React.FC<PathComponentProps> = ({
                                     <img src={process.env.PUBLIC_URL + "../marker_refresh.png"} />
                                     <p>경로 갱신</p>
                                 </button>
-                                <button className="path_command_btn command_path_btn" onClick={() => { requestPathCommand(pathList[pathListIndex]); }}>
+                                <button className="path_command_btn command_path_btn" onClick={() => {
+                                    requestPathCommand(pathList[pathListIndex]);
+                                 }}>
                                     <img src={process.env.PUBLIC_URL + "../go_sign.png"}></img>
                                     <p>주행 명령</p>
                                 </button>

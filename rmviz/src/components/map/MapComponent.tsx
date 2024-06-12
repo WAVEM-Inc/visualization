@@ -48,6 +48,8 @@ const MapComponent: React.FC<MapComponentProps> = ({
     });
     const [currentOdomEular, setCurrentOdomEular] = useState<number>();
     const [currentRouteStatus, setCurrentRouteStatus] = useState<any | null>(null);
+    const [currentCmdVel, setCurrentCmdVel] = useState<any>({});
+    const [cmdVelFlag, setCmdVelFlag] = useState<boolean>(false);
 
     const requestTopicFormat: string = "net/wavem/rms/rqtt/mtr";
     const requestEmergencyTopic: string = `${requestTopicFormat}/drive/can/emergency`;
@@ -332,18 +334,26 @@ const MapComponent: React.FC<MapComponentProps> = ({
         } else return;
     }, [state.path]);
 
-    const focusRouteStatus = (node_index: number, status: number): void => {
+    const focusRouteStatus = (node_index: number, status_code: number): void => {
         const pathInfoContainer: HTMLElement | null = document.getElementById("path_info_container");
         if (pathInfoContainer) {
             const pathInfoElements: HTMLCollectionOf<Element> = pathInfoContainer.getElementsByClassName("path_info");
             if (pathInfoElements.length > 0) {
-                switch (status) {
+                switch (status_code) {
                     case 0:
                         (pathInfoElements[node_index] as HTMLElement).style.backgroundColor = "lightblue";
                         (pathInfoElements[node_index] as HTMLElement).scrollIntoView({ behavior: "smooth", block: "center" });
                         break;
                     case 1:
                         (pathInfoElements[node_index] as HTMLElement).style.backgroundColor = "white";
+                        break;
+                    case 7:
+                        closePathSelectModal();
+                        googleMap?.setZoom(19);
+                        break;        
+                    default:
+                        (pathInfoElements[node_index] as HTMLElement).style.backgroundColor = "white";
+                        break;
                 }
             }
         }
@@ -354,8 +364,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
             console.info(`currentRouteStatus : ${JSON.stringify(state.routeStatus)}`);
 
             if (state.routeStatus.node_index === 0) {
-                closePathSelectModal();
-                googleMap?.setZoom(19);
                 changeMapCenter(googleMap, _pathMarkerArray[state.routeStatus.node_index].getPosition());
             }
 
@@ -371,10 +379,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
                 case 0:
                     status = "출발";
                     focusRouteStatus(state.routeStatus.node_index, state.routeStatus.status_code);
-
-                    if (state.routeStatus.node_index === 0) {
-                        setIsDriving(true);
-                    }
+                    setIsDriving(true);
                     break;
                 case 1:
                     status = "경유지 도착";
@@ -384,18 +389,25 @@ const MapComponent: React.FC<MapComponentProps> = ({
                     status = "주행이 완료되었습니다.";
                     alert(`${status}`);
                     setIsDriving(false);
-                    flushPath();
                     break;
                 case 3:
                     status = "주행 서버가 구동되지 않았습니다.";
                     alert(`${status}`);
                     break;
                 case 4:
-                    status = "주행 진행 중";
+                    status = "주행이 이미 진행 중입니다.";
+                    alert(`${status}`);
                     break;
                 case 5:
                     status = "주행이 취소되었습니다.";
                     alert(`${status}`);
+                    break;
+                case 6:
+                    status = "주행이 거부되었습니다. 목적지를 확인해주세요.";
+                    alert(`${status}`);
+                    break;
+                case 7:
+                    focusRouteStatus(state.routeStatus.node_index, state.routeStatus.status_code);
                     break;
                 default:
                     break;
@@ -417,17 +429,9 @@ const MapComponent: React.FC<MapComponentProps> = ({
 
     useEffect((): void => {
         if (state.cmdVel) {
-            console.info(`cmdVel : ${JSON.stringify(state.cmdVel)}`);
-            if (currentGps) {
-                if (state.cmdVel.linear) {
-                    if (state.cmdVel.linear.x > 0.0) {
-                        if (isDriving) {
-                            const recordedPathCircle: google.maps.Circle = recordNavigatedPathCircle(googleMap, currentGps);
-                            _pathCircleArray.push(recordedPathCircle);
-                        }
-                        // const recordedPathCircle: google.maps.Circle = recordNavigatedPathCircle(googleMap, currentGps);
-                        // _pathCircleArray.push(recordedPathCircle);
-                    }
+            if (state.cmdVel.linear) {
+                if (state.cmdVel.linear.x > 0.0) {
+                    setCurrentCmdVel(state.cmdVel);
                 }
             }
         }
@@ -441,6 +445,31 @@ const MapComponent: React.FC<MapComponentProps> = ({
             initializeKECDBorderLine(googleMap);
         }
     }, [googleMap]);
+
+    useEffect(() => {
+        if (currentCmdVel) {
+            setCmdVelFlag(true);
+        }
+    }, [currentCmdVel]);
+
+    useEffect(() => {
+        let timer: any;
+        if (cmdVelFlag === true) {
+            timer = setInterval(() => {
+                if (currentCmdVel) {
+                    if (currentGps) {
+                        const recordedPathCircle: google.maps.Circle = recordNavigatedPathCircle(googleMap, currentGps);
+                        _pathCircleArray.push(recordedPathCircle);
+                    }
+                }
+            }, 5000);
+        }
+
+        return () => {
+            clearInterval(timer);
+            timer = () => { };
+        }
+    }, [cmdVelFlag]);
 
     useEffect(() => {
         const mapElement: HTMLElement | null = document.getElementById("map");

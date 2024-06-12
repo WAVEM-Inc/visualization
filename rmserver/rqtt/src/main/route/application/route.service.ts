@@ -3,10 +3,10 @@ import * as ini from "ini";
 import * as os from "os";
 import * as path from "path";
 import * as rclnodejs from "rclnodejs";
-import { ActionClient, Node, Publisher, QoS, Subscription, route_msgs, action_msgs } from "rclnodejs";
+import { ActionClient, Node, Publisher, QoS, Subscription, action_msgs, route_msgs } from "rclnodejs";
 import { rtmDataProcessCallback } from "../../common/application/rqtt.callbacks";
 import * as configFilePathsJSON from "../../common/config/configFilePaths.json";
-import { CAN_EMERGENCY_STOP_MSG_TYPE, CAN_EMERGENCY_STOP_TOPIC, GOAL_CANCEL_TOPIC, NOTIFY_PATH_MSG_TYPE, NOTIFY_PATH_TOPIC, PATH_RENEW_TOPIC, PATH_SELECT_TOPIC, ROUTE_PATH_TOPIC, ROUTE_STATUS_TOPIC, ROUTE_TO_POSE_ACTION, ROUTE_TO_POSE_ACTION_TYPE } from "../domain/route.constants";
+import { CAN_EMERGENCY_STOP_MSG_TYPE, CAN_EMERGENCY_STOP_TOPIC, GOAL_CANCEL_TOPIC, NOTIFY_PATH_MSG_TYPE, NOTIFY_PATH_TOPIC, PATH_RENEW_TOPIC, ROUTE_PATH_TOPIC, ROUTE_STATUS_TOPIC, ROUTE_TO_POSE_ACTION, ROUTE_TO_POSE_ACTION_TYPE } from "../domain/route.constants";
 
 export default class RouteService {
 
@@ -105,6 +105,7 @@ export default class RouteService {
             if (this._routeToPoseGoalListSize === 0) {
                 const pathId: string = message.path.id;
                 const pathName: string = message.path.name;
+                // const pathList: Array<any> = message.path.nodeList;
                 this._node.getLogger().info(`${ROUTE_TO_POSE_ACTION} pathId : ${pathId}, pathName : ${pathName}`);
 
                 let nodeArray: Array<any> = [];
@@ -124,6 +125,10 @@ export default class RouteService {
                 }
 
                 this._node.getLogger().info(`${ROUTE_TO_POSE_ACTION} routeToPoseGoalListSize : ${this._routeToPoseGoalListSize}`);
+
+                if (this._routeToPoseGoalListSize === 0) {
+                    return;
+                }
 
                 for (let i = 0; i < nodeArray.length - 1; i++) {
                     const goal: route_msgs.action.RouteToPose_Goal = rclnodejs.createMessageObject("route_msgs/action/RouteToPose_Goal");
@@ -184,10 +189,7 @@ export default class RouteService {
                 }
             } else {
                 this._node.getLogger().error(`${ROUTE_TO_POSE_ACTION} navigation is already proceeding...`);
-                rtmDataProcessCallback(ROUTE_STATUS_TOPIC, {
-                    is_driving: false,
-                    status_code: 4
-                });
+                this.notifyRouteStatus(false, 4);
             }
         } catch (error: any) {
             this._node.getLogger().error(`${ROUTE_TO_POSE_ACTION} : ${error.message}`);
@@ -217,6 +219,22 @@ export default class RouteService {
         this._node.getLogger().info("============== Goal Flush ==============");
     }
 
+    private notifyRouteStatus(is_driving: boolean, status_code: number): void {
+        rtmDataProcessCallback(ROUTE_STATUS_TOPIC, {
+            is_driving: is_driving,
+            status_code: status_code
+        });
+    }
+
+    private notifyRouteStatusWithNode(is_driving: boolean, status_code: number, nodeIndex: number, nodeInfo: Array<string>): void {
+        rtmDataProcessCallback(ROUTE_STATUS_TOPIC, {
+            is_driving: is_driving,
+            status_code: status_code,
+            node_index: nodeIndex,
+            node_info: nodeInfo
+        });
+    }
+
     private async routeToPoseSendGoal(): Promise<void> {
         try {
             const goal: route_msgs.action.RouteToPose_Goal = this._routeToPoseGoalList[this._routeToPoseGoalIndex];
@@ -227,10 +245,7 @@ export default class RouteService {
 
             if (!isRouteToPoseServerReady) {
                 this._node.getLogger().error(`${ROUTE_TO_POSE_ACTION} server is not ready...`);
-                rtmDataProcessCallback(ROUTE_STATUS_TOPIC, {
-                    is_driving: false,
-                    status_code: 3
-                });
+                this.notifyRouteStatus(false, 3);
                 this.routeToPoseFlushGoal();
                 return;
             }
@@ -241,10 +256,12 @@ export default class RouteService {
 
             if (!this._routeToPoseActionClientGoalHandle) {
                 this._node.getLogger().error(`${ROUTE_TO_POSE_ACTION} goal rejected`);
+                this.notifyRouteStatus(false, 6);
                 return;
             }
 
             this._node.getLogger().info(`${ROUTE_TO_POSE_ACTION} goal accepted`);
+            this.notifyRouteStatus(false, 7);
 
             const routeToPoseGoalResult: route_msgs.action.RouteToPose_Result = await this._routeToPoseActionClientGoalHandle.getResult();
 
@@ -252,14 +269,13 @@ export default class RouteService {
                 this.routeToPoseResultCallback(routeToPoseGoalResult);
             } else {
                 this._node.getLogger().error(`${ROUTE_TO_POSE_ACTION} goal handle failed`);
+                this.flushGoal();
+                // this.notifyRouteStatus(false, 6);
                 return;
             }
         } catch (error: any) {
             this._node.getLogger().error(`${ROUTE_TO_POSE_ACTION} Send Goal : ${error}`);
-            rtmDataProcessCallback(ROUTE_STATUS_TOPIC, {
-                is_driving: false,
-                status_code: 3
-            });
+            this.notifyRouteStatus(false, 3);
             return;
         }
     }
@@ -271,12 +287,7 @@ export default class RouteService {
         const currentGoal: route_msgs.action.RouteToPose_Goal = this._routeToPoseGoalList[this._routeToPoseGoalIndex];
 
         if (status_code === 1001) {
-            rtmDataProcessCallback(ROUTE_STATUS_TOPIC, {
-                is_driving: true,
-                status_code: 0,
-                node_index: this._routeToPoseGoalIndex,
-                node_info: [currentGoal.start_node.node_id, currentGoal.end_node.node_id]
-            });
+            this.notifyRouteStatusWithNode(true, 0, this._routeToPoseGoalIndex, [currentGoal.start_node.node_id, currentGoal.end_node.node_id]);
         } else return;
     }
 
@@ -291,25 +302,21 @@ export default class RouteService {
 
             if (isGoalListFinished) {
                 this._node.getLogger().info(`${ROUTE_TO_POSE_ACTION} navigation finished...`);
-                rtmDataProcessCallback(ROUTE_STATUS_TOPIC, {
-                    is_driving: true,
-                    status_code: 2,
-                    node_index: this._routeToPoseGoalIndex,
-                    node_info: [currentGoal.start_node.node_id, currentGoal.end_node.node_id]
-                });
+                this.notifyRouteStatusWithNode(true, 2, this._routeToPoseGoalIndex, [currentGoal.start_node.node_id, currentGoal.end_node.node_id]);
                 this.routeToPoseFlushGoal();
             } else {
-                rtmDataProcessCallback(ROUTE_STATUS_TOPIC, {
-                    is_driving: true,
-                    status_code: 1,
-                    node_index: this._routeToPoseGoalIndex,
-                    node_info: [currentGoal.start_node.node_id, currentGoal.end_node.node_id]
-                });
+                this.notifyRouteStatusWithNode(true, 1, this._routeToPoseGoalIndex, [currentGoal.start_node.node_id, currentGoal.end_node.node_id]);
                 this._routeToPoseGoalIndex++;
                 this._node.getLogger().info(`${ROUTE_TO_POSE_ACTION} It will proceed Next Goal [${this._routeToPoseGoalIndex}]`);
                 this.routeToPoseSendGoal();
             }
         }
+    }
+
+    private flushGoal(): void {
+        this._routeToPoseGoalIndex = 0;
+        this._routeToPoseGoalList = [];
+        this._routeToPoseGoalListSize = 0;
     }
 
     public pathRenewCallback(message: any): void {
@@ -328,9 +335,12 @@ export default class RouteService {
                 
                 if (cancelResponse?.goals_canceling.length! > 0) {
                     this._node.getLogger().info(`${GOAL_CANCEL_TOPIC} goal canceled`);
+                    this.notifyRouteStatus(false, 5);
                 } else {
                     this._node.getLogger().error(`${GOAL_CANCEL_TOPIC} failed to goal canceling`);
                 }
+
+                this.flushGoal();
             }
         } catch (error: any) {
             this._node.getLogger().error(`${GOAL_CANCEL_TOPIC} : ${error.message}`);
