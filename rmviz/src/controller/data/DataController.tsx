@@ -1,7 +1,8 @@
 import axios, { AxiosResponse } from "axios";
-import { IPublishPacket } from "mqtt/*";
+import mqtt, { IPublishPacket } from "mqtt/*";
 import React, { useEffect, useReducer, useState } from "react";
 import { Route, Switch } from "react-router-dom";
+import Rqtt from "../../api/application/rqtt";
 import MqttClient from "../../api/mqttClient";
 import { SET_CMD_VEL, SET_GPS, SET_GPS_FILTERED, SET_ODOM_EULAR, SET_PATH, SET_ROUTE_STATUS, initialMapState, mapStateReducer } from "../../domain/map/MapDomain";
 import { SET_URDF, initalROSState, rosStateReducer } from "../../domain/ros/ROSDomain";
@@ -23,6 +24,8 @@ const DataController: React.FC = (): React.ReactElement<any, any> | null => {
 
     const [mqttData, setMqttData] = useState(null);
     const [mqttClient, setMqttClient] = useState<MqttClient>();
+    const [rqtt, setRqtt] = useState<Rqtt>();
+    const [rqttC, setRqttC] = useState<mqtt.MqttClient>();
 
     const requestTopicFormat: string = "net/wavem/rms/rqtt/mtr";
     const requestHeartBeatTopic: string = `${requestTopicFormat}/heartbeat`;
@@ -118,13 +121,6 @@ const DataController: React.FC = (): React.ReactElement<any, any> | null => {
         });
     }
 
-    const setUpResponseMQTTConnections: Function = (mqttClient: MqttClient): void => {
-        console.info(`${requiredResponseTopicList}`);
-        for (const requiredTopic of requiredResponseTopicList) {
-            mqttClient.subscribe(requiredTopic);
-        }
-    }
-
     const httpLoadMQTTConfigRequest: Function = async (): Promise<void> => {
         try {
             const response: AxiosResponse<any, any> = await axios.post("/v1/api/mqtt/load/config");
@@ -142,42 +138,30 @@ const DataController: React.FC = (): React.ReactElement<any, any> | null => {
     useEffect(() => {
         if (mqttData) {
             console.info(`mqttData : ${JSON.stringify(mqttData)}`);
-            const _mqttClient: MqttClient = new MqttClient(mqttData);
-
-            _mqttClient.subscribe(responsePathTopic);
-            _mqttClient.subscribe(resposneGpsTopic);
-            _mqttClient.subscribe(resposneGpsFilteredTopic);
-            _mqttClient.subscribe(responseRouteStatusTopic);
-            _mqttClient.subscribe(responseOdomEularTopic);
-            _mqttClient.subscribe(responseHeartBeatTopic);
-            _mqttClient.subscribe(responseBatteryTopic);
-            _mqttClient.subscribe(responseURDFTopic);
-            _mqttClient.subscribe(responseCmdVelTopic);
-            _mqttClient.subscribe(responsePathFileSelectTopic);
-
-            handleResponseMQTTCallback(_mqttClient);
-            setUpResponseMQTTConnections(_mqttClient);
-            setMqttClient(_mqttClient);
+            const rqtt: Rqtt = new Rqtt();
+            setRqtt(rqtt);
+            const rqttC: mqtt.MqttClient = rqtt.initialize(mqttData);
+            setRqttC(rqttC);
         }
     }, [mqttData]);
 
     useEffect(() => {
-        if (mqttClient) {
+        if (rqtt && rqttC) {
             setInterval(() => {
                 const heartBeatJSON: any = {
                     "request_time": getCurrentTime()
                 };
-                mqttClient!.publish(requestHeartBeatTopic, JSON.stringify(heartBeatJSON));
+                rqtt.publish(rqttC, requestHeartBeatTopic, JSON.stringify(heartBeatJSON));
             }, 900);
 
             setTimeout(() => {
-                const isMqttConnected: boolean = mqttClient.isConnected();
+                const isMqttConnected: boolean = rqttC.connected;
                 if (!isMqttConnected) {
                     alert("MQTT 연결을 확인하세요.");
                 }
             }, 5000);
         }
-    }, [mqttClient]);
+    }, [rqtt, rqttC]);
 
     return (
         <Switch>
