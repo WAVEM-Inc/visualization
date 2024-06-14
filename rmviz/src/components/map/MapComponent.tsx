@@ -3,17 +3,16 @@ import React, { useEffect, useState } from "react";
 import ReactModal from "react-modal";
 import MqttClient from "../../api/mqttClient";
 import * as emergencyStopJSON from "../../assets/json/common/emergency_stop.json";
+import * as controlMoveToDestJSON from "../../assets/json/control_movetodest.json";
+import * as controlMsCancelJSON from "../../assets/json/control_mscancel.json";
+import * as controlMsCompleteNoReturnJSON from "../../assets/json/control_mscomplete_no_return.json";
+import * as controlMsCompleteReturnJSON from "../../assets/json/control_mscomplete_return.json";
+import * as missionDeliveryJSON from "../../assets/json/mission_delivering.json";
+import * as missionReturningJSON from "../../assets/json/mission_returning.json";
 import { MapState } from "../../domain/map/MapDomain";
 import { addDetectionRangePolygon, addPathMarker, addPathPolyline, changeMapCenter, initializeKECDBorderLine, initializeMap, initializeRobotMarker, recordNavigatedPathCircle, updateRobotMakerIcon } from "../../service/map/MapService";
 import { onClickMqttPublish } from "../../utils/Utils";
 import PathComponent from "../path/PathComponent";
-import * as missionDeliveryJSON from "../../assets/json/mission_delivering.json";
-import * as missionReturningJSON from "../../assets/json/mission_returning.json";
-import * as controlMoveToDestJSON from "../../assets/json/control_movetodest.json";
-import * as controlMsCompleteReturnJSON from "../../assets/json/control_mscomplete_return.json";
-import * as controlMsCompleteNoReturnJSON from "../../assets/json/control_mscomplete_no_return.json";
-import * as controlMsCancelJSON from "../../assets/json/control_mscancel.json";
-import * as controlGraphSyncJSON from "../../assets/json/control_graphsync.json";
 import "./MapComponent.css";
 
 interface MapComponentProps {
@@ -49,6 +48,8 @@ const MapComponent: React.FC<MapComponentProps> = ({
     });
     const [currentOdomEular, setCurrentOdomEular] = useState<number>();
     const [currentRouteStatus, setCurrentRouteStatus] = useState<any | null>(null);
+    const [currentCmdVel, setCurrentCmdVel] = useState<any>({});
+    const [cmdVelFlag, setCmdVelFlag] = useState<boolean>(false);
 
     const requestTopicFormat: string = "net/wavem/rms/rqtt/mtr";
     const requestEmergencyTopic: string = `${requestTopicFormat}/drive/can/emergency`;
@@ -281,6 +282,10 @@ const MapComponent: React.FC<MapComponentProps> = ({
                 if (currRobotMarker) {
                     if (state.gps.longitude !== 0.0 && state.gps.latitude !== 0.0) {
                         currRobotMarker!.setPosition(new google.maps.LatLng(state.gps.latitude, state.gps.longitude));
+
+                        if (currRobotMarker.getPosition() && isDriving) {
+                            changeMapCenter(googleMap, currRobotMarker.getPosition());
+                        }
                     } else return;
                 }
             }
@@ -329,18 +334,26 @@ const MapComponent: React.FC<MapComponentProps> = ({
         } else return;
     }, [state.path]);
 
-    const focusRouteStatus = (node_index: number, status: number): void => {
+    const focusRouteStatus = (node_index: number, status_code: number): void => {
         const pathInfoContainer: HTMLElement | null = document.getElementById("path_info_container");
         if (pathInfoContainer) {
             const pathInfoElements: HTMLCollectionOf<Element> = pathInfoContainer.getElementsByClassName("path_info");
             if (pathInfoElements.length > 0) {
-                switch (status) {
+                switch (status_code) {
                     case 0:
                         (pathInfoElements[node_index] as HTMLElement).style.backgroundColor = "lightblue";
                         (pathInfoElements[node_index] as HTMLElement).scrollIntoView({ behavior: "smooth", block: "center" });
                         break;
                     case 1:
                         (pathInfoElements[node_index] as HTMLElement).style.backgroundColor = "white";
+                        break;
+                    case 7:
+                        closePathSelectModal();
+                        googleMap?.setZoom(19);
+                        break;        
+                    default:
+                        (pathInfoElements[node_index] as HTMLElement).style.backgroundColor = "white";
+                        break;
                 }
             }
         }
@@ -351,8 +364,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
             console.info(`currentRouteStatus : ${JSON.stringify(state.routeStatus)}`);
 
             if (state.routeStatus.node_index === 0) {
-                closePathSelectModal();
-                googleMap?.setZoom(19);
                 changeMapCenter(googleMap, _pathMarkerArray[state.routeStatus.node_index].getPosition());
             }
 
@@ -368,10 +379,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
                 case 0:
                     status = "출발";
                     focusRouteStatus(state.routeStatus.node_index, state.routeStatus.status_code);
-
-                    if (state.routeStatus._node_index === 0) {
-                        setIsDriving(true);
-                    }
+                    setIsDriving(true);
                     break;
                 case 1:
                     status = "경유지 도착";
@@ -381,18 +389,25 @@ const MapComponent: React.FC<MapComponentProps> = ({
                     status = "주행이 완료되었습니다.";
                     alert(`${status}`);
                     setIsDriving(false);
-                    flushPath();
                     break;
                 case 3:
                     status = "주행 서버가 구동되지 않았습니다.";
                     alert(`${status}`);
                     break;
                 case 4:
-                    status = "주행 진행 중";
+                    status = "주행이 이미 진행 중입니다.";
+                    alert(`${status}`);
                     break;
                 case 5:
                     status = "주행이 취소되었습니다.";
                     alert(`${status}`);
+                    break;
+                case 6:
+                    status = "주행이 거부되었습니다. 목적지를 확인해주세요.";
+                    alert(`${status}`);
+                    break;
+                case 7:
+                    focusRouteStatus(state.routeStatus.node_index, state.routeStatus.status_code);
                     break;
                 default:
                     break;
@@ -414,14 +429,9 @@ const MapComponent: React.FC<MapComponentProps> = ({
 
     useEffect((): void => {
         if (state.cmdVel) {
-            if (currentGps) {
-                if (state.cmdVel.linear) {
-                    if (state.cmdVel.linear.x > 0.0) {
-                        if (isDriving) {
-                            const recordedPathCircle: google.maps.Circle = recordNavigatedPathCircle(googleMap, currentGps);
-                            _pathCircleArray.push(recordedPathCircle);
-                        }
-                    }
+            if (state.cmdVel.linear) {
+                if (state.cmdVel.linear.x > 0.0) {
+                    setCurrentCmdVel(state.cmdVel);
                 }
             }
         }
@@ -435,6 +445,31 @@ const MapComponent: React.FC<MapComponentProps> = ({
             initializeKECDBorderLine(googleMap);
         }
     }, [googleMap]);
+
+    useEffect(() => {
+        if (currentCmdVel) {
+            setCmdVelFlag(true);
+        }
+    }, [currentCmdVel]);
+
+    useEffect(() => {
+        let timer: any;
+        if (cmdVelFlag === true) {
+            timer = setInterval(() => {
+                if (currentCmdVel) {
+                    if (currentGps) {
+                        const recordedPathCircle: google.maps.Circle = recordNavigatedPathCircle(googleMap, currentGps);
+                        _pathCircleArray.push(recordedPathCircle);
+                    }
+                }
+            }, 5000);
+        }
+
+        return () => {
+            clearInterval(timer);
+            timer = () => { };
+        }
+    }, [cmdVelFlag]);
 
     useEffect(() => {
         const mapElement: HTMLElement | null = document.getElementById("map");
@@ -544,18 +579,18 @@ const MapComponent: React.FC<MapComponentProps> = ({
                             <div className="mission_list_container">
                                 <p className="mission_list_title">임무 목록</p>
                                 <ul id="task_list" className="mission_list">
-                                    <li className={"kec_btn_request"} onClick={() => {onTaskClick(missionDeliveryJSON);}}>배송 임무 할당</li>
-                                    <li className={"kec_btn_request"} onClick={() => {onTaskClick(missionReturningJSON);}}>복귀 임무 할당</li>
+                                    <li id="task_item" className={"mission_item"} onClick={() => { onTaskClick(missionDeliveryJSON); }}>1. 배송 임무 할당</li>
+                                    <li id="task_item" className={"mission_item"} onClick={() => { onTaskClick(missionReturningJSON); }}>2. 복귀 임무 할당</li>
                                 </ul>
                             </div>
                             <div className="control_list_container">
                                 <p className="control_list_title">제어 목록</p>
                                 <ul id="task_list" className="control_list">
-                                    <li className={"kec_btn_request"} onClick={() => {onTaskClick(controlMoveToDestJSON);}}>하차지 이동 제어</li>
-                                    <li className={"kec_btn_request"} onClick={() => {onTaskClick(controlMsCompleteReturnJSON);}}>대기 장소 복귀 제어</li>
-                                    <li className={"kec_btn_request"} onClick={() => {onTaskClick(controlMsCompleteNoReturnJSON);}}>대기 장소 미복귀 제어</li>
-                                    <li className={"kec_btn_request"} onClick={() => {onTaskClick(controlMsCancelJSON);}}>임무 취소 제어</li>
-                                    <li className={"kec_btn_request"} onClick={() => {onTaskClick(controlMsCancelJSON);}}>그래프 제어</li>
+                                    <li id="task_item" className={"control_item"} onClick={() => { onTaskClick(controlMoveToDestJSON); }}>1. 하차지 이동 제어</li>
+                                    <li id="task_item" className={"control_item"} onClick={() => { onTaskClick(controlMsCompleteReturnJSON); }}>2. 대기 장소 복귀 제어</li>
+                                    <li id="task_item" className={"control_item"} onClick={() => { onTaskClick(controlMsCompleteNoReturnJSON); }}>3. 대기 장소 미복귀 제어</li>
+                                    <li id="task_item" className={"control_item"} onClick={() => { onTaskClick(controlMsCancelJSON); }}>4. 임무 취소 제어</li>
+                                    <li id="task_item" className={"control_item"} onClick={() => { onTaskClick(controlMsCancelJSON); }}>5. 그래프 제어</li>
                                 </ul>
                             </div>
                         </div>
