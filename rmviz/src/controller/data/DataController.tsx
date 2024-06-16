@@ -1,12 +1,8 @@
 import axios, { AxiosResponse } from "axios";
-import mqtt, { IPublishPacket } from "mqtt/*";
-import React, { useEffect, useReducer, useState } from "react";
+import mqtt from "mqtt/*";
+import React, { useEffect, useState } from "react";
 import { Route, Switch } from "react-router-dom";
 import Rqtt from "../../api/application/rqtt";
-import MqttClient from "../../api/mqttClient";
-import { SET_CMD_VEL, SET_GPS, SET_GPS_FILTERED, SET_ODOM_EULAR, SET_PATH, SET_ROUTE_STATUS, initialMapState, mapStateReducer } from "../../domain/map/MapDomain";
-import { SET_URDF, initalROSState, rosStateReducer } from "../../domain/ros/ROSDomain";
-import { SET_BATTERY, SET_HEARTBEAT, initialTopState, topStateReducer } from "../../domain/top/TopDomain";
 import KECDashBoardPage from "../../page/kec/dashBoard/KECDashBoardPage";
 import KECDataBoardPage from "../../page/kec/databoard/KECDataBoardPage";
 import KECROSPage from "../../page/kec/ros/KECROSPage";
@@ -17,22 +13,11 @@ if (process.env.REACT_APP_API_BASE_URL) {
 }
 
 const DataController: React.FC = (): React.ReactElement<any, any> | null => {
-    const [topState, topStateDispatch] = useReducer(topStateReducer, initialTopState);
-    const [mapState, mapStateDistpatch] = useReducer(mapStateReducer, initialMapState);
-    const [rosState, rosStateDistpatch] = useReducer(rosStateReducer, initalROSState);
-    const [responseData, setResponseData] = useState<any>({});
-
     const [mqttData, setMqttData] = useState(null);
-    const [mqttClient, setMqttClient] = useState<MqttClient>();
     const [rqtt, setRqtt] = useState<Rqtt>();
     const [rqttC, setRqttC] = useState<mqtt.MqttClient>();
 
-    const requestTopicFormat: string = "net/wavem/rms/rqtt/mtr";
-    const requestHeartBeatTopic: string = `${requestTopicFormat}/heartbeat`;
-
     const responseTopicFormat: string = "net/wavem/rms/rqtt/rtm";
-    const responseCmdVelTopic: string = `${responseTopicFormat}/cmd_vel`;
-    const responsePathFileSelectTopic: string = `${responseTopicFormat}/path/select`;
 
     const requiredResponseTopicList: Array<string> = [
         `${responseTopicFormat}/status/rbt_status`,
@@ -55,10 +40,6 @@ const DataController: React.FC = (): React.ReactElement<any, any> | null => {
     }
 
     useEffect((): void => {
-        httpLoadMQTTConfigRequest();
-    }, []);
-
-    useEffect(() => {
         if (mqttData) {
             console.info(`mqttData : ${JSON.stringify(mqttData)}`);
             const rqtt: Rqtt = new Rqtt();
@@ -68,7 +49,10 @@ const DataController: React.FC = (): React.ReactElement<any, any> | null => {
         }
     }, [mqttData]);
 
-    useEffect(() => {
+    useEffect((): void => {
+        const requestTopicFormat: string = "net/wavem/rms/rqtt/mtr";
+        const requestHeartBeatTopic: string = `${requestTopicFormat}/heartbeat`;
+
         if (rqtt) {
             if (rqttC) {
                 setInterval(() => {
@@ -88,26 +72,28 @@ const DataController: React.FC = (): React.ReactElement<any, any> | null => {
         }
     }, [rqtt, rqttC]);
 
+    useEffect((): void => {
+        httpLoadMQTTConfigRequest();
+    }, []);
+
     return (
         <Switch>
             <Route exact path={"/kec/ros"}>
                 <KECROSPage
-                    mqttClient={mqttClient!}
-                    topState={topState}
-                    rosState={rosState}
+                    rqtt={rqtt!}
+                    rqttC={rqttC!}
                 />
             </Route>
             <Route exact path={"/kec/dashboard"}>
                 <KECDashBoardPage
                     rqtt={rqtt!}
                     rqttC={rqttC!}
-                    mapState={mapState}
                 />
             </Route>
             <Route exact path={"/kec/data"}>
                 <KECDataBoardPage
-                    topState={topState}
-                    responseData={responseData}
+                    rqtt={rqtt!}
+                    rqttC={rqttC!}
                 />
             </Route>
         </Switch>

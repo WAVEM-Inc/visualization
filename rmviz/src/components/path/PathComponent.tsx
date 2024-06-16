@@ -1,7 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import mqtt from "mqtt/*";
 import React, { useEffect, useRef, useState } from "react";
-import { MapState } from "../../domain/map/MapDomain";
 import { addDetectionRangePolygon, addPathMarker, addPathPolyline, changeMapCenter, initializeMap } from "../../service/map/MapService";
 import { onClickMqttPublish } from "../../utils/Utils";
 import "./PathComponent.css";
@@ -70,7 +69,7 @@ const PathComponent: React.FC<PathComponentProps> = ({
     const changePathSource: React.MouseEventHandler<HTMLButtonElement> = (): void => {
         console.info(`pL : ${JSON.stringify(pathList[pathListIndex])}`);
         const nodeList: Array<any> = pathList[pathListIndex].nodeList
-        // 출발지 변경 시 경로 업데이트
+
         if (pathProgress < nodeList.length - 1) {
             setPathProgress(pathProgress + 1);
             const updatedPathList: any = nodeList.filter((it, idx) => idx > pathProgress);

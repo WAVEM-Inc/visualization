@@ -1,10 +1,7 @@
 import { Wrapper } from "@googlemaps/react-wrapper";
 import React, { useEffect, useState } from "react";
-import MqttClient from "../../../api/mqttClient";
 import MapComponent from "../../../components/map/MapComponent";
 import TopComponent from "../../../components/top/TopComponent";
-import { MapState } from "../../../domain/map/MapDomain";
-import { TopState } from "../../../domain/top/TopDomain";
 import "./KECDashBoardPage.css";
 import mqtt from "mqtt/*";
 import Rqtt from "../../../api/application/rqtt";
@@ -12,13 +9,11 @@ import Rqtt from "../../../api/application/rqtt";
 interface KECDashBoardPageProps {
     rqtt: Rqtt;
     rqttC: mqtt.MqttClient;
-    mapState: MapState;
 }
 
 const KECDashBoardPage: React.FC<KECDashBoardPageProps> = ({
     rqtt,
-    rqttC,
-    mapState
+    rqttC
 }: KECDashBoardPageProps): React.ReactElement<any, any> | null => {
 
     return (

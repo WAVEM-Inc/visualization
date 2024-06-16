@@ -9,7 +9,6 @@ import * as controlMsCompleteNoReturnJSON from "../../assets/json/control_mscomp
 import * as controlMsCompleteReturnJSON from "../../assets/json/control_mscomplete_return.json";
 import * as missionDeliveryJSON from "../../assets/json/mission_delivering.json";
 import * as missionReturningJSON from "../../assets/json/mission_returning.json";
-import { MapState } from "../../domain/map/MapDomain";
 import { addDetectionRangePolygon, addPathMarker, addPathPolyline, changeMapCenter, initializeKECDBorderLine, initializeMap, initializeRobotMarker, recordNavigatedPathCircle, updateRobotMakerIcon } from "../../service/map/MapService";
 import { onClickMqttPublish } from "../../utils/Utils";
 import PathComponent from "../path/PathComponent";
@@ -202,7 +201,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
         }
     }
 
-    const flushPath = (): void => {
+    const flushPath: Function = (): void => {
         _pathMarkerArray.forEach(marker => marker.setMap(null));
         pathMarkerArray = [];
         setPathMarkerArray(pathMarkerArray);
@@ -474,14 +473,14 @@ const MapComponent: React.FC<MapComponentProps> = ({
         }
     }, [googleMap]);
 
-    useEffect(() => {
+    useEffect((): void => {
         if (currentCmdVel) {
             setCmdVelFlag(true);
         }
     }, [currentCmdVel]);
 
-    useEffect(() => {
-        let timer: any;
+    useEffect((): () => void => {
+        let timer: NodeJS.Timer | null = null;
         if (cmdVelFlag === true) {
             timer = setInterval(() => {
                 if (currentCmdVel) {
@@ -493,13 +492,15 @@ const MapComponent: React.FC<MapComponentProps> = ({
             }, 5000);
         }
 
-        return () => {
-            clearInterval(timer);
-            timer = () => { };
+        return (): void => {
+            if (timer) {
+                clearInterval(timer);
+            }
+            timer = null;
         }
     }, [cmdVelFlag]);
 
-    useEffect(() => {
+    useEffect((): void => {
         if (rqtt) {
             if (rqttC) {
                 const pathTopic: string = `${RTM_TOPIC_FORMAT}/route/path`;
@@ -525,7 +526,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
         }
     }, [rqtt, rqttC]);
 
-    useEffect(() => {
+    useEffect((): () => void => {
         const mapElement: HTMLElement | null = document.getElementById("map");
 
         if (mapElement) {
@@ -536,7 +537,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
         }
         localStorage.setItem("isEnableToCommandRoute?", "false");
 
-        return (() => {
+        return ((): void => {
             if (googleMap) {
                 flushPath();
                 googleMap.unbindAll();

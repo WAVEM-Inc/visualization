@@ -70,7 +70,7 @@ export default class RouteService {
 
             let iniData: any;
             try {
-                iniData = ini.parse(fs.readFileSync(mapConfigPath, 'utf-8'));
+                iniData = ini.parse(fs.readFileSync(mapConfigPath, "utf-8"));
             } catch (error) {
                 this._node.getLogger().error(`Failed to read config file: ${error}`);
                 return;
@@ -83,10 +83,10 @@ export default class RouteService {
             this._node.getLogger().info(`Map Path: ${mapFileFullPath}`);
 
             try {
-                const fileContent = fs.readFileSync(mapFileFullPath, "utf-8");
-                const pathData: any = JSON.parse(fileContent);
+                const mapFileContent: string = fs.readFileSync(mapFileFullPath, "utf-8");
+                const mapData: any = JSON.parse(mapFileContent);
 
-                return pathData;
+                return mapData;
             } catch (error) {
                 this._node.getLogger().error(`Failed to read map file: ${error}`);
                 return;
