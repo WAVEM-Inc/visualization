@@ -1,20 +1,24 @@
 import axios, { AxiosResponse } from "axios";
+import mqtt from "mqtt/*";
 import React, { useEffect, useRef, useState } from "react";
-import MqttClient from "../../api/mqttClient";
 import { MapState } from "../../domain/map/MapDomain";
 import { addDetectionRangePolygon, addPathMarker, addPathPolyline, changeMapCenter, initializeMap } from "../../service/map/MapService";
 import { onClickMqttPublish } from "../../utils/Utils";
 import "./PathComponent.css";
+import Rqtt from "../../api/application/rqtt";
+import { RTM_TOPIC_FORMAT } from "../../api/domain/common.constants";
 
 interface PathComponentProps {
-    mqttClient: MqttClient;
-    state: MapState;
+    rqtt: Rqtt,
+    rqttC: mqtt.MqttClient;
 }
 
 const PathComponent: React.FC<PathComponentProps> = ({
-    mqttClient,
-    state
+    rqtt,
+    rqttC
 }: PathComponentProps) => {
+    const [path, setPath] = useState<any | null>(null);
+
     const [pathResponse, setPathResponse] = useState<any | null>(null);
     const [googleMap, setGoogleMap] = useState<google.maps.Map>();
     const kecCoord: google.maps.LatLng = new google.maps.LatLng(36.11434, 128.3690);
@@ -51,16 +55,16 @@ const PathComponent: React.FC<PathComponentProps> = ({
 
     const requestPathView: Function = (pathJSON: any): void => {
         const pathJSONBuilt: any = buildPathJSON(pathJSON, false);
-        onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, pathJSONBuilt);
+        onClickMqttPublish(rqtt, rqttC, requestRouteToPoseTopic, pathJSONBuilt);
     }
 
     const requestPathCommand: Function = (pathJSON: any): void => {
         const pathJSONBuilt: any = buildPathJSON(pathJSON, true);
-        onClickMqttPublish(mqttClient!, requestRouteToPoseTopic, pathJSONBuilt);
+        onClickMqttPublish(rqtt, rqttC, requestRouteToPoseTopic, pathJSONBuilt);
     }
 
     const requestRenewPath: React.MouseEventHandler<HTMLButtonElement> = (): void => {
-        onClickMqttPublish(mqttClient!, requestPathRenewTopic, {});
+        onClickMqttPublish(rqtt, rqttC, requestPathRenewTopic, {});
     }
 
     const changePathSource: React.MouseEventHandler<HTMLButtonElement> = (): void => {
@@ -102,8 +106,8 @@ const PathComponent: React.FC<PathComponentProps> = ({
     }
 
     const drawPathMarker: Function = (): void => {
-        if (state.path || pathResponse) {
-            const nodeList: Array<any> = Array.from(state.path);
+        if (path || pathResponse) {
+            const nodeList: Array<any> = Array.from(path);
 
             const uniqueNodeIds: Set<string> = new Set<string>();
             for (const node of nodeList) {
@@ -199,6 +203,10 @@ const PathComponent: React.FC<PathComponentProps> = ({
         }
     }
 
+    const pathCallback: (message: any) => void = (message: any): void => {
+        setPath(message);
+    }
+
     useEffect(() => {
         if (pathResponse) {
             if (pathResponse.paths) {
@@ -234,15 +242,15 @@ const PathComponent: React.FC<PathComponentProps> = ({
                 }
             }
 
-            if (state.path) {
+            if (path) {
                 flushPath();
                 drawPathMarker();
 
-                setDetectionRagnePolygon(addDetectionRangePolygon(googleMap, Array.from(state.path)));
+                setDetectionRagnePolygon(addDetectionRangePolygon(googleMap, Array.from(path)));
                 setPathPolyLine(addPathPolyline(googleMap, pathMarkerArray, pathInfoWindowarray));
             }
         }
-    }, [pathResponse, state.path]);
+    }, [pathResponse, path]);
 
     useEffect(() => {
         if (pathListIndex) {
@@ -334,7 +342,7 @@ const PathComponent: React.FC<PathComponentProps> = ({
                 alert("출발지와 목적지가 동일합니다.");
                 setPathProgress(pathProgress - 1);
             } else {
-                const nodeList: Array<any> = Array.from(state.path);
+                const nodeList: Array<any> = Array.from(path);
                 setPathSource(nodeList[pathProgress]);
                 const pathProgressMarkerInfoElements: NodeListOf<HTMLElement> | null = document.querySelectorAll(".path_progress_marker_info");
 
@@ -357,11 +365,21 @@ const PathComponent: React.FC<PathComponentProps> = ({
                 alert("목적지와 출발지가 동일합니다.");
                 setPathGoalIndex(pathGoalIndex + 1);
             } else {
-                const nodeList: Array<any> = Array.from(state.path);
+                const nodeList: Array<any> = Array.from(path);
                 setPathGoal(nodeList[pathGoalIndex]);
             }
         }
     }, [pathGoalIndex]);
+
+    useEffect(() => {
+        if (rqtt) {
+            if (rqttC) {
+                const pathTopic: string = `${RTM_TOPIC_FORMAT}/route/path`;
+                rqtt.subscribe(rqttC, pathTopic);
+                rqtt.addSubscriptionCallback(rqttC, pathTopic, pathCallback);
+            }
+        }
+    }, [rqtt, rqttC]);
 
     useEffect(() => {
         const mapElement: HTMLElement | null = document.getElementById("path_map");

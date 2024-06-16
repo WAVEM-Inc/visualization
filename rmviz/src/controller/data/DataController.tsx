@@ -31,14 +31,6 @@ const DataController: React.FC = (): React.ReactElement<any, any> | null => {
     const requestHeartBeatTopic: string = `${requestTopicFormat}/heartbeat`;
 
     const responseTopicFormat: string = "net/wavem/rms/rqtt/rtm";
-    const responsePathTopic: string = `${responseTopicFormat}/route/path`;
-    const resposneGpsTopic: string = `${responseTopicFormat}/sensor/ublox/fix`;
-    const resposneGpsFilteredTopic: string = `${responseTopicFormat}/gps/filtered`;
-    const responseRouteStatusTopic: string = `${responseTopicFormat}/route/status`;
-    const responseOdomEularTopic: string = `${responseTopicFormat}/drive/odom/eular`;
-    const responseHeartBeatTopic: string = `${responseTopicFormat}/heartbeat`;
-    const responseBatteryTopic: string = `${responseTopicFormat}/sensor/battery/state`;
-    const responseURDFTopic: string = `${responseTopicFormat}/urdf`;
     const responseCmdVelTopic: string = `${responseTopicFormat}/cmd_vel`;
     const responsePathFileSelectTopic: string = `${responseTopicFormat}/path/select`;
 
@@ -51,75 +43,6 @@ const DataController: React.FC = (): React.ReactElement<any, any> | null => {
         `${responseTopicFormat}/obstacle_detect`,
         `${responseTopicFormat}/lidar_signal`
     ];
-
-    const handleResponseMQTTCallback: Function = (mqttClient: MqttClient): void => {
-        mqttClient.client.on("message", (topic: string, payload: Buffer, packet: IPublishPacket) => {
-            const message: any = JSON.parse(payload.toString());
-            if (topic === responsePathTopic || topic === responsePathFileSelectTopic) {
-                mapStateDistpatch({ type: SET_PATH, payload: message });
-            } else if (topic === resposneGpsTopic) {
-                mapStateDistpatch({ type: SET_GPS, payload: message });
-            } else if (topic === resposneGpsFilteredTopic) {
-                mapStateDistpatch({ type: SET_GPS_FILTERED, payload: message });
-            } else if (topic === responseRouteStatusTopic) {
-                mapStateDistpatch({ type: SET_ROUTE_STATUS, payload: message });
-            } else if (topic === responseOdomEularTopic) {
-                mapStateDistpatch({ type: SET_ODOM_EULAR, payload: message });
-            } else if (topic === responseCmdVelTopic) {
-                mapStateDistpatch({ type: SET_CMD_VEL, payload: message });
-            } else if (topic === responseHeartBeatTopic) {
-                topStateDispatch({ type: SET_HEARTBEAT, payload: message });
-            } else if (topic === responseBatteryTopic) {
-                topStateDispatch({ type: SET_BATTERY, payload: message });
-            } else if (topic === responseURDFTopic) {
-                rosStateDistpatch({ type: SET_URDF, payload: payload.toString() });
-            } else if (topic === requiredResponseTopicList[0]) {
-                const newData: any = JSON.parse(payload.toString());
-                setResponseData((prevData: any) => ({
-                    ...prevData,
-                    rbt_status: newData
-                }));
-            } else if (topic === requiredResponseTopicList[1]) {
-                const newData: any = JSON.parse(payload.toString());
-                setResponseData((prevData: any) => ({
-                    ...prevData,
-                    service_status: newData
-                }));
-            } else if (topic === requiredResponseTopicList[2]) {
-                const newData: any = JSON.parse(payload.toString());
-                setResponseData((prevData: any) => ({
-                    ...prevData,
-                    error_report: newData
-                }));
-            } else if (topic === requiredResponseTopicList[3]) {
-                const newData: any = JSON.parse(payload.toString());
-                setResponseData((prevData: any) => ({
-                    ...prevData,
-                    control_report: newData
-                }));
-            } else if (topic === requiredResponseTopicList[4]) {
-                const newData: any = JSON.parse(payload.toString());
-                setResponseData((prevData: any) => ({
-                    ...prevData,
-                    graph_list: newData
-                }));
-            } else if (topic === requiredResponseTopicList[5]) {
-                const newData: any = JSON.parse(payload.toString());
-                setResponseData((prevData: any) => ({
-                    ...prevData,
-                    obstacle_detect: newData
-                }));
-            } else if (topic === requiredResponseTopicList[6]) {
-                const newData: any = JSON.parse(payload.toString());
-                setResponseData((prevData: any) => ({
-                    ...prevData,
-                    lidar_signal: newData
-                }));
-            } else {
-                return;
-            }
-        });
-    }
 
     const httpLoadMQTTConfigRequest: Function = async (): Promise<void> => {
         try {
@@ -146,20 +69,22 @@ const DataController: React.FC = (): React.ReactElement<any, any> | null => {
     }, [mqttData]);
 
     useEffect(() => {
-        if (rqtt && rqttC) {
-            setInterval(() => {
-                const heartBeatJSON: any = {
-                    "request_time": getCurrentTime()
-                };
-                rqtt.publish(rqttC, requestHeartBeatTopic, JSON.stringify(heartBeatJSON));
-            }, 900);
+        if (rqtt) {
+            if (rqttC) {
+                setInterval(() => {
+                    const heartBeatJSON: any = {
+                        "request_time": getCurrentTime()
+                    };
+                    rqtt.publish(rqttC, requestHeartBeatTopic, JSON.stringify(heartBeatJSON));
+                }, 900);
 
-            setTimeout(() => {
-                const isMqttConnected: boolean = rqttC.connected;
-                if (!isMqttConnected) {
-                    alert("MQTT 연결을 확인하세요.");
-                }
-            }, 5000);
+                setTimeout(() => {
+                    const isMqttConnected: boolean = rqttC.connected;
+                    if (!isMqttConnected) {
+                        alert("MQTT 연결을 확인하세요.");
+                    }
+                }, 5000);
+            }
         }
     }, [rqtt, rqttC]);
 
@@ -174,8 +99,8 @@ const DataController: React.FC = (): React.ReactElement<any, any> | null => {
             </Route>
             <Route exact path={"/kec/dashboard"}>
                 <KECDashBoardPage
-                    mqttClient={mqttClient!}
-                    topState={topState}
+                    rqtt={rqtt!}
+                    rqttC={rqttC!}
                     mapState={mapState}
                 />
             </Route>

@@ -1,4 +1,6 @@
+import mqtt from "mqtt/*";
 import MqttClient from "../api/mqttClient";
+import Rqtt from "../api/application/rqtt";
 
 export const KTP_DEV_ID: string = "KECDSEMITB001";
 
@@ -16,15 +18,15 @@ export function getCurrentTime(): string {
     return currentTime;
 }
 
-export const filterJSON = (json: any): any => {
+export const filterJSON: Function = (json: any): any => {
     const { default: removedDefault, ...newData } = json;
 
     return newData;
 }
 
-export const onClickMqttPublish = (mqttClient: MqttClient, topic: string, json: any): void => {
+export const onClickMqttPublish: Function = (rqtt: Rqtt, rqttC: mqtt.MqttClient, topic: string, json: any): void => {
     const filteredJSON: any = filterJSON(json);
     const stringifiedJSON: string = JSON.stringify(filteredJSON);
     console.info(`${topic} publish with : ${stringifiedJSON}`);
-    mqttClient!.publish(topic, stringifiedJSON);
+    rqtt.publish(rqttC, topic, stringifiedJSON);
 }

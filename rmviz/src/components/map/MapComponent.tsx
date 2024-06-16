@@ -1,7 +1,7 @@
 import { Wrapper } from "@googlemaps/react-wrapper";
+import mqtt from "mqtt/*";
 import React, { useEffect, useState } from "react";
 import ReactModal from "react-modal";
-import MqttClient from "../../api/mqttClient";
 import * as emergencyStopJSON from "../../assets/json/common/emergency_stop.json";
 import * as controlMoveToDestJSON from "../../assets/json/control_movetodest.json";
 import * as controlMsCancelJSON from "../../assets/json/control_mscancel.json";
@@ -14,16 +14,24 @@ import { addDetectionRangePolygon, addPathMarker, addPathPolyline, changeMapCent
 import { onClickMqttPublish } from "../../utils/Utils";
 import PathComponent from "../path/PathComponent";
 import "./MapComponent.css";
+import Rqtt from "../../api/application/rqtt";
+import { RTM_TOPIC_FORMAT } from "../../api/domain/common.constants";
 
 interface MapComponentProps {
-    mqttClient: MqttClient;
-    state: MapState;
+    rqtt: Rqtt,
+    rqttC: mqtt.MqttClient;
 }
 
 const MapComponent: React.FC<MapComponentProps> = ({
-    mqttClient,
-    state
+    rqtt,
+    rqttC
 }: MapComponentProps) => {
+    const [path, setPath] = useState<any | null>(null);
+    const [routeStatus, setRouteStatus] = useState<any | null>(null);
+    const [gps, setGps] = useState<any | null>(null);
+    const [odomEular, setOdomEular] = useState<any | null>(null);
+    const [cmdVel, setCmdVel] = useState<any | null>(null);
+
     const [googleMap, setGoogleMap] = useState<google.maps.Map>();
     const [isDriving, setIsDriving] = useState<boolean>(false);
     const [pathInfoContainer, setPathInfoContainer] = useState<HTMLElement | null>(null);
@@ -59,8 +67,8 @@ const MapComponent: React.FC<MapComponentProps> = ({
     const requestTaskTopic: string = `${requestTopicFormat}/task`;
 
     const drawPathMarker: Function = (): void => {
-        if (state.path) {
-            const nodeList: Array<any> = Array.from(state.path);
+        if (path) {
+            const nodeList: Array<any> = Array.from(path);
 
             const uniqueNodeIds: Set<string> = new Set<string>();
             for (const node of nodeList) {
@@ -239,7 +247,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
     }
 
     const onPathSelectClick = (): void => {
-        mqttClient.publish(requestPathSelectTopic, JSON.stringify({}));
+        rqtt.publish(rqttC, requestPathSelectTopic, JSON.stringify({}));
         openPathSelectModal();
     }
 
@@ -248,40 +256,60 @@ const MapComponent: React.FC<MapComponentProps> = ({
     }
 
     const onPathRenewClick = (): void => {
-        onClickMqttPublish(mqttClient!, requestPathRenewTopic, {});
+        onClickMqttPublish(rqtt, rqttC, requestPathRenewTopic, {});
     }
 
     const onEmergencyStopClick = (): void => {
-        onClickMqttPublish(mqttClient!, requestEmergencyTopic, emergencyStopJSON);
+        onClickMqttPublish(rqtt, rqttC, requestEmergencyTopic, emergencyStopJSON);
     }
 
     const onGoalCancelClick = (): void => {
-        onClickMqttPublish(mqttClient!, requestGoalCancelTopic, {
+        onClickMqttPublish(rqtt, rqttC, requestGoalCancelTopic, {
             "cancel": true
         });
-        state.path = null;
-        state.routeStatus = null;
+        setPath(null);
+        setRouteStatus(null);
         flushPath();
     }
 
     const onTaskClick = (taskJSON: any): void => {
-        onClickMqttPublish(mqttClient!, requestTaskTopic, taskJSON);
+        onClickMqttPublish(rqtt, rqttC, requestTaskTopic, taskJSON);
+    }
+
+    const pathCallback: (message: any) => void = (message: any): void => {
+        setPath(message);
+    }
+
+    const routeStatusCallback: (message: any) => void = (message: any): void => {
+        setRouteStatus(message);
+    }
+
+    const gpsCallback: (message: any) => void = (message: any): void => {
+        setGps(message);
+    }
+
+    const odomEularCallback: (message: any) => void = (message: any): void => {
+        setOdomEular(message);
+    }
+
+    const cmdVelCallback: (message: any) => void = (message: any): void => {
+        setCmdVel(message);
     }
 
     useEffect((): void => {
-        if (state.gps) {
-            if (!isNaN(state.gps.latitude) && !isNaN(state.gps.longitude)) {
-                const gpsStatus: any | undefined = state.gps.status;
+        if (gps) {
+            if (!isNaN(gps.latitude) && !isNaN(gps.longitude)) {
+                const gpsStatus: any | undefined = gps.status;
                 setCurrentGps({
                     status: gpsStatus?.status,
                     service: gpsStatus?.service,
-                    longitude: parseFloat(state.gps.longitude?.toFixed(7)),
-                    latitude: parseFloat(state.gps.latitude?.toFixed(7))
+                    longitude: parseFloat(gps.longitude?.toFixed(7)),
+                    latitude: parseFloat(gps.latitude?.toFixed(7))
                 });
 
                 if (currRobotMarker) {
-                    if (state.gps.longitude !== 0.0 && state.gps.latitude !== 0.0) {
-                        currRobotMarker!.setPosition(new google.maps.LatLng(state.gps.latitude, state.gps.longitude));
+                    if (gps.longitude !== 0.0 && gps.latitude !== 0.0) {
+                        currRobotMarker!.setPosition(new google.maps.LatLng(gps.latitude, gps.longitude));
 
                         if (currRobotMarker.getPosition() && isDriving) {
                             changeMapCenter(googleMap, currRobotMarker.getPosition());
@@ -290,11 +318,11 @@ const MapComponent: React.FC<MapComponentProps> = ({
                 }
             }
         }
-    }, [state.gps]);
+    }, [gps]);
 
     useEffect((): void => {
-        if (state.odomEular) {
-            const poseOrientation: any | undefined = state.odomEular.pose?.orientation;
+        if (odomEular) {
+            const poseOrientation: any | undefined = odomEular.pose?.orientation;
             setCurrentOdomEular(parseFloat(poseOrientation?.y.toFixed(2)) | 0.0);
         }
 
@@ -305,12 +333,12 @@ const MapComponent: React.FC<MapComponentProps> = ({
                 updateRobotMakerIcon(currRobotMarker, angle);
             }
         }
-    }, [state.odomEular]);
+    }, [odomEular]);
 
     useEffect((): void => {
         if (googleMap) {
-            if (state.path) {
-                console.info(`state.path : ${JSON.stringify(state.path)}`);
+            if (path) {
+                console.info(`state.path : ${JSON.stringify(path)}`);
 
                 if (pathInfoDiv) {
                     if (pathInfoContainer) {
@@ -324,7 +352,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
                 flushPath();
                 drawPathMarker();
 
-                setDetectionRagnePolygon(addDetectionRangePolygon(googleMap, Array.from(state.path)));
+                setDetectionRagnePolygon(addDetectionRangePolygon(googleMap, Array.from(path)));
                 setPathPolyLine(addPathPolyline(googleMap, pathMarkerArray, pathInfoWindowarray));
 
                 if (currRobotMarker) {
@@ -332,7 +360,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
                 }
             }
         } else return;
-    }, [state.path]);
+    }, [path]);
 
     const focusRouteStatus = (node_index: number, status_code: number): void => {
         const pathInfoContainer: HTMLElement | null = document.getElementById("path_info_container");
@@ -360,30 +388,30 @@ const MapComponent: React.FC<MapComponentProps> = ({
     }
 
     useEffect((): void => {
-        if (state.routeStatus) {
-            console.info(`currentRouteStatus : ${JSON.stringify(state.routeStatus)}`);
+        if (routeStatus) {
+            console.info(`currentRouteStatus : ${JSON.stringify(routeStatus)}`);
 
-            if (state.routeStatus.node_index === 0) {
-                changeMapCenter(googleMap, _pathMarkerArray[state.routeStatus.node_index].getPosition());
+            if (routeStatus.node_index === 0) {
+                changeMapCenter(googleMap, _pathMarkerArray[routeStatus.node_index].getPosition());
             }
 
             let driving_flag: boolean = false;
-            if (state.routeStatus.is_driving) {
+            if (routeStatus.is_driving) {
                 driving_flag = true;
             } else {
                 driving_flag = false;
             }
 
             let status: string = "";
-            switch (state.routeStatus.status_code) {
+            switch (routeStatus.status_code) {
                 case 0:
                     status = "출발";
-                    focusRouteStatus(state.routeStatus.node_index, state.routeStatus.status_code);
+                    focusRouteStatus(routeStatus.node_index, routeStatus.status_code);
                     setIsDriving(true);
                     break;
                 case 1:
                     status = "경유지 도착";
-                    focusRouteStatus(state.routeStatus.node_index, state.routeStatus.status_code);
+                    focusRouteStatus(routeStatus.node_index, routeStatus.status_code);
                     break;
                 case 2:
                     status = "주행이 완료되었습니다.";
@@ -407,13 +435,13 @@ const MapComponent: React.FC<MapComponentProps> = ({
                     alert(`${status}`);
                     break;
                 case 7:
-                    focusRouteStatus(state.routeStatus.node_index, state.routeStatus.status_code);
+                    focusRouteStatus(routeStatus.node_index, routeStatus.status_code);
                     break;
                 default:
                     break;
             }
 
-            const node_info: any = state.routeStatus.node_info;
+            const node_info: any = routeStatus.node_info;
 
             if (node_info) {
                 const currRouteStatus: any = {
@@ -425,17 +453,17 @@ const MapComponent: React.FC<MapComponentProps> = ({
                 setCurrentRouteStatus(currRouteStatus);
             }
         }
-    }, [state.routeStatus]);
+    }, [routeStatus]);
 
     useEffect((): void => {
-        if (state.cmdVel) {
-            if (state.cmdVel.linear) {
-                if (state.cmdVel.linear.x > 0.0) {
-                    setCurrentCmdVel(state.cmdVel);
+        if (cmdVel) {
+            if (cmdVel.linear) {
+                if (cmdVel.linear.x > 0.0) {
+                    setCurrentCmdVel(cmdVel);
                 }
             }
         }
-    }, [state.cmdVel]);
+    }, [cmdVel]);
 
     useEffect((): void => {
         if (googleMap) {
@@ -470,6 +498,32 @@ const MapComponent: React.FC<MapComponentProps> = ({
             timer = () => { };
         }
     }, [cmdVelFlag]);
+
+    useEffect(() => {
+        if (rqtt) {
+            if (rqttC) {
+                const pathTopic: string = `${RTM_TOPIC_FORMAT}/route/path`;
+                rqtt.subscribe(rqttC, pathTopic);
+                rqtt.addSubscriptionCallback(rqttC, pathTopic, pathCallback);
+
+                const routeStatusTopic: string = `${RTM_TOPIC_FORMAT}/route/status`;
+                rqtt.subscribe(rqttC, routeStatusTopic);
+                rqtt.addSubscriptionCallback(rqttC, routeStatusTopic, routeStatusCallback);
+
+                const gpsTopic: string = `${RTM_TOPIC_FORMAT}/sensor/ublox/fix`;
+                rqtt.subscribe(rqttC, gpsTopic);
+                rqtt.addSubscriptionCallback(rqttC, gpsTopic, gpsCallback);
+
+                const odomEularTopic: string = `${RTM_TOPIC_FORMAT}/drive/odom/eular`;
+                rqtt.subscribe(rqttC, odomEularTopic);
+                rqtt.addSubscriptionCallback(rqttC, odomEularTopic, odomEularCallback);
+
+                const cmdVelTopic: string = `${RTM_TOPIC_FORMAT}/cmd_vel`;
+                rqtt.subscribe(rqttC, cmdVelTopic);
+                rqtt.addSubscriptionCallback(rqttC, cmdVelTopic, cmdVelCallback);
+            }
+        }
+    }, [rqtt, rqttC]);
 
     useEffect(() => {
         const mapElement: HTMLElement | null = document.getElementById("map");
@@ -555,8 +609,8 @@ const MapComponent: React.FC<MapComponentProps> = ({
                         </div>
                         <Wrapper apiKey={`${process.env.GOOGLE_MAP_API_KEY}`}>
                             <PathComponent
-                                mqttClient={mqttClient!}
-                                state={state}
+                                rqtt={rqtt}
+                                rqttC={rqttC}
                             />
                         </Wrapper>
                     </div>

@@ -16,7 +16,7 @@ const KECDataBoardPage: React.FC<KECDataBoardPageProps> = ({
 
     return (
         <div className="data_board_container">
-            <div className="top_component_container">
+            {/* <div className="top_component_container">
                 <TopComponent 
                     state={topState}
                 />
@@ -24,7 +24,7 @@ const KECDataBoardPage: React.FC<KECDataBoardPageProps> = ({
             <div className="response_component_container">
                 <KECResponseComponent
                     responseData={responseData} />
-            </div>
+            </div> */}
         </div>
     );
 };

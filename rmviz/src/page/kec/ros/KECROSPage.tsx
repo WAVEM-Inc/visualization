@@ -27,11 +27,11 @@ const KECROSPage: React.FC<KECROSPageProps> = ({
 
     return (
         <div className="path_search_container">
-            <div className="top_component_container">
+            {/* <div className="top_component_container">
                 <TopComponent
                     state={topState}
                  />
-            </div>
+            </div> */}
             <div className="ros_component_container">
                 <ROSComponent
                     state={rosState}
