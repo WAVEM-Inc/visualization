@@ -175,7 +175,7 @@ allow_anonymous true
 
 ### 3-2-2. Build 
 ```bash
-cd ~/kec_ws/src/service/rmviz/rmserver/
+cd ~/kec_ws/src/service/rmviz/
 npm run build
 ```
 
@@ -184,8 +184,9 @@ npm run build
 # Check ./.bashrc alias
 vi ./.bashrc
 
-alias rmviz="cd ~/kec_ws/src/service/rmviz/rmserver/ && npm run launch"
+alias rmviz="cd ~/kec_ws/src/service/rmviz/ && npm run launch"
 
 # Launch
+source ./.bashrc
 rmviz
 ```
