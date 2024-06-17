@@ -96,6 +96,14 @@ export default class RouteService {
         }
     }
 
+    private renewMap(): void {
+        try {
+            this._pathMap = this.loadMap();
+        } catch (error: any) {
+            this._node.getLogger().error(`Failed to renew map file: ${error}`);
+        }
+    }
+
     public routeToPoseCallback(message: any): void {
         this._node.getLogger().info(`${ROUTE_TO_POSE_ACTION} message : ${JSON.stringify(message)}`);
 
@@ -321,7 +329,7 @@ export default class RouteService {
 
     public pathRenewCallback(message: any): void {
         try {
-            this.loadMap();
+            this.renewMap();
             this._node.getLogger().info("=============================== Path Renewed ===============================");
         } catch (error: any) {
             this._node.getLogger().error(`${PATH_RENEW_TOPIC} : ${error.message}`);

@@ -27,7 +27,7 @@ app.use(cors());
 app.use(`${DEFAULT_API_FORMAT}`, APIRouter);
 app.use(`${DEFAULT_API_FORMAT}/path`, PathRouter);
 
-const rmvizBuildPath: string = path.join(__dirname, "../../../rmviz/build");
+const rmvizBuildPath: string = path.join(__dirname, "../../../../rmviz/build");
 console.log(`[rmserver_http] [INFO] dirname : ${__dirname}, client_path : ${rmvizBuildPath}`);
 app.use(express.static(rmvizBuildPath));
 

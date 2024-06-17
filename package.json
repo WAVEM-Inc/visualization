@@ -1,0 +1,16 @@
+{
+  "name": "rmviz",
+  "version": "1.1.0",
+  "description": "",
+  "scripts": {
+    "server_build": "concurrently \"cd ./rmserver/http && npm run build\" \"cd ./rmserver/rqtt && npm run build\"",
+    "client_build": "cd ./rmviz && npm run build",
+    "build": "sudo chmod +x ./script/build.sh && ./script/build.sh",
+    "launch": "concurrently \"cd ./rmserver/http && npm run start\" \"cd ./rmserver/rqtt && npm run start\""
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

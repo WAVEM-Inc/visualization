@@ -21,6 +21,7 @@ export default class Rqtt {
         const homeDir: string = os.homedir();
         const mqttConfigFilePath: string = path.join(homeDir, configFilePathsJSON.mqtt_config_file_path);
         const mqttConfigData: any = JSON.parse(await util.promisify(fs.readFile)(mqttConfigFilePath, "utf8"));
+        this._logger.info(`${LOG_MQTT_TAG} mqttConfigData: ${JSON.stringify(mqttConfigData)}`);
         return mqttConfigData;
     }
 
@@ -31,6 +32,8 @@ export default class Rqtt {
         const type: string = this._mqttConnectionInfo.type === "websockets" ? "ws" : "mqtt";
         const brokerURL: string = `${type}://${this._mqttConnectionInfo.host}:${this._mqttConnectionInfo.port}${this._mqttConnectionInfo.path}`;
         this._client = mqtt.connect(brokerURL);
+
+        this._logger.info(`${LOG_MQTT_TAG} initialized`);
 
         return new Promise<mqtt.MqttClient>((resolve, reject): void => {
             this._client?.on("connect", (): void => {
