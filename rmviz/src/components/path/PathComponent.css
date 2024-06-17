@@ -222,7 +222,8 @@
     justify-content: center;
     padding: 15px;
     width: 170px;
-    height: 50px;
+    height: 70px;
+    cursor: pointer;
 }
 
 .path_command_btn:hover {
@@ -232,16 +233,6 @@
 .path_command_btn > img {
     width: 35px;
     height: 35px;
-    margin-right: 5%;
-}
-
-.source_change_btn, .goal_change_btn {
-    background-color: #fff;
-    font-size: 16px;
-}
-
-.goal_change_btn > img {
-    rotate: 180deg;
 }
 
 .renew_path_btn {

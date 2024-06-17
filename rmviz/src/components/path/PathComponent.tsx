@@ -1,11 +1,11 @@
 import axios, { AxiosResponse } from "axios";
 import mqtt from "mqtt/*";
 import React, { useEffect, useRef, useState } from "react";
+import Rqtt from "../../api/application/rqtt";
+import { RTM_TOPIC_FORMAT } from "../../api/domain/common.constants";
 import { addDetectionRangePolygon, addPathMarker, addPathPolyline, changeMapCenter, initializeMap } from "../../service/map/MapService";
 import { onClickMqttPublish } from "../../utils/Utils";
 import "./PathComponent.css";
-import Rqtt from "../../api/application/rqtt";
-import { RTM_TOPIC_FORMAT } from "../../api/domain/common.constants";
 
 interface PathComponentProps {
     rqtt: Rqtt,
@@ -25,6 +25,7 @@ const PathComponent: React.FC<PathComponentProps> = ({
     const [pathPolyLine, setPathPolyLine] = useState<google.maps.Polyline | null>(null);
     const [detectionRagnePolygon, setDetectionRagnePolygon] = useState<Array<google.maps.Polygon>>([]);
     const [pathProgress, setPathProgress] = useState<number>(0);
+    const [pathEnd, setPathEnd] = useState<number>(0);
     const [currentMapFile, setCurrentMapFile] = useState<string>("");
     const [pathList, setPathList] = useState<Array<any>>([]);
     const [pathListIndex, setPathListIndex] = useState<number>(0);
@@ -49,6 +50,8 @@ const PathComponent: React.FC<PathComponentProps> = ({
             path: path
         }
 
+        console.info(`pathJSON : ${JSON.stringify(pathJSON)}`);
+
         return pathJSON;
     }
 
@@ -64,44 +67,6 @@ const PathComponent: React.FC<PathComponentProps> = ({
 
     const requestRenewPath: React.MouseEventHandler<HTMLButtonElement> = (): void => {
         onClickMqttPublish(rqtt, rqttC, requestPathRenewTopic, {});
-    }
-
-    const changePathSource: React.MouseEventHandler<HTMLButtonElement> = (): void => {
-        console.info(`pL : ${JSON.stringify(pathList[pathListIndex])}`);
-        const nodeList: Array<any> = pathList[pathListIndex].nodeList
-
-        if (pathProgress < nodeList.length - 1) {
-            setPathProgress(pathProgress + 1);
-            const updatedPathList: any = nodeList.filter((it, idx) => idx > pathProgress);
-
-            for (const p of updatedPathList) {
-                console.log(`p : ${JSON.stringify(p)}`);
-            }
-
-            const pathJSON: any = {
-                id: pathList[pathListIndex].id,
-                name: pathList[pathListIndex].name,
-                nodeList: updatedPathList
-            };
-            setEditedPath(pathJSON);
-        } else {
-            alert("출발지와 도착지가 동일하거나 출발지가 도착지를 넘어섭니다.");
-        }
-    }
-
-    const changePathGoal: React.MouseEventHandler<HTMLButtonElement> = (): void => {
-        if (pathListIndex > 0) {
-            setPathListIndex(pathListIndex - 1);
-            const updatedPathList = pathList.slice();
-            updatedPathList.push(updatedPathList.splice(pathListIndex, 1)[0]);
-            const pathJSON = {
-                id: updatedPathList[updatedPathList.length - 1].id,
-                name: updatedPathList[updatedPathList.length - 1].name
-            };
-            setEditedPath(pathJSON);
-        } else {
-            alert("출발지와 도착지가 동일하거나 도착지가 출발지보다 앞에 위치합니다.");
-        }
     }
 
     const drawPathMarker: Function = (): void => {
@@ -195,7 +160,6 @@ const PathComponent: React.FC<PathComponentProps> = ({
     const httpLoadPathRequest: Function = async (): Promise<void> => {
         try {
             const response: AxiosResponse<any, any> = await axios.post("/v1/api/path/select");
-            console.info(`Path HTTP : ${JSON.stringify(response)}`);
             setPathResponse(response.data);
         } catch (error) {
             console.error("Error fetching Path data", error);
@@ -206,7 +170,7 @@ const PathComponent: React.FC<PathComponentProps> = ({
         setPath(message);
     }
 
-    useEffect(() => {
+    useEffect((): void => {
         if (pathResponse) {
             if (pathResponse.paths) {
                 setCurrentMapFile(pathResponse.current_map_file);
@@ -227,7 +191,8 @@ const PathComponent: React.FC<PathComponentProps> = ({
 
                         const pathJSON: any = {
                             id: path.id,
-                            name: path.name
+                            name: path.name,
+                            nodeList: path.nodeList
                         };
 
                         li.onclick = () => {
@@ -251,13 +216,17 @@ const PathComponent: React.FC<PathComponentProps> = ({
         }
     }, [pathResponse, path]);
 
-    useEffect(() => {
-        if (pathListIndex) {
-            setEditedPath(pathList[pathListIndex]);
-        }
-    }, [pathListIndex]);
+    // useEffect((): void => {
+    //     if (pathListIndex) {
+    //         setEditedPath(pathList[pathListIndex]);
 
-    useEffect(() => {
+    //         if (editedPath) {
+    //             console.info(`editedPath : ${JSON.stringify(editedPath)}`);
+    //         }
+    //     }
+    // }, [pathList, pathListIndex]);
+
+    useEffect((): void => {
         if (selectedPathListIndex !== null) {
             const pathListElement = document.getElementById("path_list");
             if (pathListElement) {
@@ -265,11 +234,15 @@ const PathComponent: React.FC<PathComponentProps> = ({
                     (child as HTMLElement).style.backgroundColor = index === selectedPathListIndex ? "lightblue" : "";
                 });
             }
+
+            setEditedPath(pathList[pathListIndex]);
+            setPathProgress(0);
+            setPathEnd(pathList[pathListIndex].nodeList.length - 1);
         }
-    }, [pathList, selectedPathListIndex]);
+    }, [pathList, pathListIndex, selectedPathListIndex]);
 
 
-    useEffect(() => {
+    useEffect((): void => {
         const pathProgressMarkerInfoElements: NodeListOf<HTMLElement> | null = document.querySelectorAll(".path_progress_marker_info");
 
         if (pathProgressMarkerInfoElements && _pathMarkerArray) {
@@ -286,7 +259,11 @@ const PathComponent: React.FC<PathComponentProps> = ({
 
                 switch (markerType) {
                     case "intersection":
-                        pathProgressMarkerIconImg.src = process.env.PUBLIC_URL + "../marker_intersection.png";
+                        if (index === 0) {
+                            pathProgressMarkerIconImg.src = process.env.PUBLIC_URL + "../marker_start.png";
+                        } else {
+                            pathProgressMarkerIconImg.src = process.env.PUBLIC_URL + "../marker_intersection.png";
+                        }
                         break;
                     case "endpoint":
                         if (index === 0) {
@@ -311,19 +288,15 @@ const PathComponent: React.FC<PathComponentProps> = ({
                 markerInfo.appendChild(pathProgressMarkerIconImg);
             });
 
-            setPathProgress(0);
             googleMap?.setZoom(20);
 
             if (_pathMarkerArray[0]) {
                 changeMapCenter(googleMap, _pathMarkerArray[0].getPosition());
             }
-
-            console.info(`_pathMarkerArray length : ${_pathMarkerArray.length}`);
-            setPathGoalIndex(_pathMarkerArray.length);
         }
     }, [_pathMarkerArray]);
 
-    useEffect(() => {
+    useEffect((): void => {
         if (pathSource) {
             console.info(`pathSource : ${pathSource.nodeId}`);
         }
@@ -333,44 +306,67 @@ const PathComponent: React.FC<PathComponentProps> = ({
         }
     }, [pathSource, pathGoal]);
 
-    useEffect(() => {
+    useEffect((): void => {
         if (pathProgress) {
             console.info(`pathProgress : ${pathProgress}, length : ${_pathMarkerArray.length}`);
 
-            if (pathProgress === pathGoalIndex - 1) {
-                alert("출발지와 목적지가 동일합니다.");
+            if (pathProgress === pathEnd) {
+                alert("출발지가 목적지와 동일합니다.");
                 setPathProgress(pathProgress - 1);
+                return;
             } else {
-                const nodeList: Array<any> = Array.from(path);
-                setPathSource(nodeList[pathProgress]);
-                const pathProgressMarkerInfoElements: NodeListOf<HTMLElement> | null = document.querySelectorAll(".path_progress_marker_info");
+                if (path) {
+                    const nodeList: Array<any> = Array.from(path);
+                    setPathSource(nodeList[pathProgress]);
+                    const pathProgressMarkerInfoElements: NodeListOf<HTMLElement> | null = document.querySelectorAll(".path_progress_marker_info");
 
-                if (pathProgressMarkerInfoElements) {
-                    const _imgElements: HTMLCollectionOf<HTMLImageElement> = pathProgressMarkerInfoElements[pathProgress - 1].getElementsByTagName("img");
-                    _imgElements[0].src = process.env.PUBLIC_URL + "../marker_landmark.png";
+                    if (pathProgressMarkerInfoElements) {
+                        if (pathProgressMarkerInfoElements[pathProgress - 1]) {
+                            const previousMarkerImg: HTMLCollectionOf<HTMLImageElement> = pathProgressMarkerInfoElements[pathProgress - 1].getElementsByTagName("img");
+                            previousMarkerImg[0].src = process.env.PUBLIC_URL + "../marker_landmark.png";
+                        } else return;
 
-                    const imgElements: HTMLCollectionOf<HTMLImageElement> = pathProgressMarkerInfoElements[pathProgress].getElementsByTagName("img");
-                    imgElements[0].src = process.env.PUBLIC_URL + "../marker_start.png";
+                        if (pathProgressMarkerInfoElements[pathProgress]) {
+                            const nextMarkerImg: HTMLCollectionOf<HTMLImageElement> = pathProgressMarkerInfoElements[pathProgress].getElementsByTagName("img");
+                            nextMarkerImg[0].src = process.env.PUBLIC_URL + "../marker_start.png";
+                        }
+                    }
                 }
             }
         }
     }, [pathProgress]);
 
-    useEffect(() => {
-        if (pathGoalIndex) {
-            console.info(`pathGoalIndex : ${pathGoalIndex}, pathProgress : ${pathProgress}`);
+    useEffect((): void => {
+        if (pathEnd) {
+            console.info(`pathEnd : ${pathEnd}`);
 
-            if (pathGoalIndex === pathProgress) {
-                alert("목적지와 출발지가 동일합니다.");
-                setPathGoalIndex(pathGoalIndex + 1);
+            if (pathEnd === pathProgress) {
+                alert("목적지가 출발지와 동일합니다.");
+                setPathEnd(pathEnd + 1);
+                return;
             } else {
-                const nodeList: Array<any> = Array.from(path);
-                setPathGoal(nodeList[pathGoalIndex]);
+                if (path) {
+                    const nodeList: Array<any> = Array.from(path);
+                    setPathGoal(nodeList[pathEnd]);
+                    const pathProgressMarkerInfoElements: NodeListOf<HTMLElement> | null = document.querySelectorAll(".path_progress_marker_info");
+
+                    if (pathProgressMarkerInfoElements) {
+                        if (pathProgressMarkerInfoElements[pathEnd + 1]) {
+                            const previousMarkerImg: HTMLCollectionOf<HTMLImageElement> = pathProgressMarkerInfoElements[pathEnd + 1].getElementsByTagName("img");
+                            previousMarkerImg[0].src = process.env.PUBLIC_URL + "../marker_landmark.png";
+                        } else return;
+
+                        if (pathProgressMarkerInfoElements[pathEnd]) {
+                            const nextMarkerImg: HTMLCollectionOf<HTMLImageElement> = pathProgressMarkerInfoElements[pathEnd].getElementsByTagName("img");
+                            nextMarkerImg[0].src = process.env.PUBLIC_URL + "../marker_arrive.png";
+                        } else return;
+                    }
+                }
             }
         }
-    }, [pathGoalIndex]);
+    }, [pathEnd]);
 
-    useEffect(() => {
+    useEffect((): void => {
         if (rqtt) {
             if (rqttC) {
                 const pathTopic: string = `${RTM_TOPIC_FORMAT}/route/path`;
@@ -380,7 +376,7 @@ const PathComponent: React.FC<PathComponentProps> = ({
         }
     }, [rqtt, rqttC]);
 
-    useEffect(() => {
+    useEffect((): () => void => {
         const mapElement: HTMLElement | null = document.getElementById("path_map");
 
         if (mapElement) {
@@ -391,7 +387,7 @@ const PathComponent: React.FC<PathComponentProps> = ({
 
         httpLoadPathRequest();
 
-        return (() => {
+        return ((): void => {
             if (googleMap) {
                 googleMap.unbindAll();
             }
@@ -445,21 +441,16 @@ const PathComponent: React.FC<PathComponentProps> = ({
                         </div>
                         <div className="path_command_btn_container">
                             <div className="path_command_btn_grid">
-                                <button className="path_command_btn source_change_btn" onClick={changePathSource}>
-                                    <img src={process.env.PUBLIC_URL + "../right_arrow.png"} />
-                                    <p>출발지 변경</p>
-                                </button>
-                                <button className="path_command_btn goal_change_btn" onClick={changePathGoal}>
-                                    <img src={process.env.PUBLIC_URL + "../right_arrow.png"} />
-                                    <p>도착지 변경</p>
-                                </button>
                                 <button className="path_command_btn renew_path_btn" onClick={requestRenewPath}>
                                     <img src={process.env.PUBLIC_URL + "../marker_refresh.png"} />
                                     <p>경로 갱신</p>
                                 </button>
                                 <button className="path_command_btn command_path_btn" onClick={() => {
-                                    requestPathCommand(pathList[pathListIndex]);
-                                 }}>
+                                    // requestPathCommand(pathList[pathListIndex]);
+                                    if (editedPath) {
+                                        requestPathCommand(editedPath);
+                                    }
+                                }}>
                                     <img src={process.env.PUBLIC_URL + "../go_sign.png"}></img>
                                     <p>주행 명령</p>
                                 </button>
