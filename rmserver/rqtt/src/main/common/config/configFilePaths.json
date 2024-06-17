@@ -1,0 +1,4 @@
+{
+    "mqtt_config_file_path": "RobotData/mqtt/mqtt.json",
+    "map_config_file_path": "RobotData/maps/kecd_path/config/config.ini"
+}

@@ -1,29 +1,29 @@
+import mqtt from "mqtt/*";
 import React from "react";
-import KECResponseComponent from "../../../components/kec/response/KECResponseComponent";
+import Rqtt from "../../../api/application/rqtt";
 import TopComponent from "../../../components/top/TopComponent";
-import { TopState } from "../../../domain/top/TopDomain";
 import './KECDataBoardPage.css';
 
 interface KECDataBoardPageProps {
-    topState: TopState;
-    responseData: any;
+    rqtt: Rqtt;
+    rqttC: mqtt.MqttClient;
 }
 
 const KECDataBoardPage: React.FC<KECDataBoardPageProps> = ({
-    topState,
-    responseData
+    rqtt,
+    rqttC
 }): React.ReactElement<any, any> | null => {
 
     return (
         <div className="data_board_container">
             <div className="top_component_container">
                 <TopComponent 
-                    state={topState}
+                    rqtt={rqtt}
+                    rqttC={rqttC}
                 />
             </div>
             <div className="response_component_container">
-                <KECResponseComponent
-                    responseData={responseData} />
+                {/* <KECResponseComponent responseData={responseData} /> */}
             </div>
         </div>
     );

@@ -89,8 +89,6 @@ export const addPathMarker: Function = (
     is_start: boolean,
     is_end: boolean
 ): google.maps.Marker => {
-    console.info(`addPathMarker node : ${JSON.stringify(node)}`);
-
     let iconUrl: string = "";
 
     if (is_start && !is_end) {
@@ -242,4 +240,23 @@ export const addDetectionRangePolygon: Function = (
     }
 
     return detectionRangePolygonArray;
+}
+
+export const recordNavigatedPathCircle: Function = (
+    map: google.maps.Map,
+    currentGps: any,
+): google.maps.Circle => {
+
+    const circle: google.maps.Circle = new google.maps.Circle({
+        map: map,
+        center: new google.maps.LatLng(currentGps.latitude, currentGps.longitude),
+        strokeColor: "green",
+        strokeOpacity: 0.8,
+        strokeWeight: 0.4,
+        fillColor: "green",
+        fillOpacity: 0.35,
+        radius: 1
+    });
+
+    return circle;
 }

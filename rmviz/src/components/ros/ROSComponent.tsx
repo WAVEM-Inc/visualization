@@ -1,15 +1,18 @@
 import React, { useEffect } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { ROSState } from "../../domain/ros/ROSDomain";
 import "./ROSComponent.css";
+import Rqtt from "../../api/application/rqtt";
+import mqtt from "mqtt/*";
 
 interface ROSComponentProps {
-    state: ROSState;
+    rqtt: Rqtt;
+    rqttC: mqtt.MqttClient
 }
 
 const ROSComponent: React.FC<ROSComponentProps> = ({
-    state
+    rqtt,
+    rqttC
 }: ROSComponentProps): React.ReactElement<any, any> | null => {
 
     let renderer: THREE.WebGLRenderer;
@@ -60,12 +63,6 @@ const ROSComponent: React.FC<ROSComponentProps> = ({
         const gridHelper: THREE.GridHelper = new THREE.GridHelper(size, divisions);
         scene.add(gridHelper);
     }
-
-    useEffect(() => {
-        if (state.urdf) {
-            // console.info(`URDF : ${state.urdf}}`);
-        }
-    }, [state.urdf]);
 
     useEffect(() => {
         const container: HTMLElement | null = document.getElementById('universe_container');

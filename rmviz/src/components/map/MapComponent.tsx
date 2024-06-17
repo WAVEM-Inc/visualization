@@ -1,37 +1,52 @@
 import { Wrapper } from "@googlemaps/react-wrapper";
+import mqtt from "mqtt/*";
 import React, { useEffect, useState } from "react";
 import ReactModal from "react-modal";
-import MqttClient from "../../api/mqttClient";
 import * as emergencyStopJSON from "../../assets/json/common/emergency_stop.json";
-import { MapState } from "../../domain/map/MapDomain";
-import { addDetectionRangePolygon, addPathMarker, addPathPolyline, changeMapCenter, initializeKECDBorderLine, initializeMap, initializeRobotMarker, updateRobotMakerIcon } from "../../service/map/MapService";
+import * as controlMoveToDestJSON from "../../assets/json/control_movetodest.json";
+import * as controlMsCancelJSON from "../../assets/json/control_mscancel.json";
+import * as controlMsCompleteNoReturnJSON from "../../assets/json/control_mscomplete_no_return.json";
+import * as controlMsCompleteReturnJSON from "../../assets/json/control_mscomplete_return.json";
+import * as missionDeliveryJSON from "../../assets/json/mission_delivering.json";
+import * as missionReturningJSON from "../../assets/json/mission_returning.json";
+import { addDetectionRangePolygon, addPathMarker, addPathPolyline, changeMapCenter, initializeKECDBorderLine, initializeMap, initializeRobotMarker, recordNavigatedPathCircle, updateRobotMakerIcon } from "../../service/map/MapService";
 import { onClickMqttPublish } from "../../utils/Utils";
 import PathComponent from "../path/PathComponent";
 import "./MapComponent.css";
+import Rqtt from "../../api/application/rqtt";
+import { RTM_TOPIC_FORMAT } from "../../api/domain/common.constants";
 
 interface MapComponentProps {
-    mqttClient: MqttClient;
-    state: MapState;
+    rqtt: Rqtt,
+    rqttC: mqtt.MqttClient;
 }
 
 const MapComponent: React.FC<MapComponentProps> = ({
-    mqttClient,
-    state
+    rqtt,
+    rqttC
 }: MapComponentProps) => {
+    const [path, setPath] = useState<any | null>(null);
+    const [routeStatus, setRouteStatus] = useState<any | null>(null);
+    const [gps, setGps] = useState<any | null>(null);
+    const [odomEular, setOdomEular] = useState<any | null>(null);
+    const [cmdVel, setCmdVel] = useState<any | null>(null);
+
     const [googleMap, setGoogleMap] = useState<google.maps.Map>();
+    const [isDriving, setIsDriving] = useState<boolean>(false);
     const [pathInfoContainer, setPathInfoContainer] = useState<HTMLElement | null>(null);
     const [pathInfoDiv, setPathInfoDiv] = useState<HTMLDivElement | null>(null);
-    const [spathMarkerArray, setPathMarkerArray] = useState<Array<google.maps.Marker>>([]);
+    const [_pathMarkerArray, setPathMarkerArray] = useState<Array<google.maps.Marker>>([]);
     const [pathPolyLine, setPathPolyLine] = useState<google.maps.Polyline | null>(null);
+    const [_pathCircleArray, setPathCircleArray] = useState<Array<google.maps.Circle>>([]);
     const [detectionRagnePolygon, setDetectionRagnePolygon] = useState<Array<google.maps.Polygon>>([]);
     const [isPathSelectModalOpen, setIsPathSelectModalOpen] = useState<boolean>(false);
+    const [isMissionSelectModalOpen, setIsMissionSelectModalOpen] = useState<boolean>(false);
 
     let pathMarkerArray: Array<google.maps.Marker> = [];
     let pathInfoWindowarray: Array<google.maps.InfoWindow> = [];
 
     const kecCoord: google.maps.LatLng = new google.maps.LatLng(36.11434, 128.3690);
     const [currRobotMarker, setCurrRobotMarker] = useState<google.maps.Marker | null>(null);
-    const [currGPSInitMarker, setCurrGPSInitMarker] = useState<google.maps.Marker | null>(null);
     const [currentGps, setCurrentGps] = useState<any>({
         status: 0,
         service: 0,
@@ -40,16 +55,19 @@ const MapComponent: React.FC<MapComponentProps> = ({
     });
     const [currentOdomEular, setCurrentOdomEular] = useState<number>();
     const [currentRouteStatus, setCurrentRouteStatus] = useState<any | null>(null);
+    const [currentCmdVel, setCurrentCmdVel] = useState<any>({});
+    const [cmdVelFlag, setCmdVelFlag] = useState<boolean>(false);
 
-    const requestTopicFormat: string = "/rmviz/request";
-    const requestEmergencyTopic: string = `${requestTopicFormat}/can/emergency`;
+    const requestTopicFormat: string = "net/wavem/rms/rqtt/mtr";
+    const requestEmergencyTopic: string = `${requestTopicFormat}/drive/can/emergency`;
     const requestGoalCancelTopic: string = `${requestTopicFormat}/goal/cancel`;
     const requestPathRenewTopic: string = `${requestTopicFormat}/path/renew`;
+    const requestPathSelectTopic: string = `${requestTopicFormat}/path/select`;
     const requestTaskTopic: string = `${requestTopicFormat}/task`;
 
     const drawPathMarker: Function = (): void => {
-        if (state.path) {
-            const nodeList: Array<any> = Array.from(state.path);
+        if (path) {
+            const nodeList: Array<any> = Array.from(path);
 
             const uniqueNodeIds: Set<string> = new Set<string>();
             for (const node of nodeList) {
@@ -183,13 +201,16 @@ const MapComponent: React.FC<MapComponentProps> = ({
         }
     }
 
-    const flushPath = (): void => {
-        spathMarkerArray.forEach(marker => marker.setMap(null));
+    const flushPath: Function = (): void => {
+        _pathMarkerArray.forEach(marker => marker.setMap(null));
         pathMarkerArray = [];
         setPathMarkerArray(pathMarkerArray);
 
         pathInfoWindowarray.forEach(infoWindow => infoWindow.close());
         pathInfoWindowarray = [];
+
+        _pathCircleArray.forEach(circle => circle.setMap(null));
+        setPathCircleArray([]);
 
         if (pathPolyLine) {
             pathPolyLine.setMap(null);
@@ -216,51 +237,91 @@ const MapComponent: React.FC<MapComponentProps> = ({
         setIsPathSelectModalOpen(false);
     }
 
+    const openMissionSelectModal = (): void => {
+        setIsMissionSelectModalOpen(true);
+    }
+
+    const closeMissionSelectMoal = (): void => {
+        setIsMissionSelectModalOpen(false);
+    }
+
     const onPathSelectClick = (): void => {
-        mqttClient.publish("/rmviz/request/path/select", JSON.stringify({}));
+        rqtt.publish(rqttC, requestPathSelectTopic, JSON.stringify({}));
         openPathSelectModal();
     }
 
+    const onMissionSelectClick = (): void => {
+        openMissionSelectModal();
+    }
+
     const onPathRenewClick = (): void => {
-        onClickMqttPublish(mqttClient!, requestPathRenewTopic, {});
+        onClickMqttPublish(rqtt, rqttC, requestPathRenewTopic, {});
     }
 
     const onEmergencyStopClick = (): void => {
-        onClickMqttPublish(mqttClient!, requestEmergencyTopic, emergencyStopJSON);
+        onClickMqttPublish(rqtt, rqttC, requestEmergencyTopic, emergencyStopJSON);
     }
 
     const onGoalCancelClick = (): void => {
-        onClickMqttPublish(mqttClient!, requestGoalCancelTopic, {
+        onClickMqttPublish(rqtt, rqttC, requestGoalCancelTopic, {
             "cancel": true
         });
-        state.path = null;
-        state.routeStatus = null;
+        setPath(null);
+        setRouteStatus(null);
         flushPath();
     }
 
+    const onTaskClick = (taskJSON: any): void => {
+        onClickMqttPublish(rqtt, rqttC, requestTaskTopic, taskJSON);
+    }
+
+    const pathCallback: (message: any) => void = (message: any): void => {
+        setPath(message);
+    }
+
+    const routeStatusCallback: (message: any) => void = (message: any): void => {
+        setRouteStatus(message);
+    }
+
+    const gpsCallback: (message: any) => void = (message: any): void => {
+        setGps(message);
+    }
+
+    const odomEularCallback: (message: any) => void = (message: any): void => {
+        setOdomEular(message);
+    }
+
+    const cmdVelCallback: (message: any) => void = (message: any): void => {
+        setCmdVel(message);
+    }
+
     useEffect((): void => {
-        if (state.gps) {
-            if (!isNaN(state.gps.latitude) && !isNaN(state.gps.longitude)) {
-                const gpsStatus: any | undefined = state.gps.status;
+        if (gps) {
+            if (!isNaN(gps.latitude) && !isNaN(gps.longitude)) {
+                const gpsStatus: any | undefined = gps.status;
                 setCurrentGps({
                     status: gpsStatus?.status,
                     service: gpsStatus?.service,
-                    longitude: parseFloat(state.gps.longitude?.toFixed(7)),
-                    latitude: parseFloat(state.gps.latitude?.toFixed(7))
+                    longitude: parseFloat(gps.longitude?.toFixed(7)),
+                    latitude: parseFloat(gps.latitude?.toFixed(7))
                 });
 
                 if (currRobotMarker) {
-                    if (state.gps.longitude !== 0.0 && state.gps.latitude !== 0.0) {
-                        currRobotMarker!.setPosition(new google.maps.LatLng(state.gps.latitude, state.gps.longitude));
+                    if (gps.longitude !== 0.0 && gps.latitude !== 0.0) {
+                        currRobotMarker!.setPosition(new google.maps.LatLng(gps.latitude, gps.longitude));
+
+                        if (currRobotMarker.getPosition() && isDriving) {
+                            changeMapCenter(googleMap, currRobotMarker.getPosition());
+                        }
                     } else return;
                 }
             }
         }
-    }, [state.gps]);
+    }, [gps]);
 
     useEffect((): void => {
-        if (state.odomEular) {
-            const poseOrientation: any | undefined = state.odomEular.pose?.orientation;
+        if (odomEular) {
+            const poseOrientation: any | undefined = odomEular.pose?.orientation;
             setCurrentOdomEular(parseFloat(poseOrientation?.y.toFixed(2)) | 0.0);
         }
 
@@ -271,12 +332,12 @@ const MapComponent: React.FC<MapComponentProps> = ({
                 updateRobotMakerIcon(currRobotMarker, angle);
             }
         }
-    }, [state.odomEular]);
+    }, [odomEular]);
 
     useEffect((): void => {
         if (googleMap) {
-            if (state.path) {
-                console.info(`state.path : ${JSON.stringify(state.path)}`);
+            if (path) {
+                console.info(`state.path : ${JSON.stringify(path)}`);
 
                 if (pathInfoDiv) {
                     if (pathInfoContainer) {
@@ -290,7 +351,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
                 flushPath();
                 drawPathMarker();
 
-                setDetectionRagnePolygon(addDetectionRangePolygon(googleMap, Array.from(state.path)));
+                setDetectionRagnePolygon(addDetectionRangePolygon(googleMap, Array.from(path)));
                 setPathPolyLine(addPathPolyline(googleMap, pathMarkerArray, pathInfoWindowarray));
 
                 if (currRobotMarker) {
@@ -298,45 +359,88 @@ const MapComponent: React.FC<MapComponentProps> = ({
                 }
             }
         } else return;
-    }, [state.path]);
+    }, [path]);
+
+    const focusRouteStatus = (node_index: number, status_code: number): void => {
+        const pathInfoContainer: HTMLElement | null = document.getElementById("path_info_container");
+        if (pathInfoContainer) {
+            const pathInfoElements: HTMLCollectionOf<Element> = pathInfoContainer.getElementsByClassName("path_info");
+            if (pathInfoElements.length > 0) {
+                switch (status_code) {
+                    case 0:
+                        (pathInfoElements[node_index] as HTMLElement).style.backgroundColor = "lightblue";
+                        (pathInfoElements[node_index] as HTMLElement).scrollIntoView({ behavior: "smooth", block: "center" });
+                        break;
+                    case 1:
+                        (pathInfoElements[node_index] as HTMLElement).style.backgroundColor = "white";
+                        break;
+                    case 7:
+                        closePathSelectModal();
+                        googleMap?.setZoom(19);
+                        break;        
+                    default:
+                        (pathInfoElements[node_index] as HTMLElement).style.backgroundColor = "white";
+                        break;
+                }
+            }
+        }
+    }
 
     useEffect((): void => {
-        if (state.routeStatus) {
-            console.info(`currentRouteStatus : ${JSON.stringify(state.routeStatus)}`);
+        if (routeStatus) {
+            console.info(`currentRouteStatus : ${JSON.stringify(routeStatus)}`);
+
+            if (routeStatus.node_index === 0) {
+                changeMapCenter(googleMap, _pathMarkerArray[routeStatus.node_index].getPosition());
+            }
 
             let driving_flag: boolean = false;
-            if (state.routeStatus._is_driving) {
+            if (routeStatus.is_driving) {
                 driving_flag = true;
             } else {
                 driving_flag = false;
             }
 
             let status: string = "";
-            switch (state.routeStatus._status_code) {
+            switch (routeStatus.status_code) {
                 case 0:
                     status = "출발";
+                    focusRouteStatus(routeStatus.node_index, routeStatus.status_code);
+                    setIsDriving(true);
                     break;
                 case 1:
                     status = "경유지 도착";
+                    focusRouteStatus(routeStatus.node_index, routeStatus.status_code);
                     break;
                 case 2:
-                    status = "주행 완료";
+                    status = "주행이 완료되었습니다.";
+                    alert(`${status}`);
+                    setIsDriving(false);
                     break;
                 case 3:
                     status = "주행 서버가 구동되지 않았습니다.";
                     alert(`${status}`);
                     break;
                 case 4:
-                    status = "주행 진행 중";
+                    status = "주행이 이미 진행 중입니다.";
+                    alert(`${status}`);
                     break;
                 case 5:
-                    status = "주행 취소";
+                    status = "주행이 취소되었습니다.";
+                    alert(`${status}`);
+                    break;
+                case 6:
+                    status = "주행이 거부되었습니다. 목적지를 확인해주세요.";
+                    alert(`${status}`);
+                    break;
+                case 7:
+                    focusRouteStatus(routeStatus.node_index, routeStatus.status_code);
                     break;
                 default:
                     break;
             }
 
-            const node_info: any = state.routeStatus._node_info;
+            const node_info: any = routeStatus.node_info;
 
             if (node_info) {
                 const currRouteStatus: any = {
@@ -348,28 +452,17 @@ const MapComponent: React.FC<MapComponentProps> = ({
                 setCurrentRouteStatus(currRouteStatus);
             }
         }
-    }, [state.routeStatus]);
+    }, [routeStatus]);
 
     useEffect((): void => {
-        if (state.cmdVel) {
-            console.info(`cmdVel : ${JSON.stringify(state.cmdVel)}`);
-
-            if (currentGps) {
-                // if (state.cmdVel.linear.x > 0.0) {
-                //     const circle: google.maps.Circle = new google.maps.Circle({
-                //         map: googleMap,
-                //         center: new google.maps.LatLng(currentGps.latitude, currentGps.longitude),
-                //         strokeColor: "#FF0000",
-                //         strokeOpacity: 0.8,
-                //         strokeWeight: 2,
-                //         fillColor: "#FF0000",
-                //         fillOpacity: 0.35,
-                //         radius: 1
-                //     });
-                // }
+        if (cmdVel) {
+            if (cmdVel.linear) {
+                if (cmdVel.linear.x > 0.0) {
+                    setCurrentCmdVel(cmdVel);
+                }
             }
         }
-    }, [state.cmdVel]);
+    }, [cmdVel]);
 
     useEffect((): void => {
         if (googleMap) {
@@ -377,33 +470,63 @@ const MapComponent: React.FC<MapComponentProps> = ({
             setCurrRobotMarker(robotMarker);
 
             initializeKECDBorderLine(googleMap);
-            // 36.1138065627487, 128.3674145275724
-            // 36.113806562688765, 128.3675346220269
-            // 36.11370954463808, 128.3675346220269
-
-            // const newCoords = calculateOffset(36.11370954461467, 128.36745956308556, 19.7, 240);
-            // console.info(`newCoord : ${JSON.stringify(newCoords)}`);
-
-            // const angle = calculateBearing(36.1137154, 128.368048, 36.1137132, 128.3677302);
-            // console.info(`angle : ${angle}`);
-            // alert(`angle : ${angle}`);
-
-            // new google.maps.Marker({
-            //     map: googleMap,
-            //     position: new google.maps.LatLng(newCoords.lat, newCoords.lon)
-            // });
         }
     }, [googleMap]);
 
-    useEffect(() => {
-        const _closePathSelectModal: string | null = localStorage.getItem("closePathSelectModal");
-
-        if (_closePathSelectModal === "true") {
-            closePathSelectModal();
+    useEffect((): void => {
+        if (currentCmdVel) {
+            setCmdVelFlag(true);
         }
-    }, [localStorage.getItem("closePathSelectModal")]);
+    }, [currentCmdVel]);
 
-    useEffect(() => {
+    useEffect((): () => void => {
+        let timer: NodeJS.Timer | null = null;
+        if (cmdVelFlag === true) {
+            timer = setInterval(() => {
+                if (currentCmdVel) {
+                    if (currentGps) {
+                        const recordedPathCircle: google.maps.Circle = recordNavigatedPathCircle(googleMap, currentGps);
+                        _pathCircleArray.push(recordedPathCircle);
+                    }
+                }
+            }, 5000);
+        }
+
+        return (): void => {
+            if (timer) {
+                clearInterval(timer);
+            }
+            timer = null;
+        }
+    }, [cmdVelFlag]);
+
+    useEffect((): void => {
+        if (rqtt) {
+            if (rqttC) {
+                const pathTopic: string = `${RTM_TOPIC_FORMAT}/route/path`;
+                rqtt.subscribe(rqttC, pathTopic);
+                rqtt.addSubscriptionCallback(rqttC, pathTopic, pathCallback);
+
+                const routeStatusTopic: string = `${RTM_TOPIC_FORMAT}/route/status`;
+                rqtt.subscribe(rqttC, routeStatusTopic);
+                rqtt.addSubscriptionCallback(rqttC, routeStatusTopic, routeStatusCallback);
+
+                const gpsTopic: string = `${RTM_TOPIC_FORMAT}/sensor/ublox/fix`;
+                rqtt.subscribe(rqttC, gpsTopic);
+                rqtt.addSubscriptionCallback(rqttC, gpsTopic, gpsCallback);
+
+                const odomEularTopic: string = `${RTM_TOPIC_FORMAT}/drive/odom/eular`;
+                rqtt.subscribe(rqttC, odomEularTopic);
+                rqtt.addSubscriptionCallback(rqttC, odomEularTopic, odomEularCallback);
+
+                const cmdVelTopic: string = `${RTM_TOPIC_FORMAT}/cmd_vel`;
+                rqtt.subscribe(rqttC, cmdVelTopic);
+                rqtt.addSubscriptionCallback(rqttC, cmdVelTopic, cmdVelCallback);
+            }
+        }
+    }, [rqtt, rqttC]);
+
+    useEffect((): () => void => {
         const mapElement: HTMLElement | null = document.getElementById("map");
 
         if (mapElement) {
@@ -414,7 +537,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
         }
         localStorage.setItem("isEnableToCommandRoute?", "false");
 
-        return (() => {
+        return ((): void => {
             if (googleMap) {
                 flushPath();
                 googleMap.unbindAll();
@@ -453,7 +576,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
                             <img src={process.env.PUBLIC_URL + "../marker_route.png"} />
                             <p>경로 선택</p>
                         </button>
-                        <button className={"route_btn_request route_btn_mission_select"} onClick={onPathSelectClick}>
+                        <button className={"route_btn_request route_btn_mission_select"} onClick={onMissionSelectClick}>
                             <img src={process.env.PUBLIC_URL + "../marker_mission.png"} />
                             <p>임무 선택</p>
                         </button>
@@ -487,10 +610,45 @@ const MapComponent: React.FC<MapComponentProps> = ({
                         </div>
                         <Wrapper apiKey={`${process.env.GOOGLE_MAP_API_KEY}`}>
                             <PathComponent
-                                mqttClient={mqttClient!}
-                                state={state}
+                                rqtt={rqtt}
+                                rqttC={rqttC}
                             />
                         </Wrapper>
+                    </div>
+                </ReactModal>
+                <ReactModal
+                    id="route_path_select_modal"
+                    className={"route_path_select_modal"}
+                    isOpen={isMissionSelectModalOpen}
+                    onRequestClose={closeMissionSelectMoal}
+                >
+                    <div className="route_path_select_modal_container">
+                        <div className="route_path_select_title">
+                            <img src={process.env.PUBLIC_URL + "../marker_mission.png"} />
+                            <p>임무 선택</p>
+                        </div>
+                        <div className="route_path_select_close_btn">
+                            <img src={process.env.PUBLIC_URL + "../btn_close.png"} onClick={() => { closeMissionSelectMoal() }}></img>
+                        </div>
+                        <div id="task_list_container" className="task_list_container">
+                            <div className="mission_list_container">
+                                <p className="mission_list_title">임무 목록</p>
+                                <ul id="task_list" className="mission_list">
+                                    <li id="task_item" className={"mission_item"} onClick={() => { onTaskClick(missionDeliveryJSON); }}>1. 배송 임무 할당</li>
+                                    <li id="task_item" className={"mission_item"} onClick={() => { onTaskClick(missionReturningJSON); }}>2. 복귀 임무 할당</li>
+                                </ul>
+                            </div>
+                            <div className="control_list_container">
+                                <p className="control_list_title">제어 목록</p>
+                                <ul id="task_list" className="control_list">
+                                    <li id="task_item" className={"control_item"} onClick={() => { onTaskClick(controlMoveToDestJSON); }}>1. 하차지 이동 제어</li>
+                                    <li id="task_item" className={"control_item"} onClick={() => { onTaskClick(controlMsCompleteReturnJSON); }}>2. 대기 장소 복귀 제어</li>
+                                    <li id="task_item" className={"control_item"} onClick={() => { onTaskClick(controlMsCompleteNoReturnJSON); }}>3. 대기 장소 미복귀 제어</li>
+                                    <li id="task_item" className={"control_item"} onClick={() => { onTaskClick(controlMsCancelJSON); }}>4. 임무 취소 제어</li>
+                                    <li id="task_item" className={"control_item"} onClick={() => { onTaskClick(controlMsCancelJSON); }}>5. 그래프 제어</li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </ReactModal>
             </div>

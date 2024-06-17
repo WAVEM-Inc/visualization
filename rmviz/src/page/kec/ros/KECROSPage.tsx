@@ -1,27 +1,23 @@
 import React, { useEffect } from "react";
-import MqttClient from "../../../api/mqttClient";
 import ROSComponent from "../../../components/ros/ROSComponent";
 import TopComponent from "../../../components/top/TopComponent";
-import { ROSState } from "../../../domain/ros/ROSDomain";
-import { TopState } from "../../../domain/top/TopDomain";
 import "./KECROSPage.css";
+import Rqtt from "../../../api/application/rqtt";
+import mqtt from "mqtt/*";
 
 interface KECROSPageProps {
-    mqttClient: MqttClient;
-    topState: TopState;
-    rosState: ROSState;
+    rqtt: Rqtt;
+    rqttC: mqtt.MqttClient;
 }
 
 const KECROSPage: React.FC<KECROSPageProps> = ({
-    mqttClient,
-    topState,
-    rosState
+    rqtt,
+    rqttC
 }: KECROSPageProps): React.ReactElement<any, any> | null => {
 
     useEffect(() => {
-        if (mqttClient) {
-            const mqttURDFRequestTopic: string = "/rms/ktp/dummy/request/urdf";
-            mqttClient.publish(mqttURDFRequestTopic, JSON.stringify({data: ""}));
+        if (rqtt) {
+            
         }
     }, []);
 
@@ -29,12 +25,14 @@ const KECROSPage: React.FC<KECROSPageProps> = ({
         <div className="path_search_container">
             <div className="top_component_container">
                 <TopComponent
-                    state={topState}
+                    rqtt={rqtt}
+                    rqttC={rqttC}
                  />
             </div>
             <div className="ros_component_container">
                 <ROSComponent
-                    state={rosState}
+                    rqtt={rqtt}
+                    rqttC={rqttC}
                 />
             </div>
         </div>

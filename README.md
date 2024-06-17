@@ -7,27 +7,17 @@
   - [Environment](#1-environment)
   - [SetUp Installation](#2-setup-installation)
     - [Prerequisites](#2-1-prerequisites)
-      - [Install rosbridge_library](#2-1-1-install-rosbridge-library)
-      - [Install mosquitto](#2-1-2-install-mosquitto)
-      - [Install pip requirements](#2-1-3-install-pip-requirements)
-      - [Install nodejs](#2-1-4-install-nodejs)
-      - [Install npm](#2-1-5-install-npm)
-      - [Install n & Install nodejs LTS Version](#2-1-6-install-n--install-nodejs-lts-version)
+      - [Install mosquitto](#2-1-1-install-mosquitto)
+        - [Modify mosquitto configuration](#2-1-1-1-modify-mosquitto-configuration)
+      - [Install nodejs](#2-1-2-install-nodejs)
+      - [Install npm](#2-1-3-install-npm)
+      - [Install n & Install nodejs LTS Version](#2-1-4-install-n--install-nodejs-lts-version)
   - [Clone & Build Project](#3-clone--build-project)
     - [Clone Project](#3-1-clone-project)
     - [Build Project](#3-2-build-project)
-        - [Modify MQTT Broker's Host Address(If Necessary)](#3-2-1-modify-mqtt-broker-host-adress-if-necessary)
-            - [Compile Package](#3-2-1-2-compile-package)
-        - [Build ROS Server](#3-2-2-build-ros-server)
-          - [Compile Package](#3-2-2-1-compile-package)
-        - [Build Web Server](#3-2-3-build-web-server)
-          - [Build nodejs Server](#3-2-3-1-build-nodejs-server)
-          - [Build react Client](#3-2-3-2-build-react-client)
+        - [Modify MQTT Broker's Host Address(If Necessary)](#3-2-1-modify-mqtt-brokers-host-address-if-necessary)
+        - [Build](#3-2-2-build)
   - [Launch](#4-launch)
-    - [Modify MQTT broker's host adress (If Necessary)](#4-1-1-modify-mqtt-brokers-host-adress-if-necessary)
-    - [Launch mosquitto broker](#4-1-2-launch-mosquitto-broker)
-    - [Launch ROS Server](#4-2-launch-ros-server)
-    - [Launch Web](#4-3-launch-web)
 
 
 ## 1. Environment
@@ -62,33 +52,72 @@ Before installing, please ensure the following software is installed and configu
 - [python3](https://www.python.org/downloads/) version required over than 3.0 - 
   **INSTALL [python3](https://www.python.org/downloads/)**
 
-### 2-1-1. Install rosbridge-library
-```bash
-sudo apt-get install ros-humble-rosbridge-library
-```
-
-### 2-1-2. Install mosquitto
+### 2-1-1. Install mosquitto
 ```bash
 sudo apt-get install mosquitto*
 ```
 
-### 2-1-3. Install pip requirements
+### 2-1-1-1. Modify mosquitto configuration
 ```bash
-cd ~/kec_ws/src/rms/ktp_dummy_interface/
-pip install -r pip_requirement.txt
+sudo vi /lib/systemd/system/mosquitto.service
+
+---
+
+[Unit]
+Description=Mosquitto MQTT Broker
+Documentation=man:mosquitto.conf(5) man:mosquitto(8)
+After=network.target
+Wants=network.target
+
+[Service]
+Type=notify
+NotifyAccess=main
+ExecStart=/usr/sbin/mosquitto -v -c /home/reidlo/RobotData/mqtt/mosquitto.conf # modification, Before) /etc/mosquitto/mosquitto.conf
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=on-failure
+ExecStartPre=/bin/mkdir -m 740 -p /var/log/mosquitto
+ExecStartPre=/bin/chown mosquitto /var/log/mosquitto
+ExecStartPre=/bin/mkdir -m 740 -p /run/mosquitto
+ExecStartPre=/bin/chown mosquitto /run/mosquitto
+
+[Install]
+WantedBy=multi-user.target
+
+---
+
+sudo systemctl daemon-reload
+sudo systemctl restart mosquitto
+sudo systemctl enable mosquitto
+sudo systemctl status mosquitto
+
+---
+
+● mosquitto.service - Mosquitto MQTT Broker
+     Loaded: loaded (/lib/systemd/system/mosquitto.service; enabled; vendor preset: enabled)
+     Active: active (running) since Mon 2024-06-17 10:38:01 KST; 31s ago
+       Docs: man:mosquitto.conf(5)
+             man:mosquitto(8)
+   Main PID: 15536 (mosquitto)
+      Tasks: 1 (limit: 18992)
+     Memory: 1.9M
+        CPU: 27ms
+     CGroup: /system.slice/mosquitto.service
+             └─15536 /usr/sbin/mosquitto -v -c /home/reidlo/RobotData/mqtt/mosquitto.conf
+
+--- 
 ```
 
-### 2-1-4. Install nodejs
+### 2-1-2. Install nodejs
 ```bash
 sudo apt install nodejs
 ```
 
-### 2-1-5. Install npm
+### 2-1-3. Install npm
 ```bash
 sudo apt install npm
 ```
 
-### 2-1-6. Install n & Install nodejs LTS Version
+### 2-1-4. Install n & Install nodejs LTS Version
 ```bash
 sudo npm i -g n
 sudo n lts
@@ -105,17 +134,18 @@ npm -v # 10.5.0
 ```bash
 cd ~/kec_ws/src/service/
 git clone -b KEC/Web/Humble/Develop https://github.com/WAVEM-Inc/visualization.git
+mv ./visualization/ ./rmviz
 ```
 
 ### 3-2. Build Project
 
-### 3-2-1. Modify MQTT broker's host adress (If Necessary)
+### 3-2-1. Modify MQTT broker's host address (If Necessary)
 ```bash
 cd ~/RobotData/mqtt/
 vi mqtt.json
 
 {
-  "host": "192.168.56.1",
+  "host": "${your IP address}",
   "port": 8883,
   "protocol": "ws",
   "type": "websockets",
@@ -128,33 +158,6 @@ vi mqtt.json
 # :wq
 ```
 
-### 3-2-2. Build ROS Server
-
-### 3-2-2-1. Compile Package
-```bash
-cd ~/kec_ws/src/service/visualization/
-colcon build --packages-select rmserver_kec
-```
-
-### 3-2-3. Build Web Server
-
-### 3-2-3-1. Build nodejs Server
-```bash
-cd ~/kec_ws/src/service/visualization/rmserver/web/
-npm run server_build
-```
-
-### 3-2-3-2. Build react Client
-```bash
-cd ~/kec_ws/src/service/visualization/rmserver/web/
-npm run client_build
-```
-
-## 4. Launch
-
-## 4-1. Launch mosquitto broker
-
-### 4-1-1. Modify MQTT broker's host adress (If Necessary)
 ```bash
 cd ~/RobotData/mqtt
 vi ./mosquitto.conf
@@ -169,21 +172,21 @@ allow_anonymous true
 
 # :wq
 ```
-### 4-1-2. Launch mosquitto broker
+
+### 3-2-2. Build 
 ```bash
-cd ~/RobotData/mqtt/
-sudo chmod +x ./mosquitto.sh
-./mosquitto.sh
+cd ~/kec_ws/src/service/rmviz/
+npm run build
 ```
 
-## 4-2. Launch ROS Server
+## 4. Launch
 ```bash
-source ~/kec_ws/src/total.bash
-ros2 launch rmserver_kec rmserver_kec.launch.py
-```
+# Check ./.bashrc alias
+vi ./.bashrc
 
-## 4-3. Launch Web
-```bash
-cd ~/kec_ws/src/service/visualization/rmserver/web
-npm run launch
+alias rmviz="cd ~/kec_ws/src/service/rmviz/ && npm run launch"
+
+# Launch
+source ./.bashrc
+rmviz
 ```
