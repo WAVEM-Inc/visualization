@@ -113,7 +113,7 @@ export default class RouteService {
             if (this._routeToPoseGoalListSize === 0) {
                 const pathId: string = message.path.id;
                 const pathName: string = message.path.name;
-                // const pathList: Array<any> = message.path.nodeList;
+                const pathList: Array<any> = message.path.nodeList;
                 this._node.getLogger().info(`${ROUTE_TO_POSE_ACTION} pathId : ${pathId}, pathName : ${pathName}`);
 
                 let nodeArray: Array<any> = [];
@@ -121,7 +121,7 @@ export default class RouteService {
                 for (const [pathIndex, pathMap] of pathMapArray.entries()) {
                     if (pathMap.id === pathId) {
                         this._node.getLogger().info(`${ROUTE_TO_POSE_ACTION} path found: ${pathMap.id}`);
-                        nodeArray = pathMap.nodeList;
+                        nodeArray = pathList;
                         this._routeToPoseGoalListSize = nodeArray.length - 1;
                         break;
                     }
@@ -135,6 +135,8 @@ export default class RouteService {
                 this._node.getLogger().info(`${ROUTE_TO_POSE_ACTION} routeToPoseGoalListSize : ${this._routeToPoseGoalListSize}`);
 
                 if (this._routeToPoseGoalListSize === 0) {
+                    this._node.getLogger().error(`${ROUTE_TO_POSE_ACTION} routeToPoseGoalListSize is 0`);
+                    this.notifyRouteStatus(false, 2);
                     return;
                 }
 
