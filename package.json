@@ -3,9 +3,10 @@
   "version": "1.1.0",
   "description": "",
   "scripts": {
+    "install": "concurrently \"cd ./rmserver/http && npm i\" \"cd ./rmserver/rqtt && npm i\" \"cd ./rmviz && npm i\"",
     "server_build": "concurrently \"cd ./rmserver/http && npm run build\" \"cd ./rmserver/rqtt && npm run build\"",
     "client_build": "cd ./rmviz && npm run build",
-    "build": "sudo chmod +x ./script/build.sh && ./script/build.sh",
+    "build": "concurrently \"npm run install\" \"npm run server_build\" \"npm run client_build\" && cd ~/ && source ./.bashrc",
     "launch": "concurrently \"cd ./rmserver/http && npm run start\" \"cd ./rmserver/rqtt && npm run start\""
   },
   "author": "",
