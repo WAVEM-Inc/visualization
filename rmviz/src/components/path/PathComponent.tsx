@@ -153,7 +153,6 @@ const PathComponent: React.FC<PathComponentProps> = ({
     }
 
     const handleProgressChange = (index: number) => {
-        setPathProgress(index);
         changeMapCenter(googleMap, _pathMarkerArray[index].getPosition()!);
     }
 
