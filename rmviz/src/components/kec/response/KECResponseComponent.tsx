@@ -1,12 +1,19 @@
+import mqtt from "mqtt/*";
 import React, { useEffect, useState } from "react";
+import Rqtt from "../../../api/application/rqtt";
+import { RTM_TOPIC_FORMAT } from "../../../api/domain/common.constants";
 import './KECResponseComponent.css';
 
 
 interface KECResponseComponentProps {
-    responseData: any;
+    rqtt: Rqtt;
+    rqttC: mqtt.MqttClient;
 }
 
-const KECResponseComponent: React.FC<KECResponseComponentProps> = ({ responseData }: KECResponseComponentProps) => {
+const KECResponseComponent: React.FC<KECResponseComponentProps> = ({
+    rqtt,
+    rqttC
+}: KECResponseComponentProps) => {
     const [rbtStatus, setRbtStatus] = useState<string>("");
     const [serviceStatus, setServiceStatus] = useState<string>("");
     const [errorReport, setErrorReport] = useState<string>("");
@@ -14,15 +21,59 @@ const KECResponseComponent: React.FC<KECResponseComponentProps> = ({ responseDat
     const [graphList, setGraphList] = useState<string>("");
     const [obstacleDetect, setObstacleDetect] = useState<string>("");
 
+    const rbtStatusCallback: (message: any) => void = (message: any): void => {
+        setRbtStatus(JSON.stringify(message, null, 4));
+    }
+
+    const serviceStatuscallback: (message: any) => void = (message: any): void => {
+        setServiceStatus(JSON.stringify(message, null, 4));
+    }
+
+    const errorReportCallback: (message: any) => void = (message: any): void => {
+        setErrorReport(JSON.stringify(message, null, 4));
+    }
+
+    const controlReportCallback: (message: any) => void = (message: any): void => {
+        setControlReport(JSON.stringify(message, null, 4));
+    }
+
+    const graphListCallbak: (message: any) => void = (message: any): void => {
+        setGraphList(JSON.stringify(message, null, 4));
+    }
+
+    const obstacleDetectCallback: (message: any) => void = (message: any): void => {
+        setObstacleDetect(JSON.stringify(message, null, 4));
+    }
 
     useEffect(() => {
-        setRbtStatus(JSON.stringify(responseData.rbt_status, null, 4));
-        setServiceStatus(JSON.stringify(responseData.service_status, null, 4));
-        setErrorReport(JSON.stringify(responseData.error_report, null, 4));
-        setControlReport(JSON.stringify(responseData.control_report, null, 4));
-        setGraphList(JSON.stringify(responseData.graph_list, null, 2));
-        setObstacleDetect(JSON.stringify(responseData.obstacle_detect, null, 4));
-    }, [responseData]);
+        if (rqtt) {
+            if (rqttC) {
+                const rbtStatusTopic: string = `${RTM_TOPIC_FORMAT}/status/rbt_status`;
+                rqtt.subscribe(rqttC, rbtStatusTopic);
+                rqtt.addSubscriptionCallback(rqttC, rbtStatusTopic, rbtStatusCallback);
+
+                const serviceStatusTopic: string = `${RTM_TOPIC_FORMAT}/status/service_status`;
+                rqtt.subscribe(rqttC, serviceStatusTopic);
+                rqtt.addSubscriptionCallback(rqttC, serviceStatusTopic, serviceStatuscallback);
+
+                const errorReportTopic: string = `${RTM_TOPIC_FORMAT}/report/error_report`;
+                rqtt.subscribe(rqttC, errorReportTopic);
+                rqtt.addSubscriptionCallback(rqttC, errorReportTopic, errorReportCallback);
+
+                const controlReportTopic: string = `${RTM_TOPIC_FORMAT}/report/control_report`;
+                rqtt.subscribe(rqttC, controlReportTopic);
+                rqtt.addSubscriptionCallback(rqttC, controlReportTopic, controlReportCallback);
+
+                const graphListTopic: string = `${RTM_TOPIC_FORMAT}/report/graph_list`;
+                rqtt.subscribe(rqttC, graphListTopic);
+                rqtt.addSubscriptionCallback(rqttC, graphListTopic, graphListCallbak);
+
+                const obstacleDetectTopic: string = `${RTM_TOPIC_FORMAT}/obstacle_detect`;
+                rqtt.subscribe(rqttC, obstacleDetectTopic);
+                rqtt.addSubscriptionCallback(rqttC, obstacleDetectTopic, obstacleDetectCallback);
+            }
+        }
+    }, [rqtt, rqttC]);
 
     return (
         <div className="response_callback_grid_container">
