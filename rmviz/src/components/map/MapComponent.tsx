@@ -2,6 +2,8 @@ import { Wrapper } from "@googlemaps/react-wrapper";
 import mqtt from "mqtt/*";
 import React, { useEffect, useState } from "react";
 import ReactModal from "react-modal";
+import Rqtt from "../../api/application/rqtt";
+import { RTM_TOPIC_FORMAT } from "../../api/domain/common.constants";
 import * as emergencyStopJSON from "../../assets/json/common/emergency_stop.json";
 import * as controlMoveToDestJSON from "../../assets/json/control_movetodest.json";
 import * as controlMsCancelJSON from "../../assets/json/control_mscancel.json";
@@ -13,8 +15,6 @@ import { addDetectionRangePolygon, addPathMarker, addPathPolyline, changeMapCent
 import { onClickMqttPublish } from "../../utils/Utils";
 import PathComponent from "../path/PathComponent";
 import "./MapComponent.css";
-import Rqtt from "../../api/application/rqtt";
-import { RTM_TOPIC_FORMAT } from "../../api/domain/common.constants";
 
 interface MapComponentProps {
     rqtt: Rqtt,
@@ -272,6 +272,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
     }
 
     const onTaskClick = (taskJSON: any): void => {
+        console.info(`Task : ${JSON.stringify(taskJSON)}`);
         onClickMqttPublish(rqtt, rqttC, requestTaskTopic, taskJSON);
     }
 

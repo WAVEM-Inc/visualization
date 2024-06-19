@@ -6,6 +6,9 @@
         "request_time": "240404100302279",
         "control_code": "mscomplete",
         "control_data": {
+            "mission_id": "",
+            "request_id": "",
+            "map_id": "",
             "return": false
         }
     }

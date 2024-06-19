@@ -55,8 +55,36 @@ export default class TaskService {
     }
 
     private assignControlServiceRequest(control: any): void {
+        let _control: any = {
+            request_time: "",
+            control_id: "",
+            owner: "",
+            control_code: "",
+            control_data: {
+                mission_id: "",
+                map_id: "",
+                request_id: "",
+                is_return: false
+            }
+        };
+
+        _control.request_time = control.request_time;
+        _control.control_id = control.control_id;
+        _control.owner = control.owner;
+        _control.control_code = control.control_code;
+        _control.control_data.mission_id = control.control_data.mission_id;
+        _control.control_data.map_id = control.control_data.map_id;
+        _control.control_data.request_id = control.control_data.request_id;
+        this._node.getLogger().info(`${ASSIGN_CONTROL_SERVICE} ============== Return Control : ${control.control_data.return} ==============`);
+
+        if (control.control_data.return === true) {
+            _control.control_data.is_return = true;
+        } else {
+            _control.control_data.is_return = false;
+        }
+
         const assignControlRequest: ktp_data_msgs.srv.AssignControl_Request = rclnodejs.createMessageObject("ktp_data_msgs/srv/AssignControl_Request");
-        assignControlRequest.control = control;
+        assignControlRequest.control = _control;
         this._node.getLogger().info(`${ASSIGN_CONTROL_SERVICE} control request : ${JSON.stringify(assignControlRequest)}`);
 
         try {
@@ -66,6 +94,8 @@ export default class TaskService {
                         this._node.getLogger().error(`${ASSIGN_CONTROL_SERVICE} is not available`);
                         return;
                     }
+
+                    this._node.getLogger().info(`${ASSIGN_CONTROL_SERVICE} ============== Control : ${JSON.stringify(assignControlRequest)} ==============`);
 
                     this._assignControlClient.sendRequest(assignControlRequest, (response: ktp_data_msgs.srv.AssignControl_Response) => {
                         this._node.getLogger().info(`${ASSIGN_CONTROL_SERVICE} response : ${JSON.stringify(response)}`);
