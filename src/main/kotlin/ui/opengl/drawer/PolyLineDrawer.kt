@@ -6,8 +6,10 @@ import com.jogamp.opengl.GL2
 import com.jogamp.opengl.awt.GLJPanel
 import com.jogamp.opengl.glu.GLU
 import com.jogamp.opengl.util.awt.TextRenderer
+import ui.opengl.math.Coordinate3D
 import ui.opengl.math.GLColor
 import ui.opengl.math.Polygon
+import viewmodel.UdpDataViewModel
 
 class PolyLineDrawer(
     val objects: Map<Int, Polygon>,
@@ -60,21 +62,21 @@ class PolyLineDrawer(
                 if (obstacleOption.usePosition) {
                     renderText(gl, "Position", index, objectData.value)
                     index++
-                    renderText(gl, "    - X: ${value.position.x}", index, objectData.value)
+                    renderText(gl, "    - X: %.2f".format(value.position.x), index, objectData.value)
                     index++
-                    renderText(gl, "    - Y: ${value.position.y}", index, objectData.value)
+                    renderText(gl, "    - Y: %.2f".format(value.position.y), index, objectData.value)
                     index++
-                    renderText(gl, "    - Z: ${value.position.z}", index, objectData.value)
+                    renderText(gl, "    - Z: %.2f".format(value.position.z), index, objectData.value)
                     index++
                 }
 
                 if (obstacleOption.useSpeed) {
-                    renderText(gl, "Speed: ${value.speed}", index, objectData.value)
+                    renderText(gl, "Speed: %.2f".format(value.speed), index, objectData.value)
                     index++
                 }
 
                 if (obstacleOption.useHeading) {
-                    renderText(gl, "Heading: ${value.heading}", index, objectData.value)
+                    renderText(gl, "Heading: %.2f".format(value.heading), index, objectData.value)
                     index++
                 }
 

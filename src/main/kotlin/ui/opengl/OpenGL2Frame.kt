@@ -15,6 +15,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import org.jetbrains.skiko.currentNanoTime
 import ui.opengl.camera.SphereCamera
 import ui.opengl.camera.getScreenCoords
 import ui.opengl.camera.worldToScreen
@@ -32,6 +33,9 @@ import viewmodel.ConfigDataViewModel
 import viewmodel.UdpDataViewModel
 import java.awt.Font
 import kotlin.math.abs
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.math.sqrt
 
 class OpenGL2Frame(val parentPanel: GLJPanel) : GLEventListener {
     private lateinit var glu: GLU
@@ -45,6 +49,7 @@ class OpenGL2Frame(val parentPanel: GLJPanel) : GLEventListener {
     private var obstacleOption = ObstacleOption()
 
     private var currentLocale = Coordinate3D()
+    private var currentHeading: Double = 0.0
 
     private val backgroundColor = GLColor("#01305A")
     private lateinit var textRenderer: TextRenderer
@@ -100,6 +105,12 @@ class OpenGL2Frame(val parentPanel: GLJPanel) : GLEventListener {
         val yLineDrawer = LineDrawer(endPoint = Coordinate3D(y = 1.0), color = GLColor(green = 1f), lineWidth = 2f)
         val zLineDrawer = LineDrawer(endPoint = Coordinate3D(z = 1.0), color = GLColor(blue = 1f), lineWidth = 2f)
 
+        xLineDrawer.draw(gl)
+        yLineDrawer.draw(gl)
+        zLineDrawer.draw(gl)
+
+        val heading = Math.toDegrees(currentHeading).toFloat()
+        gl.glRotatef(-(heading - 90), 0f, 0f, 1f)
         if (pointCloudOption.draw) {
             val pointsDrawer =
                 if (pointCloudOption.useDynamicColor) {
@@ -108,7 +119,8 @@ class OpenGL2Frame(val parentPanel: GLJPanel) : GLEventListener {
                         points = pointCloudData,
                         nearColor = hexToColor(pointCloudOption.nearColor),
                         farColor = hexToColor(pointCloudOption.farColor),
-                        maxDistance = pointCloudOption.maxDistance
+                        maxDistance = pointCloudOption.maxDistance,
+                        heading = currentHeading
                     )
                 } else {
                     PointsDrawer(
@@ -116,18 +128,14 @@ class OpenGL2Frame(val parentPanel: GLJPanel) : GLEventListener {
                         points = pointCloudData,
                         nearColor = hexToColor(pointCloudOption.farColor),
                         farColor = hexToColor(pointCloudOption.farColor),
-                        maxDistance = pointCloudOption.maxDistance
+                        maxDistance = pointCloudOption.maxDistance,
+                        heading = currentHeading
                     )
                 }
 
             pointsDrawer.draw(gl)
         }
 
-        xLineDrawer.draw(gl)
-        yLineDrawer.draw(gl)
-        zLineDrawer.draw(gl)
-
-        //Draw Polygons
         val color = hexToColor(obstacleOption.textColor)
         textRenderer.setColor(color.red, color.green, color.blue, color.alpha)
         if (obstacleOption.draw) {
@@ -142,6 +150,7 @@ class OpenGL2Frame(val parentPanel: GLJPanel) : GLEventListener {
                 )
             polyLineDrawer.draw(gl)
         }
+        gl.glRotatef(heading - 90, 0f, 0f, 1f)
     }
 
     override fun reshape(drawable: GLAutoDrawable, x: Int, y: Int, width: Int, height: Int) {
@@ -158,17 +167,38 @@ class OpenGL2Frame(val parentPanel: GLJPanel) : GLEventListener {
 
         polygon.width = obstacle.width
         polygon.height = obstacle.height
+
+//        val cosTheta = cos(currentHeading)
+//        val sinTheta = sin(currentHeading)
+
+        var x = obstacle.position.x - currentLocale.x
+        var y = obstacle.position.y - currentLocale.y
+        var z = obstacle.position.z - currentLocale.z
+//
+//        x = x * cosTheta - y * sinTheta
+//        y = x * sinTheta + y * cosTheta
+
         polygon.position = Coordinate3D(
-            x = obstacle.position.x - currentLocale.x,
-            y = obstacle.position.y - currentLocale.y,
-            z = obstacle.position.z - currentLocale.z
+            x = x,
+            y = y,
+            z = z
         )
+
         obstacle.polygonPointList.forEach { point ->
+            var px = point.x - currentLocale.x
+            var py = point.y - currentLocale.y
+            var pz = point.z - currentLocale.z
+//
+//            px = px * cosTheta - py * sinTheta
+//            py = px * sinTheta + py * cosTheta
+//            px = x + (px - x) * cosTheta - (py - y) * sinTheta
+//            py = y + (px - x) * sinTheta + (py - y) * cosTheta
+
             polygon.points.add(
                 Coordinate3D(
-                    x = point.x - currentLocale.x,
-                    y = point.y - currentLocale.y,
-                    z = point.z - currentLocale.z
+                    x = px,
+                    y = py,
+                    z = pz
                 )
             )
         }
@@ -180,12 +210,16 @@ class OpenGL2Frame(val parentPanel: GLJPanel) : GLEventListener {
         val id = obstacle.id
 
         if (objectsInfo.containsKey(id).not()) {
+            val speed = sqrt(obstacle.velocity.x * obstacle.velocity.x +
+                        obstacle.velocity.y * obstacle.velocity.x +
+                        obstacle.velocity.z * obstacle.velocity.z) / 1000
+
             val info = ObjectInfo(
                 id = obstacle.id,
                 type = obstacle.type.name,
                 heading = obstacle.theta,
                 position = Position(obstacle.position.x, obstacle.position.y, obstacle.position.z),
-                speed = obstacle.velocity.x,
+                speed = speed,
                 ttc = obstacle.ttc.toString(),
                 risk = obstacle.riskLevel.toString(),
                 textDrawPosition = Coordinate3D(
@@ -227,6 +261,7 @@ class OpenGL2Frame(val parentPanel: GLJPanel) : GLEventListener {
             UdpDataViewModel.subscribeLocalization(collector = { localization ->
                 val position = localization.pose.position
                 currentLocale = Coordinate3D(position.x, position.y, position.z)
+                currentHeading = localization.pose.heading
             })
         })
 

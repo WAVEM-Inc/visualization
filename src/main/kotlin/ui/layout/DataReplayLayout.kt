@@ -5,10 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.Checkbox
-import androidx.compose.material.CheckboxDefaults
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,8 +20,15 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import com.darkrockstudios.libraries.mpfilepicker.DirectoryPicker
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import ui.component.common.TextWithHeaderContent
 import ui.theme.*
+import viewmodel.LoggingViewModel
+import viewmodel.ReplayViewModel
 
 @Composable
 fun DataReplayLayout(modifier: Modifier = Modifier.fillMaxSize()) {
@@ -41,15 +45,15 @@ fun DataReplayLayout(modifier: Modifier = Modifier.fillMaxSize()) {
 
             LoadDirectory(modifier = Modifier.fillMaxWidth().height(60.dp))
 
-            Text(
-                modifier = Modifier.padding(top = 32.dp),
-                text = "Replay List",
-                fontFamily = Poppins,
-                fontWeight = FontWeight.Bold,
-                fontSize = TextUnit(24f, TextUnitType.Sp),
-                color = White_100
-            )
-            ReplayList()
+//            Text(
+//                modifier = Modifier.padding(top = 32.dp),
+//                text = "Replay List",
+//                fontFamily = Poppins,
+//                fontWeight = FontWeight.Bold,
+//                fontSize = TextUnit(24f, TextUnitType.Sp),
+//                color = White_100
+//            )
+//            ReplayList()
         }
 
         ReplayController(Modifier.fillMaxWidth().height(100.dp))
@@ -58,7 +62,27 @@ fun DataReplayLayout(modifier: Modifier = Modifier.fillMaxSize()) {
 
 @Composable
 fun LoadDirectory(modifier: Modifier = Modifier) {
-    val path by remember { mutableStateOf("폴더를 선택해주세요.") }
+    var path by remember { mutableStateOf<String>("") }
+
+    var showDirPicker by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        CoroutineScope(Dispatchers.Main).launch {
+            ReplayViewModel.subscribeReplayDirectory(collector = {
+                path = it
+            })
+        }
+    }
+
+    DirectoryPicker(show = showDirPicker) { dirPath ->
+        CoroutineScope(Dispatchers.Main).launch {
+            if (dirPath != null) {
+                ReplayViewModel.updateReplayDirectory(dirPath)
+            }
+        }
+        showDirPicker = false
+    }
+
     Box(modifier = modifier.background(LightGray), contentAlignment = Alignment.Center) {
         Row(modifier = Modifier.fillMaxSize().align(Alignment.Center)) {
             Box(modifier = modifier.align(Alignment.CenterVertically).padding(16.dp).weight(1f).background(White_200)) {
@@ -68,7 +92,9 @@ fun LoadDirectory(modifier: Modifier = Modifier) {
                 )
             }
 
-            IconButton(modifier = Modifier.align(Alignment.CenterVertically).padding(horizontal = 8.dp), onClick = {}) {
+            IconButton(modifier = Modifier.align(Alignment.CenterVertically).padding(horizontal = 8.dp), onClick = {
+                showDirPicker = true
+            }) {
                 Image(
                     painterResource("icon/ic_open_file.svg"),
                     contentDescription = null,
@@ -124,9 +150,14 @@ fun ReplayItem(modifier: Modifier = Modifier, title: String, onCheckedChange: (b
 @Composable
 fun ReplayController(modifier: Modifier = Modifier) {
     var isPlaying by remember { mutableStateOf(false) }
+    var progress by remember { mutableStateOf<Float>(0f) }
 
     Column(modifier = modifier.background(Navy_200)) {
-        ProgressBar(modifier = Modifier.fillMaxWidth().height(24.dp))
+        Slider(
+            modifier = Modifier.fillMaxWidth().height(12.dp),
+            value = progress,
+            onValueChange = { progress = it },
+            onValueChangeFinished = { println(progress) })
 
         Row(modifier = Modifier.wrapContentSize().align(Alignment.CenterHorizontally)) {
             val btnModifier = Modifier.aspectRatio(1f, true).padding(10.dp)

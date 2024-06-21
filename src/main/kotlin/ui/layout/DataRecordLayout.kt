@@ -15,9 +15,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.darkrockstudios.libraries.mpfilepicker.DirectoryPicker
+import com.darkrockstudios.libraries.mpfilepicker.FilePicker
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import ui.component.common.EvizText
 import ui.component.common.TextWithHeader
 import ui.theme.*
+import viewmodel.LoggingViewModel
 import java.net.Inet4Address
 import kotlin.concurrent.timer
 
@@ -25,18 +31,20 @@ import kotlin.concurrent.timer
 fun DataRecordLayout(
     modifier: Modifier = Modifier.fillMaxSize()
 ) {
-    var doRecord by remember { mutableStateOf(false) }
-    var editable by remember { mutableStateOf(doRecord.not()) }
-    var startTime: Long by remember { mutableStateOf(0) }
-    var countTime: Long by remember { mutableStateOf(0) }
+    var recordDuration by remember { mutableStateOf<Long>(0L) }
+    var isRecording by remember { mutableStateOf<Boolean>(false) }
 
-    if (doRecord) {
-        timer(period = 100, initialDelay = 100) {
-            countTime = System.currentTimeMillis() - startTime
+    LaunchedEffect(Unit) {
+        CoroutineScope(Dispatchers.Main).launch {
+            LoggingViewModel.subscribeLoggingDuration(collector = {
+                recordDuration = it
+            })
+        }
 
-            if (!doRecord) {
-                cancel()
-            }
+        CoroutineScope(Dispatchers.Main).launch {
+            LoggingViewModel.subscribeIsLoggingState(collector = {
+                isRecording = it
+            })
         }
     }
 
@@ -44,20 +52,22 @@ fun DataRecordLayout(
         EvizText("Save Directory", fontSize = 24f, fontWeight = FontWeight.Bold)
         DirectorySelector(modifier = Modifier.fillMaxWidth().height(60.dp))
 
-        EvizText(
-            text = "Save Options",
-            fontSize = 24f,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(top = 32.dp)
-        )
+//        EvizText(
+//            text = "Save Options",
+//            fontSize = 24f,
+//            fontWeight = FontWeight.Bold,
+//            modifier = Modifier.padding(top = 32.dp)
+//        )
+//
+//        SaveOptions(
+//            editable = editable,
+//            modifier = Modifier.fillMaxWidth().wrapContentHeight().weight(1f).background(LightGray)
+//        )
 
-        SaveOptions(
-            editable = editable,
-            modifier = Modifier.fillMaxWidth().wrapContentHeight().weight(1f).background(LightGray)
-        )
+        Spacer(modifier = Modifier.weight(1f))
 
         Column(modifier = Modifier.fillMaxWidth().wrapContentHeight()) {
-            TextTimer(countTime, modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 32.dp))
+            TextTimer(recordDuration, modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 32.dp))
 
             Button(
                 modifier = Modifier
@@ -66,15 +76,11 @@ fun DataRecordLayout(
                     .align(Alignment.CenterHorizontally),
                 colors = ButtonDefaults.buttonColors(backgroundColor = Orange),
                 onClick = {
-                    doRecord = doRecord.not()
-                    editable = doRecord.not()
-                    if (doRecord) {
-                        startTime = System.currentTimeMillis()
-                    }
+
                 }
             ) {
                 EvizText(
-                    text = if (doRecord) "Stop Recording" else "Start Recording",
+                    text = if (isRecording) "Stop Recording" else "Start Recording",
                     color = White_100,
                     fontSize = 16f,
                     fontWeight = FontWeight.Bold,
@@ -89,17 +95,39 @@ fun DataRecordLayout(
 private fun DirectorySelector(
     modifier: Modifier = Modifier
 ) {
-    val path by remember { mutableStateOf("폴더를 선택해주세요.") }
+    var dirPath by remember { mutableStateOf<String>("") }
+
+    var showDirPicker by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        CoroutineScope(Dispatchers.Main).launch {
+            LoggingViewModel.subscribeLoggingDirectory(collector = {
+                dirPath = it
+            })
+        }
+    }
+
+    DirectoryPicker(show = showDirPicker) { path ->
+        CoroutineScope(Dispatchers.Main).launch {
+            if (path != null) {
+                LoggingViewModel.updateLoggingDirectory(path)
+            }
+        }
+        showDirPicker = false
+    }
+
     Box(modifier = modifier.background(LightGray), contentAlignment = Alignment.Center) {
         Row(modifier = Modifier.fillMaxSize().align(Alignment.Center)) {
             Box(modifier = modifier.align(Alignment.CenterVertically).padding(16.dp).weight(1f).background(White_200)) {
                 Text(
-                    text = path,
+                    text = dirPath,
                     modifier = Modifier.align(Alignment.CenterStart).padding(start = 8.dp)
                 )
             }
 
-            IconButton(modifier = Modifier.align(Alignment.CenterVertically).padding(horizontal = 8.dp), onClick = {}) {
+            IconButton(modifier = Modifier.align(Alignment.CenterVertically).padding(horizontal = 8.dp), onClick = {
+                showDirPicker = true
+            }) {
                 Image(
                     painterResource("icon/ic_open_file.svg"),
                     contentDescription = null,

@@ -4,6 +4,8 @@ import androidx.compose.ui.graphics.Color
 import com.jogamp.opengl.GL2
 import ui.opengl.math.Coordinate3D
 import ui.opengl.math.GLColor
+import kotlin.math.cos
+import kotlin.math.sin
 
 //class PointsDrawer(
 //    private val pointSize: Float = 1f,
@@ -60,6 +62,7 @@ class PointsDrawer(
     private val nearColor: Color = Color.Red,
     private val useDynamicColor: Boolean = true,
     private val maxDistance: Int = 30,
+    private val heading: Double = 0.0,
     private val points: List<Coordinate3D>
 ) : GLDrawer {
     private val originCoordinate = Coordinate3D(0.0, 0.0, 0.0)
@@ -80,8 +83,18 @@ class PointsDrawer(
             for (i in points.indices) {
                 val pos = points[i]
                 val color = getLinearInterpolationColor(pos.distanceFromOther(originCoordinate))
+
+                // Rotate 90 degrees
+//                val angleRadians = Math.PI / 2 + heading
+                val angleRadians = heading
+                val cosTheta = cos(angleRadians)
+                val sinTheta = sin(angleRadians)
+
+                val x = pos.x * cosTheta - pos.y * sinTheta
+                val y = pos.x * sinTheta + pos.y * cosTheta
+
                 gl.glColor3f(color.red, color.green, color.blue)
-                gl.glVertex3d(pos.x, pos.y, pos.z)
+                gl.glVertex3d(x, y, pos.z)
             }
         } else {
             val color = farColor
@@ -89,7 +102,16 @@ class PointsDrawer(
 
             for (i in points.indices) {
                 val pos = points[i]
-                gl.glVertex3d(pos.x, pos.y, pos.z)
+
+                // Rotate 90 degrees
+                val angleRadians = Math.PI / 2 + heading
+                val cosTheta = cos(angleRadians)
+                val sinTheta = sin(angleRadians)
+
+                val x = pos.x * cosTheta - pos.y * sinTheta
+                val y = pos.x * sinTheta + pos.y * cosTheta
+
+                gl.glVertex3d(x, y, pos.z)
             }
         }
 

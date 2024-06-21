@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.lastOrNull
 
 object UdpDataViewModel {
     private val pointCloudFlow = MutableSharedFlow<PointCloud>()
-    private val obstaclesFlow = MutableSharedFlow<PerceptionObstacleOuterClass.PerceptionObstacles>()
+    private val obstaclesFlow = MutableSharedFlow<PerceptionObstacles>()
     private val localizationFlow = MutableSharedFlow<LocalizationEstimate>()
     private val vehicleSignalFlow = MutableSharedFlow<VehicleSignal>()
     private val trafficLightFlow = MutableSharedFlow<TrafficLight>()

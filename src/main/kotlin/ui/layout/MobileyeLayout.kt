@@ -26,6 +26,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import apollo.perception.PerceptionObstacleOuterClass
+import apollo.perception.PerceptionObstacleOuterClass.PerceptionObstacle
 import apollo.perception.perceptionObstacle
 import application.type.data.Position
 import application.type.option.MobileyeOption
@@ -39,6 +41,7 @@ import viewmodel.ConfigDataViewModel
 import viewmodel.UdpDataViewModel
 import kotlin.math.cos
 import kotlin.math.sin
+import kotlin.math.sqrt
 
 @Composable
 fun MobileyeLayout(modifier: Modifier = Modifier.fillMaxSize()) {
@@ -46,25 +49,28 @@ fun MobileyeLayout(modifier: Modifier = Modifier.fillMaxSize()) {
     val textStyle = TextStyle(color = Color.White)
     val ldwShape = HexagonShape()
 
-    var mobileyeData by remember { mutableStateOf(MobileyeData.getDefaultInstance()) }
+    var objects by remember { mutableStateOf(listOf<PerceptionObstacle>()) }
+//    var mobileyeData by remember { mutableStateOf(MobileyeData.getDefaultInstance()) }
     var drawOption by remember { mutableStateOf(MobileyeOption()) }
-    val currentLocale = Position()
+    val currentLocale = remember { mutableStateOf(Position()) }
 
     var leftLdwColor by remember { mutableStateOf(Color.Gray) }
     var rightLdwColor by remember { mutableStateOf(Color.Gray) }
 
     LaunchedEffect(Unit) {
+        val currentLocaleState = currentLocale
         CoroutineScope(Dispatchers.Default).launch {
             UdpDataViewModel.subscribeLocalization(collector = { locale ->
-                currentLocale.x = locale.pose.position.x
-                currentLocale.y = locale.pose.position.y
+                currentLocale.value.x = locale.pose.position.x
+                currentLocale.value.y = locale.pose.position.y
             })
         }
 
         CoroutineScope(Dispatchers.Default).launch {
             UdpDataViewModel.subscribeMobileye(collector = { data ->
-                mobileyeData = data
+                objects = data.perceptionObstacleList
 
+                data.perceptionObstacleList
                 if (drawOption.useLwd) {
                     rightLdwColor = if (data.rightLdwAvailability.number == 0) {
                         Color.Red
@@ -97,9 +103,6 @@ fun MobileyeLayout(modifier: Modifier = Modifier.fillMaxSize()) {
             val originY = 25
             val meterPx = (height - originY) / 50
 
-            println(height)
-            println(meterPx)
-
             translate(left = width / 2) {
                 scale(scaleX = 1f, scaleY = -1f) {
                     val dashedEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
@@ -118,17 +121,6 @@ fun MobileyeLayout(modifier: Modifier = Modifier.fillMaxSize()) {
                         pathEffect = dashedEffect
                     )
 
-//                    drawCircle(color = Color.Red, center = Offset(100f, 100f), radius = 15f)
-//                    rotate(180f, pivot = Offset(120f, 100f)) {
-//                        scale(scaleX = -1f, scaleY = 1f, pivot = Offset(120f, 100f)) {
-//                            drawText(
-//                                textMeasurer = textMeasurer,
-//                                text = "Obstacle 정보\n가\n나\n다\n라\n마\n바",
-//                                topLeft = Offset(120.dp.toPx(), 100.dp.toPx()),
-//                                style = textStyle
-//                            )
-//                        }
-//                    }
                     // draw meter texts
                     for (i in 10..50 step 10) {
                         val x = 0f
@@ -145,9 +137,9 @@ fun MobileyeLayout(modifier: Modifier = Modifier.fillMaxSize()) {
                         }
                     }
 
-                    for (obstacle in mobileyeData.perceptionObstacleList) {
-                        var x = (originX + (obstacle.position.x - currentLocale.x) * meterPx).toFloat()
-                        var y = (originY + (obstacle.position.y - currentLocale.y) * meterPx).toFloat()
+                    for (obstacle in objects) {
+                        var x = (originX + (obstacle.position.x - currentLocale.value.x) * meterPx).toFloat()
+                        var y = (originY + (obstacle.position.y - currentLocale.value.y) * meterPx).toFloat()
 
                         drawCircle(color = Color.Red, center = Offset(x, y), radius = 15f)
 
@@ -159,13 +151,19 @@ fun MobileyeLayout(modifier: Modifier = Modifier.fillMaxSize()) {
                             text += "\nType: ${obstacle.type}"
                         }
                         if (drawOption.useHeading) {
-                            text += "\nHeading: ${obstacle.theta}"
+                            text += "\nHeading: %.2f".format(obstacle.theta)
                         }
                         if (drawOption.usePosition) {
-                            text += "\nPosition: ${obstacle.position}"
+                            text += "\nPosition:"
+                            text += "\n   -x: %.2f".format(obstacle.position.x)
+                            text += "\n   -y: %.2f".format(obstacle.position.y)
                         }
                         if (drawOption.useSpeed) {
-                            text += "\nSpeed: ${obstacle.velocity}"
+                            val speed = sqrt(obstacle.velocity.x * obstacle.velocity.x +
+                                    obstacle.velocity.y * obstacle.velocity.x +
+                                    obstacle.velocity.z * obstacle.velocity.z) / 1000
+
+                            text += "\nSpeed: %.2f".format(speed)
                         }
                         if (drawOption.useTtc) {
                             text += "\nTTC: ${obstacle.ttc}"
@@ -176,12 +174,16 @@ fun MobileyeLayout(modifier: Modifier = Modifier.fillMaxSize()) {
                         x += 20 //adjust x for text x coordinates. add circle radius + 5
                         rotate(180f, pivot = Offset(x, y)) {
                             scale(scaleX = -1f, scaleY = 1f, pivot = Offset(x, y)) {
-                                drawText(
-                                    textMeasurer = textMeasurer,
-                                    text = "Obstacle 정보",
-                                    topLeft = Offset(x.dp.toPx(), y.dp.toPx()),
-                                    style = textStyle
-                                )
+                                try {
+                                    drawText(
+                                        textMeasurer = textMeasurer,
+                                        text = text,
+                                        topLeft = Offset(x.dp.toPx(), y.dp.toPx()),
+                                        style = textStyle
+                                    )
+                                } catch (_: Exception) {
+
+                                }
                             }
                         }
                     }

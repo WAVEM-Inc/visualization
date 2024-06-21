@@ -16,12 +16,10 @@ import java.nio.ByteOrder
 
 
 class UdpClient {
-    var socket = DatagramSocket()
+    private var socket = DatagramSocket()
 
     private lateinit var listener: OnMessageListener
     private var receivingThread: Thread? = null
-
-
 
     interface OnMessageListener {
         fun onLocalizationReceive(message: LocalizationEstimate)
@@ -79,7 +77,9 @@ class UdpClient {
                     ProtoMessageType.TRAFFIC_LIGHT -> listener.onTrafficLightReceive(TrafficLight.parseFrom(payload.second))
                     ProtoMessageType.POINT_CLOUD -> listener.onPointCloudReceive(PointCloudOuterClass.PointCloud.parseFrom(payload.second))
                     ProtoMessageType.VEHICLE_SIGNAL -> listener.onDashboardReceive(VehicleSignal.parseFrom(payload.second))
-                    ProtoMessageType.MOBIILEYE -> listener.onMobileyeReceived(MobileyeData.parseFrom(payload.second))
+                    ProtoMessageType.MOBILEYE -> listener.onMobileyeReceived(MobileyeData.parseFrom(payload.second))
+                    ProtoMessageType.SERVER_TO_EVIZ -> println("server to eviz message reached to udp client...")
+                    ProtoMessageType.EVIZ_TO_SERVER -> println("eviz to server message reached to udp client...")
                     null -> println("Received not invalid data.")
                 }
             } catch (e: Exception) {
