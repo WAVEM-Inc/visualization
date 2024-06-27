@@ -3,5 +3,5 @@
 
 // Generated files should ignore deprecation warnings
 @file:Suppress("DEPRECATION")
-package essys_middle;
+package essys_middle.streaming;
 

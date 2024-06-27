@@ -2,7 +2,7 @@
 // source: modules/essys/streaming.proto
 // Protobuf Java Version: 4.26.1
 
-package essys_middle;
+package essys_middle.streaming;
 
 public final class Streaming {
   private Streaming() {}
@@ -25,7 +25,7 @@ public final class Streaming {
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
   /**
-   * Protobuf enum {@code essys_middle.PlaybackState}
+   * Protobuf enum {@code essys_middle.streaming.PlaybackState}
    */
   public enum PlaybackState
       implements com.google.protobuf.ProtocolMessageEnum {
@@ -46,6 +46,10 @@ public final class Streaming {
      */
     REQUEST_PLAY(3),
     /**
+     * <pre>
+     * REQUEST_FIRST_PLAY = 5;
+     * </pre>
+     *
      * <code>REQUEST_MOVING_ON = 4;</code>
      */
     REQUEST_MOVING_ON(4),
@@ -62,6 +66,10 @@ public final class Streaming {
      */
     RESPONSE_PLAY(23),
     /**
+     * <pre>
+     * RESPONSE_FIRST_PLAY = 25;
+     * </pre>
+     *
      * <code>RESPONSE_MOVING_ON = 24;</code>
      */
     RESPONSE_MOVING_ON(24),
@@ -93,6 +101,10 @@ public final class Streaming {
      */
     public static final int REQUEST_PLAY_VALUE = 3;
     /**
+     * <pre>
+     * REQUEST_FIRST_PLAY = 5;
+     * </pre>
+     *
      * <code>REQUEST_MOVING_ON = 4;</code>
      */
     public static final int REQUEST_MOVING_ON_VALUE = 4;
@@ -109,6 +121,10 @@ public final class Streaming {
      */
     public static final int RESPONSE_PLAY_VALUE = 23;
     /**
+     * <pre>
+     * RESPONSE_FIRST_PLAY = 25;
+     * </pre>
+     *
      * <code>RESPONSE_MOVING_ON = 24;</code>
      */
     public static final int RESPONSE_MOVING_ON_VALUE = 24;
@@ -169,7 +185,7 @@ public final class Streaming {
     }
     public static final com.google.protobuf.Descriptors.EnumDescriptor
         getDescriptor() {
-      return essys_middle.Streaming.getDescriptor().getEnumTypes().get(0);
+      return essys_middle.streaming.Streaming.getDescriptor().getEnumTypes().get(0);
     }
 
     private static final PlaybackState[] VALUES = values();
@@ -189,23 +205,27 @@ public final class Streaming {
       this.value = value;
     }
 
-    // @@protoc_insertion_point(enum_scope:essys_middle.PlaybackState)
+    // @@protoc_insertion_point(enum_scope:essys_middle.streaming.PlaybackState)
   }
 
   /**
-   * Protobuf enum {@code essys_middle.ErrorCode}
+   * Protobuf enum {@code essys_middle.streaming.ErrorCode}
    */
   public enum ErrorCode
       implements com.google.protobuf.ProtocolMessageEnum {
     /**
      * <pre>
-     * 오류는 있지만 아래 항목으로 정의할 수 없을때 사용
+     * 오류는 있지만 아래 항목으로 정의할 수 없음
      * </pre>
      *
      * <code>UNKNOWN = 0;</code>
      */
     UNKNOWN(0),
     /**
+     * <pre>
+     * .log 확장명을 제외한 경로를 받은 경우
+     * </pre>
+     *
      * <code>FILE_EXT_ERROR = 1;</code>
      */
     FILE_EXT_ERROR(1),
@@ -246,13 +266,17 @@ public final class Streaming {
     }
     /**
      * <pre>
-     * 오류는 있지만 아래 항목으로 정의할 수 없을때 사용
+     * 오류는 있지만 아래 항목으로 정의할 수 없음
      * </pre>
      *
      * <code>UNKNOWN = 0;</code>
      */
     public static final int UNKNOWN_VALUE = 0;
     /**
+     * <pre>
+     * .log 확장명을 제외한 경로를 받은 경우
+     * </pre>
+     *
      * <code>FILE_EXT_ERROR = 1;</code>
      */
     public static final int FILE_EXT_ERROR_VALUE = 1;
@@ -336,7 +360,7 @@ public final class Streaming {
     }
     public static final com.google.protobuf.Descriptors.EnumDescriptor
         getDescriptor() {
-      return essys_middle.Streaming.getDescriptor().getEnumTypes().get(1);
+      return essys_middle.streaming.Streaming.getDescriptor().getEnumTypes().get(1);
     }
 
     private static final ErrorCode[] VALUES = values();
@@ -356,11 +380,11 @@ public final class Streaming {
       this.value = value;
     }
 
-    // @@protoc_insertion_point(enum_scope:essys_middle.ErrorCode)
+    // @@protoc_insertion_point(enum_scope:essys_middle.streaming.ErrorCode)
   }
 
   public interface FileInfoOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:essys_middle.FileInfo)
+      // @@protoc_insertion_point(interface_extends:essys_middle.streaming.FileInfo)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -396,6 +420,25 @@ public final class Streaming {
      */
     com.google.protobuf.ByteString
         getFilePathBytes();
+
+    /**
+     * <pre>
+     * unix time 소수점 3째 자리 전송
+     * </pre>
+     *
+     * <code>optional double replay_timestamp = 10;</code>
+     * @return Whether the replayTimestamp field is set.
+     */
+    boolean hasReplayTimestamp();
+    /**
+     * <pre>
+     * unix time 소수점 3째 자리 전송
+     * </pre>
+     *
+     * <code>optional double replay_timestamp = 10;</code>
+     * @return The replayTimestamp.
+     */
+    double getReplayTimestamp();
 
     /**
      * <code>optional double start_of_absolute_time = 11;</code>
@@ -442,11 +485,11 @@ public final class Streaming {
     long getEndOfRunTime();
   }
   /**
-   * Protobuf type {@code essys_middle.FileInfo}
+   * Protobuf type {@code essys_middle.streaming.FileInfo}
    */
   public static final class FileInfo extends
       com.google.protobuf.GeneratedMessage implements
-      // @@protoc_insertion_point(message_implements:essys_middle.FileInfo)
+      // @@protoc_insertion_point(message_implements:essys_middle.streaming.FileInfo)
       FileInfoOrBuilder {
   private static final long serialVersionUID = 0L;
     static {
@@ -469,15 +512,15 @@ public final class Streaming {
 
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return essys_middle.Streaming.internal_static_essys_middle_FileInfo_descriptor;
+      return essys_middle.streaming.Streaming.internal_static_essys_middle_streaming_FileInfo_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return essys_middle.Streaming.internal_static_essys_middle_FileInfo_fieldAccessorTable
+      return essys_middle.streaming.Streaming.internal_static_essys_middle_streaming_FileInfo_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              essys_middle.Streaming.FileInfo.class, essys_middle.Streaming.FileInfo.Builder.class);
+              essys_middle.streaming.Streaming.FileInfo.class, essys_middle.streaming.Streaming.FileInfo.Builder.class);
     }
 
     private int bitField0_;
@@ -579,6 +622,33 @@ public final class Streaming {
       }
     }
 
+    public static final int REPLAY_TIMESTAMP_FIELD_NUMBER = 10;
+    private double replayTimestamp_ = 0D;
+    /**
+     * <pre>
+     * unix time 소수점 3째 자리 전송
+     * </pre>
+     *
+     * <code>optional double replay_timestamp = 10;</code>
+     * @return Whether the replayTimestamp field is set.
+     */
+    @java.lang.Override
+    public boolean hasReplayTimestamp() {
+      return ((bitField0_ & 0x00000004) != 0);
+    }
+    /**
+     * <pre>
+     * unix time 소수점 3째 자리 전송
+     * </pre>
+     *
+     * <code>optional double replay_timestamp = 10;</code>
+     * @return The replayTimestamp.
+     */
+    @java.lang.Override
+    public double getReplayTimestamp() {
+      return replayTimestamp_;
+    }
+
     public static final int START_OF_ABSOLUTE_TIME_FIELD_NUMBER = 11;
     private double startOfAbsoluteTime_ = 0D;
     /**
@@ -587,7 +657,7 @@ public final class Streaming {
      */
     @java.lang.Override
     public boolean hasStartOfAbsoluteTime() {
-      return ((bitField0_ & 0x00000004) != 0);
+      return ((bitField0_ & 0x00000008) != 0);
     }
     /**
      * <code>optional double start_of_absolute_time = 11;</code>
@@ -606,7 +676,7 @@ public final class Streaming {
      */
     @java.lang.Override
     public boolean hasEndOfAbsoluteTime() {
-      return ((bitField0_ & 0x00000008) != 0);
+      return ((bitField0_ & 0x00000010) != 0);
     }
     /**
      * <code>optional double end_of_absolute_time = 12;</code>
@@ -625,7 +695,7 @@ public final class Streaming {
      */
     @java.lang.Override
     public boolean hasStartOfRunTime() {
-      return ((bitField0_ & 0x00000010) != 0);
+      return ((bitField0_ & 0x00000020) != 0);
     }
     /**
      * <code>optional int64 start_of_run_time = 13;</code>
@@ -644,7 +714,7 @@ public final class Streaming {
      */
     @java.lang.Override
     public boolean hasEndOfRunTime() {
-      return ((bitField0_ & 0x00000020) != 0);
+      return ((bitField0_ & 0x00000040) != 0);
     }
     /**
      * <code>optional int64 end_of_run_time = 14;</code>
@@ -676,15 +746,18 @@ public final class Streaming {
         com.google.protobuf.GeneratedMessage.writeString(output, 2, filePath_);
       }
       if (((bitField0_ & 0x00000004) != 0)) {
-        output.writeDouble(11, startOfAbsoluteTime_);
+        output.writeDouble(10, replayTimestamp_);
       }
       if (((bitField0_ & 0x00000008) != 0)) {
-        output.writeDouble(12, endOfAbsoluteTime_);
+        output.writeDouble(11, startOfAbsoluteTime_);
       }
       if (((bitField0_ & 0x00000010) != 0)) {
-        output.writeInt64(13, startOfRunTime_);
+        output.writeDouble(12, endOfAbsoluteTime_);
       }
       if (((bitField0_ & 0x00000020) != 0)) {
+        output.writeInt64(13, startOfRunTime_);
+      }
+      if (((bitField0_ & 0x00000040) != 0)) {
         output.writeInt64(14, endOfRunTime_);
       }
       getUnknownFields().writeTo(output);
@@ -704,17 +777,21 @@ public final class Streaming {
       }
       if (((bitField0_ & 0x00000004) != 0)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(11, startOfAbsoluteTime_);
+          .computeDoubleSize(10, replayTimestamp_);
       }
       if (((bitField0_ & 0x00000008) != 0)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(12, endOfAbsoluteTime_);
+          .computeDoubleSize(11, startOfAbsoluteTime_);
       }
       if (((bitField0_ & 0x00000010) != 0)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(13, startOfRunTime_);
+          .computeDoubleSize(12, endOfAbsoluteTime_);
       }
       if (((bitField0_ & 0x00000020) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(13, startOfRunTime_);
+      }
+      if (((bitField0_ & 0x00000040) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(14, endOfRunTime_);
       }
@@ -728,10 +805,10 @@ public final class Streaming {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof essys_middle.Streaming.FileInfo)) {
+      if (!(obj instanceof essys_middle.streaming.Streaming.FileInfo)) {
         return super.equals(obj);
       }
-      essys_middle.Streaming.FileInfo other = (essys_middle.Streaming.FileInfo) obj;
+      essys_middle.streaming.Streaming.FileInfo other = (essys_middle.streaming.Streaming.FileInfo) obj;
 
       if (hasFileName() != other.hasFileName()) return false;
       if (hasFileName()) {
@@ -742,6 +819,12 @@ public final class Streaming {
       if (hasFilePath()) {
         if (!getFilePath()
             .equals(other.getFilePath())) return false;
+      }
+      if (hasReplayTimestamp() != other.hasReplayTimestamp()) return false;
+      if (hasReplayTimestamp()) {
+        if (java.lang.Double.doubleToLongBits(getReplayTimestamp())
+            != java.lang.Double.doubleToLongBits(
+                other.getReplayTimestamp())) return false;
       }
       if (hasStartOfAbsoluteTime() != other.hasStartOfAbsoluteTime()) return false;
       if (hasStartOfAbsoluteTime()) {
@@ -784,6 +867,11 @@ public final class Streaming {
         hash = (37 * hash) + FILE_PATH_FIELD_NUMBER;
         hash = (53 * hash) + getFilePath().hashCode();
       }
+      if (hasReplayTimestamp()) {
+        hash = (37 * hash) + REPLAY_TIMESTAMP_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            java.lang.Double.doubleToLongBits(getReplayTimestamp()));
+      }
       if (hasStartOfAbsoluteTime()) {
         hash = (37 * hash) + START_OF_ABSOLUTE_TIME_FIELD_NUMBER;
         hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
@@ -809,44 +897,44 @@ public final class Streaming {
       return hash;
     }
 
-    public static essys_middle.Streaming.FileInfo parseFrom(
+    public static essys_middle.streaming.Streaming.FileInfo parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static essys_middle.Streaming.FileInfo parseFrom(
+    public static essys_middle.streaming.Streaming.FileInfo parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static essys_middle.Streaming.FileInfo parseFrom(
+    public static essys_middle.streaming.Streaming.FileInfo parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static essys_middle.Streaming.FileInfo parseFrom(
+    public static essys_middle.streaming.Streaming.FileInfo parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static essys_middle.Streaming.FileInfo parseFrom(byte[] data)
+    public static essys_middle.streaming.Streaming.FileInfo parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static essys_middle.Streaming.FileInfo parseFrom(
+    public static essys_middle.streaming.Streaming.FileInfo parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static essys_middle.Streaming.FileInfo parseFrom(java.io.InputStream input)
+    public static essys_middle.streaming.Streaming.FileInfo parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessage
           .parseWithIOException(PARSER, input);
     }
-    public static essys_middle.Streaming.FileInfo parseFrom(
+    public static essys_middle.streaming.Streaming.FileInfo parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -854,26 +942,26 @@ public final class Streaming {
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
-    public static essys_middle.Streaming.FileInfo parseDelimitedFrom(java.io.InputStream input)
+    public static essys_middle.streaming.Streaming.FileInfo parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessage
           .parseDelimitedWithIOException(PARSER, input);
     }
 
-    public static essys_middle.Streaming.FileInfo parseDelimitedFrom(
+    public static essys_middle.streaming.Streaming.FileInfo parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessage
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static essys_middle.Streaming.FileInfo parseFrom(
+    public static essys_middle.streaming.Streaming.FileInfo parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessage
           .parseWithIOException(PARSER, input);
     }
-    public static essys_middle.Streaming.FileInfo parseFrom(
+    public static essys_middle.streaming.Streaming.FileInfo parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -886,7 +974,7 @@ public final class Streaming {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(essys_middle.Streaming.FileInfo prototype) {
+    public static Builder newBuilder(essys_middle.streaming.Streaming.FileInfo prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -902,26 +990,26 @@ public final class Streaming {
       return builder;
     }
     /**
-     * Protobuf type {@code essys_middle.FileInfo}
+     * Protobuf type {@code essys_middle.streaming.FileInfo}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:essys_middle.FileInfo)
-        essys_middle.Streaming.FileInfoOrBuilder {
+        // @@protoc_insertion_point(builder_implements:essys_middle.streaming.FileInfo)
+        essys_middle.streaming.Streaming.FileInfoOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return essys_middle.Streaming.internal_static_essys_middle_FileInfo_descriptor;
+        return essys_middle.streaming.Streaming.internal_static_essys_middle_streaming_FileInfo_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return essys_middle.Streaming.internal_static_essys_middle_FileInfo_fieldAccessorTable
+        return essys_middle.streaming.Streaming.internal_static_essys_middle_streaming_FileInfo_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                essys_middle.Streaming.FileInfo.class, essys_middle.Streaming.FileInfo.Builder.class);
+                essys_middle.streaming.Streaming.FileInfo.class, essys_middle.streaming.Streaming.FileInfo.Builder.class);
       }
 
-      // Construct using essys_middle.Streaming.FileInfo.newBuilder()
+      // Construct using essys_middle.streaming.Streaming.FileInfo.newBuilder()
       private Builder() {
 
       }
@@ -937,6 +1025,7 @@ public final class Streaming {
         bitField0_ = 0;
         fileName_ = "";
         filePath_ = "";
+        replayTimestamp_ = 0D;
         startOfAbsoluteTime_ = 0D;
         endOfAbsoluteTime_ = 0D;
         startOfRunTime_ = 0L;
@@ -947,17 +1036,17 @@ public final class Streaming {
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return essys_middle.Streaming.internal_static_essys_middle_FileInfo_descriptor;
+        return essys_middle.streaming.Streaming.internal_static_essys_middle_streaming_FileInfo_descriptor;
       }
 
       @java.lang.Override
-      public essys_middle.Streaming.FileInfo getDefaultInstanceForType() {
-        return essys_middle.Streaming.FileInfo.getDefaultInstance();
+      public essys_middle.streaming.Streaming.FileInfo getDefaultInstanceForType() {
+        return essys_middle.streaming.Streaming.FileInfo.getDefaultInstance();
       }
 
       @java.lang.Override
-      public essys_middle.Streaming.FileInfo build() {
-        essys_middle.Streaming.FileInfo result = buildPartial();
+      public essys_middle.streaming.Streaming.FileInfo build() {
+        essys_middle.streaming.Streaming.FileInfo result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -965,14 +1054,14 @@ public final class Streaming {
       }
 
       @java.lang.Override
-      public essys_middle.Streaming.FileInfo buildPartial() {
-        essys_middle.Streaming.FileInfo result = new essys_middle.Streaming.FileInfo(this);
+      public essys_middle.streaming.Streaming.FileInfo buildPartial() {
+        essys_middle.streaming.Streaming.FileInfo result = new essys_middle.streaming.Streaming.FileInfo(this);
         if (bitField0_ != 0) { buildPartial0(result); }
         onBuilt();
         return result;
       }
 
-      private void buildPartial0(essys_middle.Streaming.FileInfo result) {
+      private void buildPartial0(essys_middle.streaming.Streaming.FileInfo result) {
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) != 0)) {
@@ -984,36 +1073,40 @@ public final class Streaming {
           to_bitField0_ |= 0x00000002;
         }
         if (((from_bitField0_ & 0x00000004) != 0)) {
-          result.startOfAbsoluteTime_ = startOfAbsoluteTime_;
+          result.replayTimestamp_ = replayTimestamp_;
           to_bitField0_ |= 0x00000004;
         }
         if (((from_bitField0_ & 0x00000008) != 0)) {
-          result.endOfAbsoluteTime_ = endOfAbsoluteTime_;
+          result.startOfAbsoluteTime_ = startOfAbsoluteTime_;
           to_bitField0_ |= 0x00000008;
         }
         if (((from_bitField0_ & 0x00000010) != 0)) {
-          result.startOfRunTime_ = startOfRunTime_;
+          result.endOfAbsoluteTime_ = endOfAbsoluteTime_;
           to_bitField0_ |= 0x00000010;
         }
         if (((from_bitField0_ & 0x00000020) != 0)) {
-          result.endOfRunTime_ = endOfRunTime_;
+          result.startOfRunTime_ = startOfRunTime_;
           to_bitField0_ |= 0x00000020;
+        }
+        if (((from_bitField0_ & 0x00000040) != 0)) {
+          result.endOfRunTime_ = endOfRunTime_;
+          to_bitField0_ |= 0x00000040;
         }
         result.bitField0_ |= to_bitField0_;
       }
 
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof essys_middle.Streaming.FileInfo) {
-          return mergeFrom((essys_middle.Streaming.FileInfo)other);
+        if (other instanceof essys_middle.streaming.Streaming.FileInfo) {
+          return mergeFrom((essys_middle.streaming.Streaming.FileInfo)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(essys_middle.Streaming.FileInfo other) {
-        if (other == essys_middle.Streaming.FileInfo.getDefaultInstance()) return this;
+      public Builder mergeFrom(essys_middle.streaming.Streaming.FileInfo other) {
+        if (other == essys_middle.streaming.Streaming.FileInfo.getDefaultInstance()) return this;
         if (other.hasFileName()) {
           fileName_ = other.fileName_;
           bitField0_ |= 0x00000001;
@@ -1023,6 +1116,9 @@ public final class Streaming {
           filePath_ = other.filePath_;
           bitField0_ |= 0x00000002;
           onChanged();
+        }
+        if (other.hasReplayTimestamp()) {
+          setReplayTimestamp(other.getReplayTimestamp());
         }
         if (other.hasStartOfAbsoluteTime()) {
           setStartOfAbsoluteTime(other.getStartOfAbsoluteTime());
@@ -1072,24 +1168,29 @@ public final class Streaming {
                 bitField0_ |= 0x00000002;
                 break;
               } // case 18
+              case 81: {
+                replayTimestamp_ = input.readDouble();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 81
               case 89: {
                 startOfAbsoluteTime_ = input.readDouble();
-                bitField0_ |= 0x00000004;
+                bitField0_ |= 0x00000008;
                 break;
               } // case 89
               case 97: {
                 endOfAbsoluteTime_ = input.readDouble();
-                bitField0_ |= 0x00000008;
+                bitField0_ |= 0x00000010;
                 break;
               } // case 97
               case 104: {
                 startOfRunTime_ = input.readInt64();
-                bitField0_ |= 0x00000010;
+                bitField0_ |= 0x00000020;
                 break;
               } // case 104
               case 112: {
                 endOfRunTime_ = input.readInt64();
-                bitField0_ |= 0x00000020;
+                bitField0_ |= 0x00000040;
                 break;
               } // case 112
               default: {
@@ -1269,6 +1370,62 @@ public final class Streaming {
         return this;
       }
 
+      private double replayTimestamp_ ;
+      /**
+       * <pre>
+       * unix time 소수점 3째 자리 전송
+       * </pre>
+       *
+       * <code>optional double replay_timestamp = 10;</code>
+       * @return Whether the replayTimestamp field is set.
+       */
+      @java.lang.Override
+      public boolean hasReplayTimestamp() {
+        return ((bitField0_ & 0x00000004) != 0);
+      }
+      /**
+       * <pre>
+       * unix time 소수점 3째 자리 전송
+       * </pre>
+       *
+       * <code>optional double replay_timestamp = 10;</code>
+       * @return The replayTimestamp.
+       */
+      @java.lang.Override
+      public double getReplayTimestamp() {
+        return replayTimestamp_;
+      }
+      /**
+       * <pre>
+       * unix time 소수점 3째 자리 전송
+       * </pre>
+       *
+       * <code>optional double replay_timestamp = 10;</code>
+       * @param value The replayTimestamp to set.
+       * @return This builder for chaining.
+       */
+      public Builder setReplayTimestamp(double value) {
+
+        replayTimestamp_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * unix time 소수점 3째 자리 전송
+       * </pre>
+       *
+       * <code>optional double replay_timestamp = 10;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearReplayTimestamp() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        replayTimestamp_ = 0D;
+        onChanged();
+        return this;
+      }
+
       private double startOfAbsoluteTime_ ;
       /**
        * <code>optional double start_of_absolute_time = 11;</code>
@@ -1276,7 +1433,7 @@ public final class Streaming {
        */
       @java.lang.Override
       public boolean hasStartOfAbsoluteTime() {
-        return ((bitField0_ & 0x00000004) != 0);
+        return ((bitField0_ & 0x00000008) != 0);
       }
       /**
        * <code>optional double start_of_absolute_time = 11;</code>
@@ -1294,7 +1451,7 @@ public final class Streaming {
       public Builder setStartOfAbsoluteTime(double value) {
 
         startOfAbsoluteTime_ = value;
-        bitField0_ |= 0x00000004;
+        bitField0_ |= 0x00000008;
         onChanged();
         return this;
       }
@@ -1303,7 +1460,7 @@ public final class Streaming {
        * @return This builder for chaining.
        */
       public Builder clearStartOfAbsoluteTime() {
-        bitField0_ = (bitField0_ & ~0x00000004);
+        bitField0_ = (bitField0_ & ~0x00000008);
         startOfAbsoluteTime_ = 0D;
         onChanged();
         return this;
@@ -1316,7 +1473,7 @@ public final class Streaming {
        */
       @java.lang.Override
       public boolean hasEndOfAbsoluteTime() {
-        return ((bitField0_ & 0x00000008) != 0);
+        return ((bitField0_ & 0x00000010) != 0);
       }
       /**
        * <code>optional double end_of_absolute_time = 12;</code>
@@ -1334,7 +1491,7 @@ public final class Streaming {
       public Builder setEndOfAbsoluteTime(double value) {
 
         endOfAbsoluteTime_ = value;
-        bitField0_ |= 0x00000008;
+        bitField0_ |= 0x00000010;
         onChanged();
         return this;
       }
@@ -1343,7 +1500,7 @@ public final class Streaming {
        * @return This builder for chaining.
        */
       public Builder clearEndOfAbsoluteTime() {
-        bitField0_ = (bitField0_ & ~0x00000008);
+        bitField0_ = (bitField0_ & ~0x00000010);
         endOfAbsoluteTime_ = 0D;
         onChanged();
         return this;
@@ -1356,7 +1513,7 @@ public final class Streaming {
        */
       @java.lang.Override
       public boolean hasStartOfRunTime() {
-        return ((bitField0_ & 0x00000010) != 0);
+        return ((bitField0_ & 0x00000020) != 0);
       }
       /**
        * <code>optional int64 start_of_run_time = 13;</code>
@@ -1374,7 +1531,7 @@ public final class Streaming {
       public Builder setStartOfRunTime(long value) {
 
         startOfRunTime_ = value;
-        bitField0_ |= 0x00000010;
+        bitField0_ |= 0x00000020;
         onChanged();
         return this;
       }
@@ -1383,7 +1540,7 @@ public final class Streaming {
        * @return This builder for chaining.
        */
       public Builder clearStartOfRunTime() {
-        bitField0_ = (bitField0_ & ~0x00000010);
+        bitField0_ = (bitField0_ & ~0x00000020);
         startOfRunTime_ = 0L;
         onChanged();
         return this;
@@ -1396,7 +1553,7 @@ public final class Streaming {
        */
       @java.lang.Override
       public boolean hasEndOfRunTime() {
-        return ((bitField0_ & 0x00000020) != 0);
+        return ((bitField0_ & 0x00000040) != 0);
       }
       /**
        * <code>optional int64 end_of_run_time = 14;</code>
@@ -1414,7 +1571,7 @@ public final class Streaming {
       public Builder setEndOfRunTime(long value) {
 
         endOfRunTime_ = value;
-        bitField0_ |= 0x00000020;
+        bitField0_ |= 0x00000040;
         onChanged();
         return this;
       }
@@ -1423,22 +1580,22 @@ public final class Streaming {
        * @return This builder for chaining.
        */
       public Builder clearEndOfRunTime() {
-        bitField0_ = (bitField0_ & ~0x00000020);
+        bitField0_ = (bitField0_ & ~0x00000040);
         endOfRunTime_ = 0L;
         onChanged();
         return this;
       }
 
-      // @@protoc_insertion_point(builder_scope:essys_middle.FileInfo)
+      // @@protoc_insertion_point(builder_scope:essys_middle.streaming.FileInfo)
     }
 
-    // @@protoc_insertion_point(class_scope:essys_middle.FileInfo)
-    private static final essys_middle.Streaming.FileInfo DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:essys_middle.streaming.FileInfo)
+    private static final essys_middle.streaming.Streaming.FileInfo DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new essys_middle.Streaming.FileInfo();
+      DEFAULT_INSTANCE = new essys_middle.streaming.Streaming.FileInfo();
     }
 
-    public static essys_middle.Streaming.FileInfo getDefaultInstance() {
+    public static essys_middle.streaming.Streaming.FileInfo getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -1474,14 +1631,14 @@ public final class Streaming {
     }
 
     @java.lang.Override
-    public essys_middle.Streaming.FileInfo getDefaultInstanceForType() {
+    public essys_middle.streaming.Streaming.FileInfo getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
   }
 
   public interface StreamingDataOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:essys_middle.StreamingData)
+      // @@protoc_insertion_point(interface_extends:essys_middle.streaming.StreamingData)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -1504,15 +1661,15 @@ public final class Streaming {
     long getTimestamp();
 
     /**
-     * <code>optional .essys_middle.PlaybackState state = 2;</code>
+     * <code>optional .essys_middle.streaming.PlaybackState state = 2;</code>
      * @return Whether the state field is set.
      */
     boolean hasState();
     /**
-     * <code>optional .essys_middle.PlaybackState state = 2;</code>
+     * <code>optional .essys_middle.streaming.PlaybackState state = 2;</code>
      * @return The state.
      */
-    essys_middle.Streaming.PlaybackState getState();
+    essys_middle.streaming.Streaming.PlaybackState getState();
 
     /**
      * <code>optional string file_path = 3;</code>
@@ -1532,23 +1689,23 @@ public final class Streaming {
         getFilePathBytes();
 
     /**
-     * <code>optional .essys_middle.FileInfo file_info = 4;</code>
+     * <code>optional .essys_middle.streaming.FileInfo file_info = 4;</code>
      * @return Whether the fileInfo field is set.
      */
     boolean hasFileInfo();
     /**
-     * <code>optional .essys_middle.FileInfo file_info = 4;</code>
+     * <code>optional .essys_middle.streaming.FileInfo file_info = 4;</code>
      * @return The fileInfo.
      */
-    essys_middle.Streaming.FileInfo getFileInfo();
+    essys_middle.streaming.Streaming.FileInfo getFileInfo();
     /**
-     * <code>optional .essys_middle.FileInfo file_info = 4;</code>
+     * <code>optional .essys_middle.streaming.FileInfo file_info = 4;</code>
      */
-    essys_middle.Streaming.FileInfoOrBuilder getFileInfoOrBuilder();
+    essys_middle.streaming.Streaming.FileInfoOrBuilder getFileInfoOrBuilder();
 
     /**
      * <pre>
-     * 특정 구간 요청 시 사용 / 소숫점 두 자리까지
+     * 소숫점 둘째 자리까지
      * </pre>
      *
      * <code>optional double progress = 5;</code>
@@ -1557,7 +1714,7 @@ public final class Streaming {
     boolean hasProgress();
     /**
      * <pre>
-     * 특정 구간 요청 시 사용 / 소숫점 두 자리까지
+     * 소숫점 둘째 자리까지
      * </pre>
      *
      * <code>optional double progress = 5;</code>
@@ -1585,22 +1742,22 @@ public final class Streaming {
     double getPlaybackSpeed();
 
     /**
-     * <code>optional .essys_middle.ErrorCode error = 99;</code>
+     * <code>optional .essys_middle.streaming.ErrorCode error = 99;</code>
      * @return Whether the error field is set.
      */
     boolean hasError();
     /**
-     * <code>optional .essys_middle.ErrorCode error = 99;</code>
+     * <code>optional .essys_middle.streaming.ErrorCode error = 99;</code>
      * @return The error.
      */
-    essys_middle.Streaming.ErrorCode getError();
+    essys_middle.streaming.Streaming.ErrorCode getError();
   }
   /**
-   * Protobuf type {@code essys_middle.StreamingData}
+   * Protobuf type {@code essys_middle.streaming.StreamingData}
    */
   public static final class StreamingData extends
       com.google.protobuf.GeneratedMessage implements
-      // @@protoc_insertion_point(message_implements:essys_middle.StreamingData)
+      // @@protoc_insertion_point(message_implements:essys_middle.streaming.StreamingData)
       StreamingDataOrBuilder {
   private static final long serialVersionUID = 0L;
     static {
@@ -1624,15 +1781,15 @@ public final class Streaming {
 
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return essys_middle.Streaming.internal_static_essys_middle_StreamingData_descriptor;
+      return essys_middle.streaming.Streaming.internal_static_essys_middle_streaming_StreamingData_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return essys_middle.Streaming.internal_static_essys_middle_StreamingData_fieldAccessorTable
+      return essys_middle.streaming.Streaming.internal_static_essys_middle_streaming_StreamingData_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              essys_middle.Streaming.StreamingData.class, essys_middle.Streaming.StreamingData.Builder.class);
+              essys_middle.streaming.Streaming.StreamingData.class, essys_middle.streaming.Streaming.StreamingData.Builder.class);
     }
 
     private int bitField0_;
@@ -1666,19 +1823,19 @@ public final class Streaming {
     public static final int STATE_FIELD_NUMBER = 2;
     private int state_ = 0;
     /**
-     * <code>optional .essys_middle.PlaybackState state = 2;</code>
+     * <code>optional .essys_middle.streaming.PlaybackState state = 2;</code>
      * @return Whether the state field is set.
      */
     @java.lang.Override public boolean hasState() {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <code>optional .essys_middle.PlaybackState state = 2;</code>
+     * <code>optional .essys_middle.streaming.PlaybackState state = 2;</code>
      * @return The state.
      */
-    @java.lang.Override public essys_middle.Streaming.PlaybackState getState() {
-      essys_middle.Streaming.PlaybackState result = essys_middle.Streaming.PlaybackState.forNumber(state_);
-      return result == null ? essys_middle.Streaming.PlaybackState.NONE : result;
+    @java.lang.Override public essys_middle.streaming.Streaming.PlaybackState getState() {
+      essys_middle.streaming.Streaming.PlaybackState result = essys_middle.streaming.Streaming.PlaybackState.forNumber(state_);
+      return result == null ? essys_middle.streaming.Streaming.PlaybackState.NONE : result;
     }
 
     public static final int FILE_PATH_FIELD_NUMBER = 3;
@@ -1731,9 +1888,9 @@ public final class Streaming {
     }
 
     public static final int FILE_INFO_FIELD_NUMBER = 4;
-    private essys_middle.Streaming.FileInfo fileInfo_;
+    private essys_middle.streaming.Streaming.FileInfo fileInfo_;
     /**
-     * <code>optional .essys_middle.FileInfo file_info = 4;</code>
+     * <code>optional .essys_middle.streaming.FileInfo file_info = 4;</code>
      * @return Whether the fileInfo field is set.
      */
     @java.lang.Override
@@ -1741,26 +1898,26 @@ public final class Streaming {
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
-     * <code>optional .essys_middle.FileInfo file_info = 4;</code>
+     * <code>optional .essys_middle.streaming.FileInfo file_info = 4;</code>
      * @return The fileInfo.
      */
     @java.lang.Override
-    public essys_middle.Streaming.FileInfo getFileInfo() {
-      return fileInfo_ == null ? essys_middle.Streaming.FileInfo.getDefaultInstance() : fileInfo_;
+    public essys_middle.streaming.Streaming.FileInfo getFileInfo() {
+      return fileInfo_ == null ? essys_middle.streaming.Streaming.FileInfo.getDefaultInstance() : fileInfo_;
     }
     /**
-     * <code>optional .essys_middle.FileInfo file_info = 4;</code>
+     * <code>optional .essys_middle.streaming.FileInfo file_info = 4;</code>
      */
     @java.lang.Override
-    public essys_middle.Streaming.FileInfoOrBuilder getFileInfoOrBuilder() {
-      return fileInfo_ == null ? essys_middle.Streaming.FileInfo.getDefaultInstance() : fileInfo_;
+    public essys_middle.streaming.Streaming.FileInfoOrBuilder getFileInfoOrBuilder() {
+      return fileInfo_ == null ? essys_middle.streaming.Streaming.FileInfo.getDefaultInstance() : fileInfo_;
     }
 
     public static final int PROGRESS_FIELD_NUMBER = 5;
     private double progress_ = 0D;
     /**
      * <pre>
-     * 특정 구간 요청 시 사용 / 소숫점 두 자리까지
+     * 소숫점 둘째 자리까지
      * </pre>
      *
      * <code>optional double progress = 5;</code>
@@ -1772,7 +1929,7 @@ public final class Streaming {
     }
     /**
      * <pre>
-     * 특정 구간 요청 시 사용 / 소숫점 두 자리까지
+     * 소숫점 둘째 자리까지
      * </pre>
      *
      * <code>optional double progress = 5;</code>
@@ -1813,19 +1970,19 @@ public final class Streaming {
     public static final int ERROR_FIELD_NUMBER = 99;
     private int error_ = 0;
     /**
-     * <code>optional .essys_middle.ErrorCode error = 99;</code>
+     * <code>optional .essys_middle.streaming.ErrorCode error = 99;</code>
      * @return Whether the error field is set.
      */
     @java.lang.Override public boolean hasError() {
       return ((bitField0_ & 0x00000040) != 0);
     }
     /**
-     * <code>optional .essys_middle.ErrorCode error = 99;</code>
+     * <code>optional .essys_middle.streaming.ErrorCode error = 99;</code>
      * @return The error.
      */
-    @java.lang.Override public essys_middle.Streaming.ErrorCode getError() {
-      essys_middle.Streaming.ErrorCode result = essys_middle.Streaming.ErrorCode.forNumber(error_);
-      return result == null ? essys_middle.Streaming.ErrorCode.UNKNOWN : result;
+    @java.lang.Override public essys_middle.streaming.Streaming.ErrorCode getError() {
+      essys_middle.streaming.Streaming.ErrorCode result = essys_middle.streaming.Streaming.ErrorCode.forNumber(error_);
+      return result == null ? essys_middle.streaming.Streaming.ErrorCode.UNKNOWN : result;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -1909,10 +2066,10 @@ public final class Streaming {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof essys_middle.Streaming.StreamingData)) {
+      if (!(obj instanceof essys_middle.streaming.Streaming.StreamingData)) {
         return super.equals(obj);
       }
-      essys_middle.Streaming.StreamingData other = (essys_middle.Streaming.StreamingData) obj;
+      essys_middle.streaming.Streaming.StreamingData other = (essys_middle.streaming.Streaming.StreamingData) obj;
 
       if (hasTimestamp() != other.hasTimestamp()) return false;
       if (hasTimestamp()) {
@@ -1996,44 +2153,44 @@ public final class Streaming {
       return hash;
     }
 
-    public static essys_middle.Streaming.StreamingData parseFrom(
+    public static essys_middle.streaming.Streaming.StreamingData parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static essys_middle.Streaming.StreamingData parseFrom(
+    public static essys_middle.streaming.Streaming.StreamingData parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static essys_middle.Streaming.StreamingData parseFrom(
+    public static essys_middle.streaming.Streaming.StreamingData parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static essys_middle.Streaming.StreamingData parseFrom(
+    public static essys_middle.streaming.Streaming.StreamingData parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static essys_middle.Streaming.StreamingData parseFrom(byte[] data)
+    public static essys_middle.streaming.Streaming.StreamingData parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static essys_middle.Streaming.StreamingData parseFrom(
+    public static essys_middle.streaming.Streaming.StreamingData parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static essys_middle.Streaming.StreamingData parseFrom(java.io.InputStream input)
+    public static essys_middle.streaming.Streaming.StreamingData parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessage
           .parseWithIOException(PARSER, input);
     }
-    public static essys_middle.Streaming.StreamingData parseFrom(
+    public static essys_middle.streaming.Streaming.StreamingData parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -2041,26 +2198,26 @@ public final class Streaming {
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
-    public static essys_middle.Streaming.StreamingData parseDelimitedFrom(java.io.InputStream input)
+    public static essys_middle.streaming.Streaming.StreamingData parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessage
           .parseDelimitedWithIOException(PARSER, input);
     }
 
-    public static essys_middle.Streaming.StreamingData parseDelimitedFrom(
+    public static essys_middle.streaming.Streaming.StreamingData parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessage
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static essys_middle.Streaming.StreamingData parseFrom(
+    public static essys_middle.streaming.Streaming.StreamingData parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessage
           .parseWithIOException(PARSER, input);
     }
-    public static essys_middle.Streaming.StreamingData parseFrom(
+    public static essys_middle.streaming.Streaming.StreamingData parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -2073,7 +2230,7 @@ public final class Streaming {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(essys_middle.Streaming.StreamingData prototype) {
+    public static Builder newBuilder(essys_middle.streaming.Streaming.StreamingData prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -2089,26 +2246,26 @@ public final class Streaming {
       return builder;
     }
     /**
-     * Protobuf type {@code essys_middle.StreamingData}
+     * Protobuf type {@code essys_middle.streaming.StreamingData}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:essys_middle.StreamingData)
-        essys_middle.Streaming.StreamingDataOrBuilder {
+        // @@protoc_insertion_point(builder_implements:essys_middle.streaming.StreamingData)
+        essys_middle.streaming.Streaming.StreamingDataOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return essys_middle.Streaming.internal_static_essys_middle_StreamingData_descriptor;
+        return essys_middle.streaming.Streaming.internal_static_essys_middle_streaming_StreamingData_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return essys_middle.Streaming.internal_static_essys_middle_StreamingData_fieldAccessorTable
+        return essys_middle.streaming.Streaming.internal_static_essys_middle_streaming_StreamingData_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                essys_middle.Streaming.StreamingData.class, essys_middle.Streaming.StreamingData.Builder.class);
+                essys_middle.streaming.Streaming.StreamingData.class, essys_middle.streaming.Streaming.StreamingData.Builder.class);
       }
 
-      // Construct using essys_middle.Streaming.StreamingData.newBuilder()
+      // Construct using essys_middle.streaming.Streaming.StreamingData.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -2145,17 +2302,17 @@ public final class Streaming {
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return essys_middle.Streaming.internal_static_essys_middle_StreamingData_descriptor;
+        return essys_middle.streaming.Streaming.internal_static_essys_middle_streaming_StreamingData_descriptor;
       }
 
       @java.lang.Override
-      public essys_middle.Streaming.StreamingData getDefaultInstanceForType() {
-        return essys_middle.Streaming.StreamingData.getDefaultInstance();
+      public essys_middle.streaming.Streaming.StreamingData getDefaultInstanceForType() {
+        return essys_middle.streaming.Streaming.StreamingData.getDefaultInstance();
       }
 
       @java.lang.Override
-      public essys_middle.Streaming.StreamingData build() {
-        essys_middle.Streaming.StreamingData result = buildPartial();
+      public essys_middle.streaming.Streaming.StreamingData build() {
+        essys_middle.streaming.Streaming.StreamingData result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -2163,14 +2320,14 @@ public final class Streaming {
       }
 
       @java.lang.Override
-      public essys_middle.Streaming.StreamingData buildPartial() {
-        essys_middle.Streaming.StreamingData result = new essys_middle.Streaming.StreamingData(this);
+      public essys_middle.streaming.Streaming.StreamingData buildPartial() {
+        essys_middle.streaming.Streaming.StreamingData result = new essys_middle.streaming.Streaming.StreamingData(this);
         if (bitField0_ != 0) { buildPartial0(result); }
         onBuilt();
         return result;
       }
 
-      private void buildPartial0(essys_middle.Streaming.StreamingData result) {
+      private void buildPartial0(essys_middle.streaming.Streaming.StreamingData result) {
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) != 0)) {
@@ -2208,16 +2365,16 @@ public final class Streaming {
 
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof essys_middle.Streaming.StreamingData) {
-          return mergeFrom((essys_middle.Streaming.StreamingData)other);
+        if (other instanceof essys_middle.streaming.Streaming.StreamingData) {
+          return mergeFrom((essys_middle.streaming.Streaming.StreamingData)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(essys_middle.Streaming.StreamingData other) {
-        if (other == essys_middle.Streaming.StreamingData.getDefaultInstance()) return this;
+      public Builder mergeFrom(essys_middle.streaming.Streaming.StreamingData other) {
+        if (other == essys_middle.streaming.Streaming.StreamingData.getDefaultInstance()) return this;
         if (other.hasTimestamp()) {
           setTimestamp(other.getTimestamp());
         }
@@ -2274,8 +2431,8 @@ public final class Streaming {
               } // case 8
               case 16: {
                 int tmpRaw = input.readEnum();
-                essys_middle.Streaming.PlaybackState tmpValue =
-                    essys_middle.Streaming.PlaybackState.forNumber(tmpRaw);
+                essys_middle.streaming.Streaming.PlaybackState tmpValue =
+                    essys_middle.streaming.Streaming.PlaybackState.forNumber(tmpRaw);
                 if (tmpValue == null) {
                   mergeUnknownVarintField(2, tmpRaw);
                 } else {
@@ -2308,8 +2465,8 @@ public final class Streaming {
               } // case 89
               case 792: {
                 int tmpRaw = input.readEnum();
-                essys_middle.Streaming.ErrorCode tmpValue =
-                    essys_middle.Streaming.ErrorCode.forNumber(tmpRaw);
+                essys_middle.streaming.Streaming.ErrorCode tmpValue =
+                    essys_middle.streaming.Streaming.ErrorCode.forNumber(tmpRaw);
                 if (tmpValue == null) {
                   mergeUnknownVarintField(99, tmpRaw);
                 } else {
@@ -2393,27 +2550,27 @@ public final class Streaming {
 
       private int state_ = 0;
       /**
-       * <code>optional .essys_middle.PlaybackState state = 2;</code>
+       * <code>optional .essys_middle.streaming.PlaybackState state = 2;</code>
        * @return Whether the state field is set.
        */
       @java.lang.Override public boolean hasState() {
         return ((bitField0_ & 0x00000002) != 0);
       }
       /**
-       * <code>optional .essys_middle.PlaybackState state = 2;</code>
+       * <code>optional .essys_middle.streaming.PlaybackState state = 2;</code>
        * @return The state.
        */
       @java.lang.Override
-      public essys_middle.Streaming.PlaybackState getState() {
-        essys_middle.Streaming.PlaybackState result = essys_middle.Streaming.PlaybackState.forNumber(state_);
-        return result == null ? essys_middle.Streaming.PlaybackState.NONE : result;
+      public essys_middle.streaming.Streaming.PlaybackState getState() {
+        essys_middle.streaming.Streaming.PlaybackState result = essys_middle.streaming.Streaming.PlaybackState.forNumber(state_);
+        return result == null ? essys_middle.streaming.Streaming.PlaybackState.NONE : result;
       }
       /**
-       * <code>optional .essys_middle.PlaybackState state = 2;</code>
+       * <code>optional .essys_middle.streaming.PlaybackState state = 2;</code>
        * @param value The state to set.
        * @return This builder for chaining.
        */
-      public Builder setState(essys_middle.Streaming.PlaybackState value) {
+      public Builder setState(essys_middle.streaming.Streaming.PlaybackState value) {
         if (value == null) {
           throw new NullPointerException();
         }
@@ -2423,7 +2580,7 @@ public final class Streaming {
         return this;
       }
       /**
-       * <code>optional .essys_middle.PlaybackState state = 2;</code>
+       * <code>optional .essys_middle.streaming.PlaybackState state = 2;</code>
        * @return This builder for chaining.
        */
       public Builder clearState() {
@@ -2513,31 +2670,31 @@ public final class Streaming {
         return this;
       }
 
-      private essys_middle.Streaming.FileInfo fileInfo_;
+      private essys_middle.streaming.Streaming.FileInfo fileInfo_;
       private com.google.protobuf.SingleFieldBuilder<
-          essys_middle.Streaming.FileInfo, essys_middle.Streaming.FileInfo.Builder, essys_middle.Streaming.FileInfoOrBuilder> fileInfoBuilder_;
+          essys_middle.streaming.Streaming.FileInfo, essys_middle.streaming.Streaming.FileInfo.Builder, essys_middle.streaming.Streaming.FileInfoOrBuilder> fileInfoBuilder_;
       /**
-       * <code>optional .essys_middle.FileInfo file_info = 4;</code>
+       * <code>optional .essys_middle.streaming.FileInfo file_info = 4;</code>
        * @return Whether the fileInfo field is set.
        */
       public boolean hasFileInfo() {
         return ((bitField0_ & 0x00000008) != 0);
       }
       /**
-       * <code>optional .essys_middle.FileInfo file_info = 4;</code>
+       * <code>optional .essys_middle.streaming.FileInfo file_info = 4;</code>
        * @return The fileInfo.
        */
-      public essys_middle.Streaming.FileInfo getFileInfo() {
+      public essys_middle.streaming.Streaming.FileInfo getFileInfo() {
         if (fileInfoBuilder_ == null) {
-          return fileInfo_ == null ? essys_middle.Streaming.FileInfo.getDefaultInstance() : fileInfo_;
+          return fileInfo_ == null ? essys_middle.streaming.Streaming.FileInfo.getDefaultInstance() : fileInfo_;
         } else {
           return fileInfoBuilder_.getMessage();
         }
       }
       /**
-       * <code>optional .essys_middle.FileInfo file_info = 4;</code>
+       * <code>optional .essys_middle.streaming.FileInfo file_info = 4;</code>
        */
-      public Builder setFileInfo(essys_middle.Streaming.FileInfo value) {
+      public Builder setFileInfo(essys_middle.streaming.Streaming.FileInfo value) {
         if (fileInfoBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -2551,10 +2708,10 @@ public final class Streaming {
         return this;
       }
       /**
-       * <code>optional .essys_middle.FileInfo file_info = 4;</code>
+       * <code>optional .essys_middle.streaming.FileInfo file_info = 4;</code>
        */
       public Builder setFileInfo(
-          essys_middle.Streaming.FileInfo.Builder builderForValue) {
+          essys_middle.streaming.Streaming.FileInfo.Builder builderForValue) {
         if (fileInfoBuilder_ == null) {
           fileInfo_ = builderForValue.build();
         } else {
@@ -2565,13 +2722,13 @@ public final class Streaming {
         return this;
       }
       /**
-       * <code>optional .essys_middle.FileInfo file_info = 4;</code>
+       * <code>optional .essys_middle.streaming.FileInfo file_info = 4;</code>
        */
-      public Builder mergeFileInfo(essys_middle.Streaming.FileInfo value) {
+      public Builder mergeFileInfo(essys_middle.streaming.Streaming.FileInfo value) {
         if (fileInfoBuilder_ == null) {
           if (((bitField0_ & 0x00000008) != 0) &&
             fileInfo_ != null &&
-            fileInfo_ != essys_middle.Streaming.FileInfo.getDefaultInstance()) {
+            fileInfo_ != essys_middle.streaming.Streaming.FileInfo.getDefaultInstance()) {
             getFileInfoBuilder().mergeFrom(value);
           } else {
             fileInfo_ = value;
@@ -2586,7 +2743,7 @@ public final class Streaming {
         return this;
       }
       /**
-       * <code>optional .essys_middle.FileInfo file_info = 4;</code>
+       * <code>optional .essys_middle.streaming.FileInfo file_info = 4;</code>
        */
       public Builder clearFileInfo() {
         bitField0_ = (bitField0_ & ~0x00000008);
@@ -2599,33 +2756,33 @@ public final class Streaming {
         return this;
       }
       /**
-       * <code>optional .essys_middle.FileInfo file_info = 4;</code>
+       * <code>optional .essys_middle.streaming.FileInfo file_info = 4;</code>
        */
-      public essys_middle.Streaming.FileInfo.Builder getFileInfoBuilder() {
+      public essys_middle.streaming.Streaming.FileInfo.Builder getFileInfoBuilder() {
         bitField0_ |= 0x00000008;
         onChanged();
         return getFileInfoFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .essys_middle.FileInfo file_info = 4;</code>
+       * <code>optional .essys_middle.streaming.FileInfo file_info = 4;</code>
        */
-      public essys_middle.Streaming.FileInfoOrBuilder getFileInfoOrBuilder() {
+      public essys_middle.streaming.Streaming.FileInfoOrBuilder getFileInfoOrBuilder() {
         if (fileInfoBuilder_ != null) {
           return fileInfoBuilder_.getMessageOrBuilder();
         } else {
           return fileInfo_ == null ?
-              essys_middle.Streaming.FileInfo.getDefaultInstance() : fileInfo_;
+              essys_middle.streaming.Streaming.FileInfo.getDefaultInstance() : fileInfo_;
         }
       }
       /**
-       * <code>optional .essys_middle.FileInfo file_info = 4;</code>
+       * <code>optional .essys_middle.streaming.FileInfo file_info = 4;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          essys_middle.Streaming.FileInfo, essys_middle.Streaming.FileInfo.Builder, essys_middle.Streaming.FileInfoOrBuilder> 
+          essys_middle.streaming.Streaming.FileInfo, essys_middle.streaming.Streaming.FileInfo.Builder, essys_middle.streaming.Streaming.FileInfoOrBuilder> 
           getFileInfoFieldBuilder() {
         if (fileInfoBuilder_ == null) {
           fileInfoBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              essys_middle.Streaming.FileInfo, essys_middle.Streaming.FileInfo.Builder, essys_middle.Streaming.FileInfoOrBuilder>(
+              essys_middle.streaming.Streaming.FileInfo, essys_middle.streaming.Streaming.FileInfo.Builder, essys_middle.streaming.Streaming.FileInfoOrBuilder>(
                   getFileInfo(),
                   getParentForChildren(),
                   isClean());
@@ -2637,7 +2794,7 @@ public final class Streaming {
       private double progress_ ;
       /**
        * <pre>
-       * 특정 구간 요청 시 사용 / 소숫점 두 자리까지
+       * 소숫점 둘째 자리까지
        * </pre>
        *
        * <code>optional double progress = 5;</code>
@@ -2649,7 +2806,7 @@ public final class Streaming {
       }
       /**
        * <pre>
-       * 특정 구간 요청 시 사용 / 소숫점 두 자리까지
+       * 소숫점 둘째 자리까지
        * </pre>
        *
        * <code>optional double progress = 5;</code>
@@ -2661,7 +2818,7 @@ public final class Streaming {
       }
       /**
        * <pre>
-       * 특정 구간 요청 시 사용 / 소숫점 두 자리까지
+       * 소숫점 둘째 자리까지
        * </pre>
        *
        * <code>optional double progress = 5;</code>
@@ -2677,7 +2834,7 @@ public final class Streaming {
       }
       /**
        * <pre>
-       * 특정 구간 요청 시 사용 / 소숫점 두 자리까지
+       * 소숫점 둘째 자리까지
        * </pre>
        *
        * <code>optional double progress = 5;</code>
@@ -2748,27 +2905,27 @@ public final class Streaming {
 
       private int error_ = 0;
       /**
-       * <code>optional .essys_middle.ErrorCode error = 99;</code>
+       * <code>optional .essys_middle.streaming.ErrorCode error = 99;</code>
        * @return Whether the error field is set.
        */
       @java.lang.Override public boolean hasError() {
         return ((bitField0_ & 0x00000040) != 0);
       }
       /**
-       * <code>optional .essys_middle.ErrorCode error = 99;</code>
+       * <code>optional .essys_middle.streaming.ErrorCode error = 99;</code>
        * @return The error.
        */
       @java.lang.Override
-      public essys_middle.Streaming.ErrorCode getError() {
-        essys_middle.Streaming.ErrorCode result = essys_middle.Streaming.ErrorCode.forNumber(error_);
-        return result == null ? essys_middle.Streaming.ErrorCode.UNKNOWN : result;
+      public essys_middle.streaming.Streaming.ErrorCode getError() {
+        essys_middle.streaming.Streaming.ErrorCode result = essys_middle.streaming.Streaming.ErrorCode.forNumber(error_);
+        return result == null ? essys_middle.streaming.Streaming.ErrorCode.UNKNOWN : result;
       }
       /**
-       * <code>optional .essys_middle.ErrorCode error = 99;</code>
+       * <code>optional .essys_middle.streaming.ErrorCode error = 99;</code>
        * @param value The error to set.
        * @return This builder for chaining.
        */
-      public Builder setError(essys_middle.Streaming.ErrorCode value) {
+      public Builder setError(essys_middle.streaming.Streaming.ErrorCode value) {
         if (value == null) {
           throw new NullPointerException();
         }
@@ -2778,7 +2935,7 @@ public final class Streaming {
         return this;
       }
       /**
-       * <code>optional .essys_middle.ErrorCode error = 99;</code>
+       * <code>optional .essys_middle.streaming.ErrorCode error = 99;</code>
        * @return This builder for chaining.
        */
       public Builder clearError() {
@@ -2788,16 +2945,16 @@ public final class Streaming {
         return this;
       }
 
-      // @@protoc_insertion_point(builder_scope:essys_middle.StreamingData)
+      // @@protoc_insertion_point(builder_scope:essys_middle.streaming.StreamingData)
     }
 
-    // @@protoc_insertion_point(class_scope:essys_middle.StreamingData)
-    private static final essys_middle.Streaming.StreamingData DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:essys_middle.streaming.StreamingData)
+    private static final essys_middle.streaming.Streaming.StreamingData DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new essys_middle.Streaming.StreamingData();
+      DEFAULT_INSTANCE = new essys_middle.streaming.Streaming.StreamingData();
     }
 
-    public static essys_middle.Streaming.StreamingData getDefaultInstance() {
+    public static essys_middle.streaming.Streaming.StreamingData getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -2833,14 +2990,14 @@ public final class Streaming {
     }
 
     @java.lang.Override
-    public essys_middle.Streaming.StreamingData getDefaultInstanceForType() {
+    public essys_middle.streaming.Streaming.StreamingData getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
   }
 
   public interface LoggingDataOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:essys_middle.LoggingData)
+      // @@protoc_insertion_point(interface_extends:essys_middle.streaming.LoggingData)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -2863,33 +3020,33 @@ public final class Streaming {
     long getTimestamp();
 
     /**
-     * <code>optional .essys_middle.PlaybackState state = 2;</code>
+     * <code>optional .essys_middle.streaming.PlaybackState state = 2;</code>
      * @return Whether the state field is set.
      */
     boolean hasState();
     /**
-     * <code>optional .essys_middle.PlaybackState state = 2;</code>
+     * <code>optional .essys_middle.streaming.PlaybackState state = 2;</code>
      * @return The state.
      */
-    essys_middle.Streaming.PlaybackState getState();
+    essys_middle.streaming.Streaming.PlaybackState getState();
 
     /**
-     * <code>optional .essys_middle.ErrorCode error = 99;</code>
+     * <code>optional .essys_middle.streaming.ErrorCode error = 99;</code>
      * @return Whether the error field is set.
      */
     boolean hasError();
     /**
-     * <code>optional .essys_middle.ErrorCode error = 99;</code>
+     * <code>optional .essys_middle.streaming.ErrorCode error = 99;</code>
      * @return The error.
      */
-    essys_middle.Streaming.ErrorCode getError();
+    essys_middle.streaming.Streaming.ErrorCode getError();
   }
   /**
-   * Protobuf type {@code essys_middle.LoggingData}
+   * Protobuf type {@code essys_middle.streaming.LoggingData}
    */
   public static final class LoggingData extends
       com.google.protobuf.GeneratedMessage implements
-      // @@protoc_insertion_point(message_implements:essys_middle.LoggingData)
+      // @@protoc_insertion_point(message_implements:essys_middle.streaming.LoggingData)
       LoggingDataOrBuilder {
   private static final long serialVersionUID = 0L;
     static {
@@ -2912,15 +3069,15 @@ public final class Streaming {
 
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return essys_middle.Streaming.internal_static_essys_middle_LoggingData_descriptor;
+      return essys_middle.streaming.Streaming.internal_static_essys_middle_streaming_LoggingData_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return essys_middle.Streaming.internal_static_essys_middle_LoggingData_fieldAccessorTable
+      return essys_middle.streaming.Streaming.internal_static_essys_middle_streaming_LoggingData_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              essys_middle.Streaming.LoggingData.class, essys_middle.Streaming.LoggingData.Builder.class);
+              essys_middle.streaming.Streaming.LoggingData.class, essys_middle.streaming.Streaming.LoggingData.Builder.class);
     }
 
     private int bitField0_;
@@ -2954,37 +3111,37 @@ public final class Streaming {
     public static final int STATE_FIELD_NUMBER = 2;
     private int state_ = 0;
     /**
-     * <code>optional .essys_middle.PlaybackState state = 2;</code>
+     * <code>optional .essys_middle.streaming.PlaybackState state = 2;</code>
      * @return Whether the state field is set.
      */
     @java.lang.Override public boolean hasState() {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <code>optional .essys_middle.PlaybackState state = 2;</code>
+     * <code>optional .essys_middle.streaming.PlaybackState state = 2;</code>
      * @return The state.
      */
-    @java.lang.Override public essys_middle.Streaming.PlaybackState getState() {
-      essys_middle.Streaming.PlaybackState result = essys_middle.Streaming.PlaybackState.forNumber(state_);
-      return result == null ? essys_middle.Streaming.PlaybackState.NONE : result;
+    @java.lang.Override public essys_middle.streaming.Streaming.PlaybackState getState() {
+      essys_middle.streaming.Streaming.PlaybackState result = essys_middle.streaming.Streaming.PlaybackState.forNumber(state_);
+      return result == null ? essys_middle.streaming.Streaming.PlaybackState.NONE : result;
     }
 
     public static final int ERROR_FIELD_NUMBER = 99;
     private int error_ = 0;
     /**
-     * <code>optional .essys_middle.ErrorCode error = 99;</code>
+     * <code>optional .essys_middle.streaming.ErrorCode error = 99;</code>
      * @return Whether the error field is set.
      */
     @java.lang.Override public boolean hasError() {
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
-     * <code>optional .essys_middle.ErrorCode error = 99;</code>
+     * <code>optional .essys_middle.streaming.ErrorCode error = 99;</code>
      * @return The error.
      */
-    @java.lang.Override public essys_middle.Streaming.ErrorCode getError() {
-      essys_middle.Streaming.ErrorCode result = essys_middle.Streaming.ErrorCode.forNumber(error_);
-      return result == null ? essys_middle.Streaming.ErrorCode.UNKNOWN : result;
+    @java.lang.Override public essys_middle.streaming.Streaming.ErrorCode getError() {
+      essys_middle.streaming.Streaming.ErrorCode result = essys_middle.streaming.Streaming.ErrorCode.forNumber(error_);
+      return result == null ? essys_middle.streaming.Streaming.ErrorCode.UNKNOWN : result;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -3041,10 +3198,10 @@ public final class Streaming {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof essys_middle.Streaming.LoggingData)) {
+      if (!(obj instanceof essys_middle.streaming.Streaming.LoggingData)) {
         return super.equals(obj);
       }
-      essys_middle.Streaming.LoggingData other = (essys_middle.Streaming.LoggingData) obj;
+      essys_middle.streaming.Streaming.LoggingData other = (essys_middle.streaming.Streaming.LoggingData) obj;
 
       if (hasTimestamp() != other.hasTimestamp()) return false;
       if (hasTimestamp()) {
@@ -3088,44 +3245,44 @@ public final class Streaming {
       return hash;
     }
 
-    public static essys_middle.Streaming.LoggingData parseFrom(
+    public static essys_middle.streaming.Streaming.LoggingData parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static essys_middle.Streaming.LoggingData parseFrom(
+    public static essys_middle.streaming.Streaming.LoggingData parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static essys_middle.Streaming.LoggingData parseFrom(
+    public static essys_middle.streaming.Streaming.LoggingData parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static essys_middle.Streaming.LoggingData parseFrom(
+    public static essys_middle.streaming.Streaming.LoggingData parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static essys_middle.Streaming.LoggingData parseFrom(byte[] data)
+    public static essys_middle.streaming.Streaming.LoggingData parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static essys_middle.Streaming.LoggingData parseFrom(
+    public static essys_middle.streaming.Streaming.LoggingData parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static essys_middle.Streaming.LoggingData parseFrom(java.io.InputStream input)
+    public static essys_middle.streaming.Streaming.LoggingData parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessage
           .parseWithIOException(PARSER, input);
     }
-    public static essys_middle.Streaming.LoggingData parseFrom(
+    public static essys_middle.streaming.Streaming.LoggingData parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -3133,26 +3290,26 @@ public final class Streaming {
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
-    public static essys_middle.Streaming.LoggingData parseDelimitedFrom(java.io.InputStream input)
+    public static essys_middle.streaming.Streaming.LoggingData parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessage
           .parseDelimitedWithIOException(PARSER, input);
     }
 
-    public static essys_middle.Streaming.LoggingData parseDelimitedFrom(
+    public static essys_middle.streaming.Streaming.LoggingData parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessage
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static essys_middle.Streaming.LoggingData parseFrom(
+    public static essys_middle.streaming.Streaming.LoggingData parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessage
           .parseWithIOException(PARSER, input);
     }
-    public static essys_middle.Streaming.LoggingData parseFrom(
+    public static essys_middle.streaming.Streaming.LoggingData parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -3165,7 +3322,7 @@ public final class Streaming {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(essys_middle.Streaming.LoggingData prototype) {
+    public static Builder newBuilder(essys_middle.streaming.Streaming.LoggingData prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -3181,26 +3338,26 @@ public final class Streaming {
       return builder;
     }
     /**
-     * Protobuf type {@code essys_middle.LoggingData}
+     * Protobuf type {@code essys_middle.streaming.LoggingData}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:essys_middle.LoggingData)
-        essys_middle.Streaming.LoggingDataOrBuilder {
+        // @@protoc_insertion_point(builder_implements:essys_middle.streaming.LoggingData)
+        essys_middle.streaming.Streaming.LoggingDataOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return essys_middle.Streaming.internal_static_essys_middle_LoggingData_descriptor;
+        return essys_middle.streaming.Streaming.internal_static_essys_middle_streaming_LoggingData_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return essys_middle.Streaming.internal_static_essys_middle_LoggingData_fieldAccessorTable
+        return essys_middle.streaming.Streaming.internal_static_essys_middle_streaming_LoggingData_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                essys_middle.Streaming.LoggingData.class, essys_middle.Streaming.LoggingData.Builder.class);
+                essys_middle.streaming.Streaming.LoggingData.class, essys_middle.streaming.Streaming.LoggingData.Builder.class);
       }
 
-      // Construct using essys_middle.Streaming.LoggingData.newBuilder()
+      // Construct using essys_middle.streaming.Streaming.LoggingData.newBuilder()
       private Builder() {
 
       }
@@ -3223,17 +3380,17 @@ public final class Streaming {
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return essys_middle.Streaming.internal_static_essys_middle_LoggingData_descriptor;
+        return essys_middle.streaming.Streaming.internal_static_essys_middle_streaming_LoggingData_descriptor;
       }
 
       @java.lang.Override
-      public essys_middle.Streaming.LoggingData getDefaultInstanceForType() {
-        return essys_middle.Streaming.LoggingData.getDefaultInstance();
+      public essys_middle.streaming.Streaming.LoggingData getDefaultInstanceForType() {
+        return essys_middle.streaming.Streaming.LoggingData.getDefaultInstance();
       }
 
       @java.lang.Override
-      public essys_middle.Streaming.LoggingData build() {
-        essys_middle.Streaming.LoggingData result = buildPartial();
+      public essys_middle.streaming.Streaming.LoggingData build() {
+        essys_middle.streaming.Streaming.LoggingData result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -3241,14 +3398,14 @@ public final class Streaming {
       }
 
       @java.lang.Override
-      public essys_middle.Streaming.LoggingData buildPartial() {
-        essys_middle.Streaming.LoggingData result = new essys_middle.Streaming.LoggingData(this);
+      public essys_middle.streaming.Streaming.LoggingData buildPartial() {
+        essys_middle.streaming.Streaming.LoggingData result = new essys_middle.streaming.Streaming.LoggingData(this);
         if (bitField0_ != 0) { buildPartial0(result); }
         onBuilt();
         return result;
       }
 
-      private void buildPartial0(essys_middle.Streaming.LoggingData result) {
+      private void buildPartial0(essys_middle.streaming.Streaming.LoggingData result) {
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) != 0)) {
@@ -3268,16 +3425,16 @@ public final class Streaming {
 
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof essys_middle.Streaming.LoggingData) {
-          return mergeFrom((essys_middle.Streaming.LoggingData)other);
+        if (other instanceof essys_middle.streaming.Streaming.LoggingData) {
+          return mergeFrom((essys_middle.streaming.Streaming.LoggingData)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(essys_middle.Streaming.LoggingData other) {
-        if (other == essys_middle.Streaming.LoggingData.getDefaultInstance()) return this;
+      public Builder mergeFrom(essys_middle.streaming.Streaming.LoggingData other) {
+        if (other == essys_middle.streaming.Streaming.LoggingData.getDefaultInstance()) return this;
         if (other.hasTimestamp()) {
           setTimestamp(other.getTimestamp());
         }
@@ -3320,8 +3477,8 @@ public final class Streaming {
               } // case 8
               case 16: {
                 int tmpRaw = input.readEnum();
-                essys_middle.Streaming.PlaybackState tmpValue =
-                    essys_middle.Streaming.PlaybackState.forNumber(tmpRaw);
+                essys_middle.streaming.Streaming.PlaybackState tmpValue =
+                    essys_middle.streaming.Streaming.PlaybackState.forNumber(tmpRaw);
                 if (tmpValue == null) {
                   mergeUnknownVarintField(2, tmpRaw);
                 } else {
@@ -3332,8 +3489,8 @@ public final class Streaming {
               } // case 16
               case 792: {
                 int tmpRaw = input.readEnum();
-                essys_middle.Streaming.ErrorCode tmpValue =
-                    essys_middle.Streaming.ErrorCode.forNumber(tmpRaw);
+                essys_middle.streaming.Streaming.ErrorCode tmpValue =
+                    essys_middle.streaming.Streaming.ErrorCode.forNumber(tmpRaw);
                 if (tmpValue == null) {
                   mergeUnknownVarintField(99, tmpRaw);
                 } else {
@@ -3417,27 +3574,27 @@ public final class Streaming {
 
       private int state_ = 0;
       /**
-       * <code>optional .essys_middle.PlaybackState state = 2;</code>
+       * <code>optional .essys_middle.streaming.PlaybackState state = 2;</code>
        * @return Whether the state field is set.
        */
       @java.lang.Override public boolean hasState() {
         return ((bitField0_ & 0x00000002) != 0);
       }
       /**
-       * <code>optional .essys_middle.PlaybackState state = 2;</code>
+       * <code>optional .essys_middle.streaming.PlaybackState state = 2;</code>
        * @return The state.
        */
       @java.lang.Override
-      public essys_middle.Streaming.PlaybackState getState() {
-        essys_middle.Streaming.PlaybackState result = essys_middle.Streaming.PlaybackState.forNumber(state_);
-        return result == null ? essys_middle.Streaming.PlaybackState.NONE : result;
+      public essys_middle.streaming.Streaming.PlaybackState getState() {
+        essys_middle.streaming.Streaming.PlaybackState result = essys_middle.streaming.Streaming.PlaybackState.forNumber(state_);
+        return result == null ? essys_middle.streaming.Streaming.PlaybackState.NONE : result;
       }
       /**
-       * <code>optional .essys_middle.PlaybackState state = 2;</code>
+       * <code>optional .essys_middle.streaming.PlaybackState state = 2;</code>
        * @param value The state to set.
        * @return This builder for chaining.
        */
-      public Builder setState(essys_middle.Streaming.PlaybackState value) {
+      public Builder setState(essys_middle.streaming.Streaming.PlaybackState value) {
         if (value == null) {
           throw new NullPointerException();
         }
@@ -3447,7 +3604,7 @@ public final class Streaming {
         return this;
       }
       /**
-       * <code>optional .essys_middle.PlaybackState state = 2;</code>
+       * <code>optional .essys_middle.streaming.PlaybackState state = 2;</code>
        * @return This builder for chaining.
        */
       public Builder clearState() {
@@ -3459,27 +3616,27 @@ public final class Streaming {
 
       private int error_ = 0;
       /**
-       * <code>optional .essys_middle.ErrorCode error = 99;</code>
+       * <code>optional .essys_middle.streaming.ErrorCode error = 99;</code>
        * @return Whether the error field is set.
        */
       @java.lang.Override public boolean hasError() {
         return ((bitField0_ & 0x00000004) != 0);
       }
       /**
-       * <code>optional .essys_middle.ErrorCode error = 99;</code>
+       * <code>optional .essys_middle.streaming.ErrorCode error = 99;</code>
        * @return The error.
        */
       @java.lang.Override
-      public essys_middle.Streaming.ErrorCode getError() {
-        essys_middle.Streaming.ErrorCode result = essys_middle.Streaming.ErrorCode.forNumber(error_);
-        return result == null ? essys_middle.Streaming.ErrorCode.UNKNOWN : result;
+      public essys_middle.streaming.Streaming.ErrorCode getError() {
+        essys_middle.streaming.Streaming.ErrorCode result = essys_middle.streaming.Streaming.ErrorCode.forNumber(error_);
+        return result == null ? essys_middle.streaming.Streaming.ErrorCode.UNKNOWN : result;
       }
       /**
-       * <code>optional .essys_middle.ErrorCode error = 99;</code>
+       * <code>optional .essys_middle.streaming.ErrorCode error = 99;</code>
        * @param value The error to set.
        * @return This builder for chaining.
        */
-      public Builder setError(essys_middle.Streaming.ErrorCode value) {
+      public Builder setError(essys_middle.streaming.Streaming.ErrorCode value) {
         if (value == null) {
           throw new NullPointerException();
         }
@@ -3489,7 +3646,7 @@ public final class Streaming {
         return this;
       }
       /**
-       * <code>optional .essys_middle.ErrorCode error = 99;</code>
+       * <code>optional .essys_middle.streaming.ErrorCode error = 99;</code>
        * @return This builder for chaining.
        */
       public Builder clearError() {
@@ -3499,16 +3656,16 @@ public final class Streaming {
         return this;
       }
 
-      // @@protoc_insertion_point(builder_scope:essys_middle.LoggingData)
+      // @@protoc_insertion_point(builder_scope:essys_middle.streaming.LoggingData)
     }
 
-    // @@protoc_insertion_point(class_scope:essys_middle.LoggingData)
-    private static final essys_middle.Streaming.LoggingData DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:essys_middle.streaming.LoggingData)
+    private static final essys_middle.streaming.Streaming.LoggingData DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new essys_middle.Streaming.LoggingData();
+      DEFAULT_INSTANCE = new essys_middle.streaming.Streaming.LoggingData();
     }
 
-    public static essys_middle.Streaming.LoggingData getDefaultInstance() {
+    public static essys_middle.streaming.Streaming.LoggingData getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -3544,27 +3701,27 @@ public final class Streaming {
     }
 
     @java.lang.Override
-    public essys_middle.Streaming.LoggingData getDefaultInstanceForType() {
+    public essys_middle.streaming.Streaming.LoggingData getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
   }
 
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_essys_middle_FileInfo_descriptor;
+    internal_static_essys_middle_streaming_FileInfo_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_essys_middle_FileInfo_fieldAccessorTable;
+      internal_static_essys_middle_streaming_FileInfo_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_essys_middle_StreamingData_descriptor;
+    internal_static_essys_middle_streaming_StreamingData_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_essys_middle_StreamingData_fieldAccessorTable;
+      internal_static_essys_middle_streaming_StreamingData_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_essys_middle_LoggingData_descriptor;
+    internal_static_essys_middle_streaming_LoggingData_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_essys_middle_LoggingData_fieldAccessorTable;
+      internal_static_essys_middle_streaming_LoggingData_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -3574,51 +3731,54 @@ public final class Streaming {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\035modules/essys/streaming.proto\022\014essys_m" +
-      "iddle\"\242\001\n\010FileInfo\022\021\n\tfile_name\030\001 \001(\t\022\021\n" +
-      "\tfile_path\030\002 \001(\t\022\036\n\026start_of_absolute_ti" +
-      "me\030\013 \001(\001\022\034\n\024end_of_absolute_time\030\014 \001(\001\022\031" +
-      "\n\021start_of_run_time\030\r \001(\003\022\027\n\017end_of_run_" +
-      "time\030\016 \001(\003\"\336\001\n\rStreamingData\022\021\n\ttimestam" +
-      "p\030\001 \001(\003\022*\n\005state\030\002 \001(\0162\033.essys_middle.Pl" +
-      "aybackState\022\021\n\tfile_path\030\003 \001(\t\022)\n\tfile_i" +
-      "nfo\030\004 \001(\0132\026.essys_middle.FileInfo\022\020\n\010pro" +
-      "gress\030\005 \001(\001\022\026\n\016playback_speed\030\013 \001(\001\022&\n\005e" +
-      "rror\030c \001(\0162\027.essys_middle.ErrorCode\"t\n\013L" +
-      "oggingData\022\021\n\ttimestamp\030\001 \001(\003\022*\n\005state\030\002" +
-      " \001(\0162\033.essys_middle.PlaybackState\022&\n\005err" +
-      "or\030c \001(\0162\027.essys_middle.ErrorCode*\271\001\n\rPl" +
-      "aybackState\022\010\n\004NONE\020\000\022\020\n\014REQUEST_STOP\020\001\022" +
-      "\021\n\rREQUEST_PAUSE\020\002\022\020\n\014REQUEST_PLAY\020\003\022\025\n\021" +
-      "REQUEST_MOVING_ON\020\004\022\021\n\rRESPONSE_STOP\020\025\022\022" +
-      "\n\016RESPONSE_PAUSE\020\026\022\021\n\rRESPONSE_PLAY\020\027\022\026\n" +
-      "\022RESPONSE_MOVING_ON\020\030*\257\001\n\tErrorCode\022\013\n\007U" +
-      "NKNOWN\020\000\022\022\n\016FILE_EXT_ERROR\020\001\022\023\n\017FILE_PAT" +
-      "H_ERROR\020\002\022\030\n\024FILE_NOT_FOUND_ERROR\020\003\022\025\n\021B" +
-      "ROKEN_FILE_ERROR\020\004\022\022\n\016DIR_PATH_ERROR\020\013\022\022" +
-      "\n\016CHECKSUM_ERROR\020\025\022\023\n\017DATA_LOSS_ERROR\020\026"
+      "\n\035modules/essys/streaming.proto\022\026essys_m" +
+      "iddle.streaming\"\274\001\n\010FileInfo\022\021\n\tfile_nam" +
+      "e\030\001 \001(\t\022\021\n\tfile_path\030\002 \001(\t\022\030\n\020replay_tim" +
+      "estamp\030\n \001(\001\022\036\n\026start_of_absolute_time\030\013" +
+      " \001(\001\022\034\n\024end_of_absolute_time\030\014 \001(\001\022\031\n\021st" +
+      "art_of_run_time\030\r \001(\003\022\027\n\017end_of_run_time" +
+      "\030\016 \001(\003\"\374\001\n\rStreamingData\022\021\n\ttimestamp\030\001 " +
+      "\001(\003\0224\n\005state\030\002 \001(\0162%.essys_middle.stream" +
+      "ing.PlaybackState\022\021\n\tfile_path\030\003 \001(\t\0223\n\t" +
+      "file_info\030\004 \001(\0132 .essys_middle.streaming" +
+      ".FileInfo\022\020\n\010progress\030\005 \001(\001\022\026\n\016playback_" +
+      "speed\030\013 \001(\001\0220\n\005error\030c \001(\0162!.essys_middl" +
+      "e.streaming.ErrorCode\"\210\001\n\013LoggingData\022\021\n" +
+      "\ttimestamp\030\001 \001(\003\0224\n\005state\030\002 \001(\0162%.essys_" +
+      "middle.streaming.PlaybackState\0220\n\005error\030" +
+      "c \001(\0162!.essys_middle.streaming.ErrorCode" +
+      "*\271\001\n\rPlaybackState\022\010\n\004NONE\020\000\022\020\n\014REQUEST_" +
+      "STOP\020\001\022\021\n\rREQUEST_PAUSE\020\002\022\020\n\014REQUEST_PLA" +
+      "Y\020\003\022\025\n\021REQUEST_MOVING_ON\020\004\022\021\n\rRESPONSE_S" +
+      "TOP\020\025\022\022\n\016RESPONSE_PAUSE\020\026\022\021\n\rRESPONSE_PL" +
+      "AY\020\027\022\026\n\022RESPONSE_MOVING_ON\020\030*\257\001\n\tErrorCo" +
+      "de\022\013\n\007UNKNOWN\020\000\022\022\n\016FILE_EXT_ERROR\020\001\022\023\n\017F" +
+      "ILE_PATH_ERROR\020\002\022\030\n\024FILE_NOT_FOUND_ERROR" +
+      "\020\003\022\025\n\021BROKEN_FILE_ERROR\020\004\022\022\n\016DIR_PATH_ER" +
+      "ROR\020\013\022\022\n\016CHECKSUM_ERROR\020\025\022\023\n\017DATA_LOSS_E" +
+      "RROR\020\026"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
         });
-    internal_static_essys_middle_FileInfo_descriptor =
+    internal_static_essys_middle_streaming_FileInfo_descriptor =
       getDescriptor().getMessageTypes().get(0);
-    internal_static_essys_middle_FileInfo_fieldAccessorTable = new
+    internal_static_essys_middle_streaming_FileInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_essys_middle_FileInfo_descriptor,
-        new java.lang.String[] { "FileName", "FilePath", "StartOfAbsoluteTime", "EndOfAbsoluteTime", "StartOfRunTime", "EndOfRunTime", });
-    internal_static_essys_middle_StreamingData_descriptor =
+        internal_static_essys_middle_streaming_FileInfo_descriptor,
+        new java.lang.String[] { "FileName", "FilePath", "ReplayTimestamp", "StartOfAbsoluteTime", "EndOfAbsoluteTime", "StartOfRunTime", "EndOfRunTime", });
+    internal_static_essys_middle_streaming_StreamingData_descriptor =
       getDescriptor().getMessageTypes().get(1);
-    internal_static_essys_middle_StreamingData_fieldAccessorTable = new
+    internal_static_essys_middle_streaming_StreamingData_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_essys_middle_StreamingData_descriptor,
+        internal_static_essys_middle_streaming_StreamingData_descriptor,
         new java.lang.String[] { "Timestamp", "State", "FilePath", "FileInfo", "Progress", "PlaybackSpeed", "Error", });
-    internal_static_essys_middle_LoggingData_descriptor =
+    internal_static_essys_middle_streaming_LoggingData_descriptor =
       getDescriptor().getMessageTypes().get(2);
-    internal_static_essys_middle_LoggingData_fieldAccessorTable = new
+    internal_static_essys_middle_streaming_LoggingData_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_essys_middle_LoggingData_descriptor,
+        internal_static_essys_middle_streaming_LoggingData_descriptor,
         new java.lang.String[] { "Timestamp", "State", "Error", });
     descriptor.resolveAllFeaturesImmutable();
   }

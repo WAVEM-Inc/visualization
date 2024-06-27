@@ -26,8 +26,7 @@ fun ApplicationScope.EvizWindow(
 ) = Window(
     onCloseRequest = { EvizWindowManager.closeWindow(type) },
     title = type.title,
-    state = currentWindowState,
-    alwaysOnTop = true
+    state = currentWindowState
 ) {
     window.minimumSize = Dimension(500, 350)
 

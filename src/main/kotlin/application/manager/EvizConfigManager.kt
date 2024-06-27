@@ -30,7 +30,7 @@ object EvizConfigManager {
             val obstacleConfig: ObstacleOption = loadFile(OBSTACLE_CONFIG_PATH, ObstacleOption())
             ConfigDataViewModel.updateObstacleOption(obstacleConfig)
 
-            val connectOption: ConnectOption = loadFile(CONNECT_CONFIG_PATH, ConnectOption("127.0.0.1", 40000, 40001));
+            val connectOption: ConnectOption = loadFile(CONNECT_CONFIG_PATH, ConnectOption("127.0.0.1", 40000, 40001, 40002));
             ConfigDataViewModel.updateConnectOption(connectOption)
 
             val mobileyeOption: MobileyeOption = loadFile(MOBILEYE_CONFIG_PATH, MobileyeOption())

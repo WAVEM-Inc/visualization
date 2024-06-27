@@ -1,80 +1,109 @@
 package application.connect
 
 import application.type.msg.ProtoMessageType
-import essys_middle.Streaming.LoggingData
-import essys_middle.Streaming.StreamingData
-import java.io.DataInputStream
+import essys_middle.streaming.Streaming
+import kotlinx.coroutines.*
+import viewmodel.ReplayViewModel
 import java.io.DataOutputStream
+import java.io.InputStream
 import java.net.InetSocketAddress
 import java.net.Socket
+import java.net.SocketException
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
-class TcpClient {
-    private var socket: Socket? = null
+object TcpClient {
+    private var socket: Socket = Socket()
+    private var listener: OnMessageListener? = null
 
-    private var receivingThread: Thread? = null
-    private lateinit var listener: OnMessageListener
+    private var receiveThread: Thread? = null
+    private var requestThread: Thread? = null
 
     interface OnMessageListener {
-        fun onStreamingReceive(message: StreamingData)
-        fun onLoggingReceive(message: LoggingData)
+        fun onStreamingReceive(message: Streaming.StreamingData)
+        fun onLoggingReceive(message: Streaming.LoggingData)
     }
 
-    fun connect(ipAddress: String, serverPort: Int, clientPort: Int) {
-        disconnect()
-
-        socket = Socket()
-        socket?.bind(InetSocketAddress(ipAddress, clientPort))
-        socket?.connect(InetSocketAddress(ipAddress, serverPort))
-
-        receivingThread = Thread {
-            receiveData()
+    fun connect(ipAddr: String, port: Int) {
+        if (receiveThread != null) {
+            receiveThread?.interrupt()
+            receiveThread = null
         }
-        receivingThread?.start()
-    }
 
-    fun disconnect() {
-        if (socket != null) {
-            if (socket!!.isConnected) {
-                socket!!.close()
+        if (requestThread != null) {
+            requestThread?.interrupt()
+            requestThread = null
+        }
+
+        try {
+            socket.connect(InetSocketAddress(ipAddr, port))
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        receiveThread = Thread {
+            while (Thread.currentThread().isInterrupted.not()) {
+                val inputStream: InputStream = socket.getInputStream()
+                var response = ByteArray(65545)
+                val length = inputStream.read(response)
+                response = response.copyOfRange(0, length)
+
+                val payload = getPayloadFromArray(response)
+                if (payload?.first == ProtoMessageType.REPLAY) {
+                    val data = Streaming.StreamingData.parseFrom(payload.second)
+
+                    listener?.onStreamingReceive(data)
+
+                } else if (payload?.first == ProtoMessageType.LOGGING) {
+                    val data = Streaming.LoggingData.parseFrom(payload.second)
+
+                    listener?.onLoggingReceive(data)
+                }
             }
-
-            socket = null
         }
+        receiveThread?.start()
 
-        receivingThread?.interrupt()
-        receivingThread?.join(200)
-        receivingThread = null
-    }
+        requestThread = Thread {
+            while (Thread.currentThread().isInterrupted.not()) {
+                Thread.sleep(1000)
+                try {
+                    val request = Streaming.StreamingData.newBuilder()
+                        .setTimestamp(System.currentTimeMillis())
+                        .setState(ReplayViewModel.requestState)
+                        .setFilePath(ReplayViewModel.filePath)
+                        .build()
 
-    private fun receiveData() {
-        while (!Thread.currentThread().isInterrupted) {
-            try {
-                val inputStream = socket?.getInputStream()?.let { DataInputStream(it) }
-                val buffer = ByteArray(4096)
-                val bytesRead = inputStream?.read(buffer)
-                if (bytesRead != -1) {
-                    val messageBytes = bytesRead?.let { buffer.copyOfRange(0, it) }
-                    val payload = messageBytes?.let { getPayloadFromArray(it) }
+                    println(ReplayViewModel.requestState)
+                    println(ReplayViewModel.requestState)
 
-                    if (payload != null) {
-                        if (payload.first == ProtoMessageType.SERVER_TO_EVIZ) {
+                    sendData(ProtoMessageType.REPLAY.type, request.toByteArray())
+                } catch (e: SocketException) {
+                    e.printStackTrace()
 
+                    try {
+                        CoroutineScope(Dispatchers.Main).launch {
+                            ReplayViewModel.updateReplayFilePath("")
+                            ReplayViewModel.updateReplayRequestState(Streaming.PlaybackState.NONE)
                         }
+
+                        println("Try reconnect to server...")
+                        socket.close()
+                        socket = Socket()
+                        socket.connect(InetSocketAddress(ipAddr, port))
+                    } catch (e: Exception) {
+                        e.printStackTrace()
                     }
                 }
-
-            } catch (e: Exception) {
-                e.printStackTrace()
             }
         }
+        requestThread?.start()
     }
 
     fun sendData(msgId: Int, payload: ByteArray) {
         val payloadLength: Int = payload.size
 
         val buffer: ByteBuffer = ByteBuffer.allocate(13 + payloadLength)
+        buffer.order(ByteOrder.LITTLE_ENDIAN)
         buffer.put("STX/".toByteArray())
         buffer.put(msgId.toByte())
         buffer.putInt(payloadLength)
@@ -84,13 +113,14 @@ class TcpClient {
         val message: ByteArray = buffer.array()
 
         try {
-            val out: DataOutputStream = DataOutputStream(socket?.getOutputStream())
+            val out: DataOutputStream = DataOutputStream(socket.getOutputStream())
             out.write(message)
             out.flush()
         } catch (e: Exception) {
-            e.printStackTrace()
+            throw SocketException()
+        } finally {
+            buffer.clear()
         }
-
     }
 
     private fun getPayloadFromArray(data: ByteArray): Pair<ProtoMessageType, ByteArray>? {
@@ -105,7 +135,9 @@ class TcpClient {
         }
 
         val msgId = data[4].toInt() and 0xFF // No change needed here
-        val payloadLength = ByteBuffer.wrap(data.sliceArray(5..8)).order(ByteOrder.LITTLE_ENDIAN).getInt() // No change needed
+        val payloadLength =
+            ByteBuffer.wrap(data.sliceArray(5..8)).order(ByteOrder.LITTLE_ENDIAN).getInt() // No change needed
+        println("Length: $payloadLength")
 
         // Check if the total size matches or exceeds expected size (start + msgId + payloadLength + end)
         if (data.size < 9 + payloadLength + 4) { // Adjusted to reflect the new protocol definition

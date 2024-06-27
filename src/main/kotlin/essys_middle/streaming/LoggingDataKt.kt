@@ -3,29 +3,29 @@
 
 // Generated files should ignore deprecation warnings
 @file:Suppress("DEPRECATION")
-package essys_middle;
+package essys_middle.streaming;
 
 @kotlin.jvm.JvmName("-initializeloggingData")
-public inline fun loggingData(block: essys_middle.LoggingDataKt.Dsl.() -> kotlin.Unit): essys_middle.Streaming.LoggingData =
-  essys_middle.LoggingDataKt.Dsl._create(essys_middle.Streaming.LoggingData.newBuilder()).apply { block() }._build()
+public inline fun loggingData(block: essys_middle.streaming.LoggingDataKt.Dsl.() -> kotlin.Unit): essys_middle.streaming.Streaming.LoggingData =
+  essys_middle.streaming.LoggingDataKt.Dsl._create(essys_middle.streaming.Streaming.LoggingData.newBuilder()).apply { block() }._build()
 /**
- * Protobuf type `essys_middle.LoggingData`
+ * Protobuf type `essys_middle.streaming.LoggingData`
  */
 public object LoggingDataKt {
   @kotlin.OptIn(com.google.protobuf.kotlin.OnlyForUseByGeneratedProtoCode::class)
   @com.google.protobuf.kotlin.ProtoDslMarker
   public class Dsl private constructor(
-    private val _builder: essys_middle.Streaming.LoggingData.Builder
+    private val _builder: essys_middle.streaming.Streaming.LoggingData.Builder
   ) {
     public companion object {
       @kotlin.jvm.JvmSynthetic
       @kotlin.PublishedApi
-      internal fun _create(builder: essys_middle.Streaming.LoggingData.Builder): Dsl = Dsl(builder)
+      internal fun _create(builder: essys_middle.streaming.Streaming.LoggingData.Builder): Dsl = Dsl(builder)
     }
 
     @kotlin.jvm.JvmSynthetic
     @kotlin.PublishedApi
-    internal fun _build(): essys_middle.Streaming.LoggingData = _builder.build()
+    internal fun _build(): essys_middle.streaming.Streaming.LoggingData = _builder.build()
 
     /**
      * ```
@@ -64,9 +64,9 @@ public object LoggingDataKt {
     }
 
     /**
-     * `optional .essys_middle.PlaybackState state = 2;`
+     * `optional .essys_middle.streaming.PlaybackState state = 2;`
      */
-    public var state: essys_middle.Streaming.PlaybackState
+    public var state: essys_middle.streaming.Streaming.PlaybackState
       @JvmName("getState")
       get() = _builder.getState()
       @JvmName("setState")
@@ -74,13 +74,13 @@ public object LoggingDataKt {
         _builder.setState(value)
       }
     /**
-     * `optional .essys_middle.PlaybackState state = 2;`
+     * `optional .essys_middle.streaming.PlaybackState state = 2;`
      */
     public fun clearState() {
       _builder.clearState()
     }
     /**
-     * `optional .essys_middle.PlaybackState state = 2;`
+     * `optional .essys_middle.streaming.PlaybackState state = 2;`
      * @return Whether the state field is set.
      */
     public fun hasState(): kotlin.Boolean {
@@ -88,9 +88,9 @@ public object LoggingDataKt {
     }
 
     /**
-     * `optional .essys_middle.ErrorCode error = 99;`
+     * `optional .essys_middle.streaming.ErrorCode error = 99;`
      */
-    public var error: essys_middle.Streaming.ErrorCode
+    public var error: essys_middle.streaming.Streaming.ErrorCode
       @JvmName("getError")
       get() = _builder.getError()
       @JvmName("setError")
@@ -98,13 +98,13 @@ public object LoggingDataKt {
         _builder.setError(value)
       }
     /**
-     * `optional .essys_middle.ErrorCode error = 99;`
+     * `optional .essys_middle.streaming.ErrorCode error = 99;`
      */
     public fun clearError() {
       _builder.clearError()
     }
     /**
-     * `optional .essys_middle.ErrorCode error = 99;`
+     * `optional .essys_middle.streaming.ErrorCode error = 99;`
      * @return Whether the error field is set.
      */
     public fun hasError(): kotlin.Boolean {
@@ -113,6 +113,6 @@ public object LoggingDataKt {
   }
 }
 @kotlin.jvm.JvmSynthetic
-public inline fun essys_middle.Streaming.LoggingData.copy(block: `essys_middle`.LoggingDataKt.Dsl.() -> kotlin.Unit): essys_middle.Streaming.LoggingData =
-  `essys_middle`.LoggingDataKt.Dsl._create(this.toBuilder()).apply { block() }._build()
+public inline fun essys_middle.streaming.Streaming.LoggingData.copy(block: `essys_middle.streaming`.LoggingDataKt.Dsl.() -> kotlin.Unit): essys_middle.streaming.Streaming.LoggingData =
+  `essys_middle.streaming`.LoggingDataKt.Dsl._create(this.toBuilder()).apply { block() }._build()
 

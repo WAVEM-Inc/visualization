@@ -8,6 +8,7 @@ object LoggingViewModel {
     private val loggingDirFlow = MutableSharedFlow<String>()
     private val loggingDurationFlow = MutableSharedFlow<Long>()
     private val isLoggingFlow = MutableSharedFlow<Boolean>()
+    private val loggingStartTimeFlow = MutableSharedFlow<Long>()
 
     suspend fun updateLoggingDirectory(value: String) {
         loggingDirFlow.emit(value)
@@ -43,5 +44,17 @@ object LoggingViewModel {
 
     suspend fun getIsLoggingState(): Boolean? {
         return isLoggingFlow.lastOrNull()
+    }
+
+    suspend fun updateLoggingStartTime(value: Long) {
+        loggingStartTimeFlow.emit(value)
+    }
+
+    suspend fun subscribeLoggingStartTime(collector: FlowCollector<Long>) {
+        loggingStartTimeFlow.collect(collector)
+    }
+
+    suspend fun getLoggingStartTime(): Long? {
+        return loggingStartTimeFlow.lastOrNull()
     }
 }

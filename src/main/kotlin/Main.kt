@@ -15,17 +15,13 @@ import apollo.dreamview.PointCloudOuterClass
 import apollo.localization.Localization
 import apollo.perception.PerceptionObstacleOuterClass
 import application.EvizWindow
+import application.connect.TcpClient
 import application.connect.UdpClient
 import application.manager.EvizWindowManager
 import application.type.EvizConfigManager
 import essys_middle.Dashboard
-import essys_middle.LoggingReplay.LoggingRequest
-import essys_middle.LoggingReplay.LoggingRequestType
 import essys_middle.Mobileye
-import essys_middle.Streaming
-import essys_middle.Streaming.LoggingData
-import essys_middle.Streaming.PlaybackState
-import essys_middle.Streaming.StreamingData
+import essys_middle.streaming.Streaming
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -37,9 +33,11 @@ import ui.layout.MainLayout
 import ui.theme.Navy_100
 import utils.getDefaultCachePath
 import viewmodel.ConfigDataViewModel
+import viewmodel.LoggingViewModel
+import viewmodel.ReplayViewModel
 import viewmodel.UdpDataViewModel
 import java.awt.Dimension
-import kotlin.math.cos
+
 
 @Composable
 @Preview
@@ -92,9 +90,29 @@ fun App() {
             }
         })
 
+        TcpClient.setOnMessageListener(listener = object: TcpClient.OnMessageListener {
+            override fun onStreamingReceive(message: Streaming.StreamingData) {
+                CoroutineScope(Dispatchers.Main).launch {
+                    ReplayViewModel.updateReplayState(message.state)
+                    ReplayViewModel.updateReplayProgress(message.progress)
+                }
+            }
+
+            override fun onLoggingReceive(message: Streaming.LoggingData) {
+                CoroutineScope(Dispatchers.Main).launch {
+                    if (message.state == Streaming.PlaybackState.RESPONSE_PLAY) {
+                        LoggingViewModel.updateIsLoggingState(true)
+                    } else {
+                        LoggingViewModel.updateIsLoggingState(false)
+                    }
+                }
+            }
+        })
+
         ConfigDataViewModel.subscribeConnectOption(collector = { option ->
             println("Connect Info - ipAddr: ${option.ipAddress}, port: ${option.receivePort}")
             client.connect(option.ipAddress, option.receivePort)
+            TcpClient.connect(option.ipAddress, option.serverPort)
         })
     }
 

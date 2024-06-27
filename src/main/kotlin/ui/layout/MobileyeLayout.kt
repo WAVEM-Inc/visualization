@@ -58,7 +58,6 @@ fun MobileyeLayout(modifier: Modifier = Modifier.fillMaxSize()) {
     var rightLdwColor by remember { mutableStateOf(Color.Gray) }
 
     LaunchedEffect(Unit) {
-        val currentLocaleState = currentLocale
         CoroutineScope(Dispatchers.Default).launch {
             UdpDataViewModel.subscribeLocalization(collector = { locale ->
                 currentLocale.value.x = locale.pose.position.x
@@ -127,12 +126,14 @@ fun MobileyeLayout(modifier: Modifier = Modifier.fillMaxSize()) {
                         val y = originY + i * meterPx
                         rotate(180f, pivot = Offset(x, y)) {
                             scale(scaleX = -1f, scaleY = 1f, pivot = Offset(x, y)) {
-                                drawText(
-                                    textMeasurer = textMeasurer,
-                                    text = "${i}m",
-                                    topLeft = Offset(x.dp.toPx(), y.dp.toPx()),
-                                    style = textStyle
-                                )
+                                try {
+                                    drawText(
+                                        textMeasurer = textMeasurer,
+                                        text = "${i}m",
+                                        topLeft = Offset(x.dp.toPx(), y.dp.toPx()),
+                                        style = textStyle
+                                    )
+                                } catch (e: Exception) { }
                             }
                         }
                     }

@@ -41,7 +41,7 @@ class LocationPainter: AbstractPainter<JXMapViewer>() {
 
             g.translate(-viewportBounds.x, -viewportBounds.y)
 
-            renderer!!.paintLocation(g, map, geoPosition, heading)
+            renderer!!.paintLocation(g, map, geoPosition, -heading)
 
             g.translate(viewportBounds.x, viewportBounds.y)
         }

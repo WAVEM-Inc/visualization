@@ -3,29 +3,29 @@
 
 // Generated files should ignore deprecation warnings
 @file:Suppress("DEPRECATION")
-package essys_middle;
+package essys_middle.streaming;
 
 @kotlin.jvm.JvmName("-initializefileInfo")
-public inline fun fileInfo(block: essys_middle.FileInfoKt.Dsl.() -> kotlin.Unit): essys_middle.Streaming.FileInfo =
-  essys_middle.FileInfoKt.Dsl._create(essys_middle.Streaming.FileInfo.newBuilder()).apply { block() }._build()
+public inline fun fileInfo(block: essys_middle.streaming.FileInfoKt.Dsl.() -> kotlin.Unit): essys_middle.streaming.Streaming.FileInfo =
+  essys_middle.streaming.FileInfoKt.Dsl._create(essys_middle.streaming.Streaming.FileInfo.newBuilder()).apply { block() }._build()
 /**
- * Protobuf type `essys_middle.FileInfo`
+ * Protobuf type `essys_middle.streaming.FileInfo`
  */
 public object FileInfoKt {
   @kotlin.OptIn(com.google.protobuf.kotlin.OnlyForUseByGeneratedProtoCode::class)
   @com.google.protobuf.kotlin.ProtoDslMarker
   public class Dsl private constructor(
-    private val _builder: essys_middle.Streaming.FileInfo.Builder
+    private val _builder: essys_middle.streaming.Streaming.FileInfo.Builder
   ) {
     public companion object {
       @kotlin.jvm.JvmSynthetic
       @kotlin.PublishedApi
-      internal fun _create(builder: essys_middle.Streaming.FileInfo.Builder): Dsl = Dsl(builder)
+      internal fun _create(builder: essys_middle.streaming.Streaming.FileInfo.Builder): Dsl = Dsl(builder)
     }
 
     @kotlin.jvm.JvmSynthetic
     @kotlin.PublishedApi
-    internal fun _build(): essys_middle.Streaming.FileInfo = _builder.build()
+    internal fun _build(): essys_middle.streaming.Streaming.FileInfo = _builder.build()
 
     /**
      * `optional string file_name = 1;`
@@ -73,6 +73,42 @@ public object FileInfoKt {
      */
     public fun hasFilePath(): kotlin.Boolean {
       return _builder.hasFilePath()
+    }
+
+    /**
+     * ```
+     * unix time 소수점 3째 자리 전송
+     * ```
+     *
+     * `optional double replay_timestamp = 10;`
+     */
+    public var replayTimestamp: kotlin.Double
+      @JvmName("getReplayTimestamp")
+      get() = _builder.getReplayTimestamp()
+      @JvmName("setReplayTimestamp")
+      set(value) {
+        _builder.setReplayTimestamp(value)
+      }
+    /**
+     * ```
+     * unix time 소수점 3째 자리 전송
+     * ```
+     *
+     * `optional double replay_timestamp = 10;`
+     */
+    public fun clearReplayTimestamp() {
+      _builder.clearReplayTimestamp()
+    }
+    /**
+     * ```
+     * unix time 소수점 3째 자리 전송
+     * ```
+     *
+     * `optional double replay_timestamp = 10;`
+     * @return Whether the replayTimestamp field is set.
+     */
+    public fun hasReplayTimestamp(): kotlin.Boolean {
+      return _builder.hasReplayTimestamp()
     }
 
     /**
@@ -173,6 +209,6 @@ public object FileInfoKt {
   }
 }
 @kotlin.jvm.JvmSynthetic
-public inline fun essys_middle.Streaming.FileInfo.copy(block: `essys_middle`.FileInfoKt.Dsl.() -> kotlin.Unit): essys_middle.Streaming.FileInfo =
-  `essys_middle`.FileInfoKt.Dsl._create(this.toBuilder()).apply { block() }._build()
+public inline fun essys_middle.streaming.Streaming.FileInfo.copy(block: `essys_middle.streaming`.FileInfoKt.Dsl.() -> kotlin.Unit): essys_middle.streaming.Streaming.FileInfo =
+  `essys_middle.streaming`.FileInfoKt.Dsl._create(this.toBuilder()).apply { block() }._build()
 

@@ -3,29 +3,29 @@
 
 // Generated files should ignore deprecation warnings
 @file:Suppress("DEPRECATION")
-package essys_middle;
+package essys_middle.streaming;
 
 @kotlin.jvm.JvmName("-initializestreamingData")
-public inline fun streamingData(block: essys_middle.StreamingDataKt.Dsl.() -> kotlin.Unit): essys_middle.Streaming.StreamingData =
-  essys_middle.StreamingDataKt.Dsl._create(essys_middle.Streaming.StreamingData.newBuilder()).apply { block() }._build()
+public inline fun streamingData(block: essys_middle.streaming.StreamingDataKt.Dsl.() -> kotlin.Unit): essys_middle.streaming.Streaming.StreamingData =
+  essys_middle.streaming.StreamingDataKt.Dsl._create(essys_middle.streaming.Streaming.StreamingData.newBuilder()).apply { block() }._build()
 /**
- * Protobuf type `essys_middle.StreamingData`
+ * Protobuf type `essys_middle.streaming.StreamingData`
  */
 public object StreamingDataKt {
   @kotlin.OptIn(com.google.protobuf.kotlin.OnlyForUseByGeneratedProtoCode::class)
   @com.google.protobuf.kotlin.ProtoDslMarker
   public class Dsl private constructor(
-    private val _builder: essys_middle.Streaming.StreamingData.Builder
+    private val _builder: essys_middle.streaming.Streaming.StreamingData.Builder
   ) {
     public companion object {
       @kotlin.jvm.JvmSynthetic
       @kotlin.PublishedApi
-      internal fun _create(builder: essys_middle.Streaming.StreamingData.Builder): Dsl = Dsl(builder)
+      internal fun _create(builder: essys_middle.streaming.Streaming.StreamingData.Builder): Dsl = Dsl(builder)
     }
 
     @kotlin.jvm.JvmSynthetic
     @kotlin.PublishedApi
-    internal fun _build(): essys_middle.Streaming.StreamingData = _builder.build()
+    internal fun _build(): essys_middle.streaming.Streaming.StreamingData = _builder.build()
 
     /**
      * ```
@@ -64,9 +64,9 @@ public object StreamingDataKt {
     }
 
     /**
-     * `optional .essys_middle.PlaybackState state = 2;`
+     * `optional .essys_middle.streaming.PlaybackState state = 2;`
      */
-    public var state: essys_middle.Streaming.PlaybackState
+    public var state: essys_middle.streaming.Streaming.PlaybackState
       @JvmName("getState")
       get() = _builder.getState()
       @JvmName("setState")
@@ -74,13 +74,13 @@ public object StreamingDataKt {
         _builder.setState(value)
       }
     /**
-     * `optional .essys_middle.PlaybackState state = 2;`
+     * `optional .essys_middle.streaming.PlaybackState state = 2;`
      */
     public fun clearState() {
       _builder.clearState()
     }
     /**
-     * `optional .essys_middle.PlaybackState state = 2;`
+     * `optional .essys_middle.streaming.PlaybackState state = 2;`
      * @return Whether the state field is set.
      */
     public fun hasState(): kotlin.Boolean {
@@ -112,9 +112,9 @@ public object StreamingDataKt {
     }
 
     /**
-     * `optional .essys_middle.FileInfo file_info = 4;`
+     * `optional .essys_middle.streaming.FileInfo file_info = 4;`
      */
-    public var fileInfo: essys_middle.Streaming.FileInfo
+    public var fileInfo: essys_middle.streaming.Streaming.FileInfo
       @JvmName("getFileInfo")
       get() = _builder.getFileInfo()
       @JvmName("setFileInfo")
@@ -122,24 +122,24 @@ public object StreamingDataKt {
         _builder.setFileInfo(value)
       }
     /**
-     * `optional .essys_middle.FileInfo file_info = 4;`
+     * `optional .essys_middle.streaming.FileInfo file_info = 4;`
      */
     public fun clearFileInfo() {
       _builder.clearFileInfo()
     }
     /**
-     * `optional .essys_middle.FileInfo file_info = 4;`
+     * `optional .essys_middle.streaming.FileInfo file_info = 4;`
      * @return Whether the fileInfo field is set.
      */
     public fun hasFileInfo(): kotlin.Boolean {
       return _builder.hasFileInfo()
     }
-    public val StreamingDataKt.Dsl.fileInfoOrNull: essys_middle.Streaming.FileInfo?
+    public val StreamingDataKt.Dsl.fileInfoOrNull: essys_middle.streaming.Streaming.FileInfo?
       get() = _builder.fileInfoOrNull
 
     /**
      * ```
-     * 특정 구간 요청 시 사용 / 소숫점 두 자리까지
+     * 소숫점 둘째 자리까지
      * ```
      *
      * `optional double progress = 5;`
@@ -153,7 +153,7 @@ public object StreamingDataKt {
       }
     /**
      * ```
-     * 특정 구간 요청 시 사용 / 소숫점 두 자리까지
+     * 소숫점 둘째 자리까지
      * ```
      *
      * `optional double progress = 5;`
@@ -163,7 +163,7 @@ public object StreamingDataKt {
     }
     /**
      * ```
-     * 특정 구간 요청 시 사용 / 소숫점 두 자리까지
+     * 소숫점 둘째 자리까지
      * ```
      *
      * `optional double progress = 5;`
@@ -210,9 +210,9 @@ public object StreamingDataKt {
     }
 
     /**
-     * `optional .essys_middle.ErrorCode error = 99;`
+     * `optional .essys_middle.streaming.ErrorCode error = 99;`
      */
-    public var error: essys_middle.Streaming.ErrorCode
+    public var error: essys_middle.streaming.Streaming.ErrorCode
       @JvmName("getError")
       get() = _builder.getError()
       @JvmName("setError")
@@ -220,13 +220,13 @@ public object StreamingDataKt {
         _builder.setError(value)
       }
     /**
-     * `optional .essys_middle.ErrorCode error = 99;`
+     * `optional .essys_middle.streaming.ErrorCode error = 99;`
      */
     public fun clearError() {
       _builder.clearError()
     }
     /**
-     * `optional .essys_middle.ErrorCode error = 99;`
+     * `optional .essys_middle.streaming.ErrorCode error = 99;`
      * @return Whether the error field is set.
      */
     public fun hasError(): kotlin.Boolean {
@@ -235,9 +235,9 @@ public object StreamingDataKt {
   }
 }
 @kotlin.jvm.JvmSynthetic
-public inline fun essys_middle.Streaming.StreamingData.copy(block: `essys_middle`.StreamingDataKt.Dsl.() -> kotlin.Unit): essys_middle.Streaming.StreamingData =
-  `essys_middle`.StreamingDataKt.Dsl._create(this.toBuilder()).apply { block() }._build()
+public inline fun essys_middle.streaming.Streaming.StreamingData.copy(block: `essys_middle.streaming`.StreamingDataKt.Dsl.() -> kotlin.Unit): essys_middle.streaming.Streaming.StreamingData =
+  `essys_middle.streaming`.StreamingDataKt.Dsl._create(this.toBuilder()).apply { block() }._build()
 
-public val essys_middle.Streaming.StreamingDataOrBuilder.fileInfoOrNull: essys_middle.Streaming.FileInfo?
+public val essys_middle.streaming.Streaming.StreamingDataOrBuilder.fileInfoOrNull: essys_middle.streaming.Streaming.FileInfo?
   get() = if (hasFileInfo()) getFileInfo() else null
 

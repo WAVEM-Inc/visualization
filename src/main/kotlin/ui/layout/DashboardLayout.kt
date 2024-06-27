@@ -15,37 +15,29 @@ import ui.component.gl.PointCloudViewer
 import ui.component.vehicle.TrafficLightInfo
 import ui.component.vehicle.VehicleSignalInfo
 import ui.theme.Navy_100
+import ui.theme.Navy_200
 
 @Preview
 @Composable
 fun DashboardLayout(modifier: Modifier = Modifier.fillMaxSize()) {
-    val parentSize = remember { mutableStateOf(IntSize(0, 0)) }
-    val vehicleInfoHeight = 220
 
-    Column(modifier = modifier.fillMaxSize().background(Navy_100).onSizeChanged { size ->
-        parentSize.value = size
-    }) {
+    Column(modifier = modifier.fillMaxSize().background(Navy_100).padding(4.dp)) {
         PointCloudViewer(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .offset(0.dp, 2.dp)
-                .width((parentSize.value.width - 8).dp)
-                .height((parentSize.value.height - vehicleInfoHeight).dp)
+                .fillMaxWidth()
+                .weight(1f)
+                .padding(bottom = 4.dp)
         )
 
-        Row(modifier = Modifier.height(vehicleInfoHeight.dp)) {
+        Row(modifier = Modifier.wrapContentHeight().background(Navy_200)) {
             VehicleSignalInfo(
                 modifier = Modifier
-                    .fillMaxHeight()
                     .fillMaxWidth(0.7f)
-                    .padding(4.dp)
-                    .padding(top = 2.dp)
             )
             TrafficLightInfo(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(vertical = 4.dp)
-                    .padding(top = 2.dp, end = 4.dp)
+                    .fillMaxWidth()
             )
         }
     }

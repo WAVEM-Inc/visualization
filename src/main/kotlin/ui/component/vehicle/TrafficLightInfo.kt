@@ -44,7 +44,7 @@ fun TrafficLightInfo(modifier: Modifier = Modifier) {
         })
     }
 
-    Column(modifier.background(Navy_200)) {
+    Column(modifier = modifier.background(Navy_200)) {
         Text(
             modifier = Modifier.padding(8.dp),
             text = "Traffic Light Information",
@@ -55,7 +55,7 @@ fun TrafficLightInfo(modifier: Modifier = Modifier) {
         )
 
         Box(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally),
             contentAlignment = Alignment.Center
         ) {
             Row(
