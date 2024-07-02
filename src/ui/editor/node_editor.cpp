@@ -65,6 +65,9 @@ void NodeEditor::init()
             CodeInfoModel::getInstance().getNameByCode(CodeType::DIRECTION, node.direction).c_str());
         _drivingOption_ptr->setCurrentText(
             CodeInfoModel::getInstance().getNameByCode(CodeType::DRIVING_OPTION, node.drivingOption).c_str());
+        _nodeArriveMode_ptr->setCurrentText(
+            CodeInfoModel::getInstance().getNameByCode(CodeType::ARRIVE_OPTION, node.arriveOption).c_str());
+        _nodeSpeed_ptr->setText(QString::number(node.speed));
         _nodeHeading_ptr->setText(QString::number(node.heading));
         _nodeLat_ptr->setText(QString::number(node.position.latitude, 'f', 7));
         _nodeLng_ptr->setText(QString::number(node.position.longitude, 'f', 7));
@@ -89,6 +92,7 @@ void NodeEditor::init()
                 _nodeKind_ptr->clear();
                 _nodeDirection_ptr->clear();
                 _drivingOption_ptr->clear();
+                _nodeArriveMode_ptr->clear();
 
                 std::vector<Code> nodeKindCodes = codeMap.at(CodeType::NODE_KIND).codes;
                 for (const Code& code : nodeKindCodes)
@@ -116,6 +120,15 @@ void NodeEditor::init()
                         QVariant::fromValue(QString::fromStdString(code.code))
                     );
                 }
+
+                std::vector<Code> arriveOptionCodes = codeMap.at(CodeType::ARRIVE_OPTION).codes;
+                for (const Code &code : arriveOptionCodes)
+                {
+                    _nodeArriveMode_ptr->addItem(
+                        QString::fromStdString(code.name),
+                        QVariant::fromValue(QString::fromStdString(code.code))
+                    );
+                }
             }
     );
 
@@ -132,6 +145,8 @@ void NodeEditor::init()
         node.position.longitude = _nodeLng_ptr->text().toDouble();
         node.nodeId = _nodeId_ptr->text().toStdString();
         node.type = _nodeType_ptr->text().toStdString();
+        node.speed = _nodeSpeed_ptr->text().toFloat();
+        node.arriveOption = _nodeArriveMode_ptr->currentData().toString().toStdString();
         node.direction = _nodeType_ptr->text().toStdString();
         node.kind = _nodeKind_ptr->currentData().toString().toStdString();
         node.direction = _nodeDirection_ptr->currentData().toString().toStdString();
@@ -359,6 +374,16 @@ void NodeEditor::initNodeInfoWidget()
     _nextNode_ptr->setReadOnly(true);
     layout->addWidget(nextNodeLb, 4, 0);
     layout->addWidget(_nextNode_ptr, 4, 1);
+
+    QLabel* nodeSpeed = new QLabel("차량 속도");
+    _nodeSpeed_ptr = new QLineEdit();
+    layout->addWidget(nodeSpeed, 5, 0);
+    layout->addWidget(_nodeSpeed_ptr, 5, 1);
+
+    QLabel* nodeArriveMode = new QLabel("도착 옵션");
+    _nodeArriveMode_ptr = new QComboBox();
+    layout->addWidget(nodeArriveMode, 6, 0);
+    layout->addWidget(_nodeArriveMode_ptr, 6, 1);
 
     m_node_info_ptr->setLayout(layout);
 }

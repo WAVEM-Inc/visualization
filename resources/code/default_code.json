@@ -133,5 +133,20 @@
         "description": "위치 추정에 경위도 정보사용"
       }
     ]
+  },
+  {
+    "category": "arrive_option",
+    "codes": [
+      {
+        "code": "Drive",
+        "name": "주행",
+        "description": "위치 추정에 odometry 정보사용"
+      },
+      {
+        "code": "Stop",
+        "name": "정지",
+        "description": "위치 추정에 경위도 정보사용"
+      }
+    ]
   }
 ]

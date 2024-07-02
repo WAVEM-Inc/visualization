@@ -49,6 +49,9 @@ private:
     QLineEdit *_preNode_ptr;
     QLineEdit *_nextNode_ptr;
 
+    QLineEdit *_nodeSpeed_ptr;
+    QComboBox *_nodeArriveMode_ptr;
+
     QComboBox *_nodeKind_ptr;
     QComboBox *_nodeDirection_ptr;
     QComboBox *_drivingOption_ptr;

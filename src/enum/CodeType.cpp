@@ -15,3 +15,5 @@ std::string CodeType::ACTION_CODE = "action_code";
 std::string CodeType::NODE_POINT = "node_point";
 
 std::string CodeType::DRIVING_OPTION = "driving_option";
+
+std::string CodeType::ARRIVE_OPTION = "arrive_option";
