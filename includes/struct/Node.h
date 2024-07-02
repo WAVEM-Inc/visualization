@@ -22,6 +22,8 @@ struct Node {
     std::string direction;
     std::string drivingOption;
     std::vector<DetectionRange> detectionRange;
+    float speed = 0.0;
+    std::string arriveOption = "Stop";
 
     Node() = default;
 };
